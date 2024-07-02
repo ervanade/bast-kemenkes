@@ -11,6 +11,8 @@ export default {
   theme: {
     fontFamily: {
       satoshi: ['Satoshi', 'sans-serif'],
+      antic: ['Antic', 'sans-serif'],
+      Figtree: ['Figtree', 'sans-serif'],
     },
     screens: {
       '2xsm': '375px',
@@ -27,13 +29,13 @@ export default {
         'black-2': '#010101',
         body: '#64748B',
         bodydark: '#AEB7C0',
-        bodydark1: '#DEE4EE',
+        bodydark1: '#728294',
         bodydark2: '#8A99AF',
-        primary: '#3C50E0',
+        primary: '#16B3AC',
         secondary: '#80CAEE',
         stroke: '#E2E8F0',
         gray: '#EFF4FB',
-        graydark: '#333A48',
+        graydark: '#E7FFFE',
         'gray-2': '#F7F9FC',
         'gray-3': '#FAFAFA',
         whiten: '#F1F5F9',

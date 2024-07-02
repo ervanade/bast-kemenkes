@@ -11,9 +11,13 @@ const Login = () => {
     nomor: "",
     agree: false,
   });
+  const navigate = useNavigate();
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const handleLogin = () => {
+    navigate("/");
+  };
 
   const handleCheckboxChange = (event) => {
     setFormData((prev) => ({ ...prev, tanggal: event.target.value }));
@@ -34,7 +38,7 @@ const Login = () => {
               Hanya di Youtube Oriflame Indonesia
             </p> */}
           </div>
-          <form className="mt-5">
+          <form className="mt-5" onSubmit={handleLogin}>
             <div className="mb-3">
               <label
                 className="block text-[#728294] text-sm font-normal mb-2"
@@ -43,7 +47,7 @@ const Login = () => {
                 Email
               </label>
               <input
-                className={`bg-white shadow appearance-none border border-[#cacaca] focus:border-[#404040]
+                className={`bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                     "border-red-500" 
                  rounded w-full py-3 px-3 text-[#728294] mb-3 leading-tight focus:outline-none focus:shadow-outline`}
                 id="email"
@@ -67,7 +71,7 @@ const Login = () => {
                 Password
               </label>
               <input
-                className={`bg-white shadow appearance-none border border-[#cacaca] focus:border-[#404040]
+                className={`bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                     "border-red-500" 
                  rounded w-full py-3 px-3 text-[#728294] mb-3 leading-tight focus:outline-none focus:shadow-outline`}
                 id="password"
@@ -91,7 +95,7 @@ const Login = () => {
                   Captcha
                 </label>
                 <input
-                  className={`bg-white shadow appearance-none border border-[#cacaca] focus:border-[#404040]
+                  className={`bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                     "border-red-500" 
                  rounded w-full py-3 px-3 text-[#728294] mb-3 leading-tight focus:outline-none focus:shadow-outline`}
                   id="nomor"

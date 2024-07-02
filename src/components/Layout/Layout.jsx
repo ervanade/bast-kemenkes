@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import Sidebar from "../Sidebar/Sidebar";
 import Header from "../Header/Header";
+import { Outlet } from "react-router-dom";
 
-const Layout = ({ children }) => {
+// eslint-disable-next-line react/prop-types
+const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -14,15 +16,15 @@ const Layout = ({ children }) => {
         {/* <!-- ===== Sidebar End ===== --> */}
 
         {/* <!-- ===== Content Area Start ===== --> */}
-        <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+        <div className="relative flex flex-1 flex-col md:py-2 md:px-8 overflow-y-auto overflow-x-hidden">
           {/* <!-- ===== Header Start ===== --> */}
           <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
           {/* <!-- ===== Header End ===== --> */}
 
           {/* <!-- ===== Main Content Start ===== --> */}
           <main>
-            <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
-              {children}
+            <div className="mx-auto px-4 md:px-0  py-4 md:py-6 2xl:py-10">
+              <Outlet />
             </div>
           </main>
           {/* <!-- ===== Main Content End ===== --> */}
