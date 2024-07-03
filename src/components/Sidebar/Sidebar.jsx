@@ -138,7 +138,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                     "bg-graydark dark:bg-meta-4 text-primary"
                   }`}
                 >
-                 <MdOutlineDomainVerification  size={32}/>
+                 <MdOutlineDomainVerification  size={22}/>
                   Data Verifikasi
                 </NavLink>
               </li>
