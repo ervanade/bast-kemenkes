@@ -10,18 +10,20 @@ const CardDataStats = ({
   color,
 }) => {
   return (
-    <div className="rounded-sm flex items-center justify-between border border-stroke bg-white py-6 md:py-12 px-4 md:px-8 shadow-default dark:border-strokedark dark:bg-boxdark">
+    <div className="rounded-sm flex gap-4 items-center justify-between border border-stroke bg-white py-4 md:py-8 px-4 md:px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
       {/* <div className="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4"> */}
 
       {/* </div> */}
 
       <div className="mt-4 flex items-end justify-between">
         <div>
-          <span className={`text-sm md:text-xl text-bodydark1 font-medium`}>
+          <span
+            className={`text-sm md:text-lg 2xl:text-xl text-bodydark1 font-medium`}
+          >
             {title}
           </span>
           <h4
-            className={`text-title-md font-bold mt-2 dark:text-white ${color} `}
+            className={`xl:text-title-md font-bold mt-2 dark:text-white ${color} `}
           >
             {total}
           </h4>

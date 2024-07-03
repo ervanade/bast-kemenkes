@@ -16,7 +16,7 @@ const Layout = () => {
         {/* <!-- ===== Sidebar End ===== --> */}
 
         {/* <!-- ===== Content Area Start ===== --> */}
-        <div className="relative flex flex-1 flex-col md:py-2 md:px-8 overflow-y-auto overflow-x-hidden">
+        <div className="relative flex flex-1 flex-col md:py-2 md:px-6 2xl:px-8 overflow-y-auto overflow-x-hidden">
           {/* <!-- ===== Header Start ===== --> */}
           <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
           {/* <!-- ===== Header End ===== --> */}

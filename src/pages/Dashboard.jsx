@@ -8,7 +8,7 @@ import { RiHospitalLine } from "react-icons/ri";
 const Dashboard = () => {
   return (
     <div className="">
-      <div className="rounded-md border border-stroke bg-white py-6 md:py-12 px-4 md:px-8 shadow-default dark:border-strokedark dark:bg-boxdark flex items-center gap-6 text-bodydark2">
+      <div className="rounded-md border border-stroke bg-white py-4 md:py-12 px-4 md:px-8 shadow-default dark:border-strokedark dark:bg-boxdark flex items-center gap-6 text-bodydark2">
         <img src="/welcome.png" alt="Welcome" />
         <div className="welcome-text">
           <h1 className="font-semibold mb-3 text-xl lg:text-[28px] tracking-tight">
@@ -30,8 +30,8 @@ const Dashboard = () => {
           color="text-[#42DFC3]"
           levelUp
         >
-          <div className="flex h-14 w-14 items-center justify-center rounded-md bg-[#E7FBF7] dark:bg-meta-4">
-            <AiOutlineDatabase size={32} className="fill-primary " />
+          <div className="flex p-2 items-center justify-center rounded-md bg-[#E7FBF7] dark:bg-meta-4">
+            <AiOutlineDatabase size={28} className="fill-primary " />
           </div>
         </CardDataStats>
         <CardDataStats
@@ -41,9 +41,9 @@ const Dashboard = () => {
           color="text-[#79DF42]"
           levelUp
         >
-          <div className="flex h-14 w-14 items-center justify-center rounded-md bg-[#EEFBE7] dark:bg-meta-4">
+          <div className="flex p-2 items-center justify-center rounded-md bg-[#EEFBE7] dark:bg-meta-4">
             <MdOutlineDomainVerification
-              size={32}
+              size={28}
               className="fill-[#79DF42] "
             />
           </div>
@@ -55,19 +55,19 @@ const Dashboard = () => {
           color="text-[#DFB342]"
           levelUp
         >
-          <div className="flex h-14 w-14 items-center justify-center rounded-md bg-[#FBF5E7] dark:bg-meta-4">
-            <PiShieldWarningBold size={32} className="fill-[#DFB342] " />
+          <div className="flex p-2 items-center justify-center rounded-md bg-[#FBF5E7] dark:bg-meta-4">
+            <PiShieldWarningBold size={28} className="fill-[#DFB342] " />
           </div>
         </CardDataStats>
         <CardDataStats
           title="Jumlah Puskesmas"
-          total="32,150"
+          total="28,150"
           rate="0.95%"
           color="text-[#F46D6D]"
           levelDown
         >
-          <div className="flex h-14 w-14 items-center justify-center rounded-md bg-[#FBE7E7] dark:bg-meta-4">
-            <RiHospitalLine size={32} className="fill-[#F46D6D] " />
+          <div className="flex p-2 items-center justify-center rounded-md bg-[#FBE7E7] dark:bg-meta-4">
+            <RiHospitalLine size={28} className="fill-[#F46D6D] " />
           </div>
         </CardDataStats>
       </div>

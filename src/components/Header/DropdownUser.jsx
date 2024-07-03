@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ClickOutside from "../ClickOutside";
 import UserOne from "../../assets/user/user-01.png";
+import UserDefault from "../../assets/user/user-default.png";
 
 const DropdownUser = () => {
   const navigate = useNavigate();
@@ -19,13 +20,13 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Thomas Anree
+            Username
           </span>
           <span className="block text-xs">Admin</span>
         </span>
 
         <span className="h-12 w-12 rounded-full">
-          <img src={UserOne} alt="User" />
+          <img src={UserDefault} alt="User" />
         </span>
 
         <svg
