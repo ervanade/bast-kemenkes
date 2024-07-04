@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Card from "../components/Card/Card";
 import Breadcrumb from "../components/Breadcrumbs/Breadcrumb";
 import { useNavigate } from "react-router-dom";
-import { dataKecamatan } from "../data/data";
+import { dataBarang, dataKecamatan, dataPuskesmas } from "../data/data";
 import { selectThemeColors } from "../data/utils";
 import Select from "react-select";
 import Swal from "sweetalert2";
@@ -10,6 +10,15 @@ import Swal from "sweetalert2";
 const FormInput = () => {
   const [formData, setFormData] = useState({
     kecamatan: "",
+    puskesmas: "",
+    nama_kepala_puskesmas: "",
+    nip_kepala_puskesmas: "",
+    nama_barang: "",
+    jumlah_barang_dikirim: "",
+    jumlah_barang_diterima: "",
+    tte: "",
+    ket_daerah: "",
+    ket_ppk: "",
     password: "",
     email: "",
     nomor: "",
@@ -80,7 +89,7 @@ const FormInput = () => {
               </div>
               <div className="sm:flex-[5_5_0%]">
                 <Select
-                  options={dataKecamatan}
+                  options={dataPuskesmas}
                   placeholder="Pilih Puskesmas"
                   className="w-full"
                   theme={selectThemeColors}
@@ -102,13 +111,13 @@ const FormInput = () => {
                   className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                     "border-red-500" 
                  rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline`}
-                  id="password"
+                  id="nama_kepala_puskesmas"
                   type="text"
-                  value={formData.password}
+                  value={formData.nama_kepala_puskesmas}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      password: e.target.value,
+                      nama_kepala_puskesmas: e.target.value,
                     }))
                   }
                   placeholder="Nama Kepala Puskesmas"
@@ -130,13 +139,13 @@ const FormInput = () => {
                   className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                     "border-red-500" 
                  rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline`}
-                  id="password"
+                  id="nip_kepala_puskesmas"
                   type="text"
-                  value={formData.password}
+                  value={formData.nip_kepala_puskesmas}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      password: e.target.value,
+                      nip_kepala_puskesmas: e.target.value,
                     }))
                   }
                   placeholder="NIP Kepala Puskesmas"
@@ -155,7 +164,7 @@ const FormInput = () => {
               </div>
               <div className="sm:flex-[5_5_0%]">
                 <Select
-                  options={dataKecamatan}
+                  options={dataBarang}
                   placeholder="Pilih Barang"
                   className="w-full"
                   theme={selectThemeColors}
@@ -177,13 +186,13 @@ const FormInput = () => {
                   className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                     "border-red-500" 
                  rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline`}
-                  id="password"
+                  id="jumlah_barang_dikirim"
                   type="number"
-                  value={formData.password}
+                  value={formData.jumlah_barang_dikirim}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      password: e.target.value,
+                      jumlah_barang_dikirim: e.target.value,
                     }))
                   }
                   placeholder="Jumlah Barang yang dikirim"
@@ -205,13 +214,13 @@ const FormInput = () => {
                   className={` bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                     "border-red-500" 
                  rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline`}
-                  id="password"
+                  id="jumlah_barang_diterima"
                   type="number"
-                  value={formData.password}
+                  value={formData.jumlah_barang_diterima}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      password: e.target.value,
+                      jumlah_barang_diterima: e.target.value,
                     }))
                   }
                   placeholder="Jumlah Barang yang diterima"

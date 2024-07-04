@@ -79,7 +79,9 @@ const DataDistribusi = () => {
               </Link>
             </button>
             <button title="Edit" className="text-blue-500 hover:text-blue-700">
-              <FaEdit />
+              <Link to="/data-verifikasi/form-distribusi">
+                <FaEdit />
+              </Link>
             </button>
             <button title="Delete" className="text-red-500 hover:text-red-700">
               <FaTrash />
@@ -239,22 +241,24 @@ const DataDistribusi = () => {
             <BiExport />
           </button>
         </div>
-        <DataTable
-          columns={columns}
-          data={filteredData}
-          pagination
-          persistTableHead
-          highlightOnHover
-          pointerOnHover
-          customStyles={{
-            headCells: {
-              style: {
-                backgroundColor: "#EBFBFA",
-                color: "#728294",
+        <div className="overflow-x-auto">
+          <DataTable
+            columns={columns}
+            data={filteredData}
+            pagination
+            persistTableHead
+            highlightOnHover
+            pointerOnHover
+            customStyles={{
+              headCells: {
+                style: {
+                  backgroundColor: "#EBFBFA",
+                  color: "#728294",
+                },
               },
-            },
-          }}
-        />
+            }}
+          />
+        </div>
       </div>
     </div>
   );

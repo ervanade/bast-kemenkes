@@ -65,6 +65,35 @@ export const dataKecamatan = [
     }
 ]
 
+export const dataBarang = [
+    {
+        "label": "Alat Rapid Test",
+        "value": "alat_rapid_test"
+    },
+    {
+        "label": "Masker",
+        "value": "masker"
+    },
+    {
+        "label": "Thermometer",
+        "value": "thermometer"
+    },
+]
+export const dataPuskesmas = [
+    {
+        "label": "Puskesmas Bintara Jaya",
+        "value": "puskesmas_bintara_jaya"
+    },
+    {
+        "label": "Puskesmas Kota Baru",
+        "value": "puskesmas_kota_baru"
+    },
+    {
+        "label": "Puskesmas Kali Baru",
+        "value": "puskesmas_kali_baru"
+    },
+]
+
 export const dataDistribusiBekasi =
     [
         {

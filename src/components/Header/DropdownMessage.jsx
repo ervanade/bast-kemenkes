@@ -17,7 +17,7 @@ const DropdownMessage = () => {
         <Link
           onClick={() => {
             setNotifying(false);
-            setDropdownOpen(!dropdownOpen);
+            // setDropdownOpen(!dropdownOpen);
           }}
           className="relative flex h-8.5 w-8.5 items-center justify-center rounded-full text-primary dark:border-strokedark dark:bg-meta-4 dark:text-white"
           to="#"
