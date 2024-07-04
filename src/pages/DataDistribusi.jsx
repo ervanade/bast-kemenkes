@@ -54,7 +54,12 @@ const DataDistribusi = () => {
         selector: (row) => row.jumlah_barang_diterima,
         sortable: true,
       },
-      { name: "Status TTE", selector: (row) => row.status_tte, sortable: true },
+      {
+        name: "Status TTE",
+        selector: (row) => row.status_tte,
+        sortable: true,
+        width: "110px",
+      },
       {
         name: "Keterangan PPK Kemenkes",
         selector: (row) => row.keterangan_ppk,
@@ -89,7 +94,6 @@ const DataDistribusi = () => {
   const [search, setSearch] = useState("");
   const [selectedKecamatan, setSelectedKecamatan] = useState(null);
   const [filteredData, setFilteredData] = useState(dataDistribusiBekasi);
-  console.log(selectedKecamatan);
 
   const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();
