@@ -1,3 +1,11 @@
+export const dataUser = [
+    {
+        id: 1,
+        email: 'user@example.com',
+        username: "Admin Dinas Kesehatan Kota Bekasi",
+        password: '123'
+    }
+]
 export const dataProvinsi = [
     {
         label: "Jawa Barat",
@@ -11,10 +19,10 @@ export const dataKota = [
     }
 ]
 export const dataKecamatan = [
-    {
-        "label": "Semua Kecamatan",
-        "value": "all"
-    },
+    // {
+    //     "label": "Semua Kecamatan",
+    //     "value": "all"
+    // },
     {
         "label": "Bintara",
         "value": "bintara"

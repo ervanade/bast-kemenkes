@@ -10,7 +10,7 @@ const CardDataStats = ({
   color,
 }) => {
   return (
-    <div className="rounded-sm flex gap-4 items-center justify-between border border-stroke bg-white py-4 md:py-8 px-4 md:px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
+    <div className="rounded-md flex gap-4 items-center justify-between border border-stroke bg-white py-4 md:py-8 px-4 md:px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
       {/* <div className="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4"> */}
 
       {/* </div> */}

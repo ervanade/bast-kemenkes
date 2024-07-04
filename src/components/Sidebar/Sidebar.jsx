@@ -4,7 +4,7 @@ import SidebarLinkGroup from "./SidebarLinkGroup";
 import { HiOutlineHome } from "react-icons/hi";
 import { AiOutlineDatabase } from "react-icons/ai";
 import { MdOutlineDomainVerification } from "react-icons/md";
-
+import { FaUsers } from "react-icons/fa";
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const location = useLocation();
@@ -132,13 +132,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
               {/* <!-- Menu Item Profile --> */}
               <li>
                 <NavLink
-                  to="/data-verifikasi"
+                  to="/data-verifikasi/form-distribusi"
                   className={`group relative flex items-center gap-2.5 rounded-md py-3 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                     pathname.includes("data-verifikasi") &&
                     "bg-graydark dark:bg-meta-4 text-primary"
                   }`}
                 >
-                 <MdOutlineDomainVerification  size={22}/>
+                  <MdOutlineDomainVerification size={22} />
                   Data Verifikasi
                 </NavLink>
               </li>
@@ -423,10 +423,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                         <ul className="mb-5.5 mt-4 flex flex-col gap-2.5 pl-6">
                           <li>
                             <NavLink
-                              to="/users"
+                              to="/user-management"
                               className={({ isActive }) =>
                                 "group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-primary " +
-                                (isActive && "!text-white")
+                                (isActive && "!text-primary")
                               }
                             >
                               User Management
@@ -434,10 +434,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                           </li>
                           <li>
                             <NavLink
-                              to="/ui/buttons"
+                              to="/data-distribusi"
                               className={({ isActive }) =>
                                 "group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-primary " +
-                                (isActive && "!text-white")
+                                (isActive && "!text-primary")
                               }
                             >
                               Data Distribusi
@@ -451,6 +451,18 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                 }}
               </SidebarLinkGroup>
               {/* <!-- Menu Item Ui Elements --> */}
+              <li>
+                <NavLink
+                  to="/user-management"
+                  className={`group relative flex items-center gap-2.5 rounded-md py-3 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                    pathname.includes("user-management") &&
+                    "bg-graydark dark:bg-meta-4 text-primary"
+                  }`}
+                >
+                  <FaUsers size={20} />
+                  User Management
+                </NavLink>
+              </li>
             </ul>
           </div>
         </nav>

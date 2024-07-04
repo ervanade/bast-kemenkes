@@ -13,6 +13,7 @@ import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import { BiExport, BiSolidFileExport } from "react-icons/bi";
 import { TiExport } from "react-icons/ti";
 import { CiExport } from "react-icons/ci";
+import { Link } from "react-router-dom";
 
 const options = [
   { value: "chocolate", label: "Chocolate" },
@@ -73,7 +74,9 @@ const DataDistribusi = () => {
               title="Input"
               className="text-green-500 hover:text-green-700"
             >
-              <FaPlus />
+              <Link to="/data-verifikasi/form-distribusi">
+                <FaPlus />
+              </Link>
             </button>
             <button title="Edit" className="text-blue-500 hover:text-blue-700">
               <FaEdit />
@@ -92,6 +95,10 @@ const DataDistribusi = () => {
   );
 
   const [search, setSearch] = useState("");
+  const [dataKecamatanState, setDataKecamatanState] = useState([
+    { label: "Semua Kecamatan", value: "all" },
+    ...dataKecamatan,
+  ]);
   const [selectedKecamatan, setSelectedKecamatan] = useState(null);
   const [filteredData, setFilteredData] = useState(dataDistribusiBekasi);
 
@@ -175,8 +182,8 @@ const DataDistribusi = () => {
             Kecamatan
           </label>
           <Select
-            options={dataKecamatan}
-            defaultValue={dataKecamatan[0]}
+            options={dataKecamatanState}
+            defaultValue={dataKecamatanState[0]}
             onChange={setSelectedKecamatan}
             className="w-64 sm:w-100"
             theme={selectThemeColors}
@@ -189,7 +196,7 @@ const DataDistribusi = () => {
           Cari Data
         </button>
       </div>
-      <div className="rounded-sm flex flex-col gap-4 overflow-hidden overflow-x-auto  border border-stroke bg-white py-4 md:py-8 px-4 md:px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
+      <div className="rounded-md flex flex-col gap-4 overflow-hidden overflow-x-auto  border border-stroke bg-white py-4 md:py-8 px-4 md:px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex justify-between mb-4">
           <div className="relative">
             <button className="absolute left-2 top-1/2 -translate-y-1/2">

@@ -22,7 +22,6 @@ const Login = () => {
   const handleCheckboxChange = (event) => {
     setFormData((prev) => ({ ...prev, tanggal: event.target.value }));
   };
-  const [colorMode, setColorMode] = useColorMode();
   return (
     <div className="w-full !dark:bg-boxdark-2 flex justify-center items-center min-h-[calc(100vh-0px)] bg-transparent object-cover bg-center py-6 !bg-[#8EEBE7]">
       <div className="w-full max-w-lg bg-white shadow-md rounded-md  pt-8 pb-12 mb-4 mx-6">
