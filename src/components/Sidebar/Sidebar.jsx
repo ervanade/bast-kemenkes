@@ -3,8 +3,9 @@ import { NavLink, useLocation } from "react-router-dom";
 import SidebarLinkGroup from "./SidebarLinkGroup";
 import { HiOutlineHome } from "react-icons/hi";
 import { AiOutlineDatabase } from "react-icons/ai";
-import { MdOutlineDomainVerification } from "react-icons/md";
+import { MdOutlineDomainVerification, MdReport } from "react-icons/md";
 import { FaUsers } from "react-icons/fa";
+import { TbReport } from "react-icons/tb";
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const location = useLocation();
@@ -140,6 +141,19 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                 >
                   <MdOutlineDomainVerification size={22} />
                   Data Verifikasi
+                </NavLink>
+              </li>
+
+              <li>
+                <NavLink
+                  to="/laporan"
+                  className={`group relative flex items-center gap-2.5 rounded-md py-3 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                    pathname.includes("laporan") &&
+                    "bg-graydark dark:bg-meta-4 text-primary"
+                  }`}
+                >
+                  <TbReport size={22} />
+                  Laporan
                 </NavLink>
               </li>
               {/* <!-- Menu Item Profile --> */}

@@ -9,6 +9,8 @@ import Dashboard from "./pages/Dashboard";
 import DataDistribusi from "./pages/DataDistribusi";
 import FormInput from "./pages/FormInput";
 import UserManagement from "./pages/admin/UserManagement";
+import Laporan from "./pages/Laporan";
+import LaporanPreview from "./pages/LaporanPreview";
 
 function App() {
   const { pathname } = useLocation();
@@ -23,6 +25,8 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="data-distribusi" element={<DataDistribusi />} />
+          <Route path="laporan" element={<Laporan />} />
+          <Route path="preview-laporan" element={<LaporanPreview />} />
           <Route
             path="/data-verifikasi/form-distribusi"
             element={<FormInput />}

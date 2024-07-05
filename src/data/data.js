@@ -487,3 +487,86 @@ export const dataDistribusiBekasi =
             "keterangan_ppk": "Ada kerusakan kemasan"
         },
     ]
+
+export const dataLaporan = [
+    {
+        nomorLaporan: '001/BAST/2024',
+        tanggalLaporan: '2024-01-01',
+        namaKapus: 'Dr. A',
+        jumlahBarangDikirim: 50,
+        jumlahBarangDiterima: 50,
+        statusTTE: 'Telah Diverifikasi'
+    },
+    {
+        nomorLaporan: '002/BAST/2024',
+        tanggalLaporan: '2024-01-02',
+        namaKapus: 'Dr. B',
+        jumlahBarangDikirim: 40,
+        jumlahBarangDiterima: 40,
+        statusTTE: 'Telah Diverifikasi'
+    },
+    {
+        nomorLaporan: '003/BAST/2024',
+        tanggalLaporan: '2024-01-03',
+        namaKapus: 'Dr. C',
+        jumlahBarangDikirim: 30,
+        jumlahBarangDiterima: 30,
+        statusTTE: 'Telah Diverifikasi'
+    },
+    {
+        nomorLaporan: '004/BAST/2024',
+        tanggalLaporan: '2024-01-04',
+        namaKapus: 'Dr. D',
+        jumlahBarangDikirim: 20,
+        jumlahBarangDiterima: 20,
+        statusTTE: 'Telah Diverifikasi'
+    },
+    {
+        nomorLaporan: '005/BAST/2024',
+        tanggalLaporan: '2024-01-05',
+        namaKapus: 'Dr. E',
+        jumlahBarangDikirim: 60,
+        jumlahBarangDiterima: 60,
+        statusTTE: 'Telah Diverifikasi'
+    },
+    {
+        nomorLaporan: '006/BAST/2024',
+        tanggalLaporan: '2024-01-06',
+        namaKapus: 'Dr. F',
+        jumlahBarangDikirim: 70,
+        jumlahBarangDiterima: 70,
+        statusTTE: 'Telah Diverifikasi'
+    },
+    {
+        nomorLaporan: '007/BAST/2024',
+        tanggalLaporan: '2024-01-07',
+        namaKapus: 'Dr. G',
+        jumlahBarangDikirim: 80,
+        jumlahBarangDiterima: 80,
+        statusTTE: 'Telah Diverifikasi'
+    },
+    {
+        nomorLaporan: '008/BAST/2024',
+        tanggalLaporan: '2024-01-08',
+        namaKapus: 'Dr. H',
+        jumlahBarangDikirim: 90,
+        jumlahBarangDiterima: 90,
+        statusTTE: 'Telah Diverifikasi'
+    },
+    {
+        nomorLaporan: '009/BAST/2024',
+        tanggalLaporan: '2024-01-09',
+        namaKapus: 'Dr. I',
+        jumlahBarangDikirim: 100,
+        jumlahBarangDiterima: 100,
+        statusTTE: 'Telah Diverifikasi'
+    },
+    {
+        nomorLaporan: '010/BAST/2024',
+        tanggalLaporan: '2024-01-10',
+        namaKapus: 'Dr. J',
+        jumlahBarangDikirim: 110,
+        jumlahBarangDiterima: 110,
+        statusTTE: 'Telah Diverifikasi'
+    }
+];
