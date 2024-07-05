@@ -156,7 +156,8 @@ const DataDistribusi = () => {
           <Select
             options={dataProvinsi}
             defaultValue={dataProvinsi[0]}
-            className="w-64 sm:w-100"
+            className="w-64 sm:w-100 bg-slate-500 my-react-select-container"
+   classNamePrefix="my-react-select"
             theme={selectThemeColors}
             isDisabled
           />

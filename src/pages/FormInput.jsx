@@ -110,7 +110,7 @@ const FormInput = () => {
                 <input
                   className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                     "border-red-500" 
-                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline`}
+                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
                   id="nama_kepala_puskesmas"
                   type="text"
                   value={formData.nama_kepala_puskesmas}
@@ -138,7 +138,7 @@ const FormInput = () => {
                 <input
                   className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                     "border-red-500" 
-                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline`}
+                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
                   id="nip_kepala_puskesmas"
                   type="text"
                   value={formData.nip_kepala_puskesmas}
@@ -185,7 +185,7 @@ const FormInput = () => {
                 <input
                   className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                     "border-red-500" 
-                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline`}
+                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
                   id="jumlah_barang_dikirim"
                   type="number"
                   value={formData.jumlah_barang_dikirim}
@@ -213,7 +213,7 @@ const FormInput = () => {
                 <input
                   className={` bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                     "border-red-500" 
-                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline`}
+                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
                   id="jumlah_barang_diterima"
                   type="number"
                   value={formData.jumlah_barang_diterima}
@@ -239,7 +239,7 @@ const FormInput = () => {
               </div>
               <div className="sm:flex-[5_5_0%] flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                 <button
-                  className="w-1/4 bg-[#0ACBC2]  text-white font-bold py-4 px-6 rounded-md focus:outline-none focus:shadow-outline"
+                  className="w-1/4 bg-[#0ACBC2]  text-white font-bold py-4 px-6 rounded-md focus:outline-none focus:shadow-outline dark:bg-transparent"
                   onClick={handleSimpan}
                 >
                   {loading ? "Loading..." : "Pilih File"}
@@ -265,7 +265,7 @@ const FormInput = () => {
                   rows="4"
                   className={` bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                     "border-red-500" 
-                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline`}
+                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
                   placeholder="Keterangan : misal: komplit dan baik atau kurang dari rensi dan baik"
                 ></textarea>
               </div>
@@ -286,7 +286,7 @@ const FormInput = () => {
                   rows="4"
                   className={` bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                     "border-red-500" 
-                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline`}
+                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
                   placeholder="Keterangan : misal: disetujui atau konfirmasi ke transporter barang sedang dikirim kembali"
                 ></textarea>
               </div>
@@ -297,7 +297,7 @@ const FormInput = () => {
               <div className="div sm:flex-[5_5_0%] ">
                 <div className="w-4/5 flex items-center gap-4">
                   <button
-                    className="w-full bg-[#0ACBC2]  text-white font-bold py-4 px-6 rounded-md focus:outline-none focus:shadow-outline"
+                    className="w-full bg-[#0ACBC2]  text-white font-bold py-4 px-6 rounded-md focus:outline-none focus:shadow-outline dark:bg-transparent"
                     type="submit"
                   >
                     {loading ? "Loading..." : "Simpan"}
@@ -306,7 +306,7 @@ const FormInput = () => {
                     onClick={() => {
                       navigate("/");
                     }}
-                    className="w-full bg-[#fff]  text-[#0ACBC2] border border-[#0ACBC2] font-bold py-4 px-6 rounded-md focus:outline-none focus:shadow-outline"
+                    className="w-full bg-[#fff]  text-[#0ACBC2] border border-[#0ACBC2] font-bold py-4 px-6 rounded-md focus:outline-none focus:shadow-outline dark:bg-transparent"
                   >
                     {loading ? "Loading..." : "Batal"}
                   </button>
