@@ -99,6 +99,111 @@ const TambahDistribusi = () => {
                 />
               </div>
             </div>
+
+            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+              <div className="sm:flex-[2_2_0%]">
+                <label
+                  className="block text-[#728294] text-base font-normal mb-2"
+                  htmlFor="email"
+                >
+                  Puskesmas :
+                </label>
+              </div>
+              <div className="sm:flex-[5_5_0%]">
+                <Select
+                  options={dataPuskesmas}
+                  value={formData.puskesmas}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      puskesmas: e,
+                    }))
+                  }
+                  placeholder="Pilih Puskesmas"
+                  className="w-full"
+                  theme={selectThemeColors}
+                />
+              </div>
+            </div>
+
+            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+              <div className="sm:flex-[2_2_0%]">
+                <label
+                  className="block text-[#728294] text-base font-normal mb-2"
+                  htmlFor="email"
+                >
+                  Nama Barang yang dikirim :
+                </label>
+              </div>
+              <div className="sm:flex-[5_5_0%]">
+                <Select
+                  options={dataBarang}
+                  value={formData.nama_barang}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      nama_barang: e,
+                    }))
+                  }
+                  placeholder="Pilih Barang"
+                  className="w-full"
+                  theme={selectThemeColors}
+                />
+              </div>
+            </div>
+
+            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center sm:justify-center">
+              <div className="sm:flex-[2_2_0%]">
+                <label
+                  className=" block text-[#728294] text-base font-normal mb-2"
+                  htmlFor="email"
+                >
+                  Jumlah Barang yang dikirim :
+                </label>
+              </div>
+              <div className="sm:flex-[5_5_0%]">
+                <input
+                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                    "border-red-500" 
+                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                  id="jumlah_barang_dikirim"
+                  type="number"
+                  value={formData.jumlah_barang_dikirim}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      jumlah_barang_dikirim: e.target.value,
+                    }))
+                  }
+                  placeholder="Jumlah Barang yang dikirim"
+                />
+              </div>
+            </div>
+            {/* <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+              <div className="sm:flex-[2_2_0%]">
+                <label
+                  className="block text-[#728294] text-base font-normal mb-2"
+                  htmlFor="email"
+                >
+                  Kecamatan :
+                </label>
+              </div>
+              <div className="sm:flex-[5_5_0%]">
+                <Select
+                  options={dataKecamatan}
+                  value={formData.kecamatan}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      kecamatan: e,
+                    }))
+                  }
+                  placeholder="Pilih Kecamatan"
+                  className="w-full"
+                  theme={selectThemeColors}
+                />
+              </div>
+            </div>
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
                 <label
@@ -339,7 +444,7 @@ const TambahDistribusi = () => {
                   placeholder="Keterangan : misal: disetujui atau konfirmasi ke transporter barang sedang dikirim kembali"
                 ></textarea>
               </div>
-            </div>
+            </div> */}
 
             <div className="flex items-center justify-center mt-6 sm:mt-12 sm:gap-8">
               <div className="div sm:flex-[2_2_0%]"></div>
