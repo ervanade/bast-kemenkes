@@ -14,7 +14,7 @@ const DropdownMessage = () => {
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
       <li className="relative">
-        <Link
+        <button
           onClick={() => {
             setNotifying(false);
             // setDropdownOpen(!dropdownOpen);
@@ -55,7 +55,7 @@ const DropdownMessage = () => {
               fill=""
             />
           </svg>
-        </Link>
+        </button>
 
         {/* <!-- Dropdown Start --> */}
         {dropdownOpen && (

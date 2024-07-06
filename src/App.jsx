@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
@@ -22,39 +22,49 @@ function App() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: "auto" });
   }, [pathname]);
+
+  const Wrapper = ({ children }) => {
+    const location = useLocation();
+    useLayoutEffect(() => {
+      document.documentElement.scrollTo(0, 0);
+    }, [location.pathname]);
+    return children;
+  };
 
   return (
     <>
-      <Routes>
-        <Route path="/" element={<ProtectedRoute />}>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="data-distribusi" element={<DataDistribusi />} />
-            <Route path="verifikasi" element={<Verifikasi />} />
-            <Route path="/" element={<ProtectedRoutesAdmin />}>
+      <Wrapper>
+        <Routes>
+          <Route path="/" element={<ProtectedRoute />}>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="data-distribusi" element={<DataDistribusi />} />
+              <Route path="verifikasi" element={<Verifikasi />} />
+              <Route path="/" element={<ProtectedRoutesAdmin />}>
+                <Route
+                  path="data-distribusi/add"
+                  element={<TambahDistribusi />}
+                />
+              </Route>
               <Route
-                path="data-distribusi/add"
+                path="data-distribusi/edit/:id"
+                element={<EditDistribusi />}
+              />
+              <Route path="laporan" element={<Laporan />} />
+              <Route path="preview-laporan" element={<LaporanPreview />} />
+              <Route
+                path="/data-verifikasi/form-distribusi"
                 element={<TambahDistribusi />}
               />
+              <Route path="/user-management" element={<UserManagement />} />
+              <Route path="/not-found" element={<NotFound />} />
             </Route>
-            <Route
-              path="data-distribusi/edit/:id"
-              element={<EditDistribusi />}
-            />
-            <Route path="laporan" element={<Laporan />} />
-            <Route path="preview-laporan" element={<LaporanPreview />} />
-            <Route
-              path="/data-verifikasi/form-distribusi"
-              element={<TambahDistribusi />}
-            />
-            <Route path="/user-management" element={<UserManagement />} />
-            <Route path="/not-found" element={<NotFound />} />
           </Route>
-        </Route>
-        <Route path="login" element={<Login />} />
-      </Routes>
+          <Route path="login" element={<Login />} />
+        </Routes>
+      </Wrapper>
       <ScrollToTop />
     </>
   );
