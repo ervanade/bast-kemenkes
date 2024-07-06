@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import Breadcrumb from "../components/Breadcrumbs/Breadcrumb";
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import Select from "react-select";
 import DataTable from "react-data-table-component";
 import {
@@ -7,21 +7,15 @@ import {
   dataKecamatan,
   dataKota,
   dataProvinsi,
-} from "../data/data";
-import { selectThemeColors } from "../data/utils";
+} from "../../data/data";
+import { selectThemeColors } from "../../data/utils";
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import { BiExport, BiSolidFileExport } from "react-icons/bi";
-import { TiExport } from "react-icons/ti";
-import { CiExport } from "react-icons/ci";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-const options = [
-  { value: "chocolate", label: "Chocolate" },
-  { value: "strawberry", label: "Strawberry" },
-  { value: "vanilla", label: "Vanilla" },
-];
-
-const DataDistribusi = () => {
+const Verifikasi = () => {
+  const user = useSelector((a) => a.auth.user);
   const columns = useMemo(
     () => [
       // { name: "No", selector: (row) => row.id, sortable: true },
@@ -67,25 +61,32 @@ const DataDistribusi = () => {
         sortable: true,
       },
       {
-        name: "Action",
+        name: "Aksi",
         cell: (row) => (
           <div className="flex items-center space-x-2">
-            <button
+            {/* <button
               title="Input"
               className="text-green-500 hover:text-green-700"
             >
               <Link to="/data-verifikasi/form-distribusi">
                 <FaPlus />
               </Link>
-            </button>
-            <button title="Edit" className="text-blue-500 hover:text-blue-700">
-              <Link to="/data-verifikasi/form-distribusi">
-                <FaEdit />
+            </button> */}
+            <button title="Edit" className="text-[#16B3AC] hover:text-cyan-500">
+              <Link to={`/data-distribusi/edit/${row.id}`}>
+                <FaEdit size={16} />
               </Link>
             </button>
-            <button title="Delete" className="text-red-500 hover:text-red-700">
-              <FaTrash />
-            </button>
+            {user.role === "admin" ? (
+              <button
+                title="Delete"
+                className="text-red-500 hover:text-red-700"
+              >
+                <FaTrash size={16} />
+              </button>
+            ) : (
+              ""
+            )}
           </div>
         ),
         ignoreRowClick: true,
@@ -95,6 +96,7 @@ const DataDistribusi = () => {
     ],
     []
   );
+  const data = dataDistribusiBekasi.filter((a) => a.status_tte === "Belum");
 
   const [search, setSearch] = useState("");
   const [dataKecamatanState, setDataKecamatanState] = useState([
@@ -102,13 +104,13 @@ const DataDistribusi = () => {
     ...dataKecamatan,
   ]);
   const [selectedKecamatan, setSelectedKecamatan] = useState(null);
-  const [filteredData, setFilteredData] = useState(dataDistribusiBekasi);
+  const [filteredData, setFilteredData] = useState(data);
 
   const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();
     setSearch(value);
 
-    const filtered = dataDistribusiBekasi.filter(
+    const filtered = data.filter(
       (item) =>
         item.provinsi.toLowerCase().includes(value) ||
         item.kab_kota.toLowerCase().includes(value) ||
@@ -141,7 +143,7 @@ const DataDistribusi = () => {
 
   return (
     <div>
-      <Breadcrumb pageName="Data Distribusi" />
+      <Breadcrumb pageName="Verifikasi" />
       <div className="flex flex-col items-center justify-center w-full tracking-tight mb-12">
         <h1 className="font-normal mb-3 text-xl lg:text-[28px] tracking-tight text-center text-bodydark1">
           SELAMAT DATANG ADMIN KAB/KOTA KOTA BEKASI
@@ -157,9 +159,9 @@ const DataDistribusi = () => {
             options={dataProvinsi}
             defaultValue={dataProvinsi[0]}
             className="w-64 sm:w-100 bg-slate-500 my-react-select-container"
-   classNamePrefix="my-react-select"
+            classNamePrefix="my-react-select"
             theme={selectThemeColors}
-            isDisabled
+            isDisabled={user.role === "user"}
           />
         </div>
         <div className="mb-3">
@@ -174,7 +176,7 @@ const DataDistribusi = () => {
             defaultValue={dataKota[0]}
             className="w-64 sm:w-100"
             theme={selectThemeColors}
-            isDisabled
+            isDisabled={user.role === "user"}
           />
         </div>
         <div className="mb-3">
@@ -200,7 +202,7 @@ const DataDistribusi = () => {
         </button>
       </div>
       <div className="rounded-md flex flex-col gap-4 overflow-hidden overflow-x-auto  border border-stroke bg-white py-4 md:py-8 px-4 md:px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-        <div className="flex justify-between mb-4">
+        <div className="flex justify-between mb-4 items-center">
           <div className="relative">
             <button className="absolute left-2 top-1/2 -translate-y-1/2">
               <svg
@@ -234,13 +236,16 @@ const DataDistribusi = () => {
               className="w-full bg-white pl-9 pr-4 text-black outline outline-1 outline-zinc-200 focus:outline-primary dark:text-white xl:w-125 py-2 rounded-md"
             />
           </div>
-          <button
-            className="flex items-center gap-2 cursor-pointer text-base text-white px-4 py-2 bg-primary rounded-md tracking-tight"
-            onClick={handleExport}
-          >
-            <span className="hidden sm:block">Export Data</span>
-            <BiExport />
-          </button>
+          <div className="div flex gap-2 flex-row">
+            <button
+              title="Export Data Distribusi"
+              className="flex items-center gap-2 cursor-pointer text-base text-white px-4 py-2 bg-primary rounded-md tracking-tight"
+              onClick={handleExport}
+            >
+              <BiExport />
+              <span className="hidden sm:block">Export</span>
+            </button>
+          </div>
         </div>
         <div className="overflow-x-auto">
           <DataTable
@@ -265,4 +270,4 @@ const DataDistribusi = () => {
   );
 };
 
-export default DataDistribusi;
+export default Verifikasi;

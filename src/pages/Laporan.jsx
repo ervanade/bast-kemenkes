@@ -41,6 +41,8 @@ const Laporan = () => {
       sortable: true,
     },
     { name: "Nama Kapus", selector: (row) => row.namaKapus, sortable: true },
+    { name: "Kecamatan", selector: (row) => row.kecamatan, sortable: true },
+    { name: "Puskesmas", selector: (row) => row.Puskesmas, sortable: true },
     {
       name: "Jumlah Barang Dikirim",
       selector: (row) => row.jumlahBarangDikirim,

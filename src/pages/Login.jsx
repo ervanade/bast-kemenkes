@@ -2,20 +2,34 @@ import React, { useState } from "react";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import useColorMode from "../hooks/useColorMode";
+import { dataUser } from "../data/data";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../store/authSlice";
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    tanggal: "",
     password: "",
     email: "",
-    nomor: "",
-    agree: false,
+    captcha: "",
   });
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const handleLogin = () => {
+  const handleLogin = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const user = dataUser.find((a) => a.email === formData.email);
+    if (!user) {
+      return setError("Invalid username or password");
+    }
+    if (user.password !== formData.password) {
+      return setError("Invalid username or password");
+    }
+    dispatch(loginUser(user));
+    localStorage.setItem("user", JSON.stringify(user));
+    setLoading(false);
     navigate("/");
   };
 
@@ -38,6 +52,12 @@ const Login = () => {
             </p> */}
           </div>
           <form className="mt-5" onSubmit={handleLogin}>
+            {error && (
+              <div className="mb-3 bg-red-100 p-2 rounded-md">
+                <p className="text-center text-red-500">{error}</p>
+              </div>
+            )}
+
             <div className="mb-3">
               <label
                 className="block text-[#728294] text-sm font-normal mb-2"
@@ -97,13 +117,13 @@ const Login = () => {
                   className={`bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                     "border-red-500" 
                  rounded w-full py-3 px-3 text-[#728294] mb-3 leading-tight focus:outline-none focus:shadow-outline`}
-                  id="nomor"
-                  type="nomor"
-                  value={formData.nomor}
+                  id="captcha"
+                  type="captcha"
+                  value={formData.captcha}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      nomor: e.target.value,
+                      captcha: e.target.value,
                     }))
                   }
                   required

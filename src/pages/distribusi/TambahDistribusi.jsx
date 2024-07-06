@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import Card from "../components/Card/Card";
-import Breadcrumb from "../components/Breadcrumbs/Breadcrumb";
-import { useNavigate } from "react-router-dom";
-import { dataBarang, dataKecamatan, dataPuskesmas } from "../data/data";
-import { selectThemeColors } from "../data/utils";
+import Card from "../../components/Card/Card";
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
+import { Link, useNavigate } from "react-router-dom";
+import { dataBarang, dataKecamatan, dataPuskesmas } from "../../data/data";
+import { selectThemeColors } from "../../data/utils";
 import Select from "react-select";
 import Swal from "sweetalert2";
+import { useSelector } from "react-redux";
 
-const FormInput = () => {
+const TambahDistribusi = () => {
   const [formData, setFormData] = useState({
     kecamatan: "",
     puskesmas: "",
@@ -19,13 +20,10 @@ const FormInput = () => {
     tte: "",
     ket_daerah: "",
     ket_ppk: "",
-    password: "",
-    email: "",
-    nomor: "",
-    agree: false,
   });
 
   const navigate = useNavigate();
+  const user = useSelector((a) => a.auth.user);
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -55,9 +53,25 @@ const FormInput = () => {
     <div>
       <Breadcrumb pageName="Form Input Data BAST" />
       <Card>
-        <h1 className="mb-12 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
-          Form Input Data BAST Admin Dinas Kesehatan Kab/Kota
-        </h1>
+        <div className="card-header flex justify-between">
+          <h1 className="mb-12 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
+            {user.role === "admin"
+              ? "Form Input Data BAST Admin Dit Tata Kelola Kesmas"
+              : user.role === "ppk"
+              ? "Form TTE BAST dan Naskah Hibah Admin PPK"
+              : user.role === "user"
+              ? "Form Input Data BAST Admin Dinas Kesehatan Kab/Kota"
+              : "Form Input Data BAST Admin Dinas Kesehatan Kab/Kota"}
+          </h1>
+          <div>
+            <Link
+              to="/data-distribusi"
+              className="flex items-center px-4 py-2 bg-primary text-white rounded-md font-semibold"
+            >
+              Back
+            </Link>
+          </div>
+        </div>
         <div className="w-full 2xl:w-4/5 ">
           <form className="mt-5" onSubmit={handleSimpan}>
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
@@ -72,6 +86,13 @@ const FormInput = () => {
               <div className="sm:flex-[5_5_0%]">
                 <Select
                   options={dataKecamatan}
+                  value={formData.kecamatan}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      kecamatan: e,
+                    }))
+                  }
                   placeholder="Pilih Kecamatan"
                   className="w-full"
                   theme={selectThemeColors}
@@ -90,6 +111,13 @@ const FormInput = () => {
               <div className="sm:flex-[5_5_0%]">
                 <Select
                   options={dataPuskesmas}
+                  value={formData.puskesmas}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      puskesmas: e,
+                    }))
+                  }
                   placeholder="Pilih Puskesmas"
                   className="w-full"
                   theme={selectThemeColors}
@@ -165,6 +193,13 @@ const FormInput = () => {
               <div className="sm:flex-[5_5_0%]">
                 <Select
                   options={dataBarang}
+                  value={formData.nama_barang}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      nama_barang: e,
+                    }))
+                  }
                   placeholder="Pilih Barang"
                   className="w-full"
                   theme={selectThemeColors}
@@ -263,6 +298,13 @@ const FormInput = () => {
                 <textarea
                   id="message"
                   rows="4"
+                  value={formData.ket_daerah}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      ket_daerah: e.target.value,
+                    }))
+                  }
                   className={` bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                     "border-red-500" 
                  rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
@@ -284,6 +326,13 @@ const FormInput = () => {
                 <textarea
                   id="message"
                   rows="4"
+                  value={formData.ket_ppk}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      ket_ppk: e.target.value,
+                    }))
+                  }
                   className={` bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                     "border-red-500" 
                  rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
@@ -320,4 +369,4 @@ const FormInput = () => {
   );
 };
 
-export default FormInput;
+export default TambahDistribusi;

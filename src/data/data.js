@@ -1,9 +1,36 @@
 export const dataUser = [
     {
         id: 1,
+        email: 'admin@example.com',
+        password: '123',
+        role: "admin",
+        username: "Admin Kementerian Kesehatan",
+        nip: "123",
+        ttd: "",
+        kecamatan: "",
+        puskesmas: ""
+    },
+    {
+        id: 2,
+        email: 'ppk@example.com',
+        password: '123',
+        role: "ppk",
+        username: "PPK Kementerian Kesehatan",
+        nip: "123",
+        ttd: "",
+        kecamatan: "",
+        puskesmas: ""
+    },
+    {
+        id: 3,
         email: 'user@example.com',
-        username: "Admin Dinas Kesehatan Kota Bekasi",
-        password: '123'
+        password: '123',
+        role: "user",
+        username: "Dinas Kesehatan Kota Bekasi",
+        nip: "123",
+        ttd: "",
+        kecamatan: "Bintara Jaya",
+        puskesmas: "Puskesmas Bintara Jaya"
     }
 ]
 export const dataProvinsi = [
@@ -62,7 +89,99 @@ export const dataKecamatan = [
     {
         "label": "Jatirasa",
         "value": "jatirasa"
-    }
+    },
+    {
+        "label": "Jakabali",
+        "value": "Jakabali"
+    },
+    {
+        "label": "Jakasampurna",
+        "value": "Jakasampurna"
+    },
+    {
+        "label": "Jakasetia Jaya",
+        "value": "Jakasetia Jaya"
+    },
+    {
+        "label": "Jaka Utama",
+        "value": "Jaka Utama"
+    },
+    {
+        "label": "Jaka Timur",
+        "value": "Jaka Timur"
+    },
+    {
+        "label": "Jaka Barat",
+        "value": "Jaka Barat"
+    },
+    {
+        "label": "Jaka Tengah",
+        "value": "Jaka Tengah"
+    },
+    {
+        "label": "Jaka Mulya",
+        "value": "Jaka Mulya"
+    },
+    {
+        "label": "Jakamulya",
+        "value": "Jakamulya"
+    },
+    {
+        "label": "Jakamulya Barat",
+        "value": "Jakamulya Barat"
+    },
+    {
+        "label": "Jakamulya Utara",
+        "value": "Jakamulya Utara"
+    },
+    {
+        "label": "Jakapura",
+        "value": "Jakapura"
+    },
+    {
+        "label": "Jakapurnama",
+        "value": "Jakapurnama"
+    },
+    {
+        "label": "Jakasari",
+        "value": "Jakasari"
+    },
+    {
+        "label": "Jakatama",
+        "value": "Jakatama"
+    },
+    {
+        "label": "Jakapasar",
+        "value": "Jakapasar"
+    },
+    {
+        "label": "Jakasejahtera",
+        "value": "Jakasejahtera"
+    },
+    {
+        "label": "Jakaputri",
+        "value": "Jakaputri"
+    },
+    {
+        "label": "Jakasari Jaya",
+        "value": "Jakasari Jaya"
+    },
+    {
+        "label": "Jakasetia Barat",
+        "value": "Jakasetia Barat"
+    },
+    {
+        "label": "Jaka Tengah",
+        "value": "Jaka Tengah"
+    },
+    {
+        "label": "Jaka Timur",
+        "value": "Jaka Timur"
+    },
+    {
+        "label": "Jaka Barat",
+        "value": "Jaka Barat"
+    },
 ]
 
 export const dataBarang = [
@@ -78,6 +197,42 @@ export const dataBarang = [
         "label": "Thermometer",
         "value": "thermometer"
     },
+    {
+        "label": "APD",
+        "value": "apd"
+    },
+    {
+        "label": "Vaksin",
+        "value": "Vaksin"
+    },
+    {
+        "label": "Hand Sanitizer",
+        "value": "Hand Sanitizer"
+    },
+    {
+        "label": "Vitamin C",
+        "value": "Vitamin C"
+    },
+    {
+        "label": "Alat Swab Test",
+        "value": "Alat Swab Test"
+    },
+    {
+        "label": "Oximeter",
+        "value": "Oximeter"
+    },
+    {
+        "label": "Face Shield",
+        "value": "Face Shield"
+    },
+    {
+        "label": "Sarung Tangan",
+        "value": "Sarung Tangan"
+    },
+    {
+        "label": "Alat Tes Antigen",
+        "value": "Alat Tes Antigen"
+    },
 ]
 export const dataPuskesmas = [
     {
@@ -91,6 +246,114 @@ export const dataPuskesmas = [
     {
         "label": "Puskesmas Kali Baru",
         "value": "puskesmas_kali_baru"
+    },
+    {
+        "label": "Puskesmas Bintara",
+        "value": "pusekesmas_bintara"
+    },
+    {
+        "label": "Puskesmas Jakasampurna",
+        "value": "Puskesmas Jakasampurna"
+    },
+    {
+        "label": "Puskesmas Harapan Mulya",
+        "value": "Puskesmas Harapan Mulya"
+    },
+    {
+        "label": "Puskesmas Medan Satria",
+        "value": "Puskesmas Medan Satria"
+    },
+    {
+        "label": "Puskesmas Jakasampurna",
+        "value": "Puskesmas Jakasampurna"
+    },
+    {
+        "label": "Puskesmas Kranji",
+        "value": "Puskesmas Kranji"
+    },
+    {
+        "label": "Puskesmas Jakasetia Jaya",
+        "value": "Puskesmas Jakasetia Jaya"
+    },
+    {
+        "label": "Puskesmas Jaka Utama",
+        "value": "Puskesmas Jaka Utama"
+    },
+    {
+        "label": "Puskesmas Jaka Timur",
+        "value": "Puskesmas Jaka Timur"
+    },
+    {
+        "label": "Puskesmas Jaka Barat",
+        "value": "Puskesmas Jaka Barat"
+    },
+    {
+        "label": "Puskesmas Jaka Tengah",
+        "value": "Puskesmas Jaka Tengah"
+    },
+    {
+        "label": "Puskesmas Jaka Mulya",
+        "value": "Puskesmas Jaka Mulya"
+    },
+    {
+        "label": "Puskesmas Jakamulya",
+        "value": "Puskesmas Jakamulya"
+    },
+    {
+        "label": "Puskesmas Jakamulya Barat",
+        "value": "Puskesmas Jakamulya Barat"
+    },
+    {
+        "label": "Puskesmas Jakamulya Utara",
+        "value": "Puskesmas Jakamulya Utara"
+    },
+    {
+        "label": "Puskesmas Jakapura",
+        "value": "Puskesmas Jakapurat"
+    },
+    {
+        "label": "Puskesmas Jakapurnama",
+        "value": "Puskesmas Jakapurnama"
+    },
+    {
+        "label": "Puskesmas Jakasari",
+        "value": "Puskesmas Jakasari"
+    },
+    {
+        "label": "Puskesmas Jakatama",
+        "value": "Puskesmas Jakatama"
+    },
+    {
+        "label": "Puskesmas Jakapasar",
+        "value": "Puskesmas Jakapasar"
+    },
+    {
+        "label": "Puskesmas Jakasejahtera",
+        "value": "Puskesmas Jakasejahtera"
+    },
+    {
+        "label": "Puskesmas Jakaputri",
+        "value": "Puskesmas Jakaputri"
+    },
+    {
+        "label": "Puskesmas Jakasari Jaya",
+        "value": "Puskesmas Jakasari Jaya"
+    },
+    {
+        "label": "Puskesmas Jakasetia Barat",
+        "value": "Puskesmas Jakasetia Barat"
+    },
+    {
+        "label": "Puskesmas Jaka Tengah",
+        "value": "Puskesmas Jaka Tengah"
+    },
+    {
+        "label": "Puskesmas Jaka Timur",
+        "value": "Puskesmas Jaka Timur"
+    },
+    {
+        "label": "Puskesmas Jaka Barat",
+        "value": "Puskesmas Jaka Barat"
     },
 ]
 
@@ -495,6 +758,8 @@ export const dataLaporan = [
         namaKapus: 'Dr. A',
         jumlahBarangDikirim: 50,
         jumlahBarangDiterima: 50,
+        "kecamatan": "Jakasetia Jaya",
+        "Puskesmas": "Puskesmas Jakasetia Jaya",
         statusTTE: 'Telah Diverifikasi'
     },
     {
@@ -503,6 +768,8 @@ export const dataLaporan = [
         namaKapus: 'Dr. B',
         jumlahBarangDikirim: 40,
         jumlahBarangDiterima: 40,
+        "kecamatan": "Jakasetia Jaya",
+        "Puskesmas": "Puskesmas Jakasetia Jaya",
         statusTTE: 'Telah Diverifikasi'
     },
     {
@@ -511,6 +778,8 @@ export const dataLaporan = [
         namaKapus: 'Dr. C',
         jumlahBarangDikirim: 30,
         jumlahBarangDiterima: 30,
+        "kecamatan": "Jakasetia Jaya",
+        "Puskesmas": "Puskesmas Jakasetia Jaya",
         statusTTE: 'Telah Diverifikasi'
     },
     {
@@ -519,6 +788,8 @@ export const dataLaporan = [
         namaKapus: 'Dr. D',
         jumlahBarangDikirim: 20,
         jumlahBarangDiterima: 20,
+        "kecamatan": "Jakasetia Jaya",
+        "Puskesmas": "Puskesmas Jakasetia Jaya",
         statusTTE: 'Telah Diverifikasi'
     },
     {
@@ -527,6 +798,8 @@ export const dataLaporan = [
         namaKapus: 'Dr. E',
         jumlahBarangDikirim: 60,
         jumlahBarangDiterima: 60,
+        "kecamatan": "Jakasetia Jaya",
+        "Puskesmas": "Puskesmas Jakasetia Jaya",
         statusTTE: 'Telah Diverifikasi'
     },
     {
@@ -535,6 +808,8 @@ export const dataLaporan = [
         namaKapus: 'Dr. F',
         jumlahBarangDikirim: 70,
         jumlahBarangDiterima: 70,
+        "kecamatan": "Jakasetia Jaya",
+        "Puskesmas": "Puskesmas Jakasetia Jaya",
         statusTTE: 'Telah Diverifikasi'
     },
     {
@@ -543,6 +818,8 @@ export const dataLaporan = [
         namaKapus: 'Dr. G',
         jumlahBarangDikirim: 80,
         jumlahBarangDiterima: 80,
+        "kecamatan": "Jakasetia Jaya",
+        "Puskesmas": "Puskesmas Jakasetia Jaya",
         statusTTE: 'Telah Diverifikasi'
     },
     {
@@ -551,6 +828,8 @@ export const dataLaporan = [
         namaKapus: 'Dr. H',
         jumlahBarangDikirim: 90,
         jumlahBarangDiterima: 90,
+        "kecamatan": "Jakasetia Jaya",
+        "Puskesmas": "Puskesmas Jakasetia Jaya",
         statusTTE: 'Telah Diverifikasi'
     },
     {
@@ -559,6 +838,8 @@ export const dataLaporan = [
         namaKapus: 'Dr. I',
         jumlahBarangDikirim: 100,
         jumlahBarangDiterima: 100,
+        "kecamatan": "Jakasetia Jaya",
+        "Puskesmas": "Puskesmas Jakasetia Jaya",
         statusTTE: 'Telah Diverifikasi'
     },
     {
@@ -567,6 +848,8 @@ export const dataLaporan = [
         namaKapus: 'Dr. J',
         jumlahBarangDikirim: 110,
         jumlahBarangDiterima: 110,
+        "kecamatan": "Jakasetia Jaya",
+        "Puskesmas": "Puskesmas Jakasetia Jaya",
         statusTTE: 'Telah Diverifikasi'
     }
 ];

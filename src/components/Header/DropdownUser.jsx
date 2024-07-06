@@ -3,10 +3,16 @@ import { Link, useNavigate } from "react-router-dom";
 import ClickOutside from "../ClickOutside";
 import UserOne from "../../assets/user/user-01.png";
 import UserDefault from "../../assets/user/user-default.png";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUser } from "../../store/authSlice";
 
 const DropdownUser = () => {
   const navigate = useNavigate();
-  const handleLogout = () => {
+  const dispatch = useDispatch();
+  const user = useSelector((a) => a.auth.user);
+  const handleLogout = (e) => {
+    e.preventDefault();
+    dispatch(logoutUser());
     navigate("/login");
   };
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -20,9 +26,11 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Username
+            {user.username || "Username"}
           </span>
-          <span className="block text-xs">Admin</span>
+          <span className="block text-xs capitalize">
+            {user.role || "Role"}
+          </span>
         </span>
 
         <span className="h-12 w-12 rounded-full">
