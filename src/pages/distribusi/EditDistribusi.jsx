@@ -555,7 +555,7 @@ const EditDistribusi = () => {
                       <button
                         type="button"
                         className={` disabled:bg-red-100 disabled:text-red-500 bg-blue-600  text-white font-bold py-4 px-6 rounded-md focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                        onClick={() => {}}
+                        onClick={handleSimpan}
                         disabled={
                           formData.jumlah_barang_dikirim !==
                           formData.jumlah_barang_diterima
