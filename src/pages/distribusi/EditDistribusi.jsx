@@ -14,7 +14,8 @@ import Swal from "sweetalert2";
 import { useParams } from "react-router";
 import NotFound from "../NotFound";
 import { useSelector } from "react-redux";
-import Modal from "react-modal";
+// import Modal from "react-modal";
+import Modal from "../../components/Modal/Modal";
 import SignatureCanvas from "react-signature-canvas";
 import PizZip from "pizzip";
 import Docxtemplater from "docxtemplater";
@@ -63,10 +64,12 @@ const EditDistribusi = () => {
       ket_ppk: data.keterangan_ppk,
     });
   }, []);
+  const [showModal, setShowModal] = useState(false);
 
   const handlePreview = () => {
     // setModalIsOpen(true);
-    navigate("/preview-laporan");
+    setShowModal(true);
+    // navigate("/preview-laporan");
   };
 
   const [error, setError] = useState("");
@@ -103,6 +106,7 @@ const EditDistribusi = () => {
     <div>
       <Breadcrumb pageName="Form Edit Data BAST" />
       <Card>
+        <Modal showModal={showModal} setShowModal={setShowModal} />
         <div className="card-header flex justify-between">
           <h1 className="mb-12 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
             {user.role === "admin"
