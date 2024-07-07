@@ -17,6 +17,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import NotFound from "./pages/NotFound";
 import ProtectedRoutesAdmin from "./components/Layout/ProtectedRoutesAdmin";
 import Verifikasi from "./pages/verifikasi/Verifikasi";
+import Profile from "./pages/Profile";
 
 function App() {
   const { pathname } = useLocation();
@@ -42,6 +43,7 @@ function App() {
               <Route index element={<Dashboard />} />
               <Route path="data-distribusi" element={<DataDistribusi />} />
               <Route path="verifikasi" element={<Verifikasi />} />
+              <Route path="profile" element={<Profile />} />
               <Route path="/" element={<ProtectedRoutesAdmin />}>
                 <Route
                   path="data-distribusi/add"
