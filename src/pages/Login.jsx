@@ -45,7 +45,7 @@ const Login = () => {
           </div>
           <div className="title mb-6">
             <h1 className="text-[#00B1A9] text-xl sm:text-2xl mb-2 font-normal text-center">
-              Masuk ke Layanan BAST Kemenkes
+              Masuk ke Layanan SI-MBAH-BMN
             </h1>
             {/* <p className="text-[#404040] text-sm mb-6 font-semibold text-center">
               Hanya di Youtube Oriflame Indonesia
