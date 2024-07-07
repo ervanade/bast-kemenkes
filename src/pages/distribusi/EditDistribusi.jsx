@@ -518,7 +518,7 @@ const EditDistribusi = () => {
                       <div>
                         <button
                           type="button"
-                          className=" bg-[#0ACBC2]  text-white font-bold py-3 px-6 rounded-md focus:outline-none focus:shadow-outline dark:bg-transparent"
+                          className=" bg-[#0ACBC2]  text-white font-bold py-2 px-5 rounded-md focus:outline-none focus:shadow-outline dark:bg-transparent"
                           onClick={handleResetSignature}
                         >
                           Reset TTE
@@ -549,7 +549,7 @@ const EditDistribusi = () => {
                     <div>
                       <button
                         type="button"
-                        className=" bg-[#0ACBC2]  text-white font-bold py-4 px-6 rounded-md focus:outline-none focus:shadow-outline dark:bg-transparent"
+                        className=" bg-[#0ACBC2]  text-white font-bold py-2 px-5 rounded-md focus:outline-none focus:shadow-outline dark:bg-transparent"
                         onClick={handlePreview}
                       >
                         Lihat Dokumen
@@ -558,7 +558,7 @@ const EditDistribusi = () => {
                     <div>
                       <button
                         type="button"
-                        className={` disabled:bg-red-100 disabled:text-red-500 bg-blue-600  text-white font-bold py-4 px-6 rounded-md focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                        className={` disabled:bg-red-100 disabled:text-red-500 bg-blue-600  text-white font-bold py-2 px-5 rounded-md focus:outline-none focus:shadow-outline dark:bg-transparent`}
                         onClick={handleSimpan}
                         disabled={
                           formData.jumlah_barang_dikirim !==
@@ -808,7 +808,30 @@ const EditDistribusi = () => {
                     </label>
                   </div>
                   <div className="sm:flex-[5_5_0%] flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                    <button
+                    <SignatureCanvas
+                      penColor="black"
+                      ref={signatureRef}
+                      canvasProps={{
+                        width: 300,
+                        height: 200,
+                        className: "sigCanvas border-[#cacaca] border",
+                      }}
+                    />
+                    <div className="div flex flex-col gap-2">
+                      <p className="text-sm text-bodydark2">
+                        petunjuk TTE: Silahkan TTD di Kotak Berikut
+                      </p>
+                      <div>
+                        <button
+                          type="button"
+                          className=" bg-[#0ACBC2]  text-white font-bold py-2 px-5 rounded-md focus:outline-none focus:shadow-outline dark:bg-transparent"
+                          onClick={handleResetSignature}
+                        >
+                          Reset TTE
+                        </button>
+                      </div>
+                    </div>
+                    {/* <button
                       className="w-1/4 bg-[#0ACBC2]  text-white font-bold py-4 px-6 rounded-md focus:outline-none focus:shadow-outline dark:bg-transparent"
                       onClick={handleSimpan}
                     >
@@ -816,7 +839,44 @@ const EditDistribusi = () => {
                     </button>
                     <span className="text-sm text-bodydark2">
                       petunjuk upload file: besaran kb/mb, tipe file jpg/jpeg
-                    </span>
+                    </span> */}
+                  </div>
+                </div>
+                <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center sm:justify-center">
+                  <div className="sm:flex-[2_2_0%]">
+                    <label
+                      className=" block text-[#728294] text-base font-normal mb-2"
+                      htmlFor="email"
+                    >
+                      Dokumen BMN :
+                    </label>
+                  </div>
+                  <div className="sm:flex-[5_5_0%] flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                    <div>
+                      <button
+                        type="button"
+                        className=" bg-[#0ACBC2]  text-white font-bold py-2 px-5 rounded-md focus:outline-none focus:shadow-outline dark:bg-transparent"
+                        onClick={handlePreview}
+                      >
+                        Lihat Dokumen
+                      </button>
+                    </div>
+                    <div>
+                      <button
+                        type="button"
+                        className={` disabled:bg-red-100 disabled:text-red-500 bg-blue-600  text-white font-bold py-2 px-5 rounded-md focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                        onClick={handleSimpan}
+                        disabled={
+                          formData.jumlah_barang_dikirim !==
+                          formData.jumlah_barang_diterima
+                        }
+                      >
+                        {formData.jumlah_barang_dikirim !==
+                        formData.jumlah_barang_diterima
+                          ? "Pastikan Jumlah Barang Dikirim / DIterima Sama Sebelum TTD !"
+                          : "Tanda Tangani Dokumen"}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </>
