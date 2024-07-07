@@ -17,6 +17,7 @@ const Profile = () => {
       nip: "",
       no_telp: "",
       role: user.role,
+      email: user.email,
     });
   }, []);
 
