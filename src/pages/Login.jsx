@@ -22,12 +22,12 @@ const Login = () => {
     setLoading(true);
     const user = dataUser.find((a) => a.email === formData.email);
     if (!user) {
-      return setError("Invalid email or password");
       setLoading(false);
+      return setError("Invalid email or password"); 
     }
     if (user.password !== formData.password) {
+      setLoading(false);s
       return setError("Invalid email or password");
-      setLoading(false);
     }
     dispatch(loginUser(user));
     localStorage.setItem("user", JSON.stringify(user));
