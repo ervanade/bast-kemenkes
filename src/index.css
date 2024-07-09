@@ -7,3 +7,7 @@ body {
   font-family: 'Figtree';
   background: #F5F9F9;
 }
+
+.webviewer {
+  height: 100vh;
+}

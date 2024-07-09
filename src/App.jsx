@@ -18,6 +18,7 @@ import NotFound from "./pages/NotFound";
 import ProtectedRoutesAdmin from "./components/Layout/ProtectedRoutesAdmin";
 import Verifikasi from "./pages/verifikasi/Verifikasi";
 import Profile from "./pages/Profile";
+import TesTemplate from "./pages/TesTemplate";
 
 function App() {
   const { pathname } = useLocation();
@@ -41,6 +42,7 @@ function App() {
           <Route path="/" element={<ProtectedRoute />}>
             <Route path="/" element={<Layout />}>
               <Route index element={<Dashboard />} />
+              <Route path="tes-template" element={<TesTemplate />} />
               <Route path="data-distribusi" element={<DataDistribusi />} />
               <Route path="verifikasi" element={<Verifikasi />} />
               <Route path="profile" element={<Profile />} />
@@ -64,7 +66,8 @@ function App() {
               <Route path="/not-found" element={<NotFound />} />
             </Route>
           </Route>
-          <Route path="login" element={<Login />} />
+          <Route path="login" element={<Login />} />\
+          <Route path="*" exact={true} element={<NotFound />} />
         </Routes>
       </Wrapper>
       <ScrollToTop />

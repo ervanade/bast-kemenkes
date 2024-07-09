@@ -5,11 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "move-static": "cp -a ./node_modules/@pdftron/webviewer/public/. ./dist/public/webviewer",
+    "build": "vite build && npm run move-static",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@pdftron/webviewer": "^10.10.1",
     "@react-pdf/renderer": "^3.4.4",
     "@reduxjs/toolkit": "^2.2.6",
     "@tailwindcss/line-clamp": "^0.4.4",
@@ -17,6 +19,7 @@
     "file-saver": "^2.0.5",
     "jspdf": "^2.5.1",
     "jszip-utils": "^0.1.0",
+    "pdf-lib": "^1.17.1",
     "pizzip": "^3.1.7",
     "react": "^18.3.1",
     "react-data-table-component": "^7.6.2",
