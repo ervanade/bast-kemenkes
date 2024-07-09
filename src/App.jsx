@@ -19,6 +19,7 @@ import ProtectedRoutesAdmin from "./components/Layout/ProtectedRoutesAdmin";
 import Verifikasi from "./pages/verifikasi/Verifikasi";
 import Profile from "./pages/Profile";
 import TesTemplate from "./pages/TesTemplate";
+import TemplateDokumen from "./components/Modal/TemplateDokumen";
 
 function App() {
   const { pathname } = useLocation();
@@ -43,6 +44,7 @@ function App() {
             <Route path="/" element={<Layout />}>
               <Route index element={<Dashboard />} />
               <Route path="tes-template" element={<TesTemplate />} />
+              <Route path="preview-dokumen/:id" element={<TemplateDokumen />} />
               <Route path="data-distribusi" element={<DataDistribusi />} />
               <Route path="verifikasi" element={<Verifikasi />} />
               <Route path="profile" element={<Profile />} />

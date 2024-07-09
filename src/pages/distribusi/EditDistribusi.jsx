@@ -68,7 +68,8 @@ const EditDistribusi = () => {
 
   const handlePreview = () => {
     // setModalIsOpen(true);
-    setShowModal(true);
+    navigate(`/preview-dokumen/${id}`)
+    // setShowModal(true);
     // navigate("/preview-laporan");
   };
 

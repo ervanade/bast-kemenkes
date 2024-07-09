@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import WebViewer from "@pdftron/webviewer";
 
-const TesTemplate = () => {
+const TemplateDokumen = () => {
   const viewer = useRef(null);
   const jsonData = {
     nomorSurat: "Tes Mbah BMN",
@@ -37,4 +37,4 @@ const TesTemplate = () => {
   );
 };
 
-export default TesTemplate;
+export default TemplateDokumen;
