@@ -25,6 +25,7 @@ const TesTemplate = () => {
 
       documentViewer.addEventListener("documentLoaded", async () => {
         const doc = documentViewer.getDocument();
+        documentViewer.updateView();
         await doc.applyTemplateValues(jsonData);
       });
     });
