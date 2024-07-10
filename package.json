@@ -17,6 +17,7 @@
     "@tailwindcss/line-clamp": "^0.4.4",
     "docxtemplater": "^3.48.0",
     "file-saver": "^2.0.5",
+    "jsoneditor": "^10.1.0",
     "jspdf": "^2.5.1",
     "jszip-utils": "^0.1.0",
     "pdf-lib": "^1.17.1",

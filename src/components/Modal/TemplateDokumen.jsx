@@ -26,7 +26,12 @@ const TemplateDokumen = () => {
       jumlahDikirim: data.jumlah_barang_dikirim.toString(),
       jumlahDiterima: data.jumlah_barang_diterima.toString(),
       tte: "",
-      tteDaerah1: { image_url: "tte-1.png", width: 40, height: 40 },
+      tteDaerah: {
+        image_url:
+          "https://www.shutterstock.com/image-vector/fake-autograph-samples-handdrawn-signatures-260nw-2332469589.jpg",
+        width: 50,
+        height: 50,
+      },
       ket_daerah: "",
       ket_ppk: data.keterangan_ppk,
     });
@@ -49,9 +54,11 @@ const TemplateDokumen = () => {
         //   instance.UI.loadDocument("/DokumenBMN.docx");
 
         const { documentViewer } = instance.Core;
+        instance.UI.disableFeatures(instance.UI.Feature.Annotations);
 
         documentViewer.addEventListener("documentLoaded", async () => {
           const doc = documentViewer.getDocument();
+          documentViewer.zoomTo(1);
           documentViewer.updateView();
           await doc.applyTemplateValues(jsonData);
         });
