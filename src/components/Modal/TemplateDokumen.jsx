@@ -54,7 +54,7 @@ const TemplateDokumen = () => {
         //   instance.UI.loadDocument("/DokumenBMN.docx");
 
         const { documentViewer } = instance.Core;
-        instance.UI.disableFeatures(instance.UI.Feature.Annotations);
+        // instance.UI.disableFeatures(instance.UI.Feature.Annotations);
 
         documentViewer.addEventListener("documentLoaded", async () => {
           const doc = documentViewer.getDocument();
