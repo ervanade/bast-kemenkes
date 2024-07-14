@@ -20,6 +20,7 @@ import Verifikasi from "./pages/verifikasi/Verifikasi";
 import Profile from "./pages/Profile";
 import TesTemplate from "./pages/TesTemplate";
 import TemplateDokumen from "./components/Modal/TemplateDokumen";
+import PreviewDokumen from "./pages/distribusi/PreviewDokumen";
 
 function App() {
   const { pathname } = useLocation();
@@ -57,6 +58,10 @@ function App() {
               <Route
                 path="data-distribusi/edit/:id"
                 element={<EditDistribusi />}
+              />
+              <Route
+                path="data-distribusi/preview-dokumen/:id"
+                element={<PreviewDokumen />}
               />
               <Route path="laporan" element={<Laporan />} />
               <Route path="preview-laporan" element={<LaporanPreview />} />
