@@ -173,7 +173,7 @@ const PreviewDokumen = () => {
   });
 
   const Dokumen = () => (
-    <Document>
+    <Document title={`Dokumen BMN ${jsonData?.nomorSurat}`}>
       <Page size="A4" style={styles.page}>
         <View style={styles.titleContainer}>
           <Text style={styles.reportTitle}></Text>
