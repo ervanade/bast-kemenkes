@@ -152,7 +152,7 @@ const PreviewDokumen = () => {
   });
 
   const Dokumen = () => (
-    <Document>
+    <Document title={`Dokumen BMN ${jsonData?.nomorSurat}`}>
       <Page size="A4" style={styles.page}>
         <View style={styles.titleContainer}>
           <Text style={styles.reportTitle}></Text>
@@ -184,10 +184,10 @@ const PreviewDokumen = () => {
             {jsonData?.namaBarang} (dengan rincian terlampir), maka PIHAK KESATU
             dalam hal ini {jsonData?.puskesmas} yang diwakili oleh{" "}
             {jsonData?.namaKapus} berdasarkan Kontrak Pengadaan{" "}
-            {jsonData?.puskesmas} Nomor
-            {jsonData?.nomorSurat} tanggal {jsonData?.tanggal} dan PIHAK KEDUA
-            dalam hal ini Masyarakat/Pemerintah Daerah yang diwakili oleh Kepala
-            Dinas Kesehatan Provinsi/Kota/Kabupaten/RSUD/Swasta/
+            {jsonData?.puskesmas} Nomor {jsonData?.nomorSurat} tanggal{" "}
+            {jsonData?.tanggal} dan PIHAK KEDUA dalam hal ini
+            Masyarakat/Pemerintah Daerah yang diwakili oleh Kepala Dinas
+            Kesehatan Provinsi/Kota/Kabupaten/RSUD/Swasta/
             {jsonData?.kecamatan}
             Berita Acara Serah Terima Operasional (BASTO) dibuat dan
             ditandatangani oleh PIHAK KESATU dan PIHAK KEDUA pada hari tanggal
