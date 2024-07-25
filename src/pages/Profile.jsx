@@ -30,7 +30,7 @@ const Profile = () => {
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
               <h3 className="font-medium text-black dark:text-white">
-                Personal Information
+                Informasi Personal
               </h3>
             </div>
             <div className="p-7">
@@ -296,7 +296,7 @@ const Profile = () => {
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
               <h3 className="font-medium text-black dark:text-white">
-                Your Photo
+                Foto Profil Anda
               </h3>
             </div>
             <div className="p-7">
@@ -307,7 +307,7 @@ const Profile = () => {
                   </div>
                   <div>
                     <span className="mb-1.5 text-black dark:text-white">
-                      Edit your photo
+                      Edit Foto Profil Anda
                     </span>
                     <span className="flex gap-2.5">
                       <button className="text-sm hover:text-primary">
