@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-const Breadcrumb = ({ pageName, back, tte, jsonData }) => {
+const Breadcrumb = ({ pageName, back, tte, jsonData, linkBack }) => {
   const navigate = useNavigate();
   const handleSimpan = async (e) => {
     e.preventDefault();
