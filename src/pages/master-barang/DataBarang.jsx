@@ -14,7 +14,7 @@ import { BiExport, BiSolidFileExport } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-const UserManagement = () => {
+const DataBarang = () => {
   const user = useSelector((a) => a.auth.user);
   const columns = useMemo(
     () => [
@@ -145,7 +145,7 @@ const UserManagement = () => {
       <Breadcrumb pageName="Data Distribusi" />
       <div className="flex flex-col items-center justify-center w-full tracking-tight mb-12">
         <h1 className="font-bold mb-3 text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
-          Data User
+          Data Barang
         </h1>
         {/* <div className="mt-8 mb-3">
           <label
@@ -288,4 +288,4 @@ const UserManagement = () => {
   );
 };
 
-export default UserManagement;
+export default DataBarang;
