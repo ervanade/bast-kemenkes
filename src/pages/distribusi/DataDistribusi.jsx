@@ -9,7 +9,7 @@ import {
   dataProvinsi,
 } from "../../data/data";
 import { selectThemeColors } from "../../data/utils";
-import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
+import { FaCheck, FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa";
 import { BiExport, BiSolidFileExport } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -33,7 +33,7 @@ const DataDistribusi = () => {
       },
       { name: "Kecamatan", selector: (row) => row.kecamatan, sortable: true },
       { name: "Puskesmas", selector: (row) => row.Puskesmas, sortable: true },
-      { name: "Nama Kapus", selector: (row) => row.nama_kapus, sortable: true },
+      // { name: "Nama Kapus", selector: (row) => row.nama_kapus, sortable: true },
       {
         name: "Nama Barang",
         selector: (row) => row.nama_barang,
@@ -55,11 +55,11 @@ const DataDistribusi = () => {
         sortable: true,
         width: "110px",
       },
-      {
-        name: "Keterangan PPK Kemenkes",
-        selector: (row) => row.keterangan_ppk,
-        sortable: true,
-      },
+      // {
+      //   name: "Keterangan PPK Kemenkes",
+      //   selector: (row) => row.keterangan_ppk,
+      //   sortable: true,
+      // },
       {
         name: "Aksi",
         cell: (row) => (
@@ -72,12 +72,21 @@ const DataDistribusi = () => {
                 <FaPlus />
               </Link>
             </button> */}
-            <button title="Edit" className="text-[#16B3AC] hover:text-cyan-500">
+            <button
+              title="Detail"
+              className="text-green-400 hover:text-green-500"
+            >
+              <Link to={`/data-distribusi/detail/${row.id}`}>
+                <FaEye size={16} />
+              </Link>
+            </button>
+
+            {/* <button title="Edit" className="text-[#16B3AC] hover:text-cyan-500">
               <Link to={`/data-distribusi/edit/${row.id}`}>
                 <FaEdit size={16} />
               </Link>
-            </button>
-            {user.role === "admin" ? (
+            </button> */}
+            {/* {user.role === "admin" ? (
               <button
                 title="Delete"
                 className="text-red-500 hover:text-red-700"
@@ -86,7 +95,7 @@ const DataDistribusi = () => {
               </button>
             ) : (
               ""
-            )}
+            )} */}
           </div>
         ),
         ignoreRowClick: true,
@@ -257,6 +266,25 @@ const DataDistribusi = () => {
                   <FaPlus size={16} />
                   <span className="hidden sm:block">
                     Tambah Data Distribusi
+                  </span>
+                </Link>
+              </button>
+            ) : (
+              ""
+            )}
+            {user.role === "user" ? (
+              <button
+                title="Tandatangani Dokumen BMN"
+                className="flex items-center gap-2 cursor-pointer text-base text-white  bg-blue-600 rounded-md tracking-tight"
+                onClick={handleExport}
+              >
+                <Link
+                  to="/data-distribusi/preview-dokumen/1"
+                  className="flex items-center gap-2 px-4 py-2"
+                >
+                  <FaCheck size={16} />
+                  <span className="hidden sm:block">
+                    Tandatangani Dokumen BMN
                   </span>
                 </Link>
               </button>

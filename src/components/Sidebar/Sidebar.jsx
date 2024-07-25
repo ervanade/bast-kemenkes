@@ -133,18 +133,22 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
               {/* <!-- Menu Item Calendar --> */}
 
               {/* <!-- Menu Item Profile --> */}
-              <li>
-                <NavLink
-                  to="/verifikasi"
-                  className={`group relative flex items-center gap-2.5 rounded-md py-3 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                    pathname.includes("verifikasi") &&
-                    "bg-graydark dark:bg-meta-4 text-primary"
-                  }`}
-                >
-                  <MdOutlineDomainVerification size={22} />
-                  Verifikasi
-                </NavLink>
-              </li>
+              {user.role === "ppk" ? (
+                <li>
+                  <NavLink
+                    to="/verifikasi"
+                    className={`group relative flex items-center gap-2.5 rounded-md py-3 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                      pathname.includes("verifikasi") &&
+                      "bg-graydark dark:bg-meta-4 text-primary"
+                    }`}
+                  >
+                    <MdOutlineDomainVerification size={22} />
+                    TTE Dokumen
+                  </NavLink>
+                </li>
+              ) : (
+                ""
+              )}
 
               <li>
                 <NavLink

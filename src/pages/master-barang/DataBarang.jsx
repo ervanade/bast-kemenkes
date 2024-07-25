@@ -13,6 +13,8 @@ import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import { BiExport, BiSolidFileExport } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import Popup from "../../components/Modal/ModalConfirmPPK";
+import ModalConfirmPPK from "../../components/Modal/ModalConfirmPPK";
 
 const DataBarang = () => {
   const user = useSelector((a) => a.auth.user);
@@ -136,8 +138,10 @@ const DataBarang = () => {
     }
   };
 
+  const [showModal, setShowModal] = useState(false);
   const handleExport = () => {
     // Implementasi untuk mengekspor data (misalnya ke CSV)
+    setShowModal((cur) => !cur);
   };
 
   return (
@@ -199,6 +203,11 @@ const DataBarang = () => {
         >
           Cari Data
         </button> */}
+        <ModalConfirmPPK
+          showModal={showModal}
+          setShowModal={setShowModal}
+          Title="Form Input BAST PPK"
+        ></ModalConfirmPPK>
       </div>
       <div className="rounded-md flex flex-col gap-4 overflow-hidden overflow-x-auto  border border-stroke bg-white py-4 md:py-8 px-4 md:px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex justify-between mb-4 items-center">

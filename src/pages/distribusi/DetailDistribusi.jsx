@@ -9,13 +9,15 @@ import {
   dataProvinsi,
 } from "../../data/data";
 import { selectThemeColors } from "../../data/utils";
-import { FaDownload, FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa";
+import { FaCheck, FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import { BiExport, BiSolidFileExport } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import ModalConfirmPPK from "../../components/Modal/ModalConfirmPPK";
 
-const Verifikasi = () => {
+const DetailDistribusi = () => {
   const user = useSelector((a) => a.auth.user);
+  const [showModal, setShowModal] = useState(false);
   const columns = useMemo(
     () => [
       // { name: "No", selector: (row) => row.id, sortable: true },
@@ -23,86 +25,46 @@ const Verifikasi = () => {
         name: "Provinsi",
         selector: (row) => row.provinsi,
         sortable: true,
-        // width: "100px",
+        width: "100px",
       },
       {
         name: "Kab/Kota",
         selector: (row) => row.kab_kota,
         sortable: true,
-        // width: "100px",
+        width: "100px",
       },
-      // { name: "Kecamatan", selector: (row) => row.kecamatan, sortable: true },
-      // { name: "Puskesmas", selector: (row) => row.Puskesmas, sortable: true },
-      // { name: "Nama Kapus", selector: (row) => row.nama_kapus, sortable: true },
-      // {
-      //   name: "Nama Barang",
-      //   selector: (row) => row.nama_barang,
-      //   sortable: true,
-      // },
-      // {
-      //   name: "Jumlah Barang Dikirim",
-      //   selector: (row) => row.jumlah_barang_dikirim,
-      //   sortable: true,
-      // },
-      // {
-      //   name: "Jumlah Barang Diterima",
-      //   selector: (row) => row.jumlah_barang_diterima,
-      //   sortable: true,
-      // },
+      { name: "Kecamatan", selector: (row) => row.kecamatan, sortable: true },
+      { name: "Puskesmas", selector: (row) => row.Puskesmas, sortable: true },
+      { name: "Nama Kapus", selector: (row) => row.nama_kapus, sortable: true },
+      {
+        name: "Nama Barang",
+        selector: (row) => row.nama_barang,
+        sortable: true,
+      },
+      {
+        name: "Jumlah Barang Dikirim",
+        selector: (row) => row.jumlah_barang_dikirim,
+        sortable: true,
+      },
+      {
+        name: "Jumlah Barang Diterima",
+        selector: (row) => row.jumlah_barang_diterima,
+        sortable: true,
+      },
       {
         name: "Status TTE",
         selector: (row) => row.status_tte,
         sortable: true,
-        // width: "110px",
+        width: "110px",
       },
-      // {
-      //   name: "Keterangan PPK Kemenkes",
-      //   selector: (row) => row.keterangan_ppk,
-      //   sortable: true,
-      // },
       {
-        name: "Dokumen BAST",
-        cell: (row) => (
-          <div className="flex items-center space-x-2">
-            {/* <button
-              title="Input"
-              className="text-green-500 hover:text-green-700"
-            >
-              <Link to="/data-verifikasi/form-distribusi">
-                <FaPlus />
-              </Link>
-            </button> */}
-            <button title="Edit" className="text-[#16B3AC] hover:text-cyan-500">
-              <Link to={`/data-distribusi/edit/${row.id}`}>
-                <FaEye size={16} />
-              </Link>
-            </button>
-            <button
-              title="Edit"
-              className="text-green-400 hover:text-green-500"
-            >
-              <Link to={`/data-distribusi/edit/${row.id}`}>
-                <FaDownload size={16} />
-              </Link>
-            </button>
-            {user.role === "admin" ? (
-              <button
-                title="Delete"
-                className="text-red-500 hover:text-red-700"
-              >
-                <FaTrash size={16} />
-              </button>
-            ) : (
-              ""
-            )}
-          </div>
-        ),
-        ignoreRowClick: true,
-        allowOverflow: true,
-        button: true,
+        name: "Keterangan PPK Kemenkes",
+        selector: (row) => row.keterangan_ppk,
+        sortable: true,
       },
       {
         name: "Aksi",
+        width: "150px",
         cell: (row) => (
           <div className="flex items-center space-x-2">
             {/* <button
@@ -113,15 +75,31 @@ const Verifikasi = () => {
                 <FaPlus />
               </Link>
             </button> */}
-            <button
-              title="Edit"
-              className="text-white p-2 bg-blue-600 rounded-md"
-            >
+            {/* <button title="Edit" className="text-[#16B3AC] hover:text-cyan-500">
               <Link to={`/data-distribusi/edit/${row.id}`}>
-                {/* <FaEdit size={16} /> */}
-                TTE
+                <FaEdit size={16} />
               </Link>
-            </button>
+            </button> */}
+            {row.status_tte === "Belum" ? (
+              <button
+                title="Edit"
+                className="text-white py-2 w-22 bg-red-500 rounded-md"
+                onClick={() => setShowModal((cur) => !cur)}
+              >
+                {/* <FaEdit size={16} /> */}
+                Konfirmasi
+              </button>
+            ) : (
+              <button
+                title="Edit"
+                className="text-white  py-2 w-22 bg-green-500 rounded-md"
+              >
+                <Link to={`/data-distribusi/edit/${row.id}`}>
+                  {/* <FaEdit size={16} /> */}
+                  Sudah Sesuai
+                </Link>
+              </button>
+            )}
             {user.role === "admin" ? (
               <button
                 title="Delete"
@@ -141,7 +119,6 @@ const Verifikasi = () => {
     ],
     []
   );
-  const data = dataDistribusiBekasi.filter((a) => a.status_tte === "Belum");
 
   const [search, setSearch] = useState("");
   const [dataKecamatanState, setDataKecamatanState] = useState([
@@ -149,13 +126,13 @@ const Verifikasi = () => {
     ...dataKecamatan,
   ]);
   const [selectedKecamatan, setSelectedKecamatan] = useState(null);
-  const [filteredData, setFilteredData] = useState(data);
+  const [filteredData, setFilteredData] = useState(dataDistribusiBekasi);
 
   const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();
     setSearch(value);
 
-    const filtered = data.filter(
+    const filtered = dataDistribusiBekasi.filter(
       (item) =>
         item.provinsi.toLowerCase().includes(value) ||
         item.kab_kota.toLowerCase().includes(value) ||
@@ -188,11 +165,16 @@ const Verifikasi = () => {
 
   return (
     <div>
-      <Breadcrumb pageName="Verifikasi" />
+      <Breadcrumb pageName="Data Distribusi" />
       <div className="flex flex-col items-center justify-center w-full tracking-tight mb-12">
         <h1 className="font-normal mb-3 text-xl lg:text-[28px] tracking-tight text-center text-bodydark1">
           SELAMAT DATANG ADMIN KAB/KOTA KOTA BEKASI
         </h1>
+        <ModalConfirmPPK
+          showModal={showModal}
+          setShowModal={setShowModal}
+          Title="Form Input BAST PPK"
+        ></ModalConfirmPPK>
         <div className="mt-8 mb-3">
           <label
             className="block text-[#728294] text-lg font-normal mb-2"
@@ -290,6 +272,25 @@ const Verifikasi = () => {
               <BiExport />
               <span className="hidden sm:block">Export</span>
             </button>
+            {user.role === "admin" ? (
+              <button
+                title="Tambah Data Distribusi"
+                className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
+                onClick={handleExport}
+              >
+                <Link
+                  to="/data-distribusi/add"
+                  className="flex items-center gap-2 px-4 py-2"
+                >
+                  <FaPlus size={16} />
+                  <span className="hidden sm:block">
+                    Tambah Data Distribusi
+                  </span>
+                </Link>
+              </button>
+            ) : (
+              ""
+            )}
           </div>
         </div>
         <div className="overflow-x-auto">
@@ -315,4 +316,4 @@ const Verifikasi = () => {
   );
 };
 
-export default Verifikasi;
+export default DetailDistribusi;
