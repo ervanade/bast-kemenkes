@@ -34,11 +34,11 @@ const DataDistribusi = () => {
       { name: "Kecamatan", selector: (row) => row.kecamatan, sortable: true },
       { name: "Puskesmas", selector: (row) => row.Puskesmas, sortable: true },
       // { name: "Nama Kapus", selector: (row) => row.nama_kapus, sortable: true },
-      {
-        name: "Nama Barang",
-        selector: (row) => row.nama_barang,
-        sortable: true,
-      },
+      // {
+      //   name: "Nama Barang",
+      //   selector: (row) => row.nama_barang,
+      //   sortable: true,
+      // },
       {
         name: "Jumlah Barang Dikirim",
         selector: (row) => row.jumlah_barang_dikirim,

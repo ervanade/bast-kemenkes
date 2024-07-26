@@ -33,7 +33,7 @@ const Breadcrumb = ({ pageName, back, tte, jsonData, linkBack }) => {
 
       {back ? (
         <button
-          onClick={() => navigate(`/data-distribusi/edit/${jsonData?.id}`)}
+          onClick={() => navigate(`${linkBack ? linkBack : `/data-distribusi/edit/${jsonData?.id}`}`)}
           className="flex items-center px-4 py-2 bg-primary text-white rounded-md font-semibold"
         >
           Back

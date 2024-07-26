@@ -59,7 +59,7 @@ const Laporan = () => {
       cell: (row) => (
         <div className="flex items-center space-x-2">
           <button
-            title="Input"
+            title="Lihat"
             className="text-green-500 hover:text-green-700"
             onClick={() => handlePreviewPDF(row)}
           >
@@ -68,7 +68,7 @@ const Laporan = () => {
             </Link>
           </button>
           <button
-            title="Input"
+            title="Download"
             className="text-blue-500 hover:text-blue-700"
             onClick={() => handleDownloadPDF(row)}
           >

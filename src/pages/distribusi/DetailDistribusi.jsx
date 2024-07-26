@@ -165,7 +165,7 @@ const DetailDistribusi = () => {
 
   return (
     <div>
-      <Breadcrumb pageName="Data Distribusi" />
+      <Breadcrumb pageName="Data Distribusi Detail" />
       <div className="flex flex-col items-center justify-center w-full tracking-tight mb-12">
         <h1 className="font-normal mb-3 text-xl lg:text-[28px] tracking-tight text-center text-bodydark1">
           SELAMAT DATANG ADMIN KAB/KOTA KOTA BEKASI
