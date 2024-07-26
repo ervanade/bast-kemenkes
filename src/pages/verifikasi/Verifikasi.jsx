@@ -72,13 +72,13 @@ const Verifikasi = () => {
                 <FaPlus />
               </Link>
             </button> */}
-            <button title="Edit" className="text-[#16B3AC] hover:text-cyan-500">
+            <button title="Lihat" className="text-[#16B3AC] hover:text-cyan-500">
               <Link to={`/data-distribusi/preview-dokumen/${row.id}`}>
                 <FaEye size={16} />
               </Link>
             </button>
             <button
-              title="Edit"
+              title="Download"
               className="text-green-400 hover:text-green-500"
             >
               <Link to={`/data-distribusi/preview-dokumen/${row.id}`}>
