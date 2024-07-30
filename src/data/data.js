@@ -234,6 +234,16 @@ export const dataBarang = [
         "value": "Alat Tes Antigen"
     },
 ]
+export const konfirmasiOptions = [
+    {
+        "label": "Data Sudah Sesuai",
+        "value": "1"
+    },
+    {
+        "label": "Data Belum Sesuai",
+        "value": "0"
+    }
+]
 export const dataPuskesmas = [
     {
         "label": "Puskesmas Bintara Jaya",

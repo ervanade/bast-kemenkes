@@ -72,7 +72,10 @@ const Verifikasi = () => {
                 <FaPlus />
               </Link>
             </button> */}
-            <button title="Lihat" className="text-[#16B3AC] hover:text-cyan-500">
+            <button
+              title="Lihat"
+              className="text-[#16B3AC] hover:text-cyan-500"
+            >
               <Link to={`/data-distribusi/preview-dokumen/${row.id}`}>
                 <FaEye size={16} />
               </Link>
@@ -85,16 +88,6 @@ const Verifikasi = () => {
                 <FaDownload size={16} />
               </Link>
             </button>
-            {user.role === "admin" ? (
-              <button
-                title="Delete"
-                className="text-red-500 hover:text-red-700"
-              >
-                <FaTrash size={16} />
-              </button>
-            ) : (
-              ""
-            )}
           </div>
         ),
         ignoreRowClick: true,
@@ -122,16 +115,6 @@ const Verifikasi = () => {
                 TTE
               </Link>
             </button>
-            {user.role === "admin" ? (
-              <button
-                title="Delete"
-                className="text-red-500 hover:text-red-700"
-              >
-                <FaTrash size={16} />
-              </button>
-            ) : (
-              ""
-            )}
           </div>
         ),
         ignoreRowClick: true,

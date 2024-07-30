@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import Select from "react-select";
 import DataTable from "react-data-table-component";
@@ -11,13 +11,16 @@ import {
 import { selectThemeColors } from "../../data/utils";
 import { FaCheck, FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import { BiExport, BiSolidFileExport } from "react-icons/bi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ModalConfirmPPK from "../../components/Modal/ModalConfirmPPK";
 
 const DetailDistribusi = () => {
   const user = useSelector((a) => a.auth.user);
   const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
+  const [selectedRowData, setSelectedRowData] = useState(null);
+
   const columns = useMemo(
     () => [
       // { name: "No", selector: (row) => row.id, sortable: true },
@@ -82,22 +85,27 @@ const DetailDistribusi = () => {
             </button> */}
             {row.status_tte === "Belum" ? (
               <button
-                title="Edit"
+                title="Konfirmasi"
                 className="text-white py-2 w-22 bg-red-500 rounded-md"
-                onClick={() => setShowModal((cur) => !cur)}
+                onClick={() => {
+                  setShowModal(true);
+                  setSelectedRowData(row);
+                }}
               >
                 {/* <FaEdit size={16} /> */}
                 Konfirmasi
               </button>
             ) : (
               <button
-                title="Edit"
+                title="Konfirmasi"
                 className="text-white  py-2 w-22 bg-green-500 rounded-md"
+                onClick={() => {
+                  setShowModal(true);
+                  setSelectedRowData(row);
+                }}
               >
-                <Link to={`/data-distribusi/edit/${row.id}`}>
-                  {/* <FaEdit size={16} /> */}
-                  Sudah Sesuai
-                </Link>
+                {/* <FaEdit size={16} /> */}
+                Sudah Sesuai
               </button>
             )}
             {user.role === "admin" ? (
@@ -162,6 +170,15 @@ const DetailDistribusi = () => {
   const handleExport = () => {
     // Implementasi untuk mengekspor data (misalnya ke CSV)
   };
+  const { id } = useParams();
+
+  useEffect(() => {
+    const data = dataDistribusiBekasi.filter((a) => a.Puskesmas == id);
+    setFilteredData(data);
+    if (!data) {
+      navigate("/not-found");
+    }
+  }, []);
 
   return (
     <div>
@@ -174,6 +191,7 @@ const DetailDistribusi = () => {
           showModal={showModal}
           setShowModal={setShowModal}
           Title="Form Input BAST PPK"
+          data={selectedRowData}
         ></ModalConfirmPPK>
         <div className="mt-8 mb-3">
           <label
