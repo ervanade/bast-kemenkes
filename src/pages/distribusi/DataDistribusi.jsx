@@ -9,7 +9,14 @@ import {
   dataProvinsi,
 } from "../../data/data";
 import { selectThemeColors } from "../../data/utils";
-import { FaCheck, FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa";
+import {
+  FaCheck,
+  FaEdit,
+  FaEye,
+  FaPlus,
+  FaSearch,
+  FaTrash,
+} from "react-icons/fa";
 import { BiExport, BiSolidFileExport } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -156,60 +163,63 @@ const DataDistribusi = () => {
         <h1 className="font-normal mb-3 text-xl lg:text-[28px] tracking-tight text-center text-bodydark1">
           SELAMAT DATANG ADMIN KAB/KOTA KOTA BEKASI
         </h1>
-        <div className="flex items-center mt-8 gap-4 flex-col sm:flex-row">
-          <div className="text-base">
-            <label
-              className="block text-[#728294] text-base font-normal mb-2"
-              htmlFor="email"
-            >
-              Provinsi
-            </label>
-            <Select
-              options={dataProvinsi}
-              defaultValue={dataProvinsi[0]}
-              className="w-64 sm:w-32 xl:w-64 bg-slate-500 my-react-select-container"
-              classNamePrefix="my-react-select"
-              theme={selectThemeColors}
-              isDisabled={user.role === "user"}
-            />
+        <div className="flex items-center lg:items-end mt-8 gap-4 flex-col lg:flex-row">
+          <div className="flex items-center gap-4 flex-col sm:flex-row">
+            <div className="text-base">
+              <label
+                className="block text-[#728294] text-base font-normal mb-2"
+                htmlFor="email"
+              >
+                Provinsi
+              </label>
+              <Select
+                options={dataProvinsi}
+                defaultValue={dataProvinsi[0]}
+                className="w-64 sm:w-32 xl:w-64 bg-slate-500 my-react-select-container"
+                classNamePrefix="my-react-select"
+                theme={selectThemeColors}
+                isDisabled={user.role === "user"}
+              />
+            </div>
+            <div className="">
+              <label
+                className="block text-[#728294] text-base font-normal mb-2"
+                htmlFor="email"
+              >
+                Kab / Kota
+              </label>
+              <Select
+                options={dataKota}
+                defaultValue={dataKota[0]}
+                className="w-64 sm:w-32 lg:w-64"
+                theme={selectThemeColors}
+                isDisabled={user.role === "user"}
+              />
+            </div>
+            <div className="">
+              <label
+                className="block text-[#728294] text-base font-normal mb-2"
+                htmlFor="email"
+              >
+                Kecamatan
+              </label>
+              <Select
+                options={dataKecamatanState}
+                defaultValue={dataKecamatanState[0]}
+                onChange={setSelectedKecamatan}
+                className="w-64 sm:w-32 lg:w-64"
+                theme={selectThemeColors}
+              />
+            </div>
           </div>
-          <div className="">
-            <label
-              className="block text-[#728294] text-base font-normal mb-2"
-              htmlFor="email"
-            >
-              Kab / Kota
-            </label>
-            <Select
-              options={dataKota}
-              defaultValue={dataKota[0]}
-              className="w-64 sm:w-32 lg:w-64"
-              theme={selectThemeColors}
-              isDisabled={user.role === "user"}
-            />
-          </div>
-          <div className="">
-            <label
-              className="block text-[#728294] text-base font-normal mb-2"
-              htmlFor="email"
-            >
-              Kecamatan
-            </label>
-            <Select
-              options={dataKecamatanState}
-              defaultValue={dataKecamatanState[0]}
-              onChange={setSelectedKecamatan}
-              className="w-64 sm:w-32 lg:w-64"
-              theme={selectThemeColors}
-            />
-          </div>
+          <button
+            onClick={handleSearch}
+            className="mt-2 flex items-center gap-2 cursor-pointer text-base text-white px-5 py-2 bg-primary rounded-md tracking-tight"
+          >
+            <FaSearch />
+            <span className="lg:hidden xl:flex"> Cari Data</span>
+          </button>
         </div>
-        {/* <button
-          onClick={handleSearch}
-          className="mt-2 cursor-pointer text-base text-white px-8 py-2 bg-primary rounded-md tracking-tight"
-        >
-          Cari Data
-        </button> */}
       </div>
       <div className="rounded-md flex flex-col gap-4 overflow-hidden overflow-x-auto  border border-stroke bg-white py-4 md:py-8 px-4 md:px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex justify-between mb-4 items-center">
