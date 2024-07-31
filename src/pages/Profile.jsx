@@ -287,18 +287,18 @@ const Profile = () => {
                   />
                 </div>
 
-                <div className="flex justify-end gap-4.5">
-                  <button
+                <div className="flex justify-center gap-4.5">
+                  {/* <button
                     className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
                     type="submit"
                   >
                     Cancel
-                  </button>
+                  </button> */}
                   <button
-                    className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-90"
+                    className="flex justify-center rounded bg-primary py-3 px-8 font-medium text-gray hover:bg-opacity-90"
                     type="submit"
                   >
-                    Save
+                    Simpan
                   </button>
                 </div>
               </form>
@@ -316,33 +316,45 @@ const Profile = () => {
               <form className="p-4">
                 <button
                   type="button"
-                  className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded"
+                  className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-3 w-full rounded mb-4"
                   onClick={handleOpenPopup}
                 >
                   Input TTE
                 </button>
 
+                {!signature && !file ? (
+                  <div className="w-full  rounded border border-dashed border-primary bg-gray py-4 px-4 dark:bg-meta-4 sm:py-7.5 ">
+                    <p className="text-center text-red-400 p-2 font-semibold">
+                      Anda Belum TTE!
+                    </p>
+                  </div>
+                ) : (
+                  ""
+                )}
+
                 {signature && (
                   <div className="mb-6">
-                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                      Preview Signature
+                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 text-center">
+                      Preview TTE
                     </label>
                     <img
                       src={signature}
                       alt="Signature"
-                      className="w-48 mx-auto"
+                      className="w-48 mx-auto py-2"
+                      style={{ width: "200px", height: "100px" }}
                     />
                   </div>
                 )}
                 {file && (
                   <div className="mb-6">
-                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                      Preview File
+                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 text-center">
+                      Preview TTE
                     </label>
                     <img
                       src={URL.createObjectURL(file)}
                       alt="File"
-                      className="w-48 mx-auto"
+                      className="w-48 mx-auto py-2"
+                      style={{ width: "200px", height: "100px" }}
                     />
                   </div>
                 )}
@@ -358,22 +370,24 @@ const Profile = () => {
                   handleTabChange={handleTabChange}
                 />
 
-                <button
-                  type="submit"
-                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-4"
-                >
-                  Save
-                </button>
-                <button
-                  type="button"
-                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2"
-                  onClick={() => {
-                    setSignature(null);
-                    setFile(null);
-                  }}
-                >
-                  Reset
-                </button>
+                <div className="flex justify-center mt-4">
+                  {/* <button
+                    type="submit"
+                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                  >
+                    Save
+                  </button> */}
+                  <button
+                    type="button"
+                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2"
+                    onClick={() => {
+                      setSignature(null);
+                      setFile(null);
+                    }}
+                  >
+                    Reset
+                  </button>
+                </div>
                 {/* <div className="mb-4 flex items-center gap-3">
                   <div className="w-1/2">
                     <img src={UserDefault} alt="User" className="w-full" />
