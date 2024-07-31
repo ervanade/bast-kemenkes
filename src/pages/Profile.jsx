@@ -125,7 +125,7 @@ const Profile = () => {
                   </div>
                   <div
                     id="FileUpload"
-                    className="relative mb-5.5 block w-3/4 cursor-pointer appearance-none rounded border border-dashed border-primary bg-gray py-4 px-4 dark:bg-meta-4 sm:py-4"
+                    className="relative mb-5.5 block w-full xl:w-3/4 cursor-pointer appearance-none rounded border border-dashed border-primary bg-gray py-4 px-4 dark:bg-meta-4 sm:py-4"
                   >
                     <input
                       type="file"
