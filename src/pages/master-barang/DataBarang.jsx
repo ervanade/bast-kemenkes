@@ -18,9 +18,6 @@ import Swal from "sweetalert2";
 
 const DataBarang = () => {
   const user = useSelector((a) => a.auth.user);
-  
-  
- 
 
   const [search, setSearch] = useState("");
   const [selectedKecamatan, setSelectedKecamatan] = useState(null);
@@ -29,7 +26,6 @@ const DataBarang = () => {
   const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();
     setSearch(value);
-
   };
 
   const handleExport = () => {
@@ -40,72 +36,66 @@ const DataBarang = () => {
     try {
       // eslint-disable-next-line
       const responseUser = await axios({
-        method: 'get',
+        method: "get",
         url: `${import.meta.env.VITE_APP_API_URL}/api/barang`,
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           //eslint-disable-next-line
-          'Authorization': `Bearer ${user?.token}`
-        }
-      })
-        .then(function (response) {
-          // handle success
-          // console.log(response)
-          setFilteredData(response.data.data);
-
-        })
-
+          Authorization: `Bearer ${user?.token}`,
+        },
+      }).then(function (response) {
+        // handle success
+        // console.log(response)
+        setFilteredData(response.data.data);
+      });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
   useEffect(() => {
-    fetchBarangData()
-  }, [])
+    fetchBarangData();
+  }, []);
 
   const deleteBarang = async (id) => {
     //Send Data to setver
     await axios({
-      method: 'delete',
+      method: "delete",
       url: `${import.meta.env.VITE_APP_API_URL}/api/barang/${id}`,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         //eslint-disable-next-line
-        'Authorization': `Bearer ${user?.token}`
-      }
+        Authorization: `Bearer ${user?.token}`,
+      },
     })
       .then(function () {
         // handle success
         // console.log(response)
-        fetchBarangData()
-
+        fetchBarangData();
       })
       .catch((error) => {
-        console.log(error)
-      })
-  }
+        console.log(error);
+      });
+  };
 
   const handleConfirmDeleteBarang = async (id) => {
     return Swal.fire({
-      title: 'Are you sure?',
+      title: "Are you sure?",
       text: "You will Delete This Barang!",
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
+      confirmButtonText: "Yes, delete it!",
       confirmButtonColor: "#16B3AC",
     }).then(async function (result) {
       if (result.value) {
-        await deleteBarang(id)
+        await deleteBarang(id);
         Swal.fire({
-          icon: 'success',
-          title: 'Deleted!',
-          text: 'Your Barang has been deleted.',
-        })
+          icon: "success",
+          title: "Deleted!",
+          text: "Your Barang has been deleted.",
+        });
       }
-    })
-  }
-
- 
+    });
+  };
 
   const columns = useMemo(
     () => [
@@ -169,7 +159,11 @@ const DataBarang = () => {
         cell: (row) => (
           <div className="flex items-center space-x-2">
             <button title="Edit" className="text-[#16B3AC] hover:text-cyan-500">
-              <Link to={`/data-barang/edit/${encryptId(row.id)}`}>
+              <Link
+                to={`/data-barang/edit/${encodeURIComponent(
+                  encryptId(row.id)
+                )}`}
+              >
                 <FaEdit size={16} />
               </Link>
             </button>
@@ -252,9 +246,7 @@ const DataBarang = () => {
                   className="flex items-center gap-2 px-4 py-2"
                 >
                   <FaPlus size={16} />
-                  <span className="hidden sm:block">
-                    Tambah Data Barang
-                  </span>
+                  <span className="hidden sm:block">Tambah Data Barang</span>
                 </Link>
               </button>
             ) : (

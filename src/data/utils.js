@@ -17,7 +17,7 @@ export const selectThemeColors = (theme) => ({
 });
 
 export const returnRole = (role) => {
-    if(role === "1") {
+    if (role === "1") {
         return "Admin"
     } else if (role === "2") {
         return "PPK"
@@ -31,9 +31,9 @@ export const returnRole = (role) => {
 export const encryptId = (id) => {
     const encryptedId = CryptoJS.AES.encrypt(id.toString(), encryptionKey).toString();
     return encryptedId;
-  };
-  
-  export const decryptId = (encryptedId) => {
+};
+
+export const decryptId = (encryptedId) => {
     const decryptedId = CryptoJS.AES.decrypt(encryptedId, encryptionKey).toString(CryptoJS.enc.Utf8);
     return decryptedId;
-  };
+};

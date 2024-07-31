@@ -79,8 +79,8 @@ function App() {
               />
               <Route path="/not-found" element={<NotFound />} />
               <Route path="/" element={<ProtectedRoutesAdmin />}>
-              <Route path="/user-management" element={<UserManagement />} />
-              <Route path="/user-management/add" element={<TambahUser />} />
+                <Route path="/user-management" element={<UserManagement />} />
+                <Route path="/user-management/add" element={<TambahUser />} />
                 <Route
                   path="data-distribusi/add"
                   element={<TambahDistribusi />}
@@ -94,7 +94,10 @@ function App() {
 
                 <Route path="data-provinsi" element={<DataProvinsi />} />
                 <Route path="data-provinsi/add" element={<TambahProvinsi />} />
-                <Route path="data-provinsi/edit/:id" element={<EditProvinsi />} />
+                <Route
+                  path="data-provinsi/edit/:id"
+                  element={<EditProvinsi />}
+                />
 
                 <Route path="data-kecamatan" element={<DataKecamatan />} />
               </Route>

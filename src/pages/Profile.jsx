@@ -6,83 +6,97 @@ import SignatureCanvas from "react-signature-canvas";
 import { useSelector } from "react-redux";
 import { roleOptions } from "../data/data";
 import axios from "axios";
+import ModalProfile from "../components/Modal/ModalProfile";
 
 const Profile = () => {
   const [signature, setSignature] = useState(null);
   const [file, setFile] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
-  const [activeTab, setActiveTab] = useState('tab2');
-  const signatureRef = useRef(null);
+  const [activeTab, setActiveTab] = useState("tab2");
 
   const handleOpenPopup = () => {
     setShowPopup(true);
   };
 
-  const handleSaveSignature = () => {
-    const signatureDataURL = signatureRef.current.getTrimmedCanvas().toDataURL('image/png');
+  const handleSaveSignature = (signatureDataURL) => {
     setSignature(signatureDataURL);
-    setShowPopup(false);
-  };
-
-  const handleResetSignature = () => {
-    signatureRef.current.clear();
-    setSignature(null);
-    setShowPopup(false);
+    setFile(null); // Clear file if a signature is saved
   };
 
   const handleUploadFile = (event) => {
     setFile(event.target.files[0]);
+    setSignature(null); // Clear signature if a file is uploaded
     setShowPopup(false);
   };
 
-  const handleTabChange = (tab) => {
+  const handleTabChange = (event, tab) => {
+    event.preventDefault();
     setActiveTab(tab);
   };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    // Kirim data ke API sesuai dengan kebutuhan Anda
+    const formData = new FormData();
+    if (file) {
+      formData.append("file", file);
+    } else if (signature) {
+      const response = await fetch(signature);
+      const blob = await response.blob();
+      formData.append(
+        "signature",
+        new File([blob], "signature.png", { type: "image/png" })
+      );
+    }
+    // Fetch API call example
+    await fetch("your-api-endpoint", {
+      method: "POST",
+      body: formData,
+    });
+    alert("Data submitted successfully");
+  };
+
   const [formData, setFormData] = useState({
     email: "",
     username: "",
     name: "",
     role: roleOptions[2],
     provinsi: "",
-    kabupaten:"",
-    kecamatan:"",
-    nip:""
+    kabupaten: "",
+    kecamatan: "",
+    nip: "",
   });
   const user = useSelector((a) => a.auth.user);
   const fetchBarangData = async () => {
     try {
       // eslint-disable-next-line
       const responseUser = await axios({
-        method: 'get',
+        method: "get",
         url: `${import.meta.env.VITE_APP_API_URL}/api/me`,
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           //eslint-disable-next-line
-          'Authorization': `Bearer ${user?.token}`
-        }
-      })
-        .then(function (response) {
-          // handle success
-          // console.log(response)
-          const data = response.data
-          setFormData({
-            nama: data.name,
-            nip: data.nip,
-            no_telp: "",
-            role: data.role,
-            email: data.email,
-          });
-
-        })
-
+          Authorization: `Bearer ${user?.token}`,
+        },
+      }).then(function (response) {
+        // handle success
+        // console.log(response)
+        const data = response.data;
+        setFormData({
+          nama: data.name,
+          nip: data.nip,
+          no_telp: "",
+          role: data.role,
+          email: data.email,
+        });
+      });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
   useEffect(() => {
-    fetchBarangData()
-  }, [])
-
+    fetchBarangData();
+  }, []);
 
   return (
     <div className="mx-auto max-w-270">
@@ -98,35 +112,36 @@ const Profile = () => {
             </div>
             <div className="p-7">
               <form action="#">
-
-              <div className="mb-5.5">
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="h-14 w-14 rounded-full">
-                    <img src={UserDefault} alt="User" />
+                <div className="mb-5.5">
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className="h-14 w-14 rounded-full">
+                      <img src={UserDefault} alt="User" />
+                    </div>
+                    <div>
+                      <span className="mb-1.5 text-black dark:text-white">
+                        Foto Profil Anda
+                      </span>
+                    </div>
                   </div>
-                  <div>
-                    <span className="mb-1.5 text-black dark:text-white">
-                      Foto Profil Anda
-                    </span>
-                  </div>
-                </div>
                   <div
-                  id="FileUpload"
-                  className="relative mb-5.5 block w-3/4 cursor-pointer appearance-none rounded border border-dashed border-primary bg-gray py-4 px-4 dark:bg-meta-4 sm:py-4"
-                >
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
-                  />
-                  <div className="flex flex-col items-center justify-center space-y-3">
-                    <p>
-                      <span className="text-primary">Upload Foto Profile Anda</span>
-                    </p>
-                    <p className="mt-1.5">SVG, PNG, JPG</p>
-                    <p>(max: 1MB size:800 X 800px)</p>
+                    id="FileUpload"
+                    className="relative mb-5.5 block w-3/4 cursor-pointer appearance-none rounded border border-dashed border-primary bg-gray py-4 px-4 dark:bg-meta-4 sm:py-4"
+                  >
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
+                    />
+                    <div className="flex flex-col items-center justify-center space-y-3">
+                      <p>
+                        <span className="text-primary">
+                          Upload Foto Profile Anda
+                        </span>
+                      </p>
+                      <p className="mt-1.5">SVG, PNG, JPG</p>
+                      <p>(max: 1MB size:800 X 800px)</p>
+                    </div>
                   </div>
-                </div>
                 </div>
 
                 <div className="mb-5.5">
@@ -298,110 +313,68 @@ const Profile = () => {
               </h3>
             </div>
             <div className="p-7">
-              <form action="#">
-              
-              <button
-    className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded"
-    onClick={handleOpenPopup}
-  >
-    Signature
-  </button>
-  {signature && (
-    <div className="mb-6">
-      <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-        Preview Signature
-      </label>
-      <img src={signature} alt="Signature" className="w-full" />
-    </div>
-  )}
-  {file && (
-    <div className="mb-6">
-      <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-        Preview File
-      </label>
-      <img src={URL.createObjectURL(file)} alt="File" className="w-full" />
-    </div>
-  )}
-  {showPopup && (
-    <div className="fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white p-4 rounded shadow-md">
-        <div className="flex border-b border-gray-300 mb-4">
-          <button
-            className="px-4 py-2 font-bold text-gray-600 hover:text-gray-900"
-            onClick={() => setShowPopup(false)}
-          >
-            Close
-          </button>
-        </div>
-        <div className="tabs">
-          <button
-            className={`tab tab-bordered ${activeTab === 'tab1'? 'tab-active' : ''}`}
-            onClick={() => handleTabChange('tab1')}
-          >
-            Upload File
-          </button>
-          <button
-            className={`tab tab-bordered ${activeTab === 'tab2'? 'tab-active' : ''}`}
-            onClick={() => handleTabChange('tab2')}
-          >
-            Draw Signature
-          </button>
-        </div>
-        <div className="tab-content">
-          {activeTab === 'tab1' && (
-            <div id="tab1" className="tab-pane">
-              <input
-                type="file"
-                className="appearance-none block mt-4 w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white"
-                onChange={handleUploadFile}
-              />
-              {file && (
-                <div className="mb-6">
-                  <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                    Preview File
-                  </label>
-                  <img src={URL.createObjectURL(file)} alt="File" className="w-full" />
-                </div>
-              )}
-            </div>
-          )}
-          {activeTab === 'tab2' && (
-            <div id="tab2" className="tab-pane">
-              <SignatureCanvas
-                ref={signatureRef}
-                canvasProps={{
-                  width: 400,
-                  height: 200,
-                  className: 'igCanvas',
-                }}
-              />
-              {signature && (
-                <div className="mb-6">
-                  <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                    Preview Signature
-                  </label>
-                  <img src={signature} alt="Signature" className="w-full" />
-                </div>
-              )}
-              <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                onClick={handleSaveSignature}
-              >
-                Save Signature
-              </button>
-              <button
-                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                onClick={handleResetSignature}
-              >
-                Reset Signature
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  )}
-                <div className="mb-4 flex items-center gap-3">
+              <form className="p-4">
+                <button
+                  type="button"
+                  className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded"
+                  onClick={handleOpenPopup}
+                >
+                  Input TTE
+                </button>
+
+                {signature && (
+                  <div className="mb-6">
+                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+                      Preview Signature
+                    </label>
+                    <img
+                      src={signature}
+                      alt="Signature"
+                      className="w-48 mx-auto"
+                    />
+                  </div>
+                )}
+                {file && (
+                  <div className="mb-6">
+                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+                      Preview File
+                    </label>
+                    <img
+                      src={URL.createObjectURL(file)}
+                      alt="File"
+                      className="w-48 mx-auto"
+                    />
+                  </div>
+                )}
+
+                <ModalProfile
+                  isVisible={showPopup}
+                  onClose={() => setShowPopup(false)}
+                  onSaveSignature={handleSaveSignature}
+                  onUploadFile={handleUploadFile}
+                  signature={signature}
+                  file={file}
+                  activeTab={activeTab}
+                  handleTabChange={handleTabChange}
+                />
+
+                <button
+                  type="submit"
+                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-4"
+                >
+                  Save
+                </button>
+                <button
+                  type="button"
+                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2"
+                  onClick={() => {
+                    setSignature(null);
+                    setFile(null);
+                  }}
+                >
+                  Reset
+                </button>
+                {/* <div className="mb-4 flex items-center gap-3">
                   <div className="w-1/2">
                     <img src={UserDefault} alt="User" className="w-full" />
                   </div>
@@ -409,7 +382,6 @@ const Profile = () => {
                     <span className="mb-1.5 text-black dark:text-white">
                       TTE Anda
                     </span>
-
                   </div>
                 </div>
 
@@ -458,7 +430,7 @@ const Profile = () => {
                     <p className="mt-1.5">SVG, PNG, JPG or GIF</p>
                     <p>(max, 800 X 800px)</p>
                   </div>
-                </div>
+                </div> */}
               </form>
             </div>
           </div>
