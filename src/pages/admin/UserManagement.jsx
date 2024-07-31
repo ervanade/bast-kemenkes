@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import Select from "react-select";
 import DataTable from "react-data-table-component";
@@ -77,7 +77,7 @@ const UserManagement = () => {
                 <FaEdit size={16} />
               </Link>
             </button>
-            {user.role === "admin" ? (
+            {user.role === "1" ? (
               <button
                 title="Delete"
                 className="text-red-500 hover:text-red-700"
@@ -139,67 +139,31 @@ const UserManagement = () => {
   const handleExport = () => {
     // Implementasi untuk mengekspor data (misalnya ke CSV)
   };
+  const fetchApiUser = async () => {
+    await axios({
+      method: 'get',
+      url: `${import.meta.env.VITE_APP_API_URL}/api/news`,
+      headers: {
+        'Content-Type': 'application/json',
+
+      }
+    })
+      .then(function (response) {
+        setFilteredData(response.data)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
+
+  useEffect(() => {
+    
+  }, [])
+  
 
   return (
     <div>
-      <Breadcrumb pageName="Data Distribusi" />
-      <div className="flex flex-col items-center justify-center w-full tracking-tight mb-12">
-        <h1 className="font-bold mb-3 text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
-          Data User
-        </h1>
-        {/* <div className="mt-8 mb-3">
-          <label
-            className="block text-[#728294] text-lg font-normal mb-2"
-            htmlFor="email"
-          >
-            Provinsi
-          </label>
-          <Select
-            options={dataProvinsi}
-            defaultValue={dataProvinsi[0]}
-            className="w-64 sm:w-100 bg-slate-500 my-react-select-container"
-            classNamePrefix="my-react-select"
-            theme={selectThemeColors}
-            isDisabled={user.role === "user"}
-          />
-        </div>
-        <div className="mb-3">
-          <label
-            className="block text-[#728294] text-lg font-normal mb-2"
-            htmlFor="email"
-          >
-            Kab / Kota
-          </label>
-          <Select
-            options={dataKota}
-            defaultValue={dataKota[0]}
-            className="w-64 sm:w-100"
-            theme={selectThemeColors}
-            isDisabled={user.role === "user"}
-          />
-        </div>
-        <div className="mb-3">
-          <label
-            className="block text-[#728294] text-lg font-normal mb-2"
-            htmlFor="email"
-          >
-            Kecamatan
-          </label>
-          <Select
-            options={dataKecamatanState}
-            defaultValue={dataKecamatanState[0]}
-            onChange={setSelectedKecamatan}
-            className="w-64 sm:w-100"
-            theme={selectThemeColors}
-          />
-        </div>
-        <button
-          onClick={handleSearch}
-          className="cursor-pointer mt-8 text-lg text-white px-8 py-2 bg-primary rounded-md tracking-tight"
-        >
-          Cari Data
-        </button> */}
-      </div>
+      <Breadcrumb pageName="Data User" title="Data User" />
       <div className="rounded-md flex flex-col gap-4 overflow-hidden overflow-x-auto  border border-stroke bg-white py-4 md:py-8 px-4 md:px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex justify-between mb-4 items-center">
           <div className="relative">
@@ -244,19 +208,19 @@ const UserManagement = () => {
               <BiExport />
               <span className="hidden sm:block">Export</span>
             </button>
-            {user.role === "admin" ? (
+            {user.role === "1" ? (
               <button
                 title="Tambah Data Distribusi"
                 className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
                 onClick={handleExport}
               >
                 <Link
-                  to="/data-distribusi/add"
+                  to="/user-management/add"
                   className="flex items-center gap-2 px-4 py-2"
                 >
                   <FaPlus size={16} />
                   <span className="hidden sm:block">
-                    Tambah Data Distribusi
+                    Tambah Data User
                   </span>
                 </Link>
               </button>

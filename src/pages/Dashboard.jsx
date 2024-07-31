@@ -8,6 +8,7 @@ import Article1 from "../assets/article/article-1.jpg";
 import Article2 from "../assets/article/article-2.jpg";
 import Article3 from "../assets/article/article-3.jpg";
 import { useSelector } from "react-redux";
+import { returnRole } from "../data/utils";
 
 const Dashboard = () => {
   const user = useSelector((a) => a.auth.user);
@@ -23,14 +24,14 @@ const Dashboard = () => {
             {user.username || "Username"}
           </p>
           <p className="font-normal text-xl lg:text-[24px] tracking-tight">
-            Role : {user.role || "Role"}
+            Role : {user.role ? returnRole(user.role) : "" || "Role"}
           </p>
         </div>
       </div>
       <div className="mt-4 md:mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardDataStats
           title="Data Distribusi"
-          total={user.role === "user" ? "500" : "8.000"}
+          total={user.role === "3" ? "500" : "8.000"}
           rate="0.43%"
           color="text-[#42DFC3]"
           levelUp
@@ -41,7 +42,7 @@ const Dashboard = () => {
         </CardDataStats>
         <CardDataStats
           title="Data Terverifikasi"
-          total={user.role === "user" ? "400" : "6.000"}
+          total={user.role === "3" ? "400" : "6.000"}
           rate="4.35%"
           color="text-[#79DF42]"
           levelUp
@@ -55,7 +56,7 @@ const Dashboard = () => {
         </CardDataStats>
         <CardDataStats
           title="Data Belum Terverifikasi"
-          total={user.role === "user" ? "50" : "1.000"}
+          total={user.role === "3" ? "50" : "1.000"}
           rate="2.59%"
           color="text-[#DFB342]"
           levelUp
@@ -66,7 +67,7 @@ const Dashboard = () => {
         </CardDataStats>
         <CardDataStats
           title="Data Belum Diproses"
-          total={user.role === "user" ? "50" : "1.000"}
+          total={user.role === "3" ? "50" : "1.000"}
           rate="0.95%"
           color="text-[#F46D6D]"
           levelDown

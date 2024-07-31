@@ -189,7 +189,7 @@ const Verifikasi = () => {
             className="w-64 sm:w-100 bg-slate-500 my-react-select-container"
             classNamePrefix="my-react-select"
             theme={selectThemeColors}
-            isDisabled={user.role === "user"}
+            isDisabled={user.role === "3"}
           />
         </div>
         <div className="mb-3">
@@ -204,7 +204,7 @@ const Verifikasi = () => {
             defaultValue={dataKota[0]}
             className="w-64 sm:w-100"
             theme={selectThemeColors}
-            isDisabled={user.role === "user"}
+            isDisabled={user.role === "3"}
           />
         </div>
         <div className="mb-3">

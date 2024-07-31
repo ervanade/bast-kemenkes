@@ -1,3 +1,5 @@
+import CryptoJS from 'crypto-js';
+const encryptionKey = import.meta.env.VITE_APP_API_URL
 export const selectThemeColors = (theme) => ({
     ...theme,
     colors: {
@@ -13,3 +15,25 @@ export const selectThemeColors = (theme) => ({
         neutral30: "#16B3AC", // for input hover border-color
     },
 });
+
+export const returnRole = (role) => {
+    if(role === "1") {
+        return "Admin"
+    } else if (role === "2") {
+        return "PPK"
+    } else if (role === "3") {
+        return "User"
+    } else {
+        return ""
+    }
+}
+
+export const encryptId = (id) => {
+    const encryptedId = CryptoJS.AES.encrypt(id.toString(), encryptionKey).toString();
+    return encryptedId;
+  };
+  
+  export const decryptId = (encryptedId) => {
+    const decryptedId = CryptoJS.AES.decrypt(encryptedId, encryptionKey).toString(CryptoJS.enc.Utf8);
+    return decryptedId;
+  };

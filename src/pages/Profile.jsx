@@ -2,24 +2,55 @@ import React, { useEffect, useState } from "react";
 import UserDefault from "../assets/user/user-default.png";
 import Breadcrumb from "../components/Breadcrumbs/Breadcrumb";
 import { useSelector } from "react-redux";
+import { roleOptions } from "../data/data";
+import axios from "axios";
 
 const Profile = () => {
   const [formData, setFormData] = useState({
-    nama: "",
-    nip: "",
-    no_telp: "",
-    role: "",
+    email: "",
+    username: "",
+    name: "",
+    role: roleOptions[2],
+    provinsi: "",
+    kabupaten:"",
+    kecamatan:"",
+    nip:""
   });
   const user = useSelector((a) => a.auth.user);
+  const fetchBarangData = async () => {
+    try {
+      // eslint-disable-next-line
+      const responseUser = await axios({
+        method: 'get',
+        url: `${import.meta.env.VITE_APP_API_URL}/api/me`,
+        headers: {
+          'Content-Type': 'application/json',
+          //eslint-disable-next-line
+          'Authorization': `Bearer ${user?.token}`
+        }
+      })
+        .then(function (response) {
+          // handle success
+          // console.log(response)
+          const data = response.data
+          setFormData({
+            nama: data.name,
+            nip: data.nip,
+            no_telp: "",
+            role: data.role,
+            email: data.email,
+          });
+
+        })
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
   useEffect(() => {
-    setFormData({
-      nama: user.username,
-      nip: "",
-      no_telp: "",
-      role: user.role,
-      email: user.email,
-    });
-  }, []);
+    fetchBarangData()
+  }, [])
+
 
   return (
     <div className="mx-auto max-w-270">
@@ -35,74 +66,36 @@ const Profile = () => {
             </div>
             <div className="p-7">
               <form action="#">
-                {/* <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
-                  <div className="w-full sm:w-1/2">
-                    <label
-                      className="mb-3 block text-sm font-medium text-black dark:text-white"
-                      htmlFor="fullName"
-                    >
-                      Nama
-                    </label>
-                    <div className="relative">
-                      <span className="absolute left-4.5 top-4">
-                        <svg
-                          className="fill-current"
-                          width="20"
-                          height="20"
-                          viewBox="0 0 20 20"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <g opacity="0.8">
-                            <path
-                              fillRule="evenodd"
-                              clipRule="evenodd"
-                              d="M3.72039 12.887C4.50179 12.1056 5.5616 11.6666 6.66667 11.6666H13.3333C14.4384 11.6666 15.4982 12.1056 16.2796 12.887C17.061 13.6684 17.5 14.7282 17.5 15.8333V17.5C17.5 17.9602 17.1269 18.3333 16.6667 18.3333C16.2064 18.3333 15.8333 17.9602 15.8333 17.5V15.8333C15.8333 15.1703 15.5699 14.5344 15.1011 14.0655C14.6323 13.5967 13.9964 13.3333 13.3333 13.3333H6.66667C6.00363 13.3333 5.36774 13.5967 4.8989 14.0655C4.43006 14.5344 4.16667 15.1703 4.16667 15.8333V17.5C4.16667 17.9602 3.79357 18.3333 3.33333 18.3333C2.8731 18.3333 2.5 17.9602 2.5 17.5V15.8333C2.5 14.7282 2.93899 13.6684 3.72039 12.887Z"
-                              fill=""
-                            />
-                            <path
-                              fillRule="evenodd"
-                              clipRule="evenodd"
-                              d="M9.99967 3.33329C8.61896 3.33329 7.49967 4.45258 7.49967 5.83329C7.49967 7.214 8.61896 8.33329 9.99967 8.33329C11.3804 8.33329 12.4997 7.214 12.4997 5.83329C12.4997 4.45258 11.3804 3.33329 9.99967 3.33329ZM5.83301 5.83329C5.83301 3.53211 7.69849 1.66663 9.99967 1.66663C12.3009 1.66663 14.1663 3.53211 14.1663 5.83329C14.1663 8.13448 12.3009 9.99996 9.99967 9.99996C7.69849 9.99996 5.83301 8.13448 5.83301 5.83329Z"
-                              fill=""
-                            />
-                          </g>
-                        </svg>
-                      </span>
-                      <input
-                        className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                        type="text"
-                        name="fullName"
-                        id="fullName"
-                        value={formData.nama}
-                        onChange={(e) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            nama: e.target.value,
-                          }))
-                        }
-                        placeholder="Username"
-                      />
-                    </div>
-                  </div>
 
-                  <div className="w-full sm:w-1/2">
-                    <label
-                      className="mb-3 block text-sm font-medium text-black dark:text-white"
-                      htmlFor="phoneNumber"
-                    >
-                      Nomor HP
-                    </label>
-                    <input
-                      className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                      type="text"
-                      name="phoneNumber"
-                      id="phoneNumber"
-                      placeholder="+990 3343 7865"
-                      defaultValue="+990 3343 7865"
-                    />
+              <div className="mb-5.5">
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="h-14 w-14 rounded-full">
+                    <img src={UserDefault} alt="User" />
                   </div>
-                </div> */}
+                  <div>
+                    <span className="mb-1.5 text-black dark:text-white">
+                      Foto Profil Anda
+                    </span>
+                  </div>
+                </div>
+                  <div
+                  id="FileUpload"
+                  className="relative mb-5.5 block w-3/4 cursor-pointer appearance-none rounded border border-dashed border-primary bg-gray py-4 px-4 dark:bg-meta-4 sm:py-4"
+                >
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
+                  />
+                  <div className="flex flex-col items-center justify-center space-y-3">
+                    <p>
+                      <span className="text-primary">Upload Foto Profile Anda</span>
+                    </p>
+                    <p className="mt-1.5">SVG, PNG, JPG</p>
+                    <p>(max: 1MB size:800 X 800px)</p>
+                  </div>
+                </div>
+                </div>
 
                 <div className="mb-5.5">
                   <label
@@ -167,6 +160,29 @@ const Profile = () => {
                     name="Username"
                     id="Username"
                     placeholder="Username"
+                    value={formData.nama}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        nama: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+
+                <div className="mb-5.5">
+                  <label
+                    className="mb-3 block text-sm font-medium text-black dark:text-white"
+                    htmlFor="nama"
+                  >
+                    Nama
+                  </label>
+                  <input
+                    className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                    type="text"
+                    name="nama"
+                    id="nama"
+                    placeholder="nama"
                     value={formData.nama}
                     onChange={(e) =>
                       setFormData((prev) => ({
@@ -296,27 +312,20 @@ const Profile = () => {
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
               <h3 className="font-medium text-black dark:text-white">
-                Foto Profil Anda
+                TTE Anda
               </h3>
             </div>
             <div className="p-7">
               <form action="#">
                 <div className="mb-4 flex items-center gap-3">
-                  <div className="h-14 w-14 rounded-full">
-                    <img src={UserDefault} alt="User" />
+                  <div className="w-1/2">
+                    <img src={UserDefault} alt="User" className="w-full" />
                   </div>
                   <div>
                     <span className="mb-1.5 text-black dark:text-white">
-                      Edit Foto Profil Anda
+                      TTE Anda
                     </span>
-                    <span className="flex gap-2.5">
-                      <button className="text-sm hover:text-primary">
-                        Delete
-                      </button>
-                      <button className="text-sm hover:text-primary">
-                        Update
-                      </button>
-                    </span>
+
                   </div>
                 </div>
 
@@ -365,21 +374,6 @@ const Profile = () => {
                     <p className="mt-1.5">SVG, PNG, JPG or GIF</p>
                     <p>(max, 800 X 800px)</p>
                   </div>
-                </div>
-
-                <div className="flex justify-end gap-4.5">
-                  <button
-                    className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                    type="submit"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-90"
-                    type="submit"
-                  >
-                    Save
-                  </button>
                 </div>
               </form>
             </div>

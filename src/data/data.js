@@ -244,6 +244,20 @@ export const konfirmasiOptions = [
         "value": "0"
     }
 ]
+export const roleOptions = [
+    {
+        "label": "Admin",
+        "value": "1"
+    },
+    {
+        "label": "PPK",
+        "value": "2"
+    },
+    {
+        "label": "User",
+        "value": "3"
+    }
+]
 export const dataPuskesmas = [
     {
         "label": "Puskesmas Bintara Jaya",

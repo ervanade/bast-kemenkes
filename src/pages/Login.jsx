@@ -5,6 +5,7 @@ import useColorMode from "../hooks/useColorMode";
 import { dataUser } from "../data/data";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../store/authSlice";
+import axios from "axios";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -17,22 +18,47 @@ const Login = () => {
 
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const postApiLogin = async () => {
+    await axios({
+      method: 'post',
+      url: `${import.meta.env.VITE_APP_API_URL}/api/login`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: JSON.stringify({
+        email: formData?.email,
+        password: formData.password
+      })
+    })
+      .then(function (response) {
+          dispatch(loginUser(response.data.data));
+    localStorage.setItem("user", JSON.stringify(response.data.data));
+    setLoading(false);
+    navigate("/");
+      })
+      .catch((error) => {
+            setLoading(false);
+      return setError("Invalid email or password"); 
+      })
+  }
   const handleLogin = (e) => {
     e.preventDefault();
     setLoading(true);
-    const user = dataUser.find((a) => a.email === formData.email);
-    if (!user) {
-      setLoading(false);
-      return setError("Invalid email or password"); 
-    }
-    if (user.password !== formData.password) {
-      setLoading(false);s
-      return setError("Invalid email or password");
-    }
-    dispatch(loginUser(user));
-    localStorage.setItem("user", JSON.stringify(user));
-    setLoading(false);
-    navigate("/");
+    postApiLogin()
+  
+    // const user = dataUser.find((a) => a.email === formData.email);
+    // if (!user) {
+    //   setLoading(false);
+    //   return setError("Invalid email or password"); 
+    // }
+    // if (user.password !== formData.password) {
+    //   setLoading(false);s
+    //   return setError("Invalid email or password");
+    // }
+    // dispatch(loginUser(user));
+    // localStorage.setItem("user", JSON.stringify(user));
+    // setLoading(false);
+    // navigate("/");
   };
 
   const handleCheckboxChange = (event) => {

@@ -133,7 +133,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
               {/* <!-- Menu Item Calendar --> */}
 
               {/* <!-- Menu Item Profile --> */}
-              {user.role === "ppk" || user.role === "admin" ? (
+              {user.role === "2" || user.role === "1" ? (
                 <li>
                   <NavLink
                     to="/verifikasi"
@@ -356,7 +356,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
 
           {/* <!-- Others Group --> */}
-          {user.role === "admin" ? (
+          {user.role === "1" ? (
             <div>
               <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">
                 ADMIN

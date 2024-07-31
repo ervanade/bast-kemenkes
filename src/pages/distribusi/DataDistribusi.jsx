@@ -93,7 +93,7 @@ const DataDistribusi = () => {
                 <FaEdit size={16} />
               </Link>
             </button> */}
-            {/* {user.role === "admin" ? (
+            {/* {user.role === "1" ? (
               <button
                 title="Delete"
                 className="text-red-500 hover:text-red-700"
@@ -175,10 +175,10 @@ const DataDistribusi = () => {
               <Select
                 options={dataProvinsi}
                 defaultValue={dataProvinsi[0]}
-                className="w-64 sm:w-32 xl:w-64 bg-slate-500 my-react-select-container"
+                className="w-64 sm:w-32 xl:w-60 bg-slate-500 my-react-select-container"
                 classNamePrefix="my-react-select"
                 theme={selectThemeColors}
-                isDisabled={user.role === "user"}
+                isDisabled={user.role === "3"}
               />
             </div>
             <div className="">
@@ -191,9 +191,9 @@ const DataDistribusi = () => {
               <Select
                 options={dataKota}
                 defaultValue={dataKota[0]}
-                className="w-64 sm:w-32 lg:w-64"
+                className="w-64 sm:w-32 xl:w-60"
                 theme={selectThemeColors}
-                isDisabled={user.role === "user"}
+                isDisabled={user.role === "3"}
               />
             </div>
             <div className="">
@@ -207,7 +207,7 @@ const DataDistribusi = () => {
                 options={dataKecamatanState}
                 defaultValue={dataKecamatanState[0]}
                 onChange={setSelectedKecamatan}
-                className="w-64 sm:w-32 lg:w-64"
+                className="w-64 sm:w-32 xl:w-60"
                 theme={selectThemeColors}
               />
             </div>
@@ -265,7 +265,7 @@ const DataDistribusi = () => {
               <BiExport />
               <span className="hidden sm:block">Export</span>
             </button>
-            {user.role === "admin" ? (
+            {user.role === "1" ? (
               <button
                 title="Tambah Data Distribusi"
                 className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
@@ -284,7 +284,7 @@ const DataDistribusi = () => {
             ) : (
               ""
             )}
-            {user.role === "user" ? (
+            {user.role === "3" ? (
               <button
                 title="Tandatangani Dokumen BMN"
                 className="flex items-center gap-2 cursor-pointer text-base text-white  bg-blue-600 rounded-md tracking-tight"

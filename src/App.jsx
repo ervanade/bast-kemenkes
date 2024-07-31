@@ -26,6 +26,11 @@ import DataPuskesmas from "./pages/master-puskesmas/DataPuskesmas";
 import DataKecamatan from "./pages/master-kecamatan/DataKecamatan";
 import DataProvinsi from "./pages/master-provinsi/DataProvinsi";
 import DetailDistribusi from "./pages/distribusi/DetailDistribusi";
+import TambahUser from "./pages/admin/TambahUser";
+import EditProvinsi from "./pages/master-provinsi/EditProvinsi";
+import TambahProvinsi from "./pages/master-provinsi/TambahProvinsi";
+import TambahBarang from "./pages/master-barang/TambahBarang";
+import EditBarang from "./pages/master-barang/EditBarang";
 
 function App() {
   const { pathname } = useLocation();
@@ -72,17 +77,25 @@ function App() {
                 path="/data-verifikasi/form-distribusi"
                 element={<TambahDistribusi />}
               />
-              <Route path="/user-management" element={<UserManagement />} />
               <Route path="/not-found" element={<NotFound />} />
               <Route path="/" element={<ProtectedRoutesAdmin />}>
+              <Route path="/user-management" element={<UserManagement />} />
+              <Route path="/user-management/add" element={<TambahUser />} />
                 <Route
                   path="data-distribusi/add"
                   element={<TambahDistribusi />}
                 />
 
                 <Route path="data-barang" element={<DataBarang />} />
+                <Route path="data-barang/add" element={<TambahBarang />} />
+                <Route path="data-barang/edit/:id" element={<EditBarang />} />
+
                 <Route path="data-puskesmas" element={<DataPuskesmas />} />
+
                 <Route path="data-provinsi" element={<DataProvinsi />} />
+                <Route path="data-provinsi/add" element={<TambahProvinsi />} />
+                <Route path="data-provinsi/edit/:id" element={<EditProvinsi />} />
+
                 <Route path="data-kecamatan" element={<DataKecamatan />} />
               </Route>
             </Route>

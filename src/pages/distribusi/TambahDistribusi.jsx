@@ -55,11 +55,11 @@ const TambahDistribusi = () => {
       <Card>
         <div className="card-header flex justify-between">
           <h1 className="mb-12 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
-            {user.role === "admin"
+            {user.role === "1"
               ? "Form Input Data BAST Admin Dit Tata Kelola Kesmas"
-              : user.role === "ppk"
+              : user.role === "2"
               ? "Form TTE BAST dan Naskah Hibah Admin PPK"
-              : user.role === "user"
+              : user.role === "3"
               ? "Form Input Data BAST Admin Dinas Kesehatan Kab/Kota"
               : "Form Input Data BAST Admin Dinas Kesehatan Kab/Kota"}
           </h1>

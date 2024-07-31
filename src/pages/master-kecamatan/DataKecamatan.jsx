@@ -77,7 +77,7 @@ const DataKecamatan = () => {
                 <FaEdit size={16} />
               </Link>
             </button>
-            {user.role === "admin" ? (
+            {user.role === "1" ? (
               <button
                 title="Delete"
                 className="text-red-500 hover:text-red-700"
@@ -160,7 +160,7 @@ const DataKecamatan = () => {
             className="w-64 sm:w-100 bg-slate-500 my-react-select-container"
             classNamePrefix="my-react-select"
             theme={selectThemeColors}
-            isDisabled={user.role === "user"}
+            isDisabled={user.role === "3"}
           />
         </div>
         <div className="mb-3">
@@ -175,7 +175,7 @@ const DataKecamatan = () => {
             defaultValue={dataKota[0]}
             className="w-64 sm:w-100"
             theme={selectThemeColors}
-            isDisabled={user.role === "user"}
+            isDisabled={user.role === "3"}
           />
         </div>
         <div className="mb-3">
@@ -244,7 +244,7 @@ const DataKecamatan = () => {
               <BiExport />
               <span className="hidden sm:block">Export</span>
             </button>
-            {user.role === "admin" ? (
+            {user.role === "1" ? (
               <button
                 title="Tambah Data Distribusi"
                 className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"

@@ -5,6 +5,7 @@ import UserOne from "../../assets/user/user-01.png";
 import UserDefault from "../../assets/user/user-default.png";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../store/authSlice";
+import { returnRole } from "../../data/utils";
 
 const DropdownUser = () => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const DropdownUser = () => {
             {user.username || "Username"}
           </span>
           <span className="block text-xs capitalize">
-            {user.role || "Role"}
+          {user.role ? returnRole(user.role) : "" || "Role"}
           </span>
         </span>
 

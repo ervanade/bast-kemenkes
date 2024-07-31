@@ -111,11 +111,11 @@ const EditDistribusi = () => {
         <Modal showModal={showModal} setShowModal={setShowModal} />
         <div className="card-header flex justify-between">
           <h1 className="mb-12 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
-            {user.role === "admin"
+            {user.role === "1"
               ? "Form Edit Data BAST Admin Dit Tata Kelola Kesmas"
-              : user.role === "ppk"
+              : user.role === "2"
               ? "Form TTE BAST dan Naskah Hibah Admin PPK"
-              : user.role === "user"
+              : user.role === "3"
               ? "Form Edit Data BAST Admin Dinas Kesehatan Kab/Kota"
               : "Form Edit Data BAST Admin Dinas Kesehatan Kab/Kota"}
           </h1>
@@ -130,7 +130,7 @@ const EditDistribusi = () => {
         </div>
         <div className="w-full 2xl:w-4/5 ">
           <form className="mt-5" onSubmit={handleSimpan}>
-            {user.role === "admin" ? (
+            {user.role === "1" ? (
               <>
                 <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
                   <div className="sm:flex-[2_2_0%]">
@@ -238,7 +238,7 @@ const EditDistribusi = () => {
                   </div>
                 </div>
               </>
-            ) : user.role === "ppk" ? (
+            ) : user.role === "2" ? (
               <>
                 <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
                   <div className="sm:flex-[2_2_0%]">
@@ -576,7 +576,7 @@ const EditDistribusi = () => {
                   </div>
                 </div>
               </>
-            ) : user.role === "user" ? (
+            ) : user.role === "3" ? (
               <>
                 <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
                   <div className="sm:flex-[2_2_0%]">

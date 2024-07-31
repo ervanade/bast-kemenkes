@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import Select from "react-select";
 import DataTable from "react-data-table-component";
@@ -8,11 +8,12 @@ import {
   dataKota,
   dataProvinsi,
 } from "../../data/data";
-import { selectThemeColors } from "../../data/utils";
+import { encryptId, selectThemeColors } from "../../data/utils";
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import { BiExport, BiSolidFileExport } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 const DataProvinsi = () => {
   const user = useSelector((a) => a.auth.user);
@@ -20,64 +21,27 @@ const DataProvinsi = () => {
     () => [
       // { name: "No", selector: (row) => row.id, sortable: true },
       {
+        name: "No",
+        selector: (row, index) => row.id,
+        sortable: true,
+        width: "100px",
+      },
+      {
         name: "Provinsi",
-        selector: (row) => row.provinsi,
+        selector: (row) => row.name,
         sortable: true,
-        width: "100px",
-      },
-      {
-        name: "Kab/Kota",
-        selector: (row) => row.kab_kota,
-        sortable: true,
-        width: "100px",
-      },
-      { name: "Kecamatan", selector: (row) => row.kecamatan, sortable: true },
-      { name: "Puskesmas", selector: (row) => row.Puskesmas, sortable: true },
-      { name: "Nama Kapus", selector: (row) => row.nama_kapus, sortable: true },
-      {
-        name: "Nama Barang",
-        selector: (row) => row.nama_barang,
-        sortable: true,
-      },
-      {
-        name: "Jumlah Barang Dikirim",
-        selector: (row) => row.jumlah_barang_dikirim,
-        sortable: true,
-      },
-      {
-        name: "Jumlah Barang Diterima",
-        selector: (row) => row.jumlah_barang_diterima,
-        sortable: true,
-      },
-      {
-        name: "Status TTE",
-        selector: (row) => row.status_tte,
-        sortable: true,
-        width: "110px",
-      },
-      {
-        name: "Keterangan PPK Kemenkes",
-        selector: (row) => row.keterangan_ppk,
-        sortable: true,
+        // width: "100px",
       },
       {
         name: "Aksi",
         cell: (row) => (
           <div className="flex items-center space-x-2">
-            {/* <button
-              title="Input"
-              className="text-green-500 hover:text-green-700"
-            >
-              <Link to="/data-verifikasi/form-distribusi">
-                <FaPlus />
-              </Link>
-            </button> */}
             <button title="Edit" className="text-[#16B3AC] hover:text-cyan-500">
-              <Link to={`/data-distribusi/edit/${row.id}`}>
+              <Link to={`/data-provinsi/edit/${encryptId(row.id)}`}>
                 <FaEdit size={16} />
               </Link>
             </button>
-            {user.role === "admin" ? (
+            {user.role === "1" ? (
               <button
                 title="Delete"
                 className="text-red-500 hover:text-red-700"
@@ -98,108 +62,50 @@ const DataProvinsi = () => {
   );
 
   const [search, setSearch] = useState("");
-  const [dataKecamatanState, setDataKecamatanState] = useState([
-    { label: "Semua Kecamatan", value: "all" },
-    ...dataKecamatan,
-  ]);
   const [selectedKecamatan, setSelectedKecamatan] = useState(null);
-  const [filteredData, setFilteredData] = useState(dataDistribusiBekasi);
+  const [filteredData, setFilteredData] = useState([]);
 
   const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();
     setSearch(value);
 
-    const filtered = dataDistribusiBekasi.filter(
-      (item) =>
-        item.provinsi.toLowerCase().includes(value) ||
-        item.kab_kota.toLowerCase().includes(value) ||
-        item.kecamatan.toLowerCase().includes(value) ||
-        item.Puskesmas.toLowerCase().includes(value) ||
-        item.nama_kapus.toLowerCase().includes(value) ||
-        item.nama_barang.toLowerCase().includes(value) ||
-        item.jumlah_barang_dikirim.toString().includes(value) ||
-        item.jumlah_barang_diterima.toString().includes(value) ||
-        item.status_tte.toLowerCase().includes(value) ||
-        item.keterangan_ppk.toLowerCase().includes(value)
-    );
-
-    if (selectedKecamatan) {
-      selectedKecamatan.value != "all"
-        ? setFilteredData(
-            filtered.filter(
-              (item) => item.kecamatan === selectedKecamatan.label
-            )
-          )
-        : setFilteredData(filtered);
-    } else {
-      setFilteredData(filtered);
-    }
   };
 
   const handleExport = () => {
     // Implementasi untuk mengekspor data (misalnya ke CSV)
   };
 
+  const fetchProvinsiData = async () => {
+    try {
+      // eslint-disable-next-line
+      const responseUser = await axios({
+        method: 'get',
+        url: `${import.meta.env.VITE_APP_API_URL}/api/provinsi`,
+        headers: {
+          'Content-Type': 'application/json',
+          //eslint-disable-next-line
+          'Authorization': `Bearer ${user?.token}`
+        }
+      })
+        .then(function (response) {
+          // handle success
+          // console.log(response)
+          setFilteredData(response.data.data);
+
+        })
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    fetchProvinsiData()
+  }, [])
+
   return (
     <div>
-      <Breadcrumb pageName="Data Distribusi" />
-      <div className="flex flex-col items-center justify-center w-full tracking-tight mb-12">
-        <h1 className="font-bold mb-3 text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
-          Data Provinsi
-        </h1>
-        {/* <div className="mt-8 mb-3">
-          <label
-            className="block text-[#728294] text-lg font-normal mb-2"
-            htmlFor="email"
-          >
-            Provinsi
-          </label>
-          <Select
-            options={dataProvinsi}
-            defaultValue={dataProvinsi[0]}
-            className="w-64 sm:w-100 bg-slate-500 my-react-select-container"
-            classNamePrefix="my-react-select"
-            theme={selectThemeColors}
-            isDisabled={user.role === "user"}
-          />
-        </div>
-        <div className="mb-3">
-          <label
-            className="block text-[#728294] text-lg font-normal mb-2"
-            htmlFor="email"
-          >
-            Kab / Kota
-          </label>
-          <Select
-            options={dataKota}
-            defaultValue={dataKota[0]}
-            className="w-64 sm:w-100"
-            theme={selectThemeColors}
-            isDisabled={user.role === "user"}
-          />
-        </div>
-        <div className="mb-3">
-          <label
-            className="block text-[#728294] text-lg font-normal mb-2"
-            htmlFor="email"
-          >
-            Kecamatan
-          </label>
-          <Select
-            options={dataKecamatanState}
-            defaultValue={dataKecamatanState[0]}
-            onChange={setSelectedKecamatan}
-            className="w-64 sm:w-100"
-            theme={selectThemeColors}
-          />
-        </div>
-        <button
-          onClick={handleSearch}
-          className="cursor-pointer mt-8 text-lg text-white px-8 py-2 bg-primary rounded-md tracking-tight"
-        >
-          Cari Data
-        </button> */}
-      </div>
+      <Breadcrumb pageName="Data Provinsi" title="Data Provinsi" />
       <div className="rounded-md flex flex-col gap-4 overflow-hidden overflow-x-auto  border border-stroke bg-white py-4 md:py-8 px-4 md:px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex justify-between mb-4 items-center">
           <div className="relative">
@@ -244,7 +150,7 @@ const DataProvinsi = () => {
               <BiExport />
               <span className="hidden sm:block">Export</span>
             </button>
-            {user.role === "admin" ? (
+            {user.role === "1" ? (
               <button
                 title="Tambah Data Distribusi"
                 className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"

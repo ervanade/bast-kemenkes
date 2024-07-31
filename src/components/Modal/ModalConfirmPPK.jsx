@@ -124,7 +124,7 @@ const ModalConfirmPPK = ({
                 </div>
                 <form className="mt-5" onSubmit={handleSimpan}>
                   <div className=" p-6 flex-auto w-full">
-                    {user.role === "admin" ? (
+                    {user.role === "1" ? (
                       <>
                         <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
                           <div className="">
@@ -232,7 +232,7 @@ const ModalConfirmPPK = ({
                           </div>
                         </div>
                       </>
-                    ) : user.role === "ppk" ? (
+                    ) : user.role === "2" ? (
                       <>
                         <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
                           <div className="">
@@ -571,7 +571,7 @@ const ModalConfirmPPK = ({
                           </div>
                         </div>
                       </>
-                    ) : user.role === "user" ? (
+                    ) : user.role === "3" ? (
                       <>
                         <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
                           <div className="">
