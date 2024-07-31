@@ -63,7 +63,7 @@ const ModalProfile = ({
             <div className="relative my-6 mx-auto w-[85%] max-h-[80%] overflow-auto sm:w-3/4 xl:w-1/2 z-1">
               <div className="bg-white p-4 rounded shadow-md w-full h-full">
                 <div className="flex justify-between items-center border-b border-gray-300 mb-4 pb-2">
-                  <h2 className="text-lg font-bold">Add TTE</h2>
+                  <h2 className="text-lg font-bold text-teal-500">Input TTE</h2>
                   <button
                     className="text-gray-600 hover:text-gray-900"
                     onClick={onClose}

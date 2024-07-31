@@ -325,7 +325,7 @@ const Profile = () => {
                 {!signature && !file ? (
                   <div className="w-full  rounded border border-dashed border-primary bg-gray py-4 px-4 dark:bg-meta-4 sm:py-7.5 ">
                     <p className="text-center text-red-400 p-2 font-semibold">
-                      Anda Belum TTE!
+                      Anda Belum Input TTE!
                     </p>
                   </div>
                 ) : (
