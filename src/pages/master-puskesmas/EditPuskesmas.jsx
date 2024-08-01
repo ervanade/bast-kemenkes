@@ -14,15 +14,16 @@ import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import axios from "axios";
 
-const TambahBarang = () => {
+const EditPuskesmas = () => {
   const [formData, setFormData] = useState({
-    nama_alkes: "",
-    standar_rawat_inap: "",
-    standar_nonrawat_inap: "",
-    merk: "",
-    tipe: "",
-    satuan: "",
-    harga_satuan: "",
+    nama_puskesmas: "",
+    id_provinsi: "",
+    id_kabupaten: "",
+    id_kecamatan: "",
+    alamat: "",
+    nomor_telpon: "",
+    email: "",
+    status_puskesmas: "",
     keterangan: "",
   });
 
@@ -34,16 +35,51 @@ const TambahBarang = () => {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const { id } = useParams();
+
+  const fetchPuskesmasData = async () => {
+    try {
+      // eslint-disable-next-line
+      const responseUser = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/puskesmas/${decryptId(
+          id
+        )}`,
+        headers: {
+          "Content-Type": "application/json",
+          //eslint-disable-next-line
+          Authorization: `Bearer ${user?.token}`,
+        },
+      }).then(function (response) {
+        // handle success
+        // console.log(response)
+        const data = response.data.data;
+        setFormData({
+          nama_puskesmas: data.nama_puskesmas || "",
+          id_provinsi: data.id_provinsi || "",
+          id_kabupaten: data.id_kabupaten || "",
+          id_kecamatan: data.id_kecamatan || "",
+          alamat: data.alamat || "",
+          nomor_telpon: data.nomor_telpon || "",
+          email: data.email || "",
+          status_puskesmas: data.status_puskesmas || "",
+          keterangan: data.keterangan || "",
+        });
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleChange = (event) => {
     const { id, value, files } = event.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  const tambahBarang = async () => {
+  const updatePuskesmas = async () => {
     await axios({
-      method: "post",
-      url: `${import.meta.env.VITE_APP_API_URL}/api/barang`,
+      method: "put",
+      url: `${import.meta.env.VITE_APP_API_URL}/api/puskesmas/${decryptId(id)}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${user?.token}`,
@@ -51,8 +87,8 @@ const TambahBarang = () => {
       data: JSON.stringify(formData),
     })
       .then(function (response) {
-        Swal.fire("Data Berhasil di Input!", "", "success");
-        navigate("/master-data-barang");
+        Swal.fire("Data Berhasil di Update!", "", "success");
+        navigate("/master-data-puskesmas");
       })
       .catch((error) => {
         setLoading(false);
@@ -62,20 +98,23 @@ const TambahBarang = () => {
   const handleSimpan = async (e) => {
     e.preventDefault();
     setLoading(true);
-    tambahBarang();
+    updatePuskesmas();
   };
+  useEffect(() => {
+    fetchPuskesmasData();
+  }, []);
 
   return (
     <div>
-      <Breadcrumb pageName="Form Tambah Data Barang" />
+      <Breadcrumb pageName="Form Edit Data Puskesmas" />
       <Card>
         <div className="card-header flex justify-between">
           <h1 className="mb-12 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
-            {user.role === "1" ? "Form Tambah Data Barang" : ""}
+            {user.role === "1" ? "Form Edit Data Puskesmas" : ""}
           </h1>
           <div>
             <Link
-              to="/master-data-barang"
+              to="/master-data-puskesmas"
               className="flex items-center px-4 py-2 bg-primary text-white rounded-md font-semibold"
             >
               Back
@@ -90,7 +129,7 @@ const TambahBarang = () => {
                   className="block text-[#728294] text-base font-normal mb-2"
                   htmlFor="nama_alkes"
                 >
-                  Nama Barang :
+                  Nama Puskesmas :
                 </label>
               </div>
               <div className="sm:flex-[5_5_0%]">
@@ -98,12 +137,12 @@ const TambahBarang = () => {
                   className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="nama_alkes"
-                  value={formData.nama_alkes}
+                  id="nama_puskesmas"
+                  value={formData.nama_puskesmas}
                   onChange={handleChange}
                   type="text"
                   required
-                  placeholder="Nama Barang"
+                  placeholder="Nama Puskesmas"
                 />
               </div>
             </div>
@@ -112,9 +151,9 @@ const TambahBarang = () => {
               <div className="sm:flex-[2_2_0%]">
                 <label
                   className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="standar_rawat_inap"
+                  htmlFor="id_provinsi"
                 >
-                  Standar Rawat Inap :
+                  Provinsi :
                 </label>
               </div>
               <div className="sm:flex-[5_5_0%]">
@@ -122,12 +161,12 @@ const TambahBarang = () => {
                   className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="standar_rawat_inap"
-                  value={formData.standar_rawat_inap}
+                  id="id_provinsi"
+                  value={formData.id_provinsi}
                   onChange={handleChange}
                   type="text"
                   required
-                  placeholder="Standar Rawat Inap"
+                  placeholder="Provinsi"
                 />
               </div>
             </div>
@@ -136,9 +175,9 @@ const TambahBarang = () => {
               <div className="sm:flex-[2_2_0%]">
                 <label
                   className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="standar_nonrawat_inap"
+                  htmlFor="id_kabupaten"
                 >
-                  Standar Non Rawat Inap :
+                  Kabupaten :
                 </label>
               </div>
               <div className="sm:flex-[5_5_0%]">
@@ -146,12 +185,12 @@ const TambahBarang = () => {
                   className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="standar_nonrawat_inap"
-                  value={formData.standar_nonrawat_inap}
+                  id="id_kabupaten"
+                  value={formData.id_kabupaten}
                   onChange={handleChange}
                   type="text"
                   required
-                  placeholder="Standar Non Rawat Inap"
+                  placeholder="Kabupaten"
                 />
               </div>
             </div>
@@ -160,9 +199,9 @@ const TambahBarang = () => {
               <div className="sm:flex-[2_2_0%]">
                 <label
                   className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="merk"
+                  htmlFor="id_kecamatan"
                 >
-                  Merk :
+                  Kecamatan :
                 </label>
               </div>
               <div className="sm:flex-[5_5_0%]">
@@ -170,12 +209,12 @@ const TambahBarang = () => {
                   className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="merk"
-                  value={formData.merk}
+                  id="id_kecamatan"
+                  value={formData.id_kecamatan}
                   onChange={handleChange}
                   type="text"
                   required
-                  placeholder="Merk"
+                  placeholder="Kecamatan"
                 />
               </div>
             </div>
@@ -184,9 +223,9 @@ const TambahBarang = () => {
               <div className="sm:flex-[2_2_0%]">
                 <label
                   className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="tipe"
+                  htmlFor="alamat"
                 >
-                  Tipe :
+                  Alamat :
                 </label>
               </div>
               <div className="sm:flex-[5_5_0%]">
@@ -194,12 +233,12 @@ const TambahBarang = () => {
                   className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="tipe"
-                  value={formData.tipe}
+                  id="alamat"
+                  value={formData.alamat}
                   onChange={handleChange}
                   type="text"
                   required
-                  placeholder="Tipe"
+                  placeholder="Alamat"
                 />
               </div>
             </div>
@@ -208,9 +247,9 @@ const TambahBarang = () => {
               <div className="sm:flex-[2_2_0%]">
                 <label
                   className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="satuan"
+                  htmlFor="nomor_telpon"
                 >
-                  Satuan :
+                  Nomor Telpon :
                 </label>
               </div>
               <div className="sm:flex-[5_5_0%]">
@@ -218,12 +257,12 @@ const TambahBarang = () => {
                   className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="satuan"
-                  value={formData.satuan}
+                  id="nomor_telpon"
+                  value={formData.nomor_telpon}
                   onChange={handleChange}
                   type="text"
                   required
-                  placeholder="Satuan"
+                  placeholder="Nomor Telpon"
                 />
               </div>
             </div>
@@ -232,9 +271,9 @@ const TambahBarang = () => {
               <div className="sm:flex-[2_2_0%]">
                 <label
                   className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="harga_satuan"
+                  htmlFor="email"
                 >
-                  Harga Satuan :
+                  Email :
                 </label>
               </div>
               <div className="sm:flex-[5_5_0%]">
@@ -242,12 +281,36 @@ const TambahBarang = () => {
                   className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="harga_satuan"
-                  value={formData.harga_satuan}
+                  id="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  type="email"
+                  required
+                  placeholder="Email"
+                />
+              </div>
+            </div>
+
+            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+              <div className="sm:flex-[2_2_0%]">
+                <label
+                  className="block text-[#728294] text-base font-normal mb-2"
+                  htmlFor="status_puskesmas"
+                >
+                  Status Puskesmas :
+                </label>
+              </div>
+              <div className="sm:flex-[5_5_0%]">
+                <input
+                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                  "border-red-500" 
+               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                  id="status_puskesmas"
+                  value={formData.status_puskesmas}
                   onChange={handleChange}
                   type="text"
                   required
-                  placeholder="Harga Satuan"
+                  placeholder="Status Puskesmas"
                 />
               </div>
             </div>
@@ -270,7 +333,7 @@ const TambahBarang = () => {
                   className={` bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                     "border-red-500" 
                  rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  placeholder="Keterangan Barang"
+                  placeholder="Keterangan Puskesmas"
                 ></textarea>
               </div>
             </div>
@@ -304,4 +367,4 @@ const TambahBarang = () => {
   );
 };
 
-export default TambahBarang;
+export default EditPuskesmas;

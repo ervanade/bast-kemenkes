@@ -20,36 +20,36 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const postApiLogin = async () => {
     await axios({
-      method: 'post',
+      method: "post",
       url: `${import.meta.env.VITE_APP_API_URL}/api/login`,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       data: JSON.stringify({
         email: formData?.email,
-        password: formData.password
-      })
+        password: formData.password,
+      }),
     })
       .then(function (response) {
-          dispatch(loginUser(response.data.data));
-    localStorage.setItem("user", JSON.stringify(response.data.data));
-    setLoading(false);
-    navigate("/");
+        dispatch(loginUser(response.data.data));
+        localStorage.setItem("user", JSON.stringify(response.data.data));
+        setLoading(false);
+        navigate("/");
       })
       .catch((error) => {
-            setLoading(false);
-      return setError("Invalid email or password"); 
-      })
-  }
+        setLoading(false);
+        return setError("Invalid email or password");
+      });
+  };
   const handleLogin = (e) => {
     e.preventDefault();
     setLoading(true);
-    postApiLogin()
-  
+    postApiLogin();
+
     // const user = dataUser.find((a) => a.email === formData.email);
     // if (!user) {
     //   setLoading(false);
-    //   return setError("Invalid email or password"); 
+    //   return setError("Invalid email or password");
     // }
     // if (user.password !== formData.password) {
     //   setLoading(false);s
@@ -166,6 +166,7 @@ const Login = () => {
               <button
                 className="w-full bg-[#0ACBC2]  text-white font-bold py-4 px-6 rounded focus:outline-none focus:shadow-outline"
                 type="submit"
+                disabled={loading}
               >
                 {loading ? "Loading..." : "Masuk"}
               </button>

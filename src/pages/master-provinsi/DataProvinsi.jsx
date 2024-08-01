@@ -14,9 +14,97 @@ import { BiExport, BiSolidFileExport } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import Swal from "sweetalert2";
+import { CgSpinner } from "react-icons/cg";
 
 const DataProvinsi = () => {
   const user = useSelector((a) => a.auth.user);
+
+  const [search, setSearch] = useState(""); // Initialize search state with an empty string
+  const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const handleSearch = (event) => {
+    const value = event.target.value.toLowerCase();
+    setSearch(value);
+
+    const filtered = data.filter((item) => {
+      return item?.name && item.name.toLowerCase().includes(value);
+    });
+
+    setFilteredData(filtered);
+  };
+
+  const handleExport = () => {
+    // Implementasi untuk mengekspor data (misalnya ke CSV)
+  };
+
+  const fetchProvinsiData = async () => {
+    setLoading(true);
+    setError(false);
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/provinsi`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setData(response.data.data);
+      setFilteredData(response.data.data);
+    } catch (error) {
+      setError(true);
+      setFilteredData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProvinsiData();
+  }, []);
+
+  const deleteProvinsi = async (id) => {
+    await axios({
+      method: "delete",
+      url: `${import.meta.env.VITE_APP_API_URL}/api/provinsi/${id}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user?.token}`,
+      },
+    })
+      .then(() => {
+        fetchProvinsiData();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleConfirmDeleteProvinsi = async (id) => {
+    return Swal.fire({
+      title: "Are you sure?",
+      text: "You will Delete This Provinsi!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      confirmButtonColor: "#16B3AC",
+    }).then(async (result) => {
+      if (result.value) {
+        await deleteProvinsi(id);
+        Swal.fire({
+          icon: "success",
+          title: "Deleted!",
+          text: "Your Provinsi has been deleted.",
+        });
+      }
+    });
+  };
+
   const columns = useMemo(
     () => [
       // { name: "No", selector: (row) => row.id, sortable: true },
@@ -37,7 +125,11 @@ const DataProvinsi = () => {
         cell: (row) => (
           <div className="flex items-center space-x-2">
             <button title="Edit" className="text-[#16B3AC] hover:text-cyan-500">
-              <Link to={`/data-provinsi/edit/${encryptId(row.id)}`}>
+              <Link
+                to={`/master-data-provinsi/edit/${encodeURIComponent(
+                  encryptId(row.id)
+                )}`}
+              >
                 <FaEdit size={16} />
               </Link>
             </button>
@@ -45,6 +137,7 @@ const DataProvinsi = () => {
               <button
                 title="Delete"
                 className="text-red-500 hover:text-red-700"
+                onClick={() => handleConfirmDeleteProvinsi(row.id)}
               >
                 <FaTrash size={16} />
               </button>
@@ -58,50 +151,8 @@ const DataProvinsi = () => {
         button: true,
       },
     ],
-    []
+    [handleConfirmDeleteProvinsi, user.role]
   );
-
-  const [search, setSearch] = useState("");
-  const [selectedKecamatan, setSelectedKecamatan] = useState(null);
-  const [filteredData, setFilteredData] = useState([]);
-
-  const handleSearch = (event) => {
-    const value = event.target.value.toLowerCase();
-    setSearch(value);
-
-  };
-
-  const handleExport = () => {
-    // Implementasi untuk mengekspor data (misalnya ke CSV)
-  };
-
-  const fetchProvinsiData = async () => {
-    try {
-      // eslint-disable-next-line
-      const responseUser = await axios({
-        method: 'get',
-        url: `${import.meta.env.VITE_APP_API_URL}/api/provinsi`,
-        headers: {
-          'Content-Type': 'application/json',
-          //eslint-disable-next-line
-          'Authorization': `Bearer ${user?.token}`
-        }
-      })
-        .then(function (response) {
-          // handle success
-          // console.log(response)
-          setFilteredData(response.data.data);
-
-        })
-
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  useEffect(() => {
-    fetchProvinsiData()
-  }, [])
 
   return (
     <div>
@@ -143,7 +194,7 @@ const DataProvinsi = () => {
           </div>
           <div className="div flex gap-2 flex-row">
             <button
-              title="Export Data Distribusi"
+              title="Export Data Provinsi"
               className="flex items-center gap-2 cursor-pointer text-base text-white px-4 py-2 bg-primary rounded-md tracking-tight"
               onClick={handleExport}
             >
@@ -152,18 +203,16 @@ const DataProvinsi = () => {
             </button>
             {user.role === "1" ? (
               <button
-                title="Tambah Data Distribusi"
+                title="Tambah Data Provinsi"
                 className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
                 onClick={handleExport}
               >
                 <Link
-                  to="/data-distribusi/add"
+                  to="/master-data-provinsi/add"
                   className="flex items-center gap-2 px-4 py-2"
                 >
                   <FaPlus size={16} />
-                  <span className="hidden sm:block">
-                    Tambah Data Distribusi
-                  </span>
+                  <span className="hidden sm:block">Tambah Data Provinsi</span>
                 </Link>
               </button>
             ) : (
@@ -172,22 +221,31 @@ const DataProvinsi = () => {
           </div>
         </div>
         <div className="overflow-x-auto">
-          <DataTable
-            columns={columns}
-            data={filteredData}
-            pagination
-            persistTableHead
-            highlightOnHover
-            pointerOnHover
-            customStyles={{
-              headCells: {
-                style: {
-                  backgroundColor: "#EBFBFA",
-                  color: "#728294",
+          {loading ? (
+            <div className="flex justify-center items-center">
+              <CgSpinner className="animate-spin inline-block w-8 h-8 text-teal-400" />
+              <span className="ml-2">Loading...</span>
+            </div>
+          ) : error || filteredData.length === 0 ? (
+            <div className="text-center">Data Tidak Tersedia.</div>
+          ) : (
+            <DataTable
+              columns={columns}
+              data={filteredData}
+              pagination
+              persistTableHead
+              highlightOnHover
+              pointerOnHover
+              customStyles={{
+                headCells: {
+                  style: {
+                    backgroundColor: "#EBFBFA",
+                    color: "#728294",
+                  },
                 },
-              },
-            }}
-          />
+              }}
+            />
+          )}
         </div>
       </div>
     </div>

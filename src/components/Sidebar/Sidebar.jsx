@@ -375,7 +375,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                         <NavLink
                           to="#"
                           className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                            (pathname === "/ui" || pathname.includes("ui")) &&
+                            (pathname === "/master" ||
+                              pathname.includes("master")) &&
                             "bg-graydark dark:bg-meta-4 text-primary"
                           }`}
                           onClick={(e) => {
@@ -444,7 +445,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                           }`}
                         >
                           <ul className="mb-5.5 mt-4 flex flex-col gap-2.5 pl-6">
-                            <li>
+                            {/* <li>
                               <NavLink
                                 to="/user-management"
                                 className={({ isActive }) =>
@@ -454,32 +455,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                               >
                                 User Management
                               </NavLink>
-                            </li>
+                            </li> */}
                             <li>
                               <NavLink
-                                to="/data-provinsi"
-                                className={({ isActive }) =>
-                                  "group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-primary " +
-                                  (isActive && "!text-primary")
-                                }
-                              >
-                                Data Provinsi
-                              </NavLink>
-                            </li>
-                            <li>
-                              <NavLink
-                                to="/data-kecamatan"
-                                className={({ isActive }) =>
-                                  "group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-primary " +
-                                  (isActive && "!text-primary")
-                                }
-                              >
-                                Data Kecamatan
-                              </NavLink>
-                            </li>
-                            <li>
-                              <NavLink
-                                to="/data-puskesmas"
+                                to="/master-data-puskesmas"
                                 className={({ isActive }) =>
                                   "group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-primary " +
                                   (isActive && "!text-primary")
@@ -490,13 +469,35 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                             </li>
                             <li>
                               <NavLink
-                                to="/data-barang"
+                                to="/master-data-barang"
                                 className={({ isActive }) =>
                                   "group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-primary " +
                                   (isActive && "!text-primary")
                                 }
                               >
                                 Data Barang
+                              </NavLink>
+                            </li>
+                            <li>
+                              <NavLink
+                                to="/master-data-provinsi"
+                                className={({ isActive }) =>
+                                  "group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-primary " +
+                                  (isActive && "!text-primary")
+                                }
+                              >
+                                Data Provinsi
+                              </NavLink>
+                            </li>
+                            <li>
+                              <NavLink
+                                to="/master-data-kecamatan"
+                                className={({ isActive }) =>
+                                  "group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-primary " +
+                                  (isActive && "!text-primary")
+                                }
+                              >
+                                Data Kecamatan
                               </NavLink>
                             </li>
 

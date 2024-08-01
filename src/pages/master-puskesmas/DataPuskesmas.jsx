@@ -14,9 +14,106 @@ import { BiExport, BiSolidFileExport } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import Swal from "sweetalert2";
+import { CgSpinner } from "react-icons/cg";
 
 const DataPuskesmas = () => {
   const user = useSelector((a) => a.auth.user);
+  const [search, setSearch] = useState(""); // Initialize search state with an empty string
+  const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const handleSearch = (event) => {
+    const value = event.target.value.toLowerCase();
+    setSearch(value);
+
+    const filtered = data.filter((item) => {
+      return (
+        (item?.nama_puskesmas &&
+          item.nama_puskesmas.toLowerCase().includes(value)) ||
+        (item?.id_provinsi && item.id_provinsi.toLowerCase().includes(value)) ||
+        (item?.id_kabupaten &&
+          item.id_kabupaten.toLowerCase().includes(value)) ||
+        (item?.id_kecamatan &&
+          item.id_kecamatan.toLowerCase().includes(value)) ||
+        (item?.alamat && item.alamat.toLowerCase().includes(value)) ||
+        (item?.nomor_telpon && item.nomor_telpon.toLowerCase().includes(value))
+      );
+    });
+
+    setFilteredData(filtered);
+  };
+
+  const handleExport = () => {
+    // Implementasi untuk mengekspor data (misalnya ke CSV)
+  };
+
+  const fetchPuskesmasData = async () => {
+    setLoading(true);
+    setError(false);
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/puskesmas`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setData(response.data.data);
+      setFilteredData(response.data.data);
+    } catch (error) {
+      setError(true);
+      setFilteredData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deletePuskesmas = async (id) => {
+    await axios({
+      method: "delete",
+      url: `${import.meta.env.VITE_APP_API_URL}/api/puskesmas/${id}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user?.token}`,
+      },
+    })
+      .then(() => {
+        fetchPuskesmasData();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleConfirmDeletePuskesmas = async (id) => {
+    return Swal.fire({
+      title: "Are you sure?",
+      text: "You will Delete This Puskesmas!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      confirmButtonColor: "#16B3AC",
+    }).then(async (result) => {
+      if (result.value) {
+        await deletePuskesmas(id);
+        Swal.fire({
+          icon: "success",
+          title: "Deleted!",
+          text: "Your Puskesmas has been deleted.",
+        });
+      }
+    });
+  };
+
+  useEffect(() => {
+    fetchPuskesmasData();
+  }, []);
+
   const columns = useMemo(
     () => [
       // { name: "No", selector: (row) => row.id, sortable: true },
@@ -67,7 +164,11 @@ const DataPuskesmas = () => {
         cell: (row) => (
           <div className="flex items-center space-x-2">
             <button title="Edit" className="text-[#16B3AC] hover:text-cyan-500">
-              <Link to={`/data-puskesmas/edit/${encryptId(row.id)}`}>
+              <Link
+                to={`/master-data-puskesmas/edit/${encodeURIComponent(
+                  encryptId(row.id)
+                )}`}
+              >
                 <FaEdit size={16} />
               </Link>
             </button>
@@ -75,6 +176,7 @@ const DataPuskesmas = () => {
               <button
                 title="Delete"
                 className="text-red-500 hover:text-red-700"
+                onClick={() => handleConfirmDeletePuskesmas(row.id)}
               >
                 <FaTrash size={16} />
               </button>
@@ -88,50 +190,8 @@ const DataPuskesmas = () => {
         button: true,
       },
     ],
-    []
+    [handleConfirmDeletePuskesmas, user.role]
   );
-
-  const [search, setSearch] = useState("");
-  const [selectedKecamatan, setSelectedKecamatan] = useState(null);
-  const [filteredData, setFilteredData] = useState([]);
-
-  const handleSearch = (event) => {
-    const value = event.target.value.toLowerCase();
-    setSearch(value);
-
-  };
-
-  const handleExport = () => {
-    // Implementasi untuk mengekspor data (misalnya ke CSV)
-  };
-
-  const fetchPuskesmasData = async () => {
-    try {
-      // eslint-disable-next-line
-      const responseUser = await axios({
-        method: 'get',
-        url: `${import.meta.env.VITE_APP_API_URL}/api/puskesmas`,
-        headers: {
-          'Content-Type': 'application/json',
-          //eslint-disable-next-line
-          'Authorization': `Bearer ${user?.token}`
-        }
-      })
-        .then(function (response) {
-          // handle success
-          // console.log(response)
-          setFilteredData(response.data.data);
-
-        })
-
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  useEffect(() => {
-    fetchPuskesmasData()
-  }, [])
 
   return (
     <div>
@@ -187,13 +247,11 @@ const DataPuskesmas = () => {
                 onClick={handleExport}
               >
                 <Link
-                  to="/data-puskesmas/add"
+                  to="/master-data-puskesmas/add"
                   className="flex items-center gap-2 px-4 py-2"
                 >
                   <FaPlus size={16} />
-                  <span className="hidden sm:block">
-                    Tambah Data Puskesmas
-                  </span>
+                  <span className="hidden sm:block">Tambah Data Puskesmas</span>
                 </Link>
               </button>
             ) : (
@@ -202,22 +260,31 @@ const DataPuskesmas = () => {
           </div>
         </div>
         <div className="overflow-x-auto">
-          <DataTable
-            columns={columns}
-            data={filteredData}
-            pagination
-            persistTableHead
-            highlightOnHover
-            pointerOnHover
-            customStyles={{
-              headCells: {
-                style: {
-                  backgroundColor: "#EBFBFA",
-                  color: "#728294",
+          {loading ? (
+            <div className="flex justify-center items-center">
+              <CgSpinner className="animate-spin inline-block w-8 h-8 text-teal-400" />
+              <span className="ml-2">Loading...</span>
+            </div>
+          ) : error || filteredData.length === 0 ? (
+            <div className="text-center">Data Tidak Tersedia.</div>
+          ) : (
+            <DataTable
+              columns={columns}
+              data={filteredData}
+              pagination
+              persistTableHead
+              highlightOnHover
+              pointerOnHover
+              customStyles={{
+                headCells: {
+                  style: {
+                    backgroundColor: "#EBFBFA",
+                    color: "#728294",
+                  },
                 },
-              },
-            }}
-          />
+              }}
+            />
+          )}
         </div>
       </div>
     </div>

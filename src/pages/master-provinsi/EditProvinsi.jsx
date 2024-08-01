@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import Card from "../../components/Card/Card";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { dataBarang, dataKecamatan, dataPuskesmas, roleOptions } from "../../data/data";
+import {
+  dataBarang,
+  dataKecamatan,
+  dataPuskesmas,
+  roleOptions,
+} from "../../data/data";
 import { decryptId, selectThemeColors } from "../../data/utils";
 import Select from "react-select";
 import Swal from "sweetalert2";
@@ -11,22 +16,12 @@ import axios from "axios";
 
 const EditProvinsi = () => {
   const [formData, setFormData] = useState({
-    password: "",
-    email: "",
-    c_password: "",
-    username: "",
     name: "",
-    role: roleOptions[2],
-    provinsi: "",
-    kabupaten:"",
-    kecamatan:"",
-    nip:""
   });
 
   const navigate = useNavigate();
   const user = useSelector((a) => a.auth.user);
 
-  const [listProvinsi, setListProvinsi] = useState([]);
   const [listKota, setListKota] = useState([]);
   const [listKecamatan, setListKecamatan] = useState([]);
 
@@ -38,65 +33,72 @@ const EditProvinsi = () => {
     try {
       // eslint-disable-next-line
       const responseUser = await axios({
-        method: 'get',
-        url: `${import.meta.env.VITE_APP_API_URL}/api/provinsi`,
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/provinsi/${decryptId(
+          id
+        )}`,
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           //eslint-disable-next-line
-          'Authorization': `Bearer ${user?.token}`
-        }
-      })
-        .then(function (response) {
-          // handle success
-          // console.log(response)
-          setListProvinsi(response.data.data);
-
-        })
-
+          Authorization: `Bearer ${user?.token}`,
+        },
+      }).then(function (response) {
+        // handle success
+        // console.log(response)
+        const data = response.data.data;
+        setFormData({
+          name: data.name || "",
+        });
+      });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
+
+  const handleChange = (event) => {
+    const { id, value, files } = event.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const updateProvinsi = async () => {
+    await axios({
+      method: "put",
+      url: `${import.meta.env.VITE_APP_API_URL}/api/provinsi/${decryptId(id)}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user?.token}`,
+      },
+      data: JSON.stringify(formData),
+    })
+      .then(function (response) {
+        Swal.fire("Data Berhasil di Update!", "", "success");
+        navigate("/master-data-provinsi");
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log(error);
+      });
+  };
   const handleSimpan = async (e) => {
     e.preventDefault();
-    Swal.fire({
-      title: "Perhatian",
-      text: "Jumlah dikirim dan diterima sudah sesuai, tandatangani BAST ini?",
-      showDenyButton: true,
-      showCancelButton: true,
-      denyButtonColor: "#3B82F6",
-      confirmButtonColor: "#16B3AC",
-      confirmButtonText: "Ya",
-      denyButtonText: `Simpan Data`,
-    }).then((result) => {
-      /* Read more about isConfirmed, isDenied below */
-      if (result.isConfirmed) {
-        Swal.fire("Data Berhasil di Input!", "", "success");
-        navigate("/data-distribusi");
-      } else if (result.isDenied) {
-        Swal.fire("Simpan Data Berhasil!", "", "success");
-        navigate("/data-distribusi");
-      }
-    });
+    setLoading(true);
+    updateProvinsi();
   };
   useEffect(() => {
-    fetchProvinsiData()
-  
-  }, [])
-  
+    fetchProvinsiData();
+  }, []);
+
   return (
     <div>
-      <Breadcrumb pageName="Form Input Data User" />
+      <Breadcrumb pageName="Form Edit Data Provinsi" />
       <Card>
         <div className="card-header flex justify-between">
           <h1 className="mb-12 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
-            {user.role === "1"
-              ? "Form Input Data User"
-              : ""}
+            {user.role === "1" ? "Form Edit Data Provinsi" : ""}
           </h1>
           <div>
             <Link
-              to="/data-distribusi"
+              to="/master-data-provinsi"
               className="flex items-center px-4 py-2 bg-primary text-white rounded-md font-semibold"
             >
               Back
@@ -109,280 +111,25 @@ const EditProvinsi = () => {
               <div className="sm:flex-[2_2_0%]">
                 <label
                   className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="email"
+                  htmlFor="name"
                 >
-                  Email :
+                  Nama Provinsi :
                 </label>
               </div>
               <div className="sm:flex-[5_5_0%]">
-              <input
-                className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                <input
+                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                id="email"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    email: e.target.value,
-                  }))
-                }
-                type="email"
-                required
-                placeholder="Email"
-              />
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="password"
-                >
-                  Password :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-              <input
-                className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                id="password"
-                required
-                type="password"
-                value={formData.password}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    password: e.target.value,
-                  }))
-                }
-                placeholder="*******"
-              />
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="password"
-                >
-                  Confirm Password :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-              <input
-                className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                id="password"
-                required
-                type="password"
-                value={formData.c_password}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    c_password: e.target.value,
-                  }))
-                }
-                placeholder="*******"
-              />
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="email"
-                >
-                  Username :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-              <input
-                className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                id="username"
-                value={formData.username}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    username: e.target.value,
-                  }))
-                }
-                type="text"
-                required
-                placeholder="Username"
-              />
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="email"
-                >
-                  Nama :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-              <input
-                className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                id="name"
-                value={formData.name}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    name: e.target.value,
-                  }))
-                }
-                type="text"
-                required
-                placeholder="Nama"
-              />
-              </div>
-            </div>
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="nip"
-                >
-                  Nip :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-              <input
-                className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                id="nip"
-                value={formData.nip}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    nip: e.target.value,
-                  }))
-                }
-                type="text"
-                required
-                placeholder="Nip"
-              />
-              </div>
-            </div>
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="email"
-                >
-                  Role :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <Select
-                  options={roleOptions}
-                  value={formData.role}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      role: e,
-                    }))
-                  }
-                  placeholder="Pilih Role"
-                  className="w-full"
-                  theme={selectThemeColors}
+                  id="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  type="text"
+                  required
+                  placeholder="Nama Provinsi"
                 />
               </div>
             </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="email"
-                >
-                  Provinsi :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <Select
-                  options={listProvinsi}
-                  getOptionLabel={e => e.name}
-                  getOptionValue={e => e.id}
-                  value={formData.provinsi}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      provinsi: e,
-                    }))
-                  }
-                  placeholder="Pilih Provinsi"
-                  className="w-full"
-                  theme={selectThemeColors}
-                />
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="email"
-                >
-                  Kabupaten :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <Select
-                  options={roleOptions}
-                  value={formData.role}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      role: e,
-                    }))
-                  }
-                  placeholder="Pilih Role"
-                  className="w-full"
-                  theme={selectThemeColors}
-                />
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="email"
-                >
-                  Kecamatan :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <Select
-                  options={roleOptions}
-                  value={formData.role}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      role: e,
-                    }))
-                  }
-                  placeholder="Pilih Role"
-                  className="w-full"
-                  theme={selectThemeColors}
-                />
-              </div>
-            </div>
-
 
             <div className="flex items-center justify-center mt-6 sm:mt-12 sm:gap-8">
               <div className="div sm:flex-[2_2_0%]"></div>
@@ -391,6 +138,7 @@ const EditProvinsi = () => {
                   <button
                     className="w-full bg-[#0ACBC2]  text-white font-bold py-4 px-6 rounded-md focus:outline-none focus:shadow-outline dark:bg-transparent"
                     type="submit"
+                    disabled={loading}
                   >
                     {loading ? "Loading..." : "Simpan"}
                   </button>

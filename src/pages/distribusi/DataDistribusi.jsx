@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import Select from "react-select";
 import DataTable from "react-data-table-component";
@@ -20,26 +20,237 @@ import {
 import { BiExport, BiSolidFileExport } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 const DataDistribusi = () => {
   const user = useSelector((a) => a.auth.user);
+  const [search, setSearch] = useState(""); // Initialize search state with an empty string
+  const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const [dataProvinsi, setDataProvinsi] = useState([]);
+  const [dataKota, setDataKota] = useState([]);
+  const [dataKecamatan, setDataKecamatan] = useState([]);
+
+  const [selectedProvinsi, setSelectedProvinsi] = useState(null);
+  const [selectedKota, setSelectedKota] = useState(null);
+  const [selectedKecamatan, setSelectedKecamatan] = useState(null);
+
+  const handleSearch = (event) => {
+    const value = event.target.value.toLowerCase();
+    setSearch(value);
+
+    const filtered = data.filter((item) => {
+      return (
+        (item?.nomor_bast && item.nomor_bast.toLowerCase().includes(value)) ||
+        (item?.provinsi && item.provinsi.toLowerCase().includes(value)) ||
+        (item?.kabupaten && item.kabupaten.toLowerCase().includes(value)) ||
+        (item?.kecamatan && item.kecamatan.toLowerCase().includes(value)) ||
+        (item?.nama_puskesmas &&
+          item.nama_puskesmas.toLowerCase().includes(value)) ||
+        (item?.listrik && item.listrik.toLowerCase().includes(value)) ||
+        (item?.internet &&
+          item.internet.toString().toLowerCase().includes(value)) ||
+        (item?.kepala_unit_pemberi &&
+          item.kepala_unit_pemberi.toLowerCase().includes(value)) ||
+        (item?.status_tte && item.status_tte.toLowerCase().includes(value)) ||
+        (item?.jumlah_barang &&
+          item.jumlah_barang.toLowerCase().includes(value))
+      );
+    });
+
+    setFilteredData(filtered);
+  };
+
+  const handleExport = () => {
+    // Implementasi untuk mengekspor data (misalnya ke CSV)
+  };
+
+  const fetchProvinsi = async () => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/provinsi`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataProvinsi([
+        { label: "Semua Provinsi", value: "" },
+        ...response.data.data.map((item) => ({
+          label: item.name,
+          value: item.id,
+        })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setDataProvinsi([]);
+    }
+  };
+  const fetchKota = async (idProvinsi) => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${
+          import.meta.env.VITE_APP_API_URL
+        }/api/getkabupaten/${idProvinsi}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataKota([
+        { label: "Semua Kabupaten/Kota", value: "" },
+        ...response.data.data.map((item) => ({
+          label: item.name,
+          value: item.id,
+        })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setDataKota([]);
+    }
+  };
+  const fetchKecamatan = async (idKota) => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/getkecamatan/${idKota}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataKecamatan([
+        { label: "Semua Kecamatan", value: "" },
+        ...response.data.data.map((item) => ({
+          label: item.name,
+          value: item.id,
+        })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setDataKecamatan([]);
+    }
+  };
+  const fetchDistribusiData = async () => {
+    setLoading(true);
+    setError(false);
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/distribusi`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setData(response.data.data);
+      setFilteredData(response.data.data);
+    } catch (error) {
+      setError(true);
+      setFilteredData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDistribusiData();
+    fetchProvinsi();
+  }, []);
+
+  const handleProvinsiChange = (selectedOption) => {
+    setSelectedProvinsi(selectedOption);
+    setSelectedKota(null);
+    setSelectedKecamatan(null);
+    setDataKota([]);
+    setDataKecamatan([]);
+    if (selectedOption) {
+      fetchKota(selectedOption.value);
+    }
+  };
+
+  const handleKotaChange = (selectedOption) => {
+    setSelectedKota(selectedOption);
+    setSelectedKecamatan(null);
+    setDataKecamatan([]);
+    if (selectedOption) {
+      fetchKecamatan(selectedOption.value);
+    }
+  };
+
+  const handleKecamatanChange = (selectedOption) => {
+    setSelectedKecamatan(selectedOption);
+  };
+
+  const deleteDistribusi = async (id) => {
+    await axios({
+      method: "delete",
+      url: `${import.meta.env.VITE_APP_API_URL}/api/distribusi/${id}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user?.token}`,
+      },
+    })
+      .then(() => {
+        fetchDistribusiData();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleConfirmDeleteDistribusi = async (id) => {
+    return Swal.fire({
+      title: "Are you sure?",
+      text: "You will Delete This Distribusi!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      confirmButtonColor: "#16B3AC",
+    }).then(async (result) => {
+      if (result.value) {
+        await deleteDistribusi(id);
+        Swal.fire({
+          icon: "success",
+          title: "Deleted!",
+          text: "Your Distribusi has been deleted.",
+        });
+      }
+    });
+  };
   const columns = useMemo(
     () => [
       // { name: "No", selector: (row) => row.id, sortable: true },
       {
-        name: "Provinsi",
-        selector: (row) => row.provinsi,
+        name: "Nomor BAST",
+        selector: (row) => row.nomor_bast,
         sortable: true,
         width: "100px",
       },
       {
-        name: "Kab/Kota",
-        selector: (row) => row.kab_kota,
+        name: "Provinsi",
+        selector: (row) => row.provinsi,
         sortable: true,
-        width: "100px",
+        width: "120px",
+      },
+      {
+        name: "Kab/Kota",
+        selector: (row) => row.kabupaten,
+        sortable: true,
+        width: "120px",
       },
       { name: "Kecamatan", selector: (row) => row.kecamatan, sortable: true },
-      { name: "Puskesmas", selector: (row) => row.Puskesmas, sortable: true },
+      {
+        name: "Puskesmas",
+        selector: (row) => row.nama_puskesmas,
+        sortable: true,
+      },
       // { name: "Nama Kapus", selector: (row) => row.nama_kapus, sortable: true },
       // {
       //   name: "Nama Barang",
@@ -48,12 +259,12 @@ const DataDistribusi = () => {
       // },
       {
         name: "Jumlah Barang Dikirim",
-        selector: (row) => row.jumlah_barang_dikirim,
+        selector: (row) => row.jumlah_barang,
         sortable: true,
       },
       {
         name: "Jumlah Barang Diterima",
-        selector: (row) => row.jumlah_barang_diterima,
+        selector: (row) => row.jumlah_barang,
         sortable: true,
       },
       {
@@ -83,7 +294,7 @@ const DataDistribusi = () => {
               title="Detail"
               className="text-green-400 hover:text-green-500"
             >
-              <Link to={`/data-distribusi/detail/${row.Puskesmas}`}>
+              <Link to={`/data-distribusi/detail/${row.id_puskesmas}`}>
                 <FaEye size={16} />
               </Link>
             </button>
@@ -113,49 +324,6 @@ const DataDistribusi = () => {
     []
   );
 
-  const [search, setSearch] = useState("");
-  const [dataKecamatanState, setDataKecamatanState] = useState([
-    { label: "Semua Kecamatan", value: "all" },
-    ...dataKecamatan,
-  ]);
-  const [selectedKecamatan, setSelectedKecamatan] = useState(null);
-  const [filteredData, setFilteredData] = useState(dataDistribusiBekasi);
-
-  const handleSearch = (event) => {
-    const value = event.target.value.toLowerCase();
-    setSearch(value);
-
-    const filtered = dataDistribusiBekasi.filter(
-      (item) =>
-        item.provinsi.toLowerCase().includes(value) ||
-        item.kab_kota.toLowerCase().includes(value) ||
-        item.kecamatan.toLowerCase().includes(value) ||
-        item.Puskesmas.toLowerCase().includes(value) ||
-        item.nama_kapus.toLowerCase().includes(value) ||
-        item.nama_barang.toLowerCase().includes(value) ||
-        item.jumlah_barang_dikirim.toString().includes(value) ||
-        item.jumlah_barang_diterima.toString().includes(value) ||
-        item.status_tte.toLowerCase().includes(value) ||
-        item.keterangan_ppk.toLowerCase().includes(value)
-    );
-
-    if (selectedKecamatan) {
-      selectedKecamatan.value != "all"
-        ? setFilteredData(
-            filtered.filter(
-              (item) => item.kecamatan === selectedKecamatan.label
-            )
-          )
-        : setFilteredData(filtered);
-    } else {
-      setFilteredData(filtered);
-    }
-  };
-
-  const handleExport = () => {
-    // Implementasi untuk mengekspor data (misalnya ke CSV)
-  };
-
   return (
     <div>
       <Breadcrumb pageName="Data Distribusi" />
@@ -174,41 +342,74 @@ const DataDistribusi = () => {
               </label>
               <Select
                 options={dataProvinsi}
-                defaultValue={dataProvinsi[0]}
+                value={selectedProvinsi}
+                onChange={handleProvinsiChange}
                 className="w-64 sm:w-32 xl:w-60 bg-slate-500 my-react-select-container"
                 classNamePrefix="my-react-select"
-                theme={selectThemeColors}
+                placeholder="Pilih Provinsi"
+                theme={(theme) => ({
+                  ...theme,
+                  colors: {
+                    ...theme.colors,
+                    primary25: "lightgrey",
+                    primary: "grey",
+                  },
+                })}
                 isDisabled={user.role === "3"}
               />
             </div>
-            <div className="">
+            <div>
               <label
                 className="block text-[#728294] text-base font-normal mb-2"
-                htmlFor="email"
+                htmlFor="kota"
               >
                 Kab / Kota
               </label>
               <Select
                 options={dataKota}
-                defaultValue={dataKota[0]}
+                value={selectedKota}
+                onChange={handleKotaChange}
                 className="w-64 sm:w-32 xl:w-60"
-                theme={selectThemeColors}
-                isDisabled={user.role === "3"}
+                theme={(theme) => ({
+                  ...theme,
+                  colors: {
+                    ...theme.colors,
+                    primary25: "lightgrey",
+                    primary: "grey",
+                  },
+                })}
+                isDisabled={user.role === "3" || !selectedProvinsi}
+                placeholder={
+                  selectedProvinsi
+                    ? "Pilih Kab / Kota"
+                    : "Pilih Provinsi Dahulu"
+                }
               />
             </div>
-            <div className="">
+            <div>
               <label
                 className="block text-[#728294] text-base font-normal mb-2"
-                htmlFor="email"
+                htmlFor="kecamatan"
               >
                 Kecamatan
               </label>
               <Select
-                options={dataKecamatanState}
-                defaultValue={dataKecamatanState[0]}
-                onChange={setSelectedKecamatan}
+                options={dataKecamatan}
+                value={selectedKecamatan}
+                onChange={handleKecamatanChange}
                 className="w-64 sm:w-32 xl:w-60"
-                theme={selectThemeColors}
+                theme={(theme) => ({
+                  ...theme,
+                  colors: {
+                    ...theme.colors,
+                    primary25: "lightgrey",
+                    primary: "grey",
+                  },
+                })}
+                isDisabled={user.role === "3" || !selectedKota}
+                placeholder={
+                  selectedKota ? "Pilih Kecamatan" : "Pilih Kab / Kota Dahulu"
+                }
               />
             </div>
           </div>

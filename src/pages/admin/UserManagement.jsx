@@ -141,25 +141,21 @@ const UserManagement = () => {
   };
   const fetchApiUser = async () => {
     await axios({
-      method: 'get',
+      method: "get",
       url: `${import.meta.env.VITE_APP_API_URL}/api/news`,
       headers: {
-        'Content-Type': 'application/json',
-
-      }
+        "Content-Type": "application/json",
+      },
     })
       .then(function (response) {
-        setFilteredData(response.data)
+        setFilteredData(response.data);
       })
       .catch((error) => {
-        console.log(error)
-      })
-  }
+        console.log(error);
+      });
+  };
 
-  useEffect(() => {
-    
-  }, [])
-  
+  useEffect(() => {}, []);
 
   return (
     <div>
@@ -219,9 +215,7 @@ const UserManagement = () => {
                   className="flex items-center gap-2 px-4 py-2"
                 >
                   <FaPlus size={16} />
-                  <span className="hidden sm:block">
-                    Tambah Data User
-                  </span>
+                  <span className="hidden sm:block">Tambah Data User</span>
                 </Link>
               </button>
             ) : (

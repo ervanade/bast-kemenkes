@@ -9,23 +9,44 @@ import {
   dataProvinsi,
 } from "../../data/data";
 import { encryptId, selectThemeColors } from "../../data/utils";
-import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
+import { FaEdit, FaPlus, FaSpinner, FaTrash } from "react-icons/fa";
 import { BiExport, BiSolidFileExport } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { CgSpinner } from "react-icons/cg";
 
 const DataBarang = () => {
   const user = useSelector((a) => a.auth.user);
 
-  const [search, setSearch] = useState("");
-  const [selectedKecamatan, setSelectedKecamatan] = useState(null);
+  const [search, setSearch] = useState(""); // Initialize search state with an empty string
+  const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();
     setSearch(value);
+
+    const filtered = data.filter((item) => {
+      return (
+        (item?.nama_alkes && item.nama_alkes.toLowerCase().includes(value)) ||
+        (item?.standar_rawat_inap &&
+          item.standar_rawat_inap.toLowerCase().includes(value)) ||
+        (item?.standar_nonrawat_inap &&
+          item.standar_nonrawat_inap.toLowerCase().includes(value)) ||
+        (item?.merk && item.merk.toLowerCase().includes(value)) ||
+        (item?.tipe && item.tipe.toLowerCase().includes(value)) ||
+        (item?.satuan && item.satuan.toLowerCase().includes(value)) ||
+        (item?.harga_satuan &&
+          item.harga_satuan.toString().toLowerCase().includes(value)) ||
+        (item?.keterangan && item.keterangan.toLowerCase().includes(value))
+      );
+    });
+
+    setFilteredData(filtered);
   };
 
   const handleExport = () => {
@@ -33,43 +54,41 @@ const DataBarang = () => {
   };
 
   const fetchBarangData = async () => {
+    setLoading(true);
+    setError(false);
     try {
-      // eslint-disable-next-line
-      const responseUser = await axios({
+      const response = await axios({
         method: "get",
         url: `${import.meta.env.VITE_APP_API_URL}/api/barang`,
         headers: {
           "Content-Type": "application/json",
-          //eslint-disable-next-line
           Authorization: `Bearer ${user?.token}`,
         },
-      }).then(function (response) {
-        // handle success
-        // console.log(response)
-        setFilteredData(response.data.data);
       });
+      setData(response.data.data);
+      setFilteredData(response.data.data);
     } catch (error) {
-      console.log(error);
+      setError(true);
+      setFilteredData([]);
+    } finally {
+      setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchBarangData();
   }, []);
 
   const deleteBarang = async (id) => {
-    //Send Data to setver
     await axios({
       method: "delete",
       url: `${import.meta.env.VITE_APP_API_URL}/api/barang/${id}`,
       headers: {
         "Content-Type": "application/json",
-        //eslint-disable-next-line
         Authorization: `Bearer ${user?.token}`,
       },
     })
-      .then(function () {
-        // handle success
-        // console.log(response)
+      .then(() => {
         fetchBarangData();
       })
       .catch((error) => {
@@ -77,6 +96,7 @@ const DataBarang = () => {
       });
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleConfirmDeleteBarang = async (id) => {
     return Swal.fire({
       title: "Are you sure?",
@@ -85,7 +105,7 @@ const DataBarang = () => {
       showCancelButton: true,
       confirmButtonText: "Yes, delete it!",
       confirmButtonColor: "#16B3AC",
-    }).then(async function (result) {
+    }).then(async (result) => {
       if (result.value) {
         await deleteBarang(id);
         Swal.fire({
@@ -99,13 +119,6 @@ const DataBarang = () => {
 
   const columns = useMemo(
     () => [
-      // { name: "No", selector: (row) => row.id, sortable: true },
-      // {
-      //   name: "No",
-      //   selector: (row, index) => row.id,
-      //   sortable: true,
-      //   width: "100px",
-      // },
       {
         name: "Nama Barang",
         selector: (row) => row.nama_alkes,
@@ -116,19 +129,16 @@ const DataBarang = () => {
         name: "Standar Rawat Inap",
         selector: (row) => row.standar_rawat_inap,
         sortable: true,
-        // width: "100px",
       },
       {
         name: "Standar Non Rawat Inap",
         selector: (row) => row.standar_nonrawat_inap,
         sortable: true,
-        // width: "100px",
       },
       {
         name: "Merk",
         selector: (row) => row.merk || "",
         sortable: true,
-        // width: "100px",
       },
       {
         name: "Tipe",
@@ -160,7 +170,7 @@ const DataBarang = () => {
           <div className="flex items-center space-x-2">
             <button title="Edit" className="text-[#16B3AC] hover:text-cyan-500">
               <Link
-                to={`/data-barang/edit/${encodeURIComponent(
+                to={`/master-data-barang/edit/${encodeURIComponent(
                   encryptId(row.id)
                 )}`}
               >
@@ -185,7 +195,7 @@ const DataBarang = () => {
         button: true,
       },
     ],
-    []
+    [handleConfirmDeleteBarang, user.role]
   );
 
   return (
@@ -239,10 +249,9 @@ const DataBarang = () => {
               <button
                 title="Tambah Data Barang"
                 className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
-                onClick={handleExport}
               >
                 <Link
-                  to="/data-barang/add"
+                  to="/master-data-barang/add"
                   className="flex items-center gap-2 px-4 py-2"
                 >
                   <FaPlus size={16} />
@@ -255,26 +264,34 @@ const DataBarang = () => {
           </div>
         </div>
         <div className="overflow-x-auto">
-          <DataTable
-            columns={columns}
-            data={filteredData}
-            pagination
-            persistTableHead
-            highlightOnHover
-            pointerOnHover
-            customStyles={{
-              headCells: {
-                style: {
-                  backgroundColor: "#EBFBFA",
-                  color: "#728294",
+          {loading ? (
+            <div className="flex justify-center items-center">
+              <CgSpinner className="animate-spin inline-block w-8 h-8 text-teal-400" />
+              <span className="ml-2">Loading...</span>
+            </div>
+          ) : error || filteredData.length === 0 ? (
+            <div className="text-center">Data Tidak Tersedia.</div>
+          ) : (
+            <DataTable
+              columns={columns}
+              data={filteredData}
+              pagination
+              persistTableHead
+              highlightOnHover
+              pointerOnHover
+              customStyles={{
+                headCells: {
+                  style: {
+                    backgroundColor: "#EBFBFA",
+                    color: "#728294",
+                  },
                 },
-              },
-            }}
-          />
+              }}
+            />
+          )}
         </div>
       </div>
     </div>
   );
 };
-
 export default DataBarang;

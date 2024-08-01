@@ -31,6 +31,8 @@ import EditProvinsi from "./pages/master-provinsi/EditProvinsi";
 import TambahProvinsi from "./pages/master-provinsi/TambahProvinsi";
 import TambahBarang from "./pages/master-barang/TambahBarang";
 import EditBarang from "./pages/master-barang/EditBarang";
+import TambahPuskesmas from "./pages/master-puskesmas/TambahPuskesmas";
+import EditPuskesmas from "./pages/master-puskesmas/EditPuskesmas";
 
 function App() {
   const { pathname } = useLocation();
@@ -86,20 +88,43 @@ function App() {
                   element={<TambahDistribusi />}
                 />
 
-                <Route path="data-barang" element={<DataBarang />} />
-                <Route path="data-barang/add" element={<TambahBarang />} />
-                <Route path="data-barang/edit/:id" element={<EditBarang />} />
-
-                <Route path="data-puskesmas" element={<DataPuskesmas />} />
-
-                <Route path="data-provinsi" element={<DataProvinsi />} />
-                <Route path="data-provinsi/add" element={<TambahProvinsi />} />
+                <Route path="master-data-barang" element={<DataBarang />} />
                 <Route
-                  path="data-provinsi/edit/:id"
+                  path="master-data-barang/add"
+                  element={<TambahBarang />}
+                />
+                <Route
+                  path="master-data-barang/edit/:id"
+                  element={<EditBarang />}
+                />
+
+                <Route
+                  path="master-data-puskesmas"
+                  element={<DataPuskesmas />}
+                />
+                <Route
+                  path="master-data-puskesmas/add"
+                  element={<TambahPuskesmas />}
+                />
+                <Route
+                  path="master-data-puskesmas/edit/:id"
+                  element={<EditPuskesmas />}
+                />
+
+                <Route path="master-data-provinsi" element={<DataProvinsi />} />
+                <Route
+                  path="master-data-provinsi/add"
+                  element={<TambahProvinsi />}
+                />
+                <Route
+                  path="master-data-provinsi/edit/:id"
                   element={<EditProvinsi />}
                 />
 
-                <Route path="data-kecamatan" element={<DataKecamatan />} />
+                <Route
+                  path="master-data-kecamatan"
+                  element={<DataKecamatan />}
+                />
               </Route>
             </Route>
           </Route>
