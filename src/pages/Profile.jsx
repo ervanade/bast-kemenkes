@@ -111,6 +111,10 @@ const Profile = () => {
           no_telp: "",
           role: data.role,
           email: data.email,
+          provinsi: data.provinsi,
+          kabupaten: data.kabupaten,
+          kecamatan: data.kecamatan,
+          username: data.username,
         });
       });
     } catch (error) {
@@ -144,7 +148,7 @@ const Profile = () => {
   useEffect(() => {
     if (formData.provinsi && listProvinsi.length > 0) {
       const initialOption = listProvinsi.find(
-        (prov) => prov.id === formData.provinsi
+        (prov) => prov.id == formData.provinsi
       );
       if (initialOption) {
         setSelectedProvinsi({
@@ -155,7 +159,7 @@ const Profile = () => {
     }
     if (formData.kecamatan && listKecamatan.length > 0) {
       const initialOption = listKecamatan.find(
-        (kec) => kec.id === formData.kecamatan
+        (kec) => kec.id == formData.kecamatan
       );
       if (initialOption) {
         setSelectedKecamatan({
