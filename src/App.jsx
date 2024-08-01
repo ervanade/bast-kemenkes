@@ -33,6 +33,14 @@ import TambahBarang from "./pages/master-barang/TambahBarang";
 import EditBarang from "./pages/master-barang/EditBarang";
 import TambahPuskesmas from "./pages/master-puskesmas/TambahPuskesmas";
 import EditPuskesmas from "./pages/master-puskesmas/EditPuskesmas";
+import DataKota from "./pages/master-kota/DataKota";
+import TambahKota from "./pages/master-kota/TambahKota";
+import EditKota from "./pages/master-kota/EditKota";
+import DetailProvinsi from "./pages/master-kota/DetailProvinsi";
+import DetailProvinsiKota from "./pages/master-kecamatan/DetailProvinsiKota";
+import TambahKecamatan from "./pages/master-kecamatan/TambahKecamatan";
+import EditKecamatan from "./pages/master-kecamatan/EditKecamatan";
+import DetailKota from "./pages/master-kecamatan/DetailKota";
 
 function App() {
   const { pathname } = useLocation();
@@ -121,9 +129,36 @@ function App() {
                   element={<EditProvinsi />}
                 />
 
+                <Route path="master-data-kota" element={<DataKota />} />
+                <Route
+                  path="master-data-kota/detail/:id"
+                  element={<DetailProvinsi />}
+                />
+                <Route path="master-data-kota/add" element={<TambahKota />} />
+                <Route
+                  path="master-data-kota/edit/:id"
+                  element={<EditKota />}
+                />
+
                 <Route
                   path="master-data-kecamatan"
                   element={<DataKecamatan />}
+                />
+                <Route
+                  path="master-data-kecamatan/detail/:id/:idKota"
+                  element={<DetailKota />}
+                />
+                <Route
+                  path="master-data-kecamatan/detail/:id"
+                  element={<DetailProvinsiKota />}
+                />
+                <Route
+                  path="master-data-kecamatan/add"
+                  element={<TambahKecamatan />}
+                />
+                <Route
+                  path="master-data-kecamatan/edit/:id"
+                  element={<EditKecamatan />}
                 />
               </Route>
             </Route>

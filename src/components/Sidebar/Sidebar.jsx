@@ -491,6 +491,17 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                             </li>
                             <li>
                               <NavLink
+                                to="/master-data-kota"
+                                className={({ isActive }) =>
+                                  "group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-primary " +
+                                  (isActive && "!text-primary")
+                                }
+                              >
+                                Data Kab/Kota
+                              </NavLink>
+                            </li>
+                            <li>
+                              <NavLink
                                 to="/master-data-kecamatan"
                                 className={({ isActive }) =>
                                   "group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-primary " +

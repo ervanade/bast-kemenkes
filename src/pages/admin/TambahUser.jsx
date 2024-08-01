@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import Card from "../../components/Card/Card";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import { Link, useNavigate } from "react-router-dom";
-import { dataBarang, dataKecamatan, dataPuskesmas, roleOptions } from "../../data/data";
+import {
+  dataBarang,
+  dataKecamatan,
+  dataPuskesmas,
+  roleOptions,
+} from "../../data/data";
 import { selectThemeColors } from "../../data/utils";
 import Select from "react-select";
 import Swal from "sweetalert2";
@@ -16,82 +21,186 @@ const TambahUser = () => {
     c_password: "",
     username: "",
     name: "",
-    role: roleOptions[2],
+    role: "",
     provinsi: "",
-    kabupaten:"",
-    kecamatan:"",
-    nip:""
+    kabupaten: "",
+    kecamatan: "",
+    nip: "",
   });
 
   const navigate = useNavigate();
   const user = useSelector((a) => a.auth.user);
 
-  const [listProvinsi, setListProvinsi] = useState([]);
-  const [listKota, setListKota] = useState([]);
-  const [listKecamatan, setListKecamatan] = useState([]);
+  const [dataProvinsi, setDataProvinsi] = useState([]);
+  const [dataKota, setDataKota] = useState([]);
+  const [dataKecamatan, setDataKecamatan] = useState([]);
+
+  const [selectedProvinsi, setSelectedProvinsi] = useState(null);
+  const [selectedKota, setSelectedKota] = useState(null);
+  const [selectedKecamatan, setSelectedKecamatan] = useState(null);
+  const [selectedRole, setSelectedRole] = useState(roleOptions[2]);
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const fetchProvinsiData = async () => {
+  const fetchProvinsi = async () => {
     try {
-      // eslint-disable-next-line
-      const responseUser = await axios({
-        method: 'get',
+      const response = await axios({
+        method: "get",
         url: `${import.meta.env.VITE_APP_API_URL}/api/provinsi`,
         headers: {
-          'Content-Type': 'application/json',
-          //eslint-disable-next-line
-          'Authorization': `Bearer ${user?.token}`
-        }
-      })
-        .then(function (response) {
-          // handle success
-          // console.log(response)
-          setListProvinsi(response.data.data);
-
-        })
-
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataProvinsi([
+        ...response.data.data.map((item) => ({
+          label: item.name,
+          value: item.id,
+        })),
+      ]);
     } catch (error) {
-      console.log(error)
+      setError(true);
+      setDataProvinsi([]);
     }
-  }
+  };
+  const fetchKota = async (idProvinsi) => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${
+          import.meta.env.VITE_APP_API_URL
+        }/api/getkabupaten/${idProvinsi}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataKota([
+        ...response.data.data.map((item) => ({
+          label: item.name,
+          value: item.id,
+        })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setDataKota([]);
+    }
+  };
+  const fetchKecamatan = async (idKota) => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/getkecamatan/${idKota}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataKecamatan([
+        ...response.data.data.map((item) => ({
+          label: item.name,
+          value: item.id,
+        })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setDataKecamatan([]);
+    }
+  };
+
+  const tambahUser = async () => {
+    if (formData.password !== formData.c_password) {
+      Swal.fire(
+        "Error",
+        "Password Tidak Sama dengan Confirm Password",
+        "error"
+      );
+      setLoading(false);
+      return;
+    }
+    try {
+      await axios({
+        method: "post",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/register`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+        data: JSON.stringify({
+          ...formData,
+          provinsi: formData.provinsi.toString(),
+          kabupaten: formData.kabupaten.toString(),
+          kecamatan: formData.kecamatan.toString(),
+        }),
+      });
+      Swal.fire("Data Berhasil di Input!", "", "success");
+      navigate("/user-management");
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  };
   const handleSimpan = async (e) => {
     e.preventDefault();
-    Swal.fire({
-      title: "Perhatian",
-      text: "Jumlah dikirim dan diterima sudah sesuai, tandatangani BAST ini?",
-      showDenyButton: true,
-      showCancelButton: true,
-      denyButtonColor: "#3B82F6",
-      confirmButtonColor: "#16B3AC",
-      confirmButtonText: "Ya",
-      denyButtonText: `Simpan Data`,
-    }).then((result) => {
-      /* Read more about isConfirmed, isDenied below */
-      if (result.isConfirmed) {
-        Swal.fire("Data Berhasil di Input!", "", "success");
-        navigate("/data-distribusi");
-      } else if (result.isDenied) {
-        Swal.fire("Simpan Data Berhasil!", "", "success");
-        navigate("/data-distribusi");
-      }
-    });
+    setLoading(true);
+    tambahUser();
   };
   useEffect(() => {
-    fetchProvinsiData()
-  
-  }, [])
-  
+    fetchProvinsi();
+  }, []);
+
+  const handleProvinsiChange = (selectedOption) => {
+    setSelectedProvinsi(selectedOption);
+    setSelectedKota(null);
+    setSelectedKecamatan(null);
+    setDataKota([]);
+    setDataKecamatan([]);
+    setFormData((prev) => ({
+      ...prev,
+      provinsi: selectedOption ? selectedOption.value : "",
+    }));
+    if (selectedOption) {
+      fetchKota(selectedOption.value);
+    }
+  };
+
+  const handleKotaChange = (selectedOption) => {
+    setSelectedKota(selectedOption);
+    setSelectedKecamatan(null);
+    setDataKecamatan([]);
+    setFormData((prev) => ({
+      ...prev,
+      kabupaten: selectedOption ? selectedOption.value : "",
+    }));
+    if (selectedOption) {
+      fetchKecamatan(selectedOption.value);
+    }
+  };
+
+  const handleKecamatanChange = (selectedOption) => {
+    setSelectedKecamatan(selectedOption);
+    setFormData((prev) => ({
+      ...prev,
+      kecamatan: selectedOption ? selectedOption.value : "",
+    }));
+  };
+
+  const handleRoleChange = (selectedOption) => {
+    setSelectedRole(selectedOption);
+    setFormData((prev) => ({
+      ...prev,
+      role: selectedOption ? selectedOption.value : "",
+    }));
+  };
+  console.log(formData);
   return (
     <div>
       <Breadcrumb pageName="Form Input Data User" />
       <Card>
         <div className="card-header flex justify-between">
           <h1 className="mb-12 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
-            {user.role === "1"
-              ? "Form Input Data User"
-              : ""}
+            {user.role === "1" ? "Form Input Data User" : ""}
           </h1>
           <div>
             <Link
@@ -114,22 +223,22 @@ const TambahUser = () => {
                 </label>
               </div>
               <div className="sm:flex-[5_5_0%]">
-              <input
-                className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                <input
+                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                id="email"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    email: e.target.value,
-                  }))
-                }
-                type="email"
-                required
-                placeholder="Email"
-              />
+                  id="email"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      email: e.target.value,
+                    }))
+                  }
+                  type="email"
+                  required
+                  placeholder="Email"
+                />
               </div>
             </div>
 
@@ -143,22 +252,22 @@ const TambahUser = () => {
                 </label>
               </div>
               <div className="sm:flex-[5_5_0%]">
-              <input
-                className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                <input
+                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                id="password"
-                required
-                type="password"
-                value={formData.password}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    password: e.target.value,
-                  }))
-                }
-                placeholder="*******"
-              />
+                  id="password"
+                  required
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      password: e.target.value,
+                    }))
+                  }
+                  placeholder="*******"
+                />
               </div>
             </div>
 
@@ -172,22 +281,22 @@ const TambahUser = () => {
                 </label>
               </div>
               <div className="sm:flex-[5_5_0%]">
-              <input
-                className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                <input
+                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                id="password"
-                required
-                type="password"
-                value={formData.c_password}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    c_password: e.target.value,
-                  }))
-                }
-                placeholder="*******"
-              />
+                  id="password"
+                  required
+                  type="password"
+                  value={formData.c_password}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      c_password: e.target.value,
+                    }))
+                  }
+                  placeholder="*******"
+                />
               </div>
             </div>
 
@@ -201,22 +310,22 @@ const TambahUser = () => {
                 </label>
               </div>
               <div className="sm:flex-[5_5_0%]">
-              <input
-                className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                <input
+                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                id="username"
-                value={formData.username}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    username: e.target.value,
-                  }))
-                }
-                type="text"
-                required
-                placeholder="Username"
-              />
+                  id="username"
+                  value={formData.username}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      username: e.target.value,
+                    }))
+                  }
+                  type="text"
+                  required
+                  placeholder="Username"
+                />
               </div>
             </div>
 
@@ -230,22 +339,22 @@ const TambahUser = () => {
                 </label>
               </div>
               <div className="sm:flex-[5_5_0%]">
-              <input
-                className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                <input
+                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                id="name"
-                value={formData.name}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    name: e.target.value,
-                  }))
-                }
-                type="text"
-                required
-                placeholder="Nama"
-              />
+                  id="name"
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      name: e.target.value,
+                    }))
+                  }
+                  type="text"
+                  required
+                  placeholder="Nama"
+                />
               </div>
             </div>
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
@@ -254,26 +363,26 @@ const TambahUser = () => {
                   className="block text-[#728294] text-base font-normal mb-2"
                   htmlFor="nip"
                 >
-                  Nip :
+                  NIP :
                 </label>
               </div>
               <div className="sm:flex-[5_5_0%]">
-              <input
-                className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                <input
+                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                id="nip"
-                value={formData.nip}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    nip: e.target.value,
-                  }))
-                }
-                type="text"
-                required
-                placeholder="Nip"
-              />
+                  id="nip"
+                  value={formData.nip}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      nip: e.target.value,
+                    }))
+                  }
+                  type="text"
+                  required
+                  placeholder="NIP"
+                />
               </div>
             </div>
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
@@ -288,13 +397,8 @@ const TambahUser = () => {
               <div className="sm:flex-[5_5_0%]">
                 <Select
                   options={roleOptions}
-                  value={formData.role}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      role: e,
-                    }))
-                  }
+                  value={selectedRole}
+                  onChange={handleRoleChange}
                   placeholder="Pilih Role"
                   className="w-full"
                   theme={selectThemeColors}
@@ -313,16 +417,9 @@ const TambahUser = () => {
               </div>
               <div className="sm:flex-[5_5_0%]">
                 <Select
-                  options={listProvinsi}
-                  getOptionLabel={e => e.name}
-                  getOptionValue={e => e.id}
-                  value={formData.provinsi}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      provinsi: e,
-                    }))
-                  }
+                  options={dataProvinsi}
+                  value={selectedProvinsi}
+                  onChange={handleProvinsiChange}
                   placeholder="Pilih Provinsi"
                   className="w-full"
                   theme={selectThemeColors}
@@ -336,20 +433,19 @@ const TambahUser = () => {
                   className="block text-[#728294] text-base font-normal mb-2"
                   htmlFor="email"
                 >
-                  Kabupaten :
+                  Kabupaten / Kota :
                 </label>
               </div>
               <div className="sm:flex-[5_5_0%]">
                 <Select
-                  options={roleOptions}
-                  value={formData.role}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      role: e,
-                    }))
+                  options={dataKota}
+                  value={selectedKota}
+                  onChange={handleKotaChange}
+                  placeholder={
+                    selectedProvinsi
+                      ? "Pilih Kab / Kota"
+                      : "Pilih Provinsi Dahulu"
                   }
-                  placeholder="Pilih Role"
                   className="w-full"
                   theme={selectThemeColors}
                 />
@@ -367,21 +463,17 @@ const TambahUser = () => {
               </div>
               <div className="sm:flex-[5_5_0%]">
                 <Select
-                  options={roleOptions}
-                  value={formData.role}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      role: e,
-                    }))
+                  options={dataKecamatan}
+                  value={selectedKecamatan}
+                  onChange={handleKecamatanChange}
+                  placeholder={
+                    selectedKota ? "Pilih Kecamatan" : "Pilih Kab / Kota Dahulu"
                   }
-                  placeholder="Pilih Role"
                   className="w-full"
                   theme={selectThemeColors}
                 />
               </div>
             </div>
-
 
             <div className="flex items-center justify-center mt-6 sm:mt-12 sm:gap-8">
               <div className="div sm:flex-[2_2_0%]"></div>
@@ -390,6 +482,7 @@ const TambahUser = () => {
                   <button
                     className="w-full bg-[#0ACBC2]  text-white font-bold py-4 px-6 rounded-md focus:outline-none focus:shadow-outline dark:bg-transparent"
                     type="submit"
+                    disabled={loading}
                   >
                     {loading ? "Loading..." : "Simpan"}
                   </button>

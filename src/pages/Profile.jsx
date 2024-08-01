@@ -2,17 +2,24 @@ import React, { useEffect, useState, useRef } from "react";
 import UserDefault from "../assets/user/user-default.png";
 import Breadcrumb from "../components/Breadcrumbs/Breadcrumb";
 import SignatureCanvas from "react-signature-canvas";
+import Select from "react-select";
 
 import { useSelector } from "react-redux";
 import { roleOptions } from "../data/data";
 import axios from "axios";
 import ModalProfile from "../components/Modal/ModalProfile";
+import { selectThemeColors } from "../data/utils";
 
 const Profile = () => {
   const [signature, setSignature] = useState(null);
   const [file, setFile] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const [activeTab, setActiveTab] = useState("tab2");
+
+  const [selectedProvinsi, setSelectedProvinsi] = useState(null);
+  const [selectedKecamatan, setSelectedKecamatan] = useState(null);
+  const [listProvinsi, setListProvinsi] = useState([]);
+  const [listKecamatan, setListKecamatan] = useState([]);
 
   const handleOpenPopup = () => {
     setShowPopup(true);
@@ -67,6 +74,22 @@ const Profile = () => {
     nip: "",
   });
   const user = useSelector((a) => a.auth.user);
+
+  const fetchProvinsiData = async () => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/provinsi`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setListProvinsi(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const fetchBarangData = async () => {
     try {
       // eslint-disable-next-line
@@ -96,7 +119,52 @@ const Profile = () => {
   };
   useEffect(() => {
     fetchBarangData();
+    fetchProvinsiData();
   }, []);
+
+  const handleSelectChange = (selectedOption, actionMeta) => {
+    const { name } = actionMeta;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: selectedOption ? selectedOption.value : "",
+    }));
+
+    switch (name) {
+      case "provinsi":
+        setSelectedProvinsi(selectedOption);
+        break;
+      case "kecamatan":
+        setSelectedKecamatan(selectedOption);
+        break;
+      default:
+        break;
+    }
+  };
+
+  useEffect(() => {
+    if (formData.provinsi && listProvinsi.length > 0) {
+      const initialOption = listProvinsi.find(
+        (prov) => prov.id === formData.provinsi
+      );
+      if (initialOption) {
+        setSelectedProvinsi({
+          label: initialOption.name,
+          value: initialOption.id,
+        });
+      }
+    }
+    if (formData.kecamatan && listKecamatan.length > 0) {
+      const initialOption = listKecamatan.find(
+        (kec) => kec.id === formData.kecamatan
+      );
+      if (initialOption) {
+        setSelectedKecamatan({
+          label: initialOption.name,
+          value: initialOption.id,
+        });
+      }
+    }
+  }, [formData, listProvinsi, listKecamatan]);
 
   return (
     <div className="mx-auto max-w-270">
@@ -284,6 +352,27 @@ const Profile = () => {
                         role: e.target.value,
                       }))
                     }
+                  />
+                </div>
+
+                <div className="mb-5.5">
+                  <label
+                    className="mb-3 block text-sm font-medium text-black dark:text-white"
+                    htmlFor="Role"
+                  >
+                    Provinsi
+                  </label>
+                  <Select
+                    name="provinsi"
+                    options={listProvinsi.map((item) => ({
+                      label: item.name,
+                      value: item.id,
+                    }))}
+                    value={selectedProvinsi}
+                    onChange={handleSelectChange}
+                    placeholder="Pilih Provinsi"
+                    className="w-full"
+                    theme={selectThemeColors}
                   />
                 </div>
 

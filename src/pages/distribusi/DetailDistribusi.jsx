@@ -182,8 +182,11 @@ const DetailDistribusi = () => {
 
   return (
     <div>
-      <Breadcrumb pageName="Data Distribusi Detail" />
-      <div className="flex flex-col items-center justify-center w-full tracking-tight mb-12">
+      <Breadcrumb
+        pageName="Data Distribusi Detail"
+        title="Data Distribusi Detail"
+      />
+      {/* <div className="flex flex-col items-center justify-center w-full tracking-tight mb-12">
         <h1 className="font-normal mb-3 text-xl lg:text-[28px] tracking-tight text-center text-bodydark1">
           SELAMAT DATANG ADMIN KAB/KOTA KOTA BEKASI
         </h1>
@@ -245,7 +248,7 @@ const DetailDistribusi = () => {
         >
           Cari Data
         </button>
-      </div>
+      </div> */}
       <div className="rounded-md flex flex-col gap-4 overflow-hidden overflow-x-auto  border border-stroke bg-white py-4 md:py-8 px-4 md:px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex justify-between mb-4 items-center">
           <div className="relative">

@@ -8,16 +8,16 @@ import {
   dataKota,
   dataProvinsi,
 } from "../../data/data";
-import { encryptId, selectThemeColors } from "../../data/utils";
-import { FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa";
+import { decryptId, encryptId, selectThemeColors } from "../../data/utils";
+import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import { BiExport, BiSolidFileExport } from "react-icons/bi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { CgSpinner } from "react-icons/cg";
 
-const DataKecamatan = () => {
+const DetailProvinsi = () => {
   const user = useSelector((a) => a.auth.user);
 
   const [search, setSearch] = useState(""); // Initialize search state with an empty string
@@ -25,6 +25,7 @@ const DataKecamatan = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const { id } = useParams();
 
   const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();
@@ -47,7 +48,9 @@ const DataKecamatan = () => {
     try {
       const response = await axios({
         method: "get",
-        url: `${import.meta.env.VITE_APP_API_URL}/api/provinsi`,
+        url: `${
+          import.meta.env.VITE_APP_API_URL
+        }/api/getkabupaten/${encodeURIComponent(decryptId(id))}`,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user?.token}`,
@@ -70,7 +73,7 @@ const DataKecamatan = () => {
   const deleteProvinsi = async (id) => {
     await axios({
       method: "delete",
-      url: `${import.meta.env.VITE_APP_API_URL}/api/provinsi/${id}`,
+      url: `${import.meta.env.VITE_APP_API_URL}/api/kabupaten/${id}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${user?.token}`,
@@ -83,6 +86,7 @@ const DataKecamatan = () => {
         console.log(error);
       });
   };
+  const navigate = useNavigate();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleConfirmDeleteProvinsi = async (id) => {
@@ -115,7 +119,7 @@ const DataKecamatan = () => {
         width: "100px",
       },
       {
-        name: "Provinsi",
+        name: "Kab / Kota",
         selector: (row) => row.name,
         sortable: true,
         // width: "100px",
@@ -124,18 +128,26 @@ const DataKecamatan = () => {
         name: "Aksi",
         cell: (row) => (
           <div className="flex items-center space-x-2">
-            <button
-              title="Detail"
-              className="text-green-400 hover:text-green-500"
-            >
+            <button title="Edit" className="text-[#16B3AC] hover:text-cyan-500">
               <Link
-                to={`/master-data-kecamatan/detail/${encodeURIComponent(
+                to={`/master-data-kota/edit/${encodeURIComponent(
                   encryptId(row.id)
                 )}`}
               >
-                <FaEye size={16} />
+                <FaEdit size={16} />
               </Link>
             </button>
+            {user.role === "1" ? (
+              <button
+                title="Delete"
+                className="text-red-500 hover:text-red-700"
+                onClick={() => handleConfirmDeleteProvinsi(row.id)}
+              >
+                <FaTrash size={16} />
+              </button>
+            ) : (
+              ""
+            )}
           </div>
         ),
         ignoreRowClick: true,
@@ -148,7 +160,18 @@ const DataKecamatan = () => {
 
   return (
     <div>
-      <Breadcrumb pageName="Data Kota" title="Data Kabupaten/Kota" />
+      <Breadcrumb
+        pageName="Data Detail Kab/Kota"
+        title="Data Detail Kab/Kota"
+      />
+      <div className="flex justify-end mb-4">
+        <button
+          onClick={() => navigate(`/master-data-kota`)}
+          className="flex items-center px-4 py-2 bg-primary text-white rounded-md font-semibold"
+        >
+          Back
+        </button>
+      </div>
       <div className="rounded-md flex flex-col gap-4 overflow-hidden overflow-x-auto  border border-stroke bg-white py-4 md:py-8 px-4 md:px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex justify-between mb-4 items-center">
           <div className="relative">
@@ -186,13 +209,30 @@ const DataKecamatan = () => {
           </div>
           <div className="div flex gap-2 flex-row">
             <button
-              title="Export Data Provinsi"
+              title="Export Data Kota"
               className="flex items-center gap-2 cursor-pointer text-base text-white px-4 py-2 bg-primary rounded-md tracking-tight"
               onClick={handleExport}
             >
               <BiExport />
               <span className="hidden sm:block">Export</span>
             </button>
+            {user.role === "1" ? (
+              <button
+                title="Tambah Data Kota"
+                className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
+                onClick={handleExport}
+              >
+                <Link
+                  to="/master-data-kota/add"
+                  className="flex items-center gap-2 px-4 py-2"
+                >
+                  <FaPlus size={16} />
+                  <span className="hidden sm:block">Tambah Data Kota</span>
+                </Link>
+              </button>
+            ) : (
+              ""
+            )}
           </div>
         </div>
         <div className="overflow-x-auto">
@@ -227,4 +267,4 @@ const DataKecamatan = () => {
   );
 };
 
-export default DataKecamatan;
+export default DetailProvinsi;

@@ -110,7 +110,7 @@ const Verifikasi = () => {
               title="Edit"
               className="text-white p-2 bg-blue-600 rounded-md"
             >
-              <Link to={`/data-distribusi/edit/${row.id}`}>
+              <Link to={`/data-distribusi/preview-dokumen/${row.id}`}>
                 {/* <FaEdit size={16} /> */}
                 TTE
               </Link>

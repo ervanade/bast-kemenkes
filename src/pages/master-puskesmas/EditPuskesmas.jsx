@@ -42,9 +42,9 @@ const EditPuskesmas = () => {
       // eslint-disable-next-line
       const responseUser = await axios({
         method: "get",
-        url: `${import.meta.env.VITE_APP_API_URL}/api/puskesmas/${decryptId(
-          id
-        )}`,
+        url: `${
+          import.meta.env.VITE_APP_API_URL
+        }/api/puskesmas/${encodeURIComponent(decryptId(id))}`,
         headers: {
           "Content-Type": "application/json",
           //eslint-disable-next-line
@@ -79,7 +79,9 @@ const EditPuskesmas = () => {
   const updatePuskesmas = async () => {
     await axios({
       method: "put",
-      url: `${import.meta.env.VITE_APP_API_URL}/api/puskesmas/${decryptId(id)}`,
+      url: `${
+        import.meta.env.VITE_APP_API_URL
+      }/api/puskesmas/${encodeURIComponent(decryptId(id))}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${user?.token}`,

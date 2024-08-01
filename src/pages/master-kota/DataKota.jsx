@@ -17,7 +17,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { CgSpinner } from "react-icons/cg";
 
-const DataKecamatan = () => {
+const DataKota = () => {
   const user = useSelector((a) => a.auth.user);
 
   const [search, setSearch] = useState(""); // Initialize search state with an empty string
@@ -129,7 +129,7 @@ const DataKecamatan = () => {
               className="text-green-400 hover:text-green-500"
             >
               <Link
-                to={`/master-data-kecamatan/detail/${encodeURIComponent(
+                to={`/master-data-kota/detail/${encodeURIComponent(
                   encryptId(row.id)
                 )}`}
               >
@@ -227,4 +227,4 @@ const DataKecamatan = () => {
   );
 };
 
-export default DataKecamatan;
+export default DataKota;
