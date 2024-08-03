@@ -28,7 +28,7 @@ const DataDistribusi = () => {
   const [search, setSearch] = useState(""); // Initialize search state with an empty string
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
   const [dataProvinsi, setDataProvinsi] = useState([]);
@@ -330,7 +330,14 @@ const DataDistribusi = () => {
       <Breadcrumb pageName="Data Distribusi" />
       <div className="flex flex-col items-center justify-center w-full tracking-tight mb-8">
         <h1 className="font-normal mb-3 text-xl lg:text-[28px] tracking-tight text-center text-bodydark1">
-          SELAMAT DATANG ADMIN KAB/KOTA KOTA BEKASI
+          SELAMAT DATANG{" "}
+          {user.role === "1"
+            ? "ADMIN PUSAT"
+            : user.role === "2"
+            ? "ADMIN PPK"
+            : user.role === "3"
+            ? `ADMIN KAB/KOTA BEKASI`
+            : ""}
         </h1>
         <div className="flex items-center lg:items-end mt-8 gap-4 flex-col lg:flex-row">
           <div className="flex items-center gap-4 flex-col sm:flex-row">

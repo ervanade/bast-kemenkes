@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import Select from "react-select";
 import DataTable from "react-data-table-component";
@@ -9,13 +9,128 @@ import {
   dataProvinsi,
 } from "../../data/data";
 import { selectThemeColors } from "../../data/utils";
-import { FaDownload, FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa";
+import {
+  FaDownload,
+  FaEdit,
+  FaEye,
+  FaPlus,
+  FaSearch,
+  FaTrash,
+} from "react-icons/fa";
 import { BiExport, BiSolidFileExport } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 const Verifikasi = () => {
   const user = useSelector((a) => a.auth.user);
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+
+  const [dataProvinsi, setDataProvinsi] = useState([]);
+  const [dataKota, setDataKota] = useState([]);
+  const [dataKecamatan, setDataKecamatan] = useState([]);
+
+  const [selectedProvinsi, setSelectedProvinsi] = useState(null);
+  const [selectedKota, setSelectedKota] = useState(null);
+  const [selectedKecamatan, setSelectedKecamatan] = useState(null);
+
+  const fetchProvinsi = async () => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/provinsi`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataProvinsi([
+        { label: "Semua Provinsi", value: "" },
+        ...response.data.data.map((item) => ({
+          label: item.name,
+          value: item.id,
+        })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setDataProvinsi([]);
+    }
+  };
+  const fetchKota = async (idProvinsi) => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${
+          import.meta.env.VITE_APP_API_URL
+        }/api/getkabupaten/${idProvinsi}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataKota([
+        { label: "Semua Kabupaten/Kota", value: "" },
+        ...response.data.data.map((item) => ({
+          label: item.name,
+          value: item.id,
+        })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setDataKota([]);
+    }
+  };
+  const fetchKecamatan = async (idKota) => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/getkecamatan/${idKota}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataKecamatan([
+        { label: "Semua Kecamatan", value: "" },
+        ...response.data.data.map((item) => ({
+          label: item.name,
+          value: item.id,
+        })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setDataKecamatan([]);
+    }
+  };
+  useEffect(() => {
+    fetchProvinsi();
+  }, []);
+
+  const handleProvinsiChange = (selectedOption) => {
+    setSelectedProvinsi(selectedOption);
+    setSelectedKota(null);
+    setSelectedKecamatan(null);
+    setDataKota([]);
+    setDataKecamatan([]);
+    if (selectedOption) {
+      fetchKota(selectedOption.value);
+    }
+  };
+
+  const handleKotaChange = (selectedOption) => {
+    setSelectedKota(selectedOption);
+    setSelectedKecamatan(null);
+    setDataKecamatan([]);
+    if (selectedOption) {
+      fetchKecamatan(selectedOption.value);
+    }
+  };
+
+  const handleKecamatanChange = (selectedOption) => {
+    setSelectedKecamatan(selectedOption);
+  };
   const columns = useMemo(
     () => [
       // { name: "No", selector: (row) => row.id, sortable: true },
@@ -126,12 +241,15 @@ const Verifikasi = () => {
   );
   const data = dataDistribusiBekasi.filter((a) => a.status_tte === "Belum");
 
+  const returnKota = (idKota, listKota) => {
+    return listKota.find((k) => k.id === idKota).name;
+  };
+
   const [search, setSearch] = useState("");
   const [dataKecamatanState, setDataKecamatanState] = useState([
     { label: "Semua Kecamatan", value: "all" },
     ...dataKecamatan,
   ]);
-  const [selectedKecamatan, setSelectedKecamatan] = useState(null);
   const [filteredData, setFilteredData] = useState(data);
 
   const handleSearch = (event) => {
@@ -174,60 +292,105 @@ const Verifikasi = () => {
       <Breadcrumb pageName="Verifikasi" linkBack="/verifikasi" />
       <div className="flex flex-col items-center justify-center w-full tracking-tight mb-12">
         <h1 className="font-normal mb-3 text-xl lg:text-[28px] tracking-tight text-center text-bodydark1">
-          SELAMAT DATANG ADMIN KAB/KOTA KOTA BEKASI
+          SELAMAT DATANG{" "}
+          {user.role === "1"
+            ? "ADMIN PUSAT"
+            : user.role === "2"
+            ? "ADMIN PPK"
+            : user.role === "3"
+            ? `ADMIN KAB/KOTA BEKASI`
+            : ""}
         </h1>
-        <div className="mt-8 mb-3">
-          <label
-            className="block text-[#728294] text-lg font-normal mb-2"
-            htmlFor="email"
+        <div className="flex items-center lg:items-end mt-8 gap-4 flex-col lg:flex-row">
+          <div className="flex items-center gap-4 flex-col sm:flex-row">
+            <div className="text-base">
+              <label
+                className="block text-[#728294] text-base font-normal mb-2"
+                htmlFor="email"
+              >
+                Provinsi
+              </label>
+              <Select
+                options={dataProvinsi}
+                value={selectedProvinsi}
+                onChange={handleProvinsiChange}
+                className="w-64 sm:w-32 xl:w-60 bg-slate-500 my-react-select-container"
+                classNamePrefix="my-react-select"
+                placeholder="Pilih Provinsi"
+                theme={(theme) => ({
+                  ...theme,
+                  colors: {
+                    ...theme.colors,
+                    primary25: "lightgrey",
+                    primary: "grey",
+                  },
+                })}
+                isDisabled={user.role === "3"}
+              />
+            </div>
+            <div>
+              <label
+                className="block text-[#728294] text-base font-normal mb-2"
+                htmlFor="kota"
+              >
+                Kab / Kota
+              </label>
+              <Select
+                options={dataKota}
+                value={selectedKota}
+                onChange={handleKotaChange}
+                className="w-64 sm:w-32 xl:w-60"
+                theme={(theme) => ({
+                  ...theme,
+                  colors: {
+                    ...theme.colors,
+                    primary25: "lightgrey",
+                    primary: "grey",
+                  },
+                })}
+                isDisabled={user.role === "3" || !selectedProvinsi}
+                placeholder={
+                  selectedProvinsi
+                    ? "Pilih Kab / Kota"
+                    : "Pilih Provinsi Dahulu"
+                }
+              />
+            </div>
+            <div>
+              <label
+                className="block text-[#728294] text-base font-normal mb-2"
+                htmlFor="kecamatan"
+              >
+                Kecamatan
+              </label>
+              <Select
+                options={dataKecamatan}
+                value={selectedKecamatan}
+                onChange={handleKecamatanChange}
+                className="w-64 sm:w-32 xl:w-60"
+                theme={(theme) => ({
+                  ...theme,
+                  colors: {
+                    ...theme.colors,
+                    primary25: "lightgrey",
+                    primary: "grey",
+                  },
+                })}
+                isDisabled={user.role === "3" || !selectedKota}
+                placeholder={
+                  selectedKota ? "Pilih Kecamatan" : "Pilih Kab / Kota Dahulu"
+                }
+              />
+            </div>
+          </div>
+          <button
+            onClick={handleSearch}
+            className="mt-2 flex items-center gap-2 cursor-pointer text-base text-white px-5 py-2 bg-primary rounded-md tracking-tight"
           >
-            Provinsi
-          </label>
-          <Select
-            options={dataProvinsi}
-            defaultValue={dataProvinsi[0]}
-            className="w-64 sm:w-100 bg-slate-500 my-react-select-container"
-            classNamePrefix="my-react-select"
-            theme={selectThemeColors}
-            isDisabled={user.role === "3"}
-          />
+            <FaSearch />
+            <span className="lg:hidden xl:flex"> Cari Data</span>
+          </button>
         </div>
-        <div className="mb-3">
-          <label
-            className="block text-[#728294] text-lg font-normal mb-2"
-            htmlFor="email"
-          >
-            Kab / Kota
-          </label>
-          <Select
-            options={dataKota}
-            defaultValue={dataKota[0]}
-            className="w-64 sm:w-100"
-            theme={selectThemeColors}
-            isDisabled={user.role === "3"}
-          />
-        </div>
-        <div className="mb-3">
-          <label
-            className="block text-[#728294] text-lg font-normal mb-2"
-            htmlFor="email"
-          >
-            Kecamatan
-          </label>
-          <Select
-            options={dataKecamatanState}
-            defaultValue={dataKecamatanState[0]}
-            onChange={setSelectedKecamatan}
-            className="w-64 sm:w-100"
-            theme={selectThemeColors}
-          />
-        </div>
-        <button
-          onClick={handleSearch}
-          className="cursor-pointer mt-8 text-lg text-white px-8 py-2 bg-primary rounded-md tracking-tight"
-        >
-          Cari Data
-        </button>
       </div>
       <div className="rounded-md flex flex-col gap-4 overflow-hidden overflow-x-auto  border border-stroke bg-white py-4 md:py-8 px-4 md:px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex justify-between mb-4 items-center">
