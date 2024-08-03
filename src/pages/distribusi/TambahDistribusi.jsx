@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Card from "../../components/Card/Card";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,6 +7,8 @@ import { selectThemeColors } from "../../data/utils";
 import Select from "react-select";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
+import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
+import ModalAddBarang from "../../components/Modal/ModalAddBarang";
 
 const TambahDistribusi = () => {
   const [formData, setFormData] = useState({
@@ -20,6 +22,7 @@ const TambahDistribusi = () => {
     tte: "",
     ket_daerah: "",
     ket_ppk: "",
+    dataBarang: [],
   });
 
   const navigate = useNavigate();
@@ -27,6 +30,8 @@ const TambahDistribusi = () => {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [editIndex, setEditIndex] = useState(null);
   const handleSimpan = async (e) => {
     e.preventDefault();
     Swal.fire({
@@ -49,6 +54,52 @@ const TambahDistribusi = () => {
       }
     });
   };
+
+  const handleTambahBarang = (barang) => {
+    if (editIndex !== null) {
+      const updatedDataBarang = formData.dataBarang.map((item, i) =>
+        i === editIndex ? barang : item
+      );
+      setFormData((prev) => ({
+        ...prev,
+        dataBarang: updatedDataBarang,
+      }));
+      setEditIndex(null);
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        dataBarang: [...prev.dataBarang, barang],
+      }));
+    }
+    setShowModal(false);
+  };
+  const handleEditBarang = (index) => {
+    setEditIndex(index);
+    setShowModal(true);
+  };
+
+  // const handleEditBarang = (index, barang) => {
+  //   const updatedDataBarang = formData.dataBarang.map((item, i) =>
+  //     i === index ? barang : item
+  //   );
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     dataBarang: updatedDataBarang,
+  //   }));
+  // };
+
+  const handleDeleteBarang = (index) => {
+    const updatedDataBarang = formData.dataBarang.filter((_, i) => i !== index);
+    setFormData((prev) => ({
+      ...prev,
+      dataBarang: updatedDataBarang,
+    }));
+  };
+  useEffect(() => {
+    if (editIndex) {
+      setShowModal(true);
+    }
+  }, [editIndex]);
   return (
     <div>
       <Breadcrumb pageName="Form Input Data BAST" />
@@ -126,326 +177,6 @@ const TambahDistribusi = () => {
               </div>
             </div>
 
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="email"
-                >
-                  Nama Barang yang dikirim :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <Select
-                  options={dataBarang}
-                  value={formData.nama_barang}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      nama_barang: e,
-                    }))
-                  }
-                  placeholder="Pilih Barang"
-                  className="w-full"
-                  theme={selectThemeColors}
-                />
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center sm:justify-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className=" block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="email"
-                >
-                  Jumlah Barang yang dikirim :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                    "border-red-500" 
-                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="jumlah_barang_dikirim"
-                  type="number"
-                  value={formData.jumlah_barang_dikirim}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      jumlah_barang_dikirim: e.target.value,
-                    }))
-                  }
-                  placeholder="Jumlah Barang yang dikirim"
-                />
-              </div>
-            </div>
-            {/* <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="email"
-                >
-                  Kecamatan :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <Select
-                  options={dataKecamatan}
-                  value={formData.kecamatan}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      kecamatan: e,
-                    }))
-                  }
-                  placeholder="Pilih Kecamatan"
-                  className="w-full"
-                  theme={selectThemeColors}
-                />
-              </div>
-            </div>
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="email"
-                >
-                  Puskesmas :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <Select
-                  options={dataPuskesmas}
-                  value={formData.puskesmas}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      puskesmas: e,
-                    }))
-                  }
-                  placeholder="Pilih Puskesmas"
-                  className="w-full"
-                  theme={selectThemeColors}
-                />
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center sm:justify-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className=" block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="email"
-                >
-                  Nama Kepala Puskesmas :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                    "border-red-500" 
-                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="nama_kepala_puskesmas"
-                  type="text"
-                  value={formData.nama_kepala_puskesmas}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      nama_kepala_puskesmas: e.target.value,
-                    }))
-                  }
-                  placeholder="Nama Kepala Puskesmas"
-                />
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center sm:justify-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className=" block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="email"
-                >
-                  NIP Kepala Puskesmas :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                    "border-red-500" 
-                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="nip_kepala_puskesmas"
-                  type="text"
-                  value={formData.nip_kepala_puskesmas}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      nip_kepala_puskesmas: e.target.value,
-                    }))
-                  }
-                  placeholder="NIP Kepala Puskesmas"
-                />
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="email"
-                >
-                  Nama Barang yang diterima :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <Select
-                  options={dataBarang}
-                  value={formData.nama_barang}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      nama_barang: e,
-                    }))
-                  }
-                  placeholder="Pilih Barang"
-                  className="w-full"
-                  theme={selectThemeColors}
-                />
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center sm:justify-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className=" block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="email"
-                >
-                  Jumlah Barang yang dikirim :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                    "border-red-500" 
-                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="jumlah_barang_dikirim"
-                  type="number"
-                  value={formData.jumlah_barang_dikirim}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      jumlah_barang_dikirim: e.target.value,
-                    }))
-                  }
-                  placeholder="Jumlah Barang yang dikirim"
-                />
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center sm:justify-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className=" block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="email"
-                >
-                  Jumlah Barang yang diterima :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={` bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                    "border-red-500" 
-                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="jumlah_barang_diterima"
-                  type="number"
-                  value={formData.jumlah_barang_diterima}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      jumlah_barang_diterima: e.target.value,
-                    }))
-                  }
-                  placeholder="Jumlah Barang yang diterima"
-                />
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center sm:justify-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className=" block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="email"
-                >
-                  Upload TTE :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%] flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                <button
-                  className="w-1/4 bg-[#0ACBC2]  text-white font-bold py-4 px-6 rounded-md focus:outline-none focus:shadow-outline dark:bg-transparent"
-                  onClick={handleSimpan}
-                >
-                  {loading ? "Loading..." : "Pilih File"}
-                </button>
-                <span className="text-sm text-bodydark2">
-                  petunjuk upload file: besaran kb/mb, tipe file jpg/jpeg
-                </span>
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center sm:justify-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className=" block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="email"
-                >
-                  Keterangan Daerah :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <textarea
-                  id="message"
-                  rows="4"
-                  value={formData.ket_daerah}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      ket_daerah: e.target.value,
-                    }))
-                  }
-                  className={` bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                    "border-red-500" 
-                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  placeholder="Keterangan : misal: komplit dan baik atau kurang dari rensi dan baik"
-                ></textarea>
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center sm:justify-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className=" block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="email"
-                >
-                  Keterangan PPK :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <textarea
-                  id="message"
-                  rows="4"
-                  value={formData.ket_ppk}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      ket_ppk: e.target.value,
-                    }))
-                  }
-                  className={` bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                    "border-red-500" 
-                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  placeholder="Keterangan : misal: disetujui atau konfirmasi ke transporter barang sedang dikirim kembali"
-                ></textarea>
-              </div>
-            </div> */}
-
             <div className="flex items-center justify-center mt-6 sm:mt-12 sm:gap-8">
               <div className="div sm:flex-[2_2_0%]"></div>
               <div className="div sm:flex-[5_5_0%] ">
@@ -469,6 +200,127 @@ const TambahDistribusi = () => {
             </div>
           </form>
         </div>
+      </Card>
+      <Card className="mt-4">
+        <div className="card-header flex flex-col ">
+          <h1 className="mb-12 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
+            Form Input Data Barang
+          </h1>
+          <div className="flex justify-end mb-2">
+            <button
+              title="Tambah Data Distribusi"
+              className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
+              // onClick={handleExport}
+            >
+              <button
+                onClick={() => setShowModal(true)}
+                to="/data-distribusi/add"
+                className="flex items-center gap-2 px-4 py-2"
+              >
+                <FaPlus size={16} />
+                <span className="hidden sm:block">Tambah Data Barang</span>
+              </button>
+            </button>
+          </div>
+        </div>
+        <div className="w-full">
+          <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+              <thead className="text-xs text-bodydark2 uppercase bg-[#EBFBFA] dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                  <th scope="col" className="px-6 py-3 text-center">
+                    Nama Barang
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-center">
+                    Merk/Tipe
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-center">
+                    Nomor Bukti Kepemilikan
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-center">
+                    Satuan
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-center">
+                    Jumlah Dikirim
+                  </th>
+                  {/* <th scope="col" className="px-6 py-3 text-center">
+                    Jumlah Diterima
+                  </th> */}
+                  <th scope="col" className="px-6 py-3 text-center">
+                    Harga Satuan
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-center">
+                    Jumlah Total Nilai Perolehan (Rp)
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-center">
+                    Keterangan
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-center">
+                    Aksi
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {formData.dataBarang.map((barang, index) => (
+                  <tr
+                    key={index}
+                    className="bg-white  dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                  >
+                    <th
+                      scope="row"
+                      className="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                    >
+                      {barang.nama}
+                    </th>
+                    <td className="px-6 py-4 text-center">{barang.merk}</td>
+                    <td className="px-6 py-4 text-center">
+                      {barang.nomor_bukti}
+                    </td>
+                    <td className="px-6 py-4 text-center">{barang.satuan}</td>
+                    <td className="px-6 py-4 text-center">
+                      {barang.jumlah_dikirim}
+                    </td>
+                    {/* <td className="px-6 py-4 text-center">
+                      {barang.jumlah_diterima}
+                    </td> */}
+                    <td className="px-6 py-4 text-center">
+                      {barang.harga_satuan}
+                    </td>
+                    <td className="px-6 py-4 text-center">$2999</td>
+                    <td className="px-6 py-4 text-center">
+                      {barang.keterangan}
+                    </td>
+                    <td className="px-6 py-4 text-center flex items-center gap-2">
+                      <button
+                        title="Edit"
+                        onClick={() => handleEditBarang(index)}
+                        className="text-[#16B3AC] hover:text-cyan-500"
+                      >
+                        <FaEdit size={16} />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteBarang(index)}
+                        title="Delete"
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <FaTrash size={16} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <ModalAddBarang
+          show={showModal}
+          onClose={() => setShowModal(false)}
+          onSave={handleTambahBarang}
+          editIndex={editIndex}
+          dataBarang={
+            editIndex !== null ? formData.dataBarang[editIndex] : null
+          }
+        />
       </Card>
     </div>
   );

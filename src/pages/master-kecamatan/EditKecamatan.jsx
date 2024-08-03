@@ -116,8 +116,6 @@ const EditKecamatan = () => {
       }
     }
   }, [formData.id_kabupaten, listKota]);
-  console.log(listKota.find((prov) => prov.id == formData?.id_kabupaten));
-  console.log(formData);
   return (
     <div>
       <Breadcrumb pageName="Form Edit Data Kota" />

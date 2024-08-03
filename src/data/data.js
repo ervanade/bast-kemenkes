@@ -244,6 +244,16 @@ export const konfirmasiOptions = [
         "value": "0"
     }
 ]
+export const SelectOptions = [
+    {
+        "label": "Ya",
+        "value": "1"
+    },
+    {
+        "label": "Tidak",
+        "value": "0"
+    }
+]
 export const roleOptions = [
     {
         "label": "Admin",

@@ -7,6 +7,7 @@ import {
   dataKecamatan,
   dataPuskesmas,
   roleOptions,
+  SelectOptions,
 } from "../../data/data";
 import { decryptId, selectThemeColors } from "../../data/utils";
 import Select from "react-select";
@@ -31,6 +32,28 @@ const EditBarang = () => {
 
   const [listKota, setListKota] = useState([]);
   const [listKecamatan, setListKecamatan] = useState([]);
+
+  const [selectedStandar, setSelectedStandar] = useState(null);
+  const [selectedNonStandar, setSelectedNonStandar] = useState(null);
+
+  const handleSelectChange = (selectedOption, actionMeta) => {
+    const { name } = actionMeta;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: selectedOption ? selectedOption.value : "",
+    }));
+
+    switch (name) {
+      case "standar_rawat_inap":
+        setSelectedStandar(selectedOption);
+        break;
+      case "standar_nonrawat_inap":
+        setSelectedNonStandar(selectedOption);
+        break;
+      default:
+        break;
+    }
+  };
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -114,6 +137,27 @@ const EditBarang = () => {
     fetchBarangData();
   }, []);
 
+  useEffect(() => {
+    if (formData.standar_rawat_inap) {
+      const initialOption = SelectOptions.find(
+        (data) => data.value == formData.standar_rawat_inap
+      );
+      if (initialOption) {
+        setSelectedStandar(initialOption);
+      }
+    }
+    console.log(formData);
+
+    if (formData.standar_nonrawat_inap) {
+      const initialOption = SelectOptions.find(
+        (data) => data.value == formData.standar_nonrawat_inap
+      );
+      if (initialOption) {
+        setSelectedNonStandar(initialOption);
+      }
+    }
+  }, [formData.standar_rawat_inap, formData.standar_nonrawat_inap, formData]);
+
   return (
     <div>
       <Breadcrumb pageName="Form Edit Data Barang" />
@@ -161,22 +205,20 @@ const EditBarang = () => {
               <div className="sm:flex-[2_2_0%]">
                 <label
                   className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="standar_rawat_inap"
+                  htmlFor="email"
                 >
                   Standar Rawat Inap :
                 </label>
               </div>
               <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="standar_rawat_inap"
-                  value={formData.standar_rawat_inap}
-                  onChange={handleChange}
-                  type="text"
-                  required
+                <Select
+                  name="standar_rawat_inap"
+                  options={SelectOptions}
+                  value={selectedStandar}
+                  onChange={handleSelectChange}
                   placeholder="Standar Rawat Inap"
+                  className="w-full cursor-pointer"
+                  theme={selectThemeColors}
                 />
               </div>
             </div>
@@ -185,22 +227,20 @@ const EditBarang = () => {
               <div className="sm:flex-[2_2_0%]">
                 <label
                   className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="standar_nonrawat_inap"
+                  htmlFor="email"
                 >
-                  Standar Non Rawat Inap :
+                  Standar Rawat Non Inap :
                 </label>
               </div>
               <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="standar_nonrawat_inap"
-                  value={formData.standar_nonrawat_inap}
-                  onChange={handleChange}
-                  type="text"
-                  required
+                <Select
+                  name="standar_nonrawat_inap"
+                  options={SelectOptions}
+                  value={selectedNonStandar}
+                  onChange={handleSelectChange}
                   placeholder="Standar Non Rawat Inap"
+                  className="w-full cursor-pointer"
+                  theme={selectThemeColors}
                 />
               </div>
             </div>
