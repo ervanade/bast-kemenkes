@@ -9,14 +9,16 @@ import { useSelector } from "react-redux";
 const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
   const user = useSelector((a) => a.auth.user);
   const [barang, setBarang] = useState({
-    nama: "",
+    id_barang: "",
+    jenis_alkes: "",
     jumlah_dikirim: "",
     jumlah_diterima: "",
-    nomor_bukti: "",
-    jumlah_nilai: "",
+    nomor_kepemilikan: "",
+    jumlah_existing: "",
     merk: "",
     satuan: "",
     harga_satuan: "",
+    status_barang: "",
     keterangan: "",
   });
   const [listBarang, setListBarang] = useState([]);
@@ -27,10 +29,14 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
     if (selectedOption) {
       setBarang((prev) => ({
         ...prev,
-        nama: selectedOption ? selectedOption.value : "",
+        id_barang: selectedOption ? selectedOption.id : "",
+        jenis_alkes: selectedOption ? selectedOption.value : "",
         merk: selectedOption.merk ? selectedOption.merk : "",
         satuan: selectedOption.satuan ? selectedOption.satuan : "",
         keterangan: selectedOption.keterangan ? selectedOption.keterangan : "",
+        status_barang: selectedOption.status_barang
+          ? selectedOption.status_barang
+          : "",
         harga_satuan: selectedOption.harga_satuan
           ? selectedOption.harga_satuan
           : "",
@@ -43,11 +49,12 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
       setBarang(dataBarang);
     } else {
       setBarang({
-        nama: "",
+        id_barang: "",
+        jenis_alkes: "",
         jumlah_dikirim: "",
         jumlah_diterima: "",
-        nomor_bukti: "",
-        jumlah_nilai: "",
+        nomor_kepemilikan: "",
+        jumlah_existing: "",
         merk: "",
         satuan: "",
         harga_satuan: "",
@@ -58,6 +65,19 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
 
   const handleSave = () => {
     onSave(barang);
+    setBarang({
+      id_barang: "",
+      jenis_alkes: "",
+      jumlah_dikirim: "",
+      jumlah_diterima: "",
+      nomor_kepemilikan: "",
+      jumlah_existing: "",
+      merk: "",
+      satuan: "",
+      harga_satuan: "",
+      keterangan: "",
+    });
+    setSelectedBarang(null);
     onClose();
   };
 
@@ -171,11 +191,12 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                  rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
                     id="jumlah_barang_dikirim"
                     type="text"
-                    value={barang.nomor_bukti}
+                    required
+                    value={barang.nomor_kepemilikan}
                     onChange={(e) =>
                       setBarang((prev) => ({
                         ...prev,
-                        nomor_bukti: e.target.value,
+                        nomor_kepemilikan: e.target.value,
                       }))
                     }
                     placeholder="Nomor Bukti Kepemilikan Barang"
@@ -199,6 +220,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                  rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
                     id="jumlah_barang_dikirim"
                     type="number"
+                    required
                     value={barang.jumlah_dikirim}
                     onChange={(e) =>
                       setBarang((prev) => ({
@@ -217,7 +239,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                     className=" block text-[#728294] text-base font-semibold mb-2"
                     htmlFor="email"
                   >
-                    Jumlah Total Nilai Perolehan (Rp) :
+                    Jumlah Existing :
                   </label>
                 </div>
                 <div className="">
@@ -225,16 +247,17 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                     className={` bg-white disabled:bg-[#F2F2F2] appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                     "border-red-500" 
                  rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                    id="jumlah_barang_dikirim"
+                    id="jumlah_existing"
                     type="text"
-                    value={barang.jumlah_nilai}
+                    required
+                    value={barang.jumlah_existing}
                     onChange={(e) =>
                       setBarang((prev) => ({
                         ...prev,
-                        jumlah_nilai: e.target.value,
+                        jumlah_existing: e.target.value,
                       }))
                     }
-                    placeholder="Jumlah Total Nilai Perolehan (Rp)	"
+                    placeholder="Jumlah Existing"
                   />
                 </div>
               </div>

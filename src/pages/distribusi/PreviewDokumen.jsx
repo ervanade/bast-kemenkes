@@ -22,6 +22,7 @@ import {
   TableCell,
   TableHeader,
 } from "@david.kucsai/react-pdf-table";
+import { TableRow } from "@david.kucsai/react-pdf-table/lib/TableRow";
 
 const PreviewDokumen = () => {
   const { id } = useParams();

@@ -13,20 +13,72 @@ import axios from "axios";
 
 const TambahDistribusi = () => {
   const [formData, setFormData] = useState({
+    id_dokumen: "",
     provinsi: "",
-    kabupaten: "",
-    kecamatan: "",
+    id_kabupaten: "",
+    id_kecamatan: "",
     puskesmas: "",
+    id_puskesmas: "",
     nama_kepala_puskesmas: "",
     nip_kepala_puskesmas: "",
     nama_barang: "",
     jumlah_barang_dikirim: "",
     jumlah_barang_diterima: "",
     tte: "",
-    ket_daerah: "",
-    ket_ppk: "",
+    tanggal_kirim: "",
+    keterangan_daerah: "",
+    keterangan_ppk: "",
+    kodepusdatin_lama: "",
+    kodepusdatin_baru: "",
+    kriteria_lima_sdm: "",
+    listrik: "",
+    internet: "",
+    karakteristik_wilayah_kerja: "",
+    tahun_lokus: "",
+    konfirmasi_ppk: "",
+    konfirmasi_daerah: "",
+    tanggal_terima: "",
+    total_nilai_perolehan: "",
+    jenis_bmn: "",
+    jumlah_barang: "",
+    id_user_pemberi: "1",
+    id_user_pembuat: 1,
+    id_user_penerima: "2",
     dataBarang: [],
   });
+
+  //   {
+  //     "id": "1",
+  //     "id_dokumen": null,
+  //     "id_provinsi": "31",
+  //     "provinsi": "DKI JAKARTA",
+  //     "id_id_kabupaten": "3101",
+  //     "id_kabupaten": "KAB. ADM. KEP. SERIBU",
+  //     "id_kecamatan": "310101",
+  //     "kecamatan": "Kepulauan Seribu Utara",
+  //     "id_puskesmas": "1",
+  //     "nama_puskesmas": "Puskesmas PUSAT",
+  //     "kodepusdatin_lama": "110000",
+  //     "kodepusdatin_baru": "1100001111",
+  //     "kriteria_lima_sdm": "1",
+  //     "listrik": "1",
+  //     "internet": "1",
+  //     "karakteristik_wilayah_kerja": "Perdesaan",
+  //     "tahun_lokus": "2025",
+  //     "konfirmasi_ppk": null,
+  //     "konfirmasi_daerah": null,
+  //     "keterangan_ppk": null,
+  //     "keterangan_daerah": null,
+  //     "tanggal_kirim": "2024-07-17",
+  //     "tanggal_terima": null,
+  //     "jenis_bmn": "SWASTA",
+  //     "total_nilai_perolehan": "40000000",
+  //     "jumlah_barang": "4",
+  //     "id_user_pemberi": "1",
+  //     "id_user_pembuat": "1",
+  //     "id_user_verifikator": "2",
+  //     "id_user_penerima": "3"
+  // }
 
   const navigate = useNavigate();
   const user = useSelector((a) => a.auth.user);
@@ -37,10 +89,14 @@ const TambahDistribusi = () => {
   const [editIndex, setEditIndex] = useState(null);
 
   const [dataKota, setDataKota] = useState([]);
+  const [dataDokumen, setDataDokumen] = useState([]);
   const [dataKecamatan, setDataKecamatan] = useState([]);
+  const [dataPuskesmas, setDataPuskesmas] = useState([]);
 
   const [selectedKota, setSelectedKota] = useState(null);
+  const [selectedDokumen, setSelectedDokumen] = useState(null);
   const [selectedKecamatan, setSelectedKecamatan] = useState(null);
+  const [selectedPuskesmas, setSelectedPuskesmas] = useState(null);
 
   const handleKotaChange = (selectedOption) => {
     setSelectedKota(selectedOption);
@@ -49,7 +105,8 @@ const TambahDistribusi = () => {
     if (selectedOption) {
       setFormData((prev) => ({
         ...prev,
-        kabupaten: selectedOption.value.toString(),
+        id_kabupaten: selectedOption.value.toString(),
+        id_provinsi: selectedOption.provinsi.toString(),
       }));
       fetchKecamatan(selectedOption.value);
     }
@@ -60,9 +117,34 @@ const TambahDistribusi = () => {
     if (selectedOption) {
       setFormData((prev) => ({
         ...prev,
-        kecamatan: selectedOption.value.toString(),
+        id_kecamatan: selectedOption.value.toString(),
+      }));
+      fetchPuskesmas();
+    }
+  };
+  const handlePuskesmasChange = (selectedOption) => {
+    setSelectedPuskesmas(selectedOption);
+    if (selectedOption) {
+      setFormData((prev) => ({
+        ...prev,
+        id_puskesmas: selectedOption.value.toString(),
       }));
     }
+  };
+
+  const handleDokumenChange = (selectedOption) => {
+    setSelectedDokumen(selectedOption);
+    if (selectedOption) {
+      setFormData((prev) => ({
+        ...prev,
+        id_dokumen: selectedOption.value.toString(),
+      }));
+    }
+  };
+
+  const handleChange = (event) => {
+    const { id, value, files } = event.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
   const fetchKota = async () => {
@@ -79,6 +161,7 @@ const TambahDistribusi = () => {
         ...response.data.data.map((item) => ({
           label: item.name,
           value: item.id,
+          provinsi: item.id_provinsi,
         })),
       ]);
     } catch (error) {
@@ -108,29 +191,88 @@ const TambahDistribusi = () => {
     }
   };
 
+  const fetchPuskesmas = async (idKota) => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/puskesmas`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataPuskesmas([
+        ...response.data.data.map((item) => ({
+          label: item.nama_puskesmas,
+          value: item.id,
+        })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setDataPuskesmas([]);
+    }
+  };
+
+  const fetchDokumen = async () => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/dokumen`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataDokumen([
+        ...response.data.data.map((item) => ({
+          label: item.nama_dokumen,
+          value: item.id,
+        })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setDataDokumen([]);
+    }
+  };
+
   useEffect(() => {
     fetchKota();
+    fetchDokumen();
   }, []);
+
+  const tambahDistribusi = async () => {
+    await axios({
+      method: "post",
+      url: `${import.meta.env.VITE_APP_API_URL}/api/distribusi`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user?.token}`,
+      },
+      data: JSON.stringify(formData),
+    })
+      .then(function (response) {
+        Swal.fire("Data Berhasil di Input!", "", "success");
+        navigate("/data-distribusi");
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log(error);
+      });
+  };
 
   const handleSimpan = async (e) => {
     e.preventDefault();
     Swal.fire({
       title: "Perhatian",
-      text: "Jumlah dikirim dan diterima sudah sesuai, tandatangani BAST ini?",
+      text: "Data sudah sesuai, Simpan Data ini?",
       showDenyButton: true,
       showCancelButton: true,
-      denyButtonColor: "#3B82F6",
       confirmButtonColor: "#16B3AC",
-      confirmButtonText: "Ya",
-      denyButtonText: `Simpan Data`,
+      confirmButtonText: "Ya, Simpan Data",
     }).then((result) => {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
-        Swal.fire("Data Berhasil di Input!", "", "success");
-        navigate("/data-distribusi");
-      } else if (result.isDenied) {
-        Swal.fire("Simpan Data Berhasil!", "", "success");
-        navigate("/data-distribusi");
+        tambahDistribusi();
       }
     });
   };
@@ -152,6 +294,11 @@ const TambahDistribusi = () => {
       }));
     }
     setShowModal(false);
+  };
+
+  const tambahBarangClick = (e) => {
+    e.preventDefault();
+    setShowModal(true);
   };
   const handleEditBarang = (index) => {
     setEditIndex(index);
@@ -216,14 +363,9 @@ const TambahDistribusi = () => {
               </div>
               <div className="sm:flex-[5_5_0%]">
                 <Select
-                  options={dataPuskesmas}
-                  value={formData.puskesmas}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      puskesmas: e,
-                    }))
-                  }
+                  options={dataDokumen}
+                  value={selectedDokumen}
+                  onChange={handleDokumenChange}
                   placeholder="Pilih Dokumen"
                   className="w-full"
                   theme={selectThemeColors}
@@ -288,13 +430,8 @@ const TambahDistribusi = () => {
               <div className="sm:flex-[5_5_0%]">
                 <Select
                   options={dataPuskesmas}
-                  value={formData.puskesmas}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      puskesmas: e,
-                    }))
-                  }
+                  value={selectedPuskesmas}
+                  onChange={handlePuskesmasChange}
                   isDisabled={!selectedKecamatan}
                   placeholder={
                     selectedKota ? "Pilih Puskesmas" : "Pilih Kecamatan Dahulu"
@@ -302,6 +439,343 @@ const TambahDistribusi = () => {
                   className="w-full"
                   theme={selectThemeColors}
                 />
+              </div>
+            </div>
+
+            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+              <div className="sm:flex-[2_2_0%]">
+                <label
+                  className="block text-[#728294] text-base font-normal mb-2"
+                  htmlFor="kodepusdatin_lama"
+                >
+                  Kode Pusdatin Lama :
+                </label>
+              </div>
+              <div className="sm:flex-[5_5_0%]">
+                <input
+                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                  "border-red-500" 
+               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                  id="kodepusdatin_lama"
+                  value={formData.kodepusdatin_lama}
+                  onChange={handleChange}
+                  type="text"
+                  required
+                  placeholder="Kode Pusdatin Lama"
+                />
+              </div>
+            </div>
+
+            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+              <div className="sm:flex-[2_2_0%]">
+                <label
+                  className="block text-[#728294] text-base font-normal mb-2"
+                  htmlFor="kodepusdatin_baru"
+                >
+                  Kode Pusdatin Baru :
+                </label>
+              </div>
+              <div className="sm:flex-[5_5_0%]">
+                <input
+                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                  "border-red-500" 
+               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                  id="kodepusdatin_baru"
+                  value={formData.kodepusdatin_baru}
+                  onChange={handleChange}
+                  type="text"
+                  required
+                  placeholder="Kode Pusdatin Baru"
+                />
+              </div>
+            </div>
+
+            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+              <div className="sm:flex-[2_2_0%]">
+                <label
+                  className="block text-[#728294] text-base font-normal mb-2"
+                  htmlFor="kriteria_lima_sdm"
+                >
+                  Kriteria Lima SDM :
+                </label>
+              </div>
+              <div className="sm:flex-[5_5_0%]">
+                <input
+                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                  "border-red-500" 
+               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                  id="kriteria_lima_sdm"
+                  value={formData.kriteria_lima_sdm}
+                  onChange={handleChange}
+                  type="text"
+                  required
+                  placeholder="Kriteria Lima SDM"
+                />
+              </div>
+            </div>
+
+            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+              <div className="sm:flex-[2_2_0%]">
+                <label
+                  className="block text-[#728294] text-base font-normal mb-2"
+                  htmlFor="listrik"
+                >
+                  Listrik :
+                </label>
+              </div>
+              <div className="sm:flex-[5_5_0%]">
+                <input
+                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                  "border-red-500" 
+               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                  id="listrik"
+                  value={formData.listrik}
+                  onChange={handleChange}
+                  type="text"
+                  required
+                  placeholder="Listrik"
+                />
+              </div>
+            </div>
+
+            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+              <div className="sm:flex-[2_2_0%]">
+                <label
+                  className="block text-[#728294] text-base font-normal mb-2"
+                  htmlFor="internet"
+                >
+                  Internet :
+                </label>
+              </div>
+              <div className="sm:flex-[5_5_0%]">
+                <input
+                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                  "border-red-500" 
+               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                  id="internet"
+                  value={formData.internet}
+                  onChange={handleChange}
+                  type="text"
+                  required
+                  placeholder="Internet"
+                />
+              </div>
+            </div>
+
+            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+              <div className="sm:flex-[2_2_0%]">
+                <label
+                  className="block text-[#728294] text-base font-normal mb-2"
+                  htmlFor="karakteristik_wilayah_kerja"
+                >
+                  Karakteristik Wilayah Kerja :
+                </label>
+              </div>
+              <div className="sm:flex-[5_5_0%]">
+                <input
+                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                  "border-red-500" 
+               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                  id="karakteristik_wilayah_kerja"
+                  value={formData.karakteristik_wilayah_kerja}
+                  onChange={handleChange}
+                  type="text"
+                  required
+                  placeholder="Listrik"
+                />
+              </div>
+            </div>
+
+            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+              <div className="sm:flex-[2_2_0%]">
+                <label
+                  className="block text-[#728294] text-base font-normal mb-2"
+                  htmlFor="tahun_lokus"
+                >
+                  Tahun Lokus :
+                </label>
+              </div>
+              <div className="sm:flex-[5_5_0%]">
+                <input
+                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                  "border-red-500" 
+               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                  id="tahun_lokus"
+                  value={formData.tahun_lokus}
+                  onChange={handleChange}
+                  type="text"
+                  required
+                  placeholder="Tahun Lokus"
+                />
+              </div>
+            </div>
+
+            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+              <div className="sm:flex-[2_2_0%]">
+                <label
+                  className="block text-[#728294] text-base font-normal mb-2"
+                  htmlFor="tanggal_kirim"
+                >
+                  Tanggal Kirim :
+                </label>
+              </div>
+              <div className="sm:flex-[5_5_0%]">
+                <input
+                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                  "border-red-500" 
+               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                  id="tanggal_kirim"
+                  value={formData.tanggal_kirim}
+                  onChange={handleChange}
+                  type="date"
+                  required
+                  placeholder="Tanggal Kirim"
+                />
+              </div>
+            </div>
+
+            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+              <div className="sm:flex-[2_2_0%]">
+                <label
+                  className="block text-[#728294] text-base font-normal mb-2"
+                  htmlFor="jenis_bmn"
+                >
+                  Jenis BMN :
+                </label>
+              </div>
+              <div className="sm:flex-[5_5_0%]">
+                <input
+                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                  "border-red-500" 
+               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                  id="jenis_bmn"
+                  value={formData.jenis_bmn}
+                  onChange={handleChange}
+                  type="text"
+                  required
+                  placeholder="Jenis BMN"
+                />
+              </div>
+            </div>
+
+            <div className="mt-12">
+              <div className="card-header flex flex-col ">
+                <h1 className="mb-8 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-center text-bodydark1">
+                  Form Input Data Barang
+                </h1>
+                <div className="flex justify-end mb-2">
+                  <button
+                    title="Tambah Data Distribusi"
+                    className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
+                    // onClick={handleExport}
+                  >
+                    <button
+                      onClick={(e) => tambahBarangClick(e)}
+                      to="/data-distribusi/add"
+                      className="flex items-center gap-2 px-4 py-2"
+                    >
+                      <FaPlus size={16} />
+                      <span className="hidden sm:block">
+                        Tambah Data Barang
+                      </span>
+                    </button>
+                  </button>
+                </div>
+              </div>
+              <div className="w-full">
+                <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                  <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <thead className="text-xs text-bodydark2 uppercase bg-[#EBFBFA] dark:bg-gray-700 dark:text-gray-400">
+                      <tr>
+                        <th scope="col" className="px-6 py-3 text-center">
+                          Nama Barang
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-center">
+                          Merk/Tipe
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-center">
+                          Nomor Bukti Kepemilikan
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-center">
+                          Satuan
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-center">
+                          Jumlah Dikirim
+                        </th>
+                        {/* <th scope="col" className="px-6 py-3 text-center">
+                    Jumlah Diterima
+                  </th> */}
+                        <th scope="col" className="px-6 py-3 text-center">
+                          Harga Satuan
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-center">
+                          Jumlah Existing
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-center">
+                          Keterangan
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-center">
+                          Aksi
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {formData.dataBarang.map((barang, index) => (
+                        <tr
+                          key={index}
+                          className="bg-white  dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                        >
+                          <th
+                            scope="row"
+                            className="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                          >
+                            {barang.jenis_alkes}
+                          </th>
+                          <td className="px-6 py-4 text-center">
+                            {barang.merk}
+                          </td>
+                          <td className="px-6 py-4 text-center">
+                            {barang.nomor_kepemilikan}
+                          </td>
+                          <td className="px-6 py-4 text-center">
+                            {barang.satuan}
+                          </td>
+                          <td className="px-6 py-4 text-center">
+                            {barang.jumlah_dikirim}
+                          </td>
+                          {/* <td className="px-6 py-4 text-center">
+                      {barang.jumlah_diterima}
+                    </td> */}
+                          <td className="px-6 py-4 text-center">
+                            {barang.harga_satuan}
+                          </td>
+                          <td className="px-6 py-4 text-center">
+                            {barang.jumlah_existing}
+                          </td>
+                          <td className="px-6 py-4 text-center">
+                            {barang.keterangan}
+                          </td>
+                          <td className="px-6 py-4 text-center flex items-center gap-2">
+                            <button
+                              title="Edit"
+                              onClick={() => handleEditBarang(index)}
+                              className="text-[#16B3AC] hover:text-cyan-500"
+                            >
+                              <FaEdit size={16} />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteBarang(index)}
+                              title="Delete"
+                              className="text-red-500 hover:text-red-700"
+                            >
+                              <FaTrash size={16} />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
 
@@ -326,131 +800,18 @@ const TambahDistribusi = () => {
                 </div>
               </div>
             </div>
+
+            <ModalAddBarang
+              show={showModal}
+              onClose={() => setShowModal(false)}
+              onSave={handleTambahBarang}
+              editIndex={editIndex}
+              dataBarang={
+                editIndex !== null ? formData.dataBarang[editIndex] : null
+              }
+            />
           </form>
         </div>
-      </Card>
-      <Card className="mt-4">
-        <div className="card-header flex flex-col ">
-          <h1 className="mb-12 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
-            Form Input Data Barang
-          </h1>
-          <div className="flex justify-end mb-2">
-            <button
-              title="Tambah Data Distribusi"
-              className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
-              // onClick={handleExport}
-            >
-              <button
-                onClick={() => setShowModal(true)}
-                to="/data-distribusi/add"
-                className="flex items-center gap-2 px-4 py-2"
-              >
-                <FaPlus size={16} />
-                <span className="hidden sm:block">Tambah Data Barang</span>
-              </button>
-            </button>
-          </div>
-        </div>
-        <div className="w-full">
-          <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-              <thead className="text-xs text-bodydark2 uppercase bg-[#EBFBFA] dark:bg-gray-700 dark:text-gray-400">
-                <tr>
-                  <th scope="col" className="px-6 py-3 text-center">
-                    Nama Barang
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-center">
-                    Merk/Tipe
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-center">
-                    Nomor Bukti Kepemilikan
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-center">
-                    Satuan
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-center">
-                    Jumlah Dikirim
-                  </th>
-                  {/* <th scope="col" className="px-6 py-3 text-center">
-                    Jumlah Diterima
-                  </th> */}
-                  <th scope="col" className="px-6 py-3 text-center">
-                    Harga Satuan
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-center">
-                    Jumlah Total Nilai Perolehan (Rp)
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-center">
-                    Keterangan
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-center">
-                    Aksi
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {formData.dataBarang.map((barang, index) => (
-                  <tr
-                    key={index}
-                    className="bg-white  dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                  >
-                    <th
-                      scope="row"
-                      className="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                    >
-                      {barang.nama}
-                    </th>
-                    <td className="px-6 py-4 text-center">{barang.merk}</td>
-                    <td className="px-6 py-4 text-center">
-                      {barang.nomor_bukti}
-                    </td>
-                    <td className="px-6 py-4 text-center">{barang.satuan}</td>
-                    <td className="px-6 py-4 text-center">
-                      {barang.jumlah_dikirim}
-                    </td>
-                    {/* <td className="px-6 py-4 text-center">
-                      {barang.jumlah_diterima}
-                    </td> */}
-                    <td className="px-6 py-4 text-center">
-                      {barang.harga_satuan}
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      {barang.jumlah_nilai}
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      {barang.keterangan}
-                    </td>
-                    <td className="px-6 py-4 text-center flex items-center gap-2">
-                      <button
-                        title="Edit"
-                        onClick={() => handleEditBarang(index)}
-                        className="text-[#16B3AC] hover:text-cyan-500"
-                      >
-                        <FaEdit size={16} />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteBarang(index)}
-                        title="Delete"
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <FaTrash size={16} />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <ModalAddBarang
-          show={showModal}
-          onClose={() => setShowModal(false)}
-          onSave={handleTambahBarang}
-          editIndex={editIndex}
-          dataBarang={
-            editIndex !== null ? formData.dataBarang[editIndex] : null
-          }
-        />
       </Card>
     </div>
   );

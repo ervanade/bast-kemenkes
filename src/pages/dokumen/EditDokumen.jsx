@@ -15,7 +15,7 @@ import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import axios from "axios";
 
-const TambahDokumen = () => {
+const EditDokumen = () => {
   const [formData, setFormData] = useState({
     nama_dokumen: "",
     // standar_rawat_inap: "",
@@ -34,6 +34,42 @@ const TambahDokumen = () => {
 
   const navigate = useNavigate();
   const user = useSelector((a) => a.auth.user);
+  const { id } = useParams();
+
+  const fetchDokumenData = async () => {
+    try {
+      // eslint-disable-next-line
+      const responseUser = await axios({
+        method: "get",
+        url: `${
+          import.meta.env.VITE_APP_API_URL
+        }/api/dokumen/${encodeURIComponent(decryptId(id))}`,
+        headers: {
+          "Content-Type": "application/json",
+          //eslint-disable-next-line
+          Authorization: `Bearer ${user?.token}`,
+        },
+      }).then(function (response) {
+        // handle success
+        // console.log(response)
+        const data = response.data.data;
+        setFormData({
+          nama_dokumen: data.nama_dokumen || "",
+          nomor_bast: data.nomor_bast || "",
+          tanggal_bast: data.tanggal_bast || "",
+          tahun_lokus: data.tahun_lokus || "",
+          penerima_hibah: data.penerima_hibah || "",
+          jenis_bmn: data.jenis_bmn || "",
+          kepala_unit_pemberi: data.kepala_unit_pemberi || "",
+          nama_kontrak_pengadaan: data.nama_kontrak_pengadaan || "",
+          tanggal_kontrak_pengadaan: data.tanggal_kontrak_pengadaan || "",
+          id_user_pemberi: data.id_user_pemberi || "",
+        });
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const [listKota, setListKota] = useState([]);
   const [listKecamatan, setListKecamatan] = useState([]);
@@ -46,10 +82,12 @@ const TambahDokumen = () => {
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  const tambahDokumen = async () => {
+  const updateDokumen = async () => {
     await axios({
-      method: "post",
-      url: `${import.meta.env.VITE_APP_API_URL}/api/dokumen`,
+      method: "put",
+      url: `${
+        import.meta.env.VITE_APP_API_URL
+      }/api/dokumen/${encodeURIComponent(decryptId(id))}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${user?.token}`,
@@ -68,17 +106,20 @@ const TambahDokumen = () => {
   const handleSimpan = async (e) => {
     e.preventDefault();
     setLoading(true);
-    tambahDokumen();
+    updateDokumen();
   };
+  useEffect(() => {
+    fetchDokumenData();
+  }, []);
   console.log(formData);
 
   return (
     <div>
-      <Breadcrumb pageName="Form Tambah Data Dokumen" />
+      <Breadcrumb pageName="Form Edit Data Dokumen" />
       <Card>
         <div className="card-header flex justify-between">
           <h1 className="mb-12 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
-            {user.role === "1" ? "Form Tambah Data Dokumen" : ""}
+            {user.role === "1" ? "Form Edit Data Dokumen" : ""}
           </h1>
           <div>
             <Link
@@ -359,4 +400,4 @@ const TambahDokumen = () => {
   );
 };
 
-export default TambahDokumen;
+export default EditDokumen;

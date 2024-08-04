@@ -8,7 +8,7 @@ import {
   dataKota,
   dataProvinsi,
 } from "../../data/data";
-import { selectThemeColors } from "../../data/utils";
+import { encryptId, selectThemeColors } from "../../data/utils";
 import {
   FaDownload,
   FaEdit,
@@ -21,6 +21,7 @@ import { BiExport, BiSolidFileExport } from "react-icons/bi";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const Dokumen = () => {
   const user = useSelector((a) => a.auth.user);
@@ -28,6 +29,10 @@ const Dokumen = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [search, setSearch] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
+
+  const [data, setData] = useState([]);
 
   const [dataProvinsi, setDataProvinsi] = useState([]);
   const [dataKota, setDataKota] = useState([]);
@@ -36,6 +41,32 @@ const Dokumen = () => {
   const [selectedProvinsi, setSelectedProvinsi] = useState(null);
   const [selectedKota, setSelectedKota] = useState(null);
   const [selectedKecamatan, setSelectedKecamatan] = useState(null);
+
+  const fetchDokumenData = async () => {
+    setLoading(true);
+    setError(false);
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/dokumen`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setData(response.data.data);
+      setFilteredData(response.data.data);
+    } catch (error) {
+      setError(true);
+      setFilteredData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDokumenData();
+  }, []);
 
   const fetchProvinsi = async () => {
     try {
@@ -132,42 +163,107 @@ const Dokumen = () => {
   const handleKecamatanChange = (selectedOption) => {
     setSelectedKecamatan(selectedOption);
   };
+
+  const deleteDokumen = async (id) => {
+    await axios({
+      method: "delete",
+      url: `${import.meta.env.VITE_APP_API_URL}/api/dokumen/${id}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user?.token}`,
+      },
+    })
+      .then(() => {
+        fetchDokumenData();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleConfirmDeleteDokumen = async (id) => {
+    return Swal.fire({
+      title: "Are you sure?",
+      text: "You will Delete This Dokumen!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      confirmButtonColor: "#16B3AC",
+    }).then(async (result) => {
+      if (result.value) {
+        await deleteDokumen(id);
+        Swal.fire({
+          icon: "success",
+          title: "Deleted!",
+          text: "Your Dokumen has been deleted.",
+        });
+      }
+    });
+  };
+
+  const handleSearch = (event) => {
+    const value = event.target.value.toLowerCase();
+    setSearch(value);
+
+    const filtered = data.filter((item) => {
+      return (
+        (item?.nama_dokumen &&
+          item.nama_dokumen.toLowerCase().includes(value)) ||
+        (item?.nomor_bast && item.nomor_bast.toLowerCase().includes(value)) ||
+        (item?.tanggal_bast &&
+          item.tanggal_bast.toLowerCase().includes(value)) ||
+        (item?.tahun_lokus && item.tahun_lokus.toLowerCase().includes(value)) ||
+        (item?.nama_kontrak_pengadaan &&
+          item.nama_kontrak_pengadaan.toLowerCase().includes(value))
+      );
+    });
+
+    setFilteredData(filtered);
+  };
+
   const columns = useMemo(
     () => [
       // { name: "No", selector: (row) => row.id, sortable: true },
       {
-        name: "Provinsi",
-        selector: (row) => row.provinsi,
+        name: "Nama Dokumen",
+        selector: (row) => row.nama_dokumen,
         sortable: true,
         // width: "100px",
       },
       {
-        name: "Kab/Kota",
-        selector: (row) => row.kab_kota,
+        name: "Nomor BAST",
+        selector: (row) => row.nomor_bast,
         sortable: true,
         // width: "100px",
       },
-      // { name: "Kecamatan", selector: (row) => row.kecamatan, sortable: true },
-      // { name: "Puskesmas", selector: (row) => row.Puskesmas, sortable: true },
-      // { name: "Nama Kapus", selector: (row) => row.nama_kapus, sortable: true },
-      // {
-      //   name: "Nama Barang",
-      //   selector: (row) => row.nama_barang,
-      //   sortable: true,
-      // },
-      // {
-      //   name: "Jumlah Barang Dikirim",
-      //   selector: (row) => row.jumlah_barang_dikirim,
-      //   sortable: true,
-      // },
-      // {
-      //   name: "Jumlah Barang Diterima",
-      //   selector: (row) => row.jumlah_barang_diterima,
-      //   sortable: true,
-      // },
+      {
+        name: "Tanggal BAST",
+        selector: (row) => row.tanggal_bast,
+        sortable: true,
+        // width: "100px",
+      },
+      {
+        name: "Tahun Lokus",
+        selector: (row) => row.tahun_lokus,
+        sortable: true,
+        // width: "100px",
+      },
+      {
+        name: "Kepala Unit Pemberi",
+        selector: (row) => row.kepala_unit_pemberi,
+        sortable: true,
+        // width: "100px",
+      },
+      {
+        name: "Nama Kontrak Pengadaan",
+        selector: (row) => row.nama_kontrak_pengadaan,
+        sortable: true,
+        // width: "100px",
+      },
       {
         name: "Status TTE",
-        selector: (row) => row.status_tte,
+        selector: (row) => (row.status_tte === "0" ? "Belum TTE" : "Sudah TTE"),
         sortable: true,
         // width: "110px",
       },
@@ -211,17 +307,9 @@ const Dokumen = () => {
         button: true,
       },
       {
-        name: "Aksi",
+        name: "TTE",
         cell: (row) => (
           <div className="flex items-center space-x-2">
-            {/* <button
-              title="Input"
-              className="text-green-500 hover:text-green-700"
-            >
-              <Link to="/data-verifikasi/form-distribusi">
-                <FaPlus />
-              </Link>
-            </button> */}
             {row.status_tte === "Belum" ? (
               <button
                 title="Konfirmasi"
@@ -249,6 +337,51 @@ const Dokumen = () => {
                 </Link>
               </button>
             )}
+          </div>
+        ),
+        ignoreRowClick: true,
+        allowOverflow: true,
+        button: true,
+      },
+      {
+        name: "Aksi",
+        omit: user.role !== "1",
+        cell: (row) => (
+          <div className="flex items-center space-x-2">
+            {/* <button
+              title="Input"
+              className="text-green-500 hover:text-green-700"
+            >
+              <Link to="/data-verifikasi/form-distribusi">
+                <FaPlus />
+              </Link>
+            </button> */}
+
+            {user.role === "1" ? (
+              <>
+                <button
+                  title="Edit"
+                  className="text-[#16B3AC] hover:text-cyan-500"
+                >
+                  <Link
+                    to={`/dokumen/edit/${encodeURIComponent(
+                      encryptId(row.id)
+                    )}`}
+                  >
+                    <FaEdit size={16} />
+                  </Link>
+                </button>
+                <button
+                  title="Delete"
+                  className="text-red-500 hover:text-red-700"
+                  onClick={() => handleConfirmDeleteDokumen(row.id)}
+                >
+                  <FaTrash size={16} />
+                </button>
+              </>
+            ) : (
+              ""
+            )}
             {/* <button
               title="Edit"
               className="text-white p-2 bg-blue-600 rounded-md"
@@ -266,49 +399,6 @@ const Dokumen = () => {
     ],
     []
   );
-  const data = dataDistribusiBekasi;
-
-  const returnKota = (idKota, listKota) => {
-    return listKota.find((k) => k.id === idKota).name;
-  };
-
-  const [search, setSearch] = useState("");
-  const [dataKecamatanState, setDataKecamatanState] = useState([
-    { label: "Semua Kecamatan", value: "all" },
-    ...dataKecamatan,
-  ]);
-  const [filteredData, setFilteredData] = useState(data);
-
-  const handleSearch = (event) => {
-    const value = event.target.value.toLowerCase();
-    setSearch(value);
-
-    const filtered = data.filter(
-      (item) =>
-        item.provinsi.toLowerCase().includes(value) ||
-        item.kab_kota.toLowerCase().includes(value) ||
-        item.kecamatan.toLowerCase().includes(value) ||
-        item.Puskesmas.toLowerCase().includes(value) ||
-        item.nama_kapus.toLowerCase().includes(value) ||
-        item.nama_barang.toLowerCase().includes(value) ||
-        item.jumlah_barang_dikirim.toString().includes(value) ||
-        item.jumlah_barang_diterima.toString().includes(value) ||
-        item.status_tte.toLowerCase().includes(value) ||
-        item.keterangan_ppk.toLowerCase().includes(value)
-    );
-
-    if (selectedKecamatan) {
-      selectedKecamatan.value != "all"
-        ? setFilteredData(
-            filtered.filter(
-              (item) => item.kecamatan === selectedKecamatan.label
-            )
-          )
-        : setFilteredData(filtered);
-    } else {
-      setFilteredData(filtered);
-    }
-  };
 
   const handleExport = () => {
     // Implementasi untuk mengekspor data (misalnya ke CSV)
@@ -383,7 +473,7 @@ const Dokumen = () => {
                 }
               />
             </div>
-            <div>
+            {/* <div>
               <label
                 className="block text-[#728294] text-base font-normal mb-2"
                 htmlFor="kecamatan"
@@ -408,7 +498,7 @@ const Dokumen = () => {
                   selectedKota ? "Pilih Kecamatan" : "Pilih Kab / Kota Dahulu"
                 }
               />
-            </div>
+            </div> */}
           </div>
           <button
             onClick={handleSearch}

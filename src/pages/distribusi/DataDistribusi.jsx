@@ -18,7 +18,7 @@ import {
   FaTrash,
 } from "react-icons/fa";
 import { BiExport, BiSolidFileExport } from "react-icons/bi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { CgSpinner } from "react-icons/cg";
@@ -68,6 +68,7 @@ const DataDistribusi = () => {
   const handleExport = () => {
     // Implementasi untuk mengekspor data (misalnya ke CSV)
   };
+  const navigate = useNavigate();
 
   const fetchProvinsi = async () => {
     try {
@@ -228,12 +229,12 @@ const DataDistribusi = () => {
   const columns = useMemo(
     () => [
       // { name: "No", selector: (row) => row.id, sortable: true },
-      {
-        name: "Nomor BAST",
-        selector: (row) => row.nomor_bast,
-        sortable: true,
-        width: "100px",
-      },
+      // {
+      //   name: "Nomor BAST",
+      //   selector: (row) => row.nomor_bast,
+      //   sortable: true,
+      //   width: "100px",
+      // },
       {
         name: "Provinsi",
         selector: (row) => row.provinsi,
@@ -291,7 +292,32 @@ const DataDistribusi = () => {
                 <FaPlus />
               </Link>
             </button> */}
-            {row.status_tte === "Belum" ? (
+            {row.status_tte !== "Sudah" ? (
+              <button
+                title="Konfirmasi"
+                className="text-white py-2 w-22 bg-blue-500 rounded-md"
+                onClick={() => {
+                  navigate(`/data-distribusi/edit/${row.id}`);
+                }}
+              >
+                {/* <FaEdit size={16} /> */}
+                <Link to={`/data-distribusi/edit/${row.id}`}>Konfirmasi</Link>
+              </button>
+            ) : (
+              <button
+                title="Konfirmasi"
+                className="text-white  py-2 w-22 bg-green-500 rounded-md"
+                onClick={() => {
+                  navigate(`/data-distribusi/edit/${row.id}`);
+                }}
+              >
+                {/* <FaEdit size={16} /> */}
+                <Link to={`/data-distribusi/edit/${row.id}`}>
+                  Sudah Konfirmasi
+                </Link>
+              </button>
+            )}
+            {/* {row.status_tte === "Belum" ? (
               <button
                 title="Konfirmasi"
                 className="text-blue-400 rounded-md"
@@ -312,10 +338,10 @@ const DataDistribusi = () => {
               title="Detail"
               className="text-green-400 hover:text-green-500"
             >
-              <Link to={`/data-distribusi/detail/${row.id_puskesmas}`}>
+              <Link to={`/data-distribusi/edit/${row.id_puskesmas}`}>
                 <FaEye size={16} />
               </Link>
-            </button>
+            </button> */}
 
             {/* <button title="Edit" className="text-[#16B3AC] hover:text-cyan-500">
               <Link to={`/data-distribusi/edit/${row.id}`}>

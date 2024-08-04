@@ -42,6 +42,8 @@ import EditKecamatan from "./pages/master-kecamatan/EditKecamatan";
 import DetailKota from "./pages/master-kecamatan/DetailKota";
 import Dokumen from "./pages/dokumen/Dokumen";
 import TambahDokumen from "./pages/dokumen/TambahDokumen";
+import EditDokumen from "./pages/dokumen/EditDokumen";
+import AksiDistribusi from "./pages/distribusi/AksiDistribusi";
 
 function App() {
   const { pathname } = useLocation();
@@ -74,11 +76,13 @@ function App() {
               />
               <Route path="dokumen" element={<Dokumen />} />
               <Route path="dokumen/add" element={<TambahDokumen />} />
+              <Route path="dokumen/edit/:id" element={<EditDokumen />} />
 
               <Route path="profile" element={<Profile />} />
               <Route
                 path="data-distribusi/edit/:id"
-                element={<EditDistribusi />}
+                // element={<EditDistribusi />}
+                element={<AksiDistribusi />}
               />
               <Route
                 path="data-distribusi/preview-dokumen/:id"
