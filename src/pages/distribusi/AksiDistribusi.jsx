@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import Card from "../../components/Card/Card";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { dataBarang, dataKecamatan, dataPuskesmas } from "../../data/data";
+import {
+  dataBarang,
+  dataKecamatan,
+  dataPuskesmas,
+  konfirmasiOptions,
+} from "../../data/data";
 import { selectThemeColors } from "../../data/utils";
 import Select from "react-select";
 import Swal from "sweetalert2";
@@ -259,7 +264,6 @@ const AksiDistribusi = () => {
       console.log(error);
     }
   };
-  console.log(formData);
 
   useEffect(() => {
     fetchDistribusiData();
@@ -354,7 +358,6 @@ const AksiDistribusi = () => {
       setShowModal(true);
     }
   }, [editIndex]);
-  console.log(selectedDokumen);
 
   useEffect(() => {
     if (formData.id_dokumen && dataDokumen.length > 0) {
@@ -732,6 +735,192 @@ const AksiDistribusi = () => {
                 />
               </div>
             </div>
+
+            {user.role === "2" ? (
+              <>
+                <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+                  <div className="sm:flex-[2_2_0%]">
+                    <label
+                      className=" block text-[#728294] text-base font-semibold mb-2"
+                      htmlFor="email"
+                    >
+                      Keterangan Daerah :
+                    </label>
+                  </div>
+                  <div className="sm:flex-[5_5_0%]">
+                    <textarea
+                      id="message"
+                      rows="4"
+                      value={formData.ket_daerah}
+                      disabled
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          ket_daerah: e.target.value,
+                        }))
+                      }
+                      className={` disabled:bg-[#F2F2F2] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                    "border-red-500" 
+                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                      placeholder="Keterangan : misal: komplit dan baik atau kurang dari rensi dan baik"
+                    ></textarea>
+                  </div>
+                </div>
+
+                <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+                  <div className="sm:flex-[2_2_0%]">
+                    <label
+                      className="block text-[#728294] text-base font-semibold mb-2"
+                      htmlFor="email"
+                    >
+                      Konfirmasi Daerah :
+                    </label>
+                  </div>
+                  <div className="sm:flex-[5_5_0%]">
+                    <Select
+                      options={konfirmasiOptions}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          tte: e,
+                        }))
+                      }
+                      defaultValue={
+                        formData?.status_tte === "Sudah"
+                          ? konfirmasiOptions[0]
+                          : konfirmasiOptions[1]
+                      }
+                      placeholder="Konfrimasi PPK"
+                      className="w-full cursor-pointer"
+                      theme={selectThemeColors}
+                      isDisabled
+                    />
+                  </div>
+                </div>
+
+                <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+                  <div className="sm:flex-[2_2_0%]">
+                    <label
+                      className=" block text-[#728294] text-base font-semibold mb-2"
+                      htmlFor="email"
+                    >
+                      Keterangan PPK :
+                    </label>
+                  </div>
+                  <div className="sm:flex-[5_5_0%]">
+                    <textarea
+                      id="message"
+                      rows="4"
+                      value={formData.ket_ppk}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          ket_ppk: e.target.value,
+                        }))
+                      }
+                      className={` bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                    "border-red-500" 
+                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                      placeholder="Keterangan : misal: disetujui atau konfirmasi ke transporter barang sedang dikirim kembali"
+                    ></textarea>
+                  </div>
+                </div>
+
+                <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+                  <div className="sm:flex-[2_2_0%]">
+                    <label
+                      className="block text-[#728294] text-base font-semibold mb-2"
+                      htmlFor="email"
+                    >
+                      Konfirmasi PPK :
+                    </label>
+                  </div>
+                  <div className="sm:flex-[5_5_0%]">
+                    <Select
+                      options={konfirmasiOptions}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          tte: e,
+                        }))
+                      }
+                      defaultValue={
+                        formData?.status_tte === "Sudah"
+                          ? konfirmasiOptions[0]
+                          : konfirmasiOptions[1]
+                      }
+                      placeholder="Konfrimasi PPK"
+                      className="w-full cursor-pointer"
+                      theme={selectThemeColors}
+                    />
+                  </div>
+                </div>
+              </>
+            ) : user.role === "3" ? (
+              <>
+                <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+                  <div className="sm:flex-[2_2_0%]">
+                    <label
+                      className=" block text-[#728294] text-base font-semibold mb-2"
+                      htmlFor="email"
+                    >
+                      Keterangan Daerah :
+                    </label>
+                  </div>
+                  <div className="sm:flex-[5_5_0%]">
+                    <textarea
+                      id="message"
+                      rows="4"
+                      value={formData.ket_daerah}
+                      disabled={!user.role === "3"}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          ket_daerah: e.target.value,
+                        }))
+                      }
+                      className={` disabled:bg-[#F2F2F2] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                  "border-red-500" 
+               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                      placeholder="Keterangan : misal: komplit dan baik atau kurang dari rensi dan baik"
+                    ></textarea>
+                  </div>
+                </div>
+
+                <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+                  <div className="sm:flex-[2_2_0%]">
+                    <label
+                      className="block text-[#728294] text-base font-semibold mb-2"
+                      htmlFor="email"
+                    >
+                      Konfirmasi Daerah :
+                    </label>
+                  </div>
+                  <div className="sm:flex-[5_5_0%]">
+                    <Select
+                      options={konfirmasiOptions}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          tte: e,
+                        }))
+                      }
+                      defaultValue={
+                        formData?.status_tte === "Sudah"
+                          ? konfirmasiOptions[0]
+                          : konfirmasiOptions[1]
+                      }
+                      placeholder="Konfrimasi PPK"
+                      className="w-full cursor-pointer"
+                      theme={selectThemeColors}
+                      isDisabled={!user.role === "3"}
+                    />
+                  </div>
+                </div>
+              </>
+            ) : (
+              ""
+            )}
 
             <div className="mt-12">
               <div className="card-header flex flex-col ">
