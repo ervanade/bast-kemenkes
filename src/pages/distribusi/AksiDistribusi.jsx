@@ -11,7 +11,7 @@ import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import ModalAddBarang from "../../components/Modal/ModalAddBarang";
 import axios from "axios";
 
-const TambahDistribusi = () => {
+const AksiDistribusi = () => {
   const [formData, setFormData] = useState({
     provinsi: "",
     kabupaten: "",
@@ -237,7 +237,7 @@ const TambahDistribusi = () => {
                   className="block text-[#728294] text-base font-normal mb-2"
                   htmlFor="email"
                 >
-                  Kab / Kota :
+                  Kota :
                 </label>
               </div>
               <div className="sm:flex-[5_5_0%]">
@@ -245,7 +245,7 @@ const TambahDistribusi = () => {
                   options={dataKota}
                   value={selectedKota}
                   onChange={handleKotaChange}
-                  placeholder={"Pilih Kab / Kota"}
+                  placeholder={"Pilih Kota"}
                   className="w-full"
                   theme={selectThemeColors}
                 />
@@ -269,7 +269,6 @@ const TambahDistribusi = () => {
                   placeholder={
                     selectedKota ? "Pilih Kecamatan" : "Pilih Kab / Kota Dahulu"
                   }
-                  isDisabled={!selectedKota}
                   className="w-full"
                   theme={selectThemeColors}
                 />
@@ -295,10 +294,7 @@ const TambahDistribusi = () => {
                       puskesmas: e,
                     }))
                   }
-                  isDisabled={!selectedKecamatan}
-                  placeholder={
-                    selectedKota ? "Pilih Puskesmas" : "Pilih Kecamatan Dahulu"
-                  }
+                  placeholder="Pilih Puskesmas"
                   className="w-full"
                   theme={selectThemeColors}
                 />
@@ -414,9 +410,7 @@ const TambahDistribusi = () => {
                     <td className="px-6 py-4 text-center">
                       {barang.harga_satuan}
                     </td>
-                    <td className="px-6 py-4 text-center">
-                      {barang.jumlah_nilai}
-                    </td>
+                    <td className="px-6 py-4 text-center">$2999</td>
                     <td className="px-6 py-4 text-center">
                       {barang.keterangan}
                     </td>
@@ -456,4 +450,4 @@ const TambahDistribusi = () => {
   );
 };
 
-export default TambahDistribusi;
+export default AksiDistribusi;

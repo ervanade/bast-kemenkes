@@ -16,7 +16,6 @@ import EditDistribusi from "./pages/distribusi/EditDistribusi";
 import ScrollToTop from "./components/ScrollToTop";
 import NotFound from "./pages/NotFound";
 import ProtectedRoutesAdmin from "./components/Layout/ProtectedRoutesAdmin";
-import Verifikasi from "./pages/verifikasi/Verifikasi";
 import Profile from "./pages/Profile";
 import TesTemplate from "./pages/TesTemplate";
 import TemplateDokumen from "./components/Modal/TemplateDokumen";
@@ -41,6 +40,8 @@ import DetailProvinsiKota from "./pages/master-kecamatan/DetailProvinsiKota";
 import TambahKecamatan from "./pages/master-kecamatan/TambahKecamatan";
 import EditKecamatan from "./pages/master-kecamatan/EditKecamatan";
 import DetailKota from "./pages/master-kecamatan/DetailKota";
+import Dokumen from "./pages/dokumen/Dokumen";
+import TambahDokumen from "./pages/dokumen/TambahDokumen";
 
 function App() {
   const { pathname } = useLocation();
@@ -71,7 +72,9 @@ function App() {
                 path="data-distribusi/detail/:id"
                 element={<DetailDistribusi />}
               />
-              <Route path="verifikasi" element={<Verifikasi />} />
+              <Route path="dokumen" element={<Dokumen />} />
+              <Route path="dokumen/add" element={<TambahDokumen />} />
+
               <Route path="profile" element={<Profile />} />
               <Route
                 path="data-distribusi/edit/:id"

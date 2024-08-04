@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@david.kucsai/react-pdf-table": "^0.4.1",
     "@pdftron/webviewer": "^10.10.1",
     "@react-pdf/renderer": "^3.4.4",
     "@reduxjs/toolkit": "^2.2.6",

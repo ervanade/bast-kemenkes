@@ -18,12 +18,13 @@ import {
   FaTrash,
 } from "react-icons/fa";
 import { BiExport, BiSolidFileExport } from "react-icons/bi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
 
-const Verifikasi = () => {
+const Dokumen = () => {
   const user = useSelector((a) => a.auth.user);
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -221,15 +222,41 @@ const Verifikasi = () => {
                 <FaPlus />
               </Link>
             </button> */}
-            <button
+            {row.status_tte === "Belum" ? (
+              <button
+                title="Konfirmasi"
+                className="text-white py-2 w-22 bg-blue-500 rounded-md"
+                onClick={() => {
+                  navigate(`/data-distribusi/preview-dokumen/${row.id}`);
+                }}
+              >
+                {/* <FaEdit size={16} /> */}
+                <Link to={`/data-distribusi/preview-dokumen/${row.id}`}>
+                  TTE
+                </Link>
+              </button>
+            ) : (
+              <button
+                title="Konfirmasi"
+                className="text-white  py-2 w-22 bg-green-500 rounded-md"
+                onClick={() => {
+                  navigate(`/data-distribusi/preview-dokumen/${row.id}`);
+                }}
+              >
+                {/* <FaEdit size={16} /> */}
+                <Link to={`/data-distribusi/preview-dokumen/${row.id}`}>
+                  Sudah TTE
+                </Link>
+              </button>
+            )}
+            {/* <button
               title="Edit"
               className="text-white p-2 bg-blue-600 rounded-md"
             >
               <Link to={`/data-distribusi/preview-dokumen/${row.id}`}>
-                {/* <FaEdit size={16} /> */}
                 TTE
               </Link>
-            </button>
+            </button> */}
           </div>
         ),
         ignoreRowClick: true,
@@ -239,7 +266,7 @@ const Verifikasi = () => {
     ],
     []
   );
-  const data = dataDistribusiBekasi.filter((a) => a.status_tte === "Belum");
+  const data = dataDistribusiBekasi;
 
   const returnKota = (idKota, listKota) => {
     return listKota.find((k) => k.id === idKota).name;
@@ -289,7 +316,7 @@ const Verifikasi = () => {
 
   return (
     <div>
-      <Breadcrumb pageName="Verifikasi" linkBack="/verifikasi" />
+      <Breadcrumb pageName="Dokumen TTE" linkBack="/dokumen" />
       <div className="flex flex-col items-center justify-center w-full tracking-tight mb-12">
         <h1 className="font-normal mb-3 text-xl lg:text-[28px] tracking-tight text-center text-bodydark1">
           SELAMAT DATANG{" "}
@@ -436,6 +463,23 @@ const Verifikasi = () => {
               <BiExport />
               <span className="hidden sm:block">Export</span>
             </button>
+            {user.role === "1" ? (
+              <button
+                title="Tambah Data Dokumen"
+                className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
+                onClick={handleExport}
+              >
+                <Link
+                  to="/dokumen/add"
+                  className="flex items-center gap-2 px-4 py-2"
+                >
+                  <FaPlus size={16} />
+                  <span className="hidden sm:block">Tambah Data Dokumen</span>
+                </Link>
+              </button>
+            ) : (
+              ""
+            )}
           </div>
         </div>
         <div className="overflow-x-auto">
@@ -461,4 +505,4 @@ const Verifikasi = () => {
   );
 };
 
-export default Verifikasi;
+export default Dokumen;

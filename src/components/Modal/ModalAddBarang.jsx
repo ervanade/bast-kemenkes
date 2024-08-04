@@ -211,6 +211,34 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                 </div>
               </div>
 
+              <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
+                <div className="">
+                  <label
+                    className=" block text-[#728294] text-base font-semibold mb-2"
+                    htmlFor="email"
+                  >
+                    Jumlah Total Nilai Perolehan (Rp) :
+                  </label>
+                </div>
+                <div className="">
+                  <input
+                    className={` bg-white disabled:bg-[#F2F2F2] appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                    "border-red-500" 
+                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                    id="jumlah_barang_dikirim"
+                    type="text"
+                    value={barang.jumlah_nilai}
+                    onChange={(e) =>
+                      setBarang((prev) => ({
+                        ...prev,
+                        jumlah_nilai: e.target.value,
+                      }))
+                    }
+                    placeholder="Jumlah Total Nilai Perolehan (Rp)	"
+                  />
+                </div>
+              </div>
+
               {/* <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
                 <div className="">
                   <label

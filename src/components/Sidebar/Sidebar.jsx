@@ -136,9 +136,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
               {user.role === "2" || user.role === "1" ? (
                 <li>
                   <NavLink
-                    to="/verifikasi"
+                    to="/dokumen"
                     className={`group relative flex items-center gap-2.5 rounded-md py-3 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                      pathname.includes("verifikasi") &&
+                      pathname.includes("dokumen") &&
                       "bg-graydark dark:bg-meta-4 text-primary"
                     }`}
                   >

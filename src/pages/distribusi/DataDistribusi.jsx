@@ -291,6 +291,23 @@ const DataDistribusi = () => {
                 <FaPlus />
               </Link>
             </button> */}
+            {row.status_tte === "Belum" ? (
+              <button
+                title="Konfirmasi"
+                className="text-blue-400 rounded-md"
+                onClick={() => {}}
+              >
+                <FaCheck size={16} />
+              </button>
+            ) : (
+              <button
+                title="Konfirmasi"
+                className="text-blue-400  rounded-md"
+                onClick={() => {}}
+              >
+                <FaCheck size={16} />
+              </button>
+            )}
             <button
               title="Detail"
               className="text-green-400 hover:text-green-500"
