@@ -105,6 +105,21 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
   useEffect(() => {
     fetchBarang();
   }, []);
+  useEffect(() => {
+    if (dataBarang && listBarang.length > 0) {
+      const initialOption = listBarang?.find(
+        (prov) => prov.id == dataBarang.id_barang
+      );
+      if (initialOption) {
+        setSelectedBarang({
+          label: initialOption.label,
+          value: initialOption.value,
+        });
+        setBarang(prev => ({...prev, merk: initialOption.merk ? initialOption.merk : ""}))
+
+      }
+    }
+  }, [dataBarang]);
   if (!show) {
     return null;
   }
@@ -175,7 +190,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                 </div>
               </div>
 
-              <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
+              {/* <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
                 <div className="">
                   <label
                     className=" block text-[#728294] text-base font-semibold mb-2"
@@ -202,7 +217,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                     placeholder="Nomor Bukti Kepemilikan Barang"
                   />
                 </div>
-              </div>
+              </div> */}
 
               <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
                 <div className="">

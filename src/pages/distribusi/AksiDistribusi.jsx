@@ -20,6 +20,7 @@ const AksiDistribusi = () => {
   const [formData, setFormData] = useState({
     id_dokumen: "",
     provinsi: "",
+    id_provinsi: "",
     id_kabupaten: "",
     id_kecamatan: "",
     puskesmas: "",
@@ -228,6 +229,7 @@ const AksiDistribusi = () => {
         setFormData({
           id_dokumen: data.id_dokumen || "",
           provinsi: "",
+          id_provinsi: data.id_provinsi || "",
           id_kabupaten: data.id_kabupaten || "",
           id_kecamatan: data.id_kecamatan || "",
           puskesmas: data.puskesmas || "",
@@ -331,7 +333,8 @@ const AksiDistribusi = () => {
     e.preventDefault();
     setShowModal(true);
   };
-  const handleEditBarang = (index) => {
+  const handleEditBarang = (e, index) => {
+    e.preventDefault();
     setEditIndex(index);
     setShowModal(true);
   };
@@ -346,7 +349,8 @@ const AksiDistribusi = () => {
   //   }));
   // };
 
-  const handleDeleteBarang = (index) => {
+  const handleDeleteBarang = (e, index) => {
+    e.preventDefault();
     const updatedDataBarang = formData.dataBarang.filter((_, i) => i !== index);
     setFormData((prev) => ({
       ...prev,
@@ -361,50 +365,61 @@ const AksiDistribusi = () => {
 
   useEffect(() => {
     if (formData.id_dokumen && dataDokumen.length > 0) {
-      const initialOption = dataDokumen.find(
-        (prov) => prov.id == formData.id_dokumen
+      const initialOption = dataDokumen?.find(
+        (prov) => prov.value == formData.id_dokumen
       );
       if (initialOption) {
         setSelectedDokumen({
-          label: initialOption.nama_dokumen,
-          value: initialOption.id,
+          label: initialOption.label,
+          value: initialOption.value,
         });
       }
     }
     if (formData.id_kecamatan && dataKecamatan.length > 0) {
       const initialOption = dataKecamatan.find(
-        (kec) => kec.id == formData.id_kecamatan
+        (kec) => kec.value == formData.id_kecamatan
       );
       if (initialOption) {
         setSelectedKecamatan({
-          label: initialOption.name,
-          value: initialOption.id,
+          label: initialOption.label,
+          value: initialOption.value,
         });
       }
     }
     if (formData.id_kabupaten && dataKota.length > 0) {
       const initialOption = dataKota.find(
-        (kec) => kec.id == formData.id_kabupaten
+        (kec) => kec.value == formData.id_kabupaten
       );
+      
       if (initialOption) {
-        setSelectedKecamatan({
-          label: initialOption.name,
-          value: initialOption.id,
+        setSelectedKota({
+          label: initialOption.label,
+          value: initialOption.value,
+          provinsi: initialOption.provinsi
         });
       }
     }
-    if (formData.id_puskesmas && dataKota.length > 0) {
-      const initialOption = dataKota.find(
-        (kec) => kec.id == formData.id_puskesmas
+    if (formData.id_puskesmas && dataPuskesmas.length > 0) {
+      const initialOption = dataPuskesmas.find(
+        (kec) => kec.value == formData.id_puskesmas
       );
       if (initialOption) {
-        setSelectedKecamatan({
-          label: initialOption.name,
-          value: initialOption.id,
+        setSelectedPuskesmas({
+          label: initialOption.label,
+          value: initialOption.value,
         });
       }
     }
   }, [formData, dataDokumen, dataKecamatan, dataKota, dataPuskesmas]);
+  useEffect(() => {
+    if(formData.id_kabupaten){
+      fetchKecamatan(formData.id_kabupaten)
+    }
+  }, [formData.id_kabupaten]);
+  useEffect(() => {
+  
+    fetchPuskesmas()
+  }, []);
   return (
     <div>
       <Breadcrumb pageName="Form Konfirmasi Data BAST" />
@@ -957,9 +972,9 @@ const AksiDistribusi = () => {
                         <th scope="col" className="px-6 py-3 text-center">
                           Merk/Tipe
                         </th>
-                        <th scope="col" className="px-6 py-3 text-center">
+                        {/* <th scope="col" className="px-6 py-3 text-center">
                           Nomor Bukti Kepemilikan
-                        </th>
+                        </th> */}
                         <th scope="col" className="px-6 py-3 text-center">
                           Satuan
                         </th>
@@ -998,9 +1013,9 @@ const AksiDistribusi = () => {
                           <td className="px-6 py-4 text-center">
                             {barang.merk}
                           </td>
-                          <td className="px-6 py-4 text-center">
+                          {/* <td className="px-6 py-4 text-center">
                             {barang.nomor_kepemilikan}
-                          </td>
+                          </td> */}
                           <td className="px-6 py-4 text-center">
                             {barang.satuan}
                           </td>
@@ -1022,13 +1037,13 @@ const AksiDistribusi = () => {
                           <td className="px-6 py-4 text-center flex items-center gap-2">
                             <button
                               title="Edit"
-                              onClick={() => handleEditBarang(index)}
+                              onClick={(e) => handleEditBarang(e, index)}
                               className="text-[#16B3AC] hover:text-cyan-500"
                             >
                               <FaEdit size={16} />
                             </button>
                             <button
-                              onClick={() => handleDeleteBarang(index)}
+                              onClick={(e) => handleDeleteBarang(e, index)}
                               title="Delete"
                               className="text-red-500 hover:text-red-700"
                             >

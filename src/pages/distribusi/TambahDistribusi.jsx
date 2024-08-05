@@ -693,9 +693,9 @@ const TambahDistribusi = () => {
                         <th scope="col" className="px-6 py-3 text-center">
                           Merk/Tipe
                         </th>
-                        <th scope="col" className="px-6 py-3 text-center">
+                        {/* <th scope="col" className="px-6 py-3 text-center">
                           Nomor Bukti Kepemilikan
-                        </th>
+                        </th> */}
                         <th scope="col" className="px-6 py-3 text-center">
                           Satuan
                         </th>
@@ -734,9 +734,9 @@ const TambahDistribusi = () => {
                           <td className="px-6 py-4 text-center">
                             {barang.merk}
                           </td>
-                          <td className="px-6 py-4 text-center">
+                          {/* <td className="px-6 py-4 text-center">
                             {barang.nomor_kepemilikan}
-                          </td>
+                          </td> */}
                           <td className="px-6 py-4 text-center">
                             {barang.satuan}
                           </td>
