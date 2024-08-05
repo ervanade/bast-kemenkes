@@ -22,6 +22,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { CgSpinner } from "react-icons/cg";
 
 const Dokumen = () => {
   const user = useSelector((a) => a.auth.user);
@@ -573,22 +574,31 @@ const Dokumen = () => {
           </div>
         </div>
         <div className="overflow-x-auto">
-          <DataTable
-            columns={columns}
-            data={filteredData}
-            pagination
-            persistTableHead
-            highlightOnHover
-            pointerOnHover
-            customStyles={{
-              headCells: {
-                style: {
-                  backgroundColor: "#EBFBFA",
-                  color: "#728294",
+          {loading ? (
+            <div className="flex justify-center items-center">
+              <CgSpinner className="animate-spin inline-block w-8 h-8 text-teal-400" />
+              <span className="ml-2">Loading...</span>
+            </div>
+          ) : error || filteredData.length === 0 ? (
+            <div className="text-center">Data Tidak Tersedia.</div>
+          ) : (
+            <DataTable
+              columns={columns}
+              data={filteredData}
+              pagination
+              persistTableHead
+              highlightOnHover
+              pointerOnHover
+              customStyles={{
+                headCells: {
+                  style: {
+                    backgroundColor: "#EBFBFA",
+                    color: "#728294",
+                  },
                 },
-              },
-            }}
-          />
+              }}
+            />
+          )}
         </div>
       </div>
     </div>
