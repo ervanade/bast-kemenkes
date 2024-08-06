@@ -13,6 +13,7 @@ import Select from "react-select";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { CgSpinner } from "react-icons/cg";
 
 const EditPuskesmas = () => {
   const [formData, setFormData] = useState({
@@ -34,10 +35,12 @@ const EditPuskesmas = () => {
   const [listKecamatan, setListKecamatan] = useState([]);
 
   const [error, setError] = useState("");
+  const [getLoading, setGetLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
 
   const fetchPuskesmasData = async () => {
+    setGetLoading(true);
     try {
       // eslint-disable-next-line
       const responseUser = await axios({
@@ -66,7 +69,11 @@ const EditPuskesmas = () => {
           keterangan: data.keterangan || "",
         });
       });
+      setGetLoading(false);
     } catch (error) {
+      if (error.response.status == 404) {
+        navigate("/not-found");
+      }
       console.log(error);
     }
   };
@@ -105,7 +112,14 @@ const EditPuskesmas = () => {
   useEffect(() => {
     fetchPuskesmasData();
   }, []);
-
+  if (getLoading) {
+    return (
+      <div className="flex justify-center items-center">
+        <CgSpinner className="animate-spin inline-block w-8 h-8 text-teal-400" />
+        <span className="ml-2">Loading...</span>
+      </div>
+    );
+  }
   return (
     <div>
       <Breadcrumb pageName="Form Edit Data Puskesmas" />

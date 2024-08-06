@@ -13,6 +13,7 @@ import Select from "react-select";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { CgSpinner } from "react-icons/cg";
 
 const EditProvinsi = () => {
   const [formData, setFormData] = useState({
@@ -22,6 +23,8 @@ const EditProvinsi = () => {
   const navigate = useNavigate();
   const user = useSelector((a) => a.auth.user);
 
+  const [getLoading, setGetLoading] = useState(false);
+
   const [listKota, setListKota] = useState([]);
   const [listKecamatan, setListKecamatan] = useState([]);
 
@@ -30,6 +33,7 @@ const EditProvinsi = () => {
   const { id } = useParams();
 
   const fetchProvinsiData = async () => {
+    setGetLoading(true);
     try {
       // eslint-disable-next-line
       const responseUser = await axios({
@@ -50,7 +54,11 @@ const EditProvinsi = () => {
           name: data.name || "",
         });
       });
+      setGetLoading(false);
     } catch (error) {
+      if (error.response.status == 404) {
+        navigate("/not-found");
+      }
       console.log(error);
     }
   };
@@ -89,6 +97,15 @@ const EditProvinsi = () => {
   useEffect(() => {
     fetchProvinsiData();
   }, []);
+
+  if (getLoading) {
+    return (
+      <div className="flex justify-center items-center">
+        <CgSpinner className="animate-spin inline-block w-8 h-8 text-teal-400" />
+        <span className="ml-2">Loading...</span>
+      </div>
+    );
+  }
 
   return (
     <div>

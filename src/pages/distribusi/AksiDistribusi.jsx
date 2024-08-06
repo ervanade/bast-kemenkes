@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import ModalAddBarang from "../../components/Modal/ModalAddBarang";
 import axios from "axios";
+import { CgSpinner } from "react-icons/cg";
 
 const AksiDistribusi = () => {
   const [formData, setFormData] = useState({
@@ -58,6 +59,7 @@ const AksiDistribusi = () => {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [getLoading, setGetLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
 
@@ -121,6 +123,7 @@ const AksiDistribusi = () => {
   };
 
   const fetchKota = async () => {
+    setGetLoading(true);
     try {
       const response = await axios({
         method: "get",
@@ -158,6 +161,7 @@ const AksiDistribusi = () => {
           value: item.id,
         })),
       ]);
+      setGetLoading(false);
     } catch (error) {
       setError(true);
       setDataKecamatan([]);
@@ -263,6 +267,9 @@ const AksiDistribusi = () => {
         });
       });
     } catch (error) {
+      if (error.response.status == 404) {
+        navigate("/not-found");
+      }
       console.log(error);
     }
   };
@@ -390,12 +397,12 @@ const AksiDistribusi = () => {
       const initialOption = dataKota.find(
         (kec) => kec.value == formData.id_kabupaten
       );
-      
+
       if (initialOption) {
         setSelectedKota({
           label: initialOption.label,
           value: initialOption.value,
-          provinsi: initialOption.provinsi
+          provinsi: initialOption.provinsi,
         });
       }
     }
@@ -412,14 +419,22 @@ const AksiDistribusi = () => {
     }
   }, [formData, dataDokumen, dataKecamatan, dataKota, dataPuskesmas]);
   useEffect(() => {
-    if(formData.id_kabupaten){
-      fetchKecamatan(formData.id_kabupaten)
+    if (formData.id_kabupaten) {
+      fetchKecamatan(formData.id_kabupaten);
     }
   }, [formData.id_kabupaten]);
   useEffect(() => {
-  
-    fetchPuskesmas()
+    fetchPuskesmas();
   }, []);
+
+  if (getLoading) {
+    return (
+      <div className="flex justify-center items-center">
+        <CgSpinner className="animate-spin inline-block w-8 h-8 text-teal-400" />
+        <span className="ml-2">Loading...</span>
+      </div>
+    );
+  }
   return (
     <div>
       <Breadcrumb pageName="Form Konfirmasi Data BAST" />

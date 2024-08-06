@@ -7,6 +7,7 @@ import Select from "react-select";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { CgSpinner } from "react-icons/cg";
 
 const EditKota = () => {
   const [formData, setFormData] = useState({
@@ -17,12 +18,14 @@ const EditKota = () => {
 
   const navigate = useNavigate();
   const user = useSelector((a) => a.auth.user);
+  const [getLoading, setGetLoading] = useState(false);
 
   const [listProvinsi, setListProvinsi] = useState([]);
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
 
   const fetchKotaData = async () => {
+    setGetLoading(true);
     try {
       const response = await axios({
         method: "get",
@@ -55,6 +58,7 @@ const EditKota = () => {
         },
       });
       setListProvinsi(response.data.data);
+      setGetLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -116,6 +120,15 @@ const EditKota = () => {
       }
     }
   }, [formData.id_provinsi, listProvinsi]);
+
+  if (getLoading) {
+    return (
+      <div className="flex justify-center items-center">
+        <CgSpinner className="animate-spin inline-block w-8 h-8 text-teal-400" />
+        <span className="ml-2">Loading...</span>
+      </div>
+    );
+  }
 
   return (
     <div>

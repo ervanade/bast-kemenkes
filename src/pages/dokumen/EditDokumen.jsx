@@ -14,6 +14,7 @@ import Select from "react-select";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { CgSpinner } from "react-icons/cg";
 
 const EditDokumen = () => {
   const [formData, setFormData] = useState({
@@ -37,6 +38,7 @@ const EditDokumen = () => {
   const { id } = useParams();
 
   const fetchDokumenData = async () => {
+    setGetLoading(true);
     try {
       // eslint-disable-next-line
       const responseUser = await axios({
@@ -65,6 +67,7 @@ const EditDokumen = () => {
           tanggal_kontrak_pengadaan: data.tanggal_kontrak_pengadaan || "",
           id_user_pemberi: data.id_user_pemberi || "",
         });
+        setGetLoading(false);
       });
     } catch (error) {
       console.log(error);
@@ -73,6 +76,7 @@ const EditDokumen = () => {
 
   const [listKota, setListKota] = useState([]);
   const [listKecamatan, setListKecamatan] = useState([]);
+  const [getLoading, setGetLoading] = useState(false);
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -111,7 +115,14 @@ const EditDokumen = () => {
   useEffect(() => {
     fetchDokumenData();
   }, []);
-  console.log(formData);
+  if (getLoading) {
+    return (
+      <div className="flex justify-center items-center">
+        <CgSpinner className="animate-spin inline-block w-8 h-8 text-teal-400" />
+        <span className="ml-2">Loading...</span>
+      </div>
+    );
+  }
 
   return (
     <div>
