@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import ModalAddBarang from "../../components/Modal/ModalAddBarang";
 import axios from "axios";
+import FormInput from "../../components/Form/FormInput";
 
 const TambahDistribusi = () => {
   const [formData, setFormData] = useState({
@@ -299,7 +300,8 @@ const TambahDistribusi = () => {
     e.preventDefault();
     setShowModal(true);
   };
-  const handleEditBarang = (index) => {
+  const handleEditBarang = (e, index) => {
+    e.preventDefault();
     setEditIndex(index);
     setShowModal(true);
   };
@@ -351,311 +353,86 @@ const TambahDistribusi = () => {
         </div>
         <div className="w-full 2xl:w-4/5 ">
           <form className="mt-5" onSubmit={handleSimpan}>
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="email"
-                >
-                  Dokumen :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <Select
-                  options={dataDokumen}
-                  value={selectedDokumen}
-                  onChange={handleDokumenChange}
-                  placeholder="Pilih Dokumen"
-                  className="w-full"
-                  theme={selectThemeColors}
-                />
-              </div>
-            </div>
+            <FormInput
+              select={true}
+              id="dokumen"
+              options={dataDokumen}
+              value={selectedDokumen}
+              onChange={handleDokumenChange}
+              placeholder="Pilih Dokumen"
+              label="Dokumen :
+"
+              required
+            />
 
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="email"
-                >
-                  Kab / Kota :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <Select
-                  options={dataKota}
-                  value={selectedKota}
-                  onChange={handleKotaChange}
-                  placeholder={"Pilih Kab / Kota"}
-                  className="w-full"
-                  theme={selectThemeColors}
-                />
-              </div>
-            </div>
+            <FormInput
+              select={true}
+              id="kota"
+              options={dataKota}
+              value={selectedKota}
+              onChange={handleKotaChange}
+              placeholder={"Pilih Kab / Kota"}
+              label="Kab / Kota :"
+              required
+            />
 
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="email"
-                >
-                  Kecamatan :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <Select
-                  options={dataKecamatan}
-                  value={selectedKecamatan}
-                  onChange={handleKecamatanChange}
-                  placeholder={
-                    selectedKota ? "Pilih Kecamatan" : "Pilih Kab / Kota Dahulu"
-                  }
-                  isDisabled={!selectedKota}
-                  className="w-full"
-                  theme={selectThemeColors}
-                />
-              </div>
-            </div>
+            <FormInput
+              select={true}
+              id="kecamatan"
+              options={dataKecamatan}
+              value={selectedKecamatan}
+              onChange={handleKecamatanChange}
+              placeholder={
+                selectedKota ? "Pilih Kecamatan" : "Pilih Kab / Kota Dahulu"
+              }
+              isDisabled={!selectedKota}
+              label="Kecamatan :"
+              required
+            />
 
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="email"
-                >
-                  Puskesmas :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <Select
-                  options={dataPuskesmas}
-                  value={selectedPuskesmas}
-                  onChange={handlePuskesmasChange}
-                  isDisabled={!selectedKecamatan}
-                  placeholder={
-                    selectedKota ? "Pilih Puskesmas" : "Pilih Kecamatan Dahulu"
-                  }
-                  className="w-full"
-                  theme={selectThemeColors}
-                />
-              </div>
-            </div>
+            <FormInput
+              select={true}
+              id="puskesmas"
+              options={dataPuskesmas}
+              value={selectedPuskesmas}
+              onChange={handlePuskesmasChange}
+              isDisabled={!selectedKecamatan}
+              placeholder={
+                selectedKota ? "Pilih Puskesmas" : "Pilih Kecamatan Dahulu"
+              }
+              label="Puskesmas :"
+              required
+            />
 
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="kodepusdatin_lama"
-                >
-                  Kode Pusdatin Lama :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="kodepusdatin_lama"
-                  value={formData.kodepusdatin_lama}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Kode Pusdatin Lama"
-                />
-              </div>
-            </div>
+            <FormInput
+              id="kodepusdatin_baru"
+              value={formData.kodepusdatin_baru}
+              onChange={handleChange}
+              type="text"
+              label="Kode Pusdatin :"
+              required
+              placeholder="Kode Pusdatin"
+            />
 
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="kodepusdatin_baru"
-                >
-                  Kode Pusdatin Baru :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="kodepusdatin_baru"
-                  value={formData.kodepusdatin_baru}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Kode Pusdatin Baru"
-                />
-              </div>
-            </div>
+            <FormInput
+              id="tahun_lokus"
+              value={formData.tahun_lokus}
+              onChange={handleChange}
+              type="text"
+              required
+              placeholder="Tahun Lokus"
+              label="Tahun Lokus :"
+            />
 
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="kriteria_lima_sdm"
-                >
-                  Kriteria Lima SDM :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="kriteria_lima_sdm"
-                  value={formData.kriteria_lima_sdm}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Kriteria Lima SDM"
-                />
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="listrik"
-                >
-                  Listrik :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="listrik"
-                  value={formData.listrik}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Listrik"
-                />
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="internet"
-                >
-                  Internet :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="internet"
-                  value={formData.internet}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Internet"
-                />
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="karakteristik_wilayah_kerja"
-                >
-                  Karakteristik Wilayah Kerja :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="karakteristik_wilayah_kerja"
-                  value={formData.karakteristik_wilayah_kerja}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Listrik"
-                />
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="tahun_lokus"
-                >
-                  Tahun Lokus :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="tahun_lokus"
-                  value={formData.tahun_lokus}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Tahun Lokus"
-                />
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="tanggal_kirim"
-                >
-                  Tanggal Kirim :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="tanggal_kirim"
-                  value={formData.tanggal_kirim}
-                  onChange={handleChange}
-                  type="date"
-                  required
-                  placeholder="Tanggal Kirim"
-                />
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="jenis_bmn"
-                >
-                  Jenis BMN :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="jenis_bmn"
-                  value={formData.jenis_bmn}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Jenis BMN"
-                />
-              </div>
-            </div>
+            <FormInput
+              id="tanggal_kirim"
+              value={formData.tanggal_kirim}
+              onChange={handleChange}
+              type="date"
+              required
+              placeholder="Tanggal Kirim"
+              label="Tahun Lokus :"
+            />
 
             <div className="mt-12">
               <div className="card-header flex flex-col ">
@@ -733,9 +510,6 @@ const TambahDistribusi = () => {
                           <td className="px-6 py-4 text-center">
                             {barang.merk}
                           </td>
-                          {/* <td className="px-6 py-4 text-center">
-                            {barang.nomor_kepemilikan}
-                          </td> */}
                           <td className="px-6 py-4 text-center">
                             {barang.satuan}
                           </td>
@@ -757,7 +531,7 @@ const TambahDistribusi = () => {
                           <td className="px-6 py-4 text-center flex items-center gap-2">
                             <button
                               title="Edit"
-                              onClick={() => handleEditBarang(index)}
+                              onClick={(e) => handleEditBarang(e, index)}
                               className="text-[#16B3AC] hover:text-cyan-500"
                             >
                               <FaEdit size={16} />

@@ -64,6 +64,14 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
   }, [editIndex, dataBarang]);
 
   const handleSave = () => {
+    if (
+      !barang.id_barang ||
+      !barang.jumlah_dikirim ||
+      !barang.jumlah_existing
+    ) {
+      Swal.fire("Error", "Ada Form yang belum di lengkapi", "error");
+      return;
+    }
     onSave(barang);
     setBarang({
       id_barang: "",
@@ -115,8 +123,10 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
           label: initialOption.label,
           value: initialOption.value,
         });
-        setBarang(prev => ({...prev, merk: initialOption.merk ? initialOption.merk : ""}))
-
+        setBarang((prev) => ({
+          ...prev,
+          merk: initialOption.merk ? initialOption.merk : "",
+        }));
       }
     }
   }, [dataBarang]);

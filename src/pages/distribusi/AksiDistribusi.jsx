@@ -280,7 +280,8 @@ const AksiDistribusi = () => {
     fetchDokumen();
   }, []);
 
-  const tambahDistribusi = async () => {
+  const editDistribusi = async () => {
+    setLoading(true);
     await axios({
       method: "put",
       url: `${import.meta.env.VITE_APP_API_URL}/api/distribusi/${id}`,
@@ -293,6 +294,7 @@ const AksiDistribusi = () => {
       .then(function (response) {
         Swal.fire("Data Berhasil di Input!", "", "success");
         navigate("/data-distribusi");
+        setLoading(true);
       })
       .catch((error) => {
         setLoading(false);
@@ -311,7 +313,7 @@ const AksiDistribusi = () => {
     }).then((result) => {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
-        tambahDistribusi();
+        editDistribusi();
       }
     });
   };
@@ -549,7 +551,7 @@ const AksiDistribusi = () => {
               </div>
             </div>
 
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+            {/* <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
                 <label
                   className="block text-[#728294] text-base font-normal mb-2"
@@ -571,7 +573,7 @@ const AksiDistribusi = () => {
                   placeholder="Kode Pusdatin Lama"
                 />
               </div>
-            </div>
+            </div> */}
 
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
@@ -579,7 +581,7 @@ const AksiDistribusi = () => {
                   className="block text-[#728294] text-base font-normal mb-2"
                   htmlFor="kodepusdatin_baru"
                 >
-                  Kode Pusdatin Baru :
+                  Kode Pusdatin :
                 </label>
               </div>
               <div className="sm:flex-[5_5_0%]">
@@ -592,12 +594,12 @@ const AksiDistribusi = () => {
                   onChange={handleChange}
                   type="text"
                   required
-                  placeholder="Kode Pusdatin Baru"
+                  placeholder="Kode Pusdatin"
                 />
               </div>
             </div>
 
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+            {/* <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
                 <label
                   className="block text-[#728294] text-base font-normal mb-2"
@@ -688,10 +690,10 @@ const AksiDistribusi = () => {
                   onChange={handleChange}
                   type="text"
                   required
-                  placeholder="Listrik"
+                  placeholder="Karakteristik Wilayah Kerja"
                 />
               </div>
-            </div>
+            </div> */}
 
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
@@ -741,7 +743,7 @@ const AksiDistribusi = () => {
               </div>
             </div>
 
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+            {/* <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
                 <label
                   className="block text-[#728294] text-base font-normal mb-2"
@@ -763,7 +765,7 @@ const AksiDistribusi = () => {
                   placeholder="Jenis BMN"
                 />
               </div>
-            </div>
+            </div> */}
 
             {user.role === "2" ? (
               <>
