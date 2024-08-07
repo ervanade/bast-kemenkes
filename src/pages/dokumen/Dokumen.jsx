@@ -257,8 +257,8 @@ const Dokumen = () => {
         // width: "100px",
       },
       {
-        name: "Nama Kontrak Pengadaan",
-        selector: (row) => row.nama_kontrak_pengadaan,
+        name: "Penerima Hibah",
+        selector: (row) => row.penerima_hibah,
         sortable: true,
         // width: "100px",
       },
