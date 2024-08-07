@@ -1,28 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import ModalAddBarang from "../Modal/ModalAddBarang";
+import { useState } from "react";
+import ModalTTE from "../Modal/ModalTTE";
 const Breadcrumb = ({ pageName, back, tte, jsonData, linkBack, title }) => {
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
   const handleSimpan = async (e) => {
     e.preventDefault();
-    Swal.fire({
-      title: "Perhatian",
-      text: "Jumlah dikirim dan diterima sudah sesuai, tandatangani BAST ini?",
-      showDenyButton: true,
-      showCancelButton: true,
-      denyButtonColor: "#3B82F6",
-      confirmButtonColor: "#16B3AC",
-      confirmButtonText: "Ya",
-      denyButtonText: `Simpan Data`,
-    }).then((result) => {
-      /* Read more about isConfirmed, isDenied below */
-      if (result.isConfirmed) {
-        Swal.fire("Data Berhasil di Input!", "", "success");
-        navigate("/data-distribusi");
-      } else if (result.isDenied) {
-        Swal.fire("Simpan Data Berhasil!", "", "success");
-        navigate("/data-distribusi");
-      }
-    });
+    setShowModal(true);
   };
 
   return (
@@ -30,18 +16,21 @@ const Breadcrumb = ({ pageName, back, tte, jsonData, linkBack, title }) => {
       <h2 className="hidden text-title-md2 font-semibold text-[#728294] dark:text-white">
         {pageName}
       </h2>
-      {
-        title ? (
-          <h1 className="font-semibold mb-3 text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
+      {title ? (
+        <h1 className="font-semibold mb-3 text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
           {title || ""}
         </h1>
-        )
-        : <div className={back ? "hidden" : ""}></div>
-      }
+      ) : (
+        <div className={back ? "hidden" : ""}></div>
+      )}
 
       {back ? (
         <button
-          onClick={() => navigate(`${linkBack ? linkBack : `/data-distribusi/edit/${jsonData?.id}`}`)}
+          onClick={() =>
+            navigate(
+              `${linkBack ? linkBack : `/data-distribusi/edit/${jsonData?.id}`}`
+            )
+          }
           className="flex items-center px-4 py-2 bg-primary text-white rounded-md font-semibold"
         >
           Back
@@ -49,6 +38,7 @@ const Breadcrumb = ({ pageName, back, tte, jsonData, linkBack, title }) => {
       ) : (
         ""
       )}
+      <ModalTTE show={showModal} onClose={() => setShowModal(false)} />
       {tte ? (
         <div>
           <button

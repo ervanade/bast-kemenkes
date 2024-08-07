@@ -22,6 +22,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { CgSpinner } from "react-icons/cg";
+import Swal from "sweetalert2";
 
 const DataDistribusi = () => {
   const user = useSelector((a) => a.auth.user);
@@ -348,16 +349,17 @@ const DataDistribusi = () => {
                 <FaEdit size={16} />
               </Link>
             </button> */}
-            {/* {user.role === "1" ? (
+            {user.role === "1" ? (
               <button
                 title="Delete"
-                className="text-red-500 hover:text-red-700"
+                className="text-red-500 hover:text-red-700 pr-4"
+                onClick={() => handleConfirmDeleteDistribusi(row.id)}
               >
                 <FaTrash size={16} />
               </button>
             ) : (
               ""
-            )} */}
+            )}
           </div>
         ),
         ignoreRowClick: true,

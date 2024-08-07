@@ -44,6 +44,7 @@ import Dokumen from "./pages/dokumen/Dokumen";
 import TambahDokumen from "./pages/dokumen/TambahDokumen";
 import EditDokumen from "./pages/dokumen/EditDokumen";
 import AksiDistribusi from "./pages/distribusi/AksiDistribusi";
+import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 
 function App() {
   const { pathname } = useLocation();
@@ -170,7 +171,17 @@ function App() {
               </Route>
             </Route>
           </Route>
-          <Route path="login" element={<Login />} />\
+          <Route
+            path="login"
+            element={
+              <GoogleReCaptchaProvider
+                reCaptchaKey={import.meta.env.VITE_APP_SITE_KEY}
+              >
+                <Login />
+              </GoogleReCaptchaProvider>
+            }
+          />
+          \
           <Route path="*" exact={true} element={<NotFound />} />
         </Routes>
       </Wrapper>

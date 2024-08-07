@@ -6,6 +6,7 @@ import { dataUser } from "../data/data";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../store/authSlice";
 import axios from "axios";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -13,11 +14,15 @@ const Login = () => {
     email: "",
     captcha: "",
   });
+  const [captchaToken, setCaptchaToken] = useState("");
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { executeRecaptcha } = useGoogleReCaptcha();
+
   const postApiLogin = async () => {
     await axios({
       method: "post",
@@ -41,9 +46,15 @@ const Login = () => {
         return setError("Invalid email or password");
       });
   };
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    if (!executeRecaptcha) {
+      setError("ReCAPTCHA has not been loaded");
+      return;
+    }
     setLoading(true);
+    const token = await executeRecaptcha("login");
+    setCaptchaToken(token);
     postApiLogin();
 
     // const user = dataUser.find((a) => a.email === formData.email);
@@ -133,7 +144,7 @@ const Login = () => {
                 placeholder="*******"
               />
             </div>
-            <div className="mb-3 flex items-center gap-3">
+            {/* <div className="mb-3 flex items-center gap-3">
               <div className="col flex-[3_3_0%]">
                 <label
                   className="block text-[#728294] text-sm font-normal mb-2"
@@ -161,7 +172,7 @@ const Login = () => {
               <div className="flex-[2_2_0%]">
                 <img src="/captcha.png" alt="" />
               </div>
-            </div>
+            </div> */}
             <div className="flex items-center justify-center mt-6">
               <button
                 className="w-full bg-[#0ACBC2]  text-white font-bold py-4 px-6 rounded focus:outline-none focus:shadow-outline"

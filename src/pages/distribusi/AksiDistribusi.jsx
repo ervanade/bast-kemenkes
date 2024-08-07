@@ -282,8 +282,8 @@ const AksiDistribusi = () => {
 
   const tambahDistribusi = async () => {
     await axios({
-      method: "post",
-      url: `${import.meta.env.VITE_APP_API_URL}/api/distribusi`,
+      method: "put",
+      url: `${import.meta.env.VITE_APP_API_URL}/api/distribusi/${id}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${user?.token}`,
@@ -305,7 +305,6 @@ const AksiDistribusi = () => {
     Swal.fire({
       title: "Perhatian",
       text: "Data sudah sesuai, Simpan Data ini?",
-      showDenyButton: true,
       showCancelButton: true,
       confirmButtonColor: "#16B3AC",
       confirmButtonText: "Ya, Simpan Data",

@@ -265,7 +265,6 @@ const TambahDistribusi = () => {
     Swal.fire({
       title: "Perhatian",
       text: "Data sudah sesuai, Simpan Data ini?",
-      showDenyButton: true,
       showCancelButton: true,
       confirmButtonColor: "#16B3AC",
       confirmButtonText: "Ya, Simpan Data",
