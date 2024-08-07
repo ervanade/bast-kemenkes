@@ -193,7 +193,6 @@ const TambahUser = () => {
       role: selectedOption ? selectedOption.value : "",
     }));
   };
-  console.log(formData);
   return (
     <div>
       <Breadcrumb pageName="Form Input Data User" />
@@ -441,6 +440,7 @@ const TambahUser = () => {
                   options={dataKota}
                   value={selectedKota}
                   onChange={handleKotaChange}
+                  isDisabled={!selectedProvinsi}
                   placeholder={
                     selectedProvinsi
                       ? "Pilih Kab / Kota"
@@ -465,6 +465,7 @@ const TambahUser = () => {
                 <Select
                   options={dataKecamatan}
                   value={selectedKecamatan}
+                  isDisabled={!selectedKota}
                   onChange={handleKecamatanChange}
                   placeholder={
                     selectedKota ? "Pilih Kecamatan" : "Pilih Kab / Kota Dahulu"

@@ -8,72 +8,163 @@ import {
   dataKota,
   dataProvinsi,
 } from "../../data/data";
-import { selectThemeColors } from "../../data/utils";
-import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
+import { encryptId, selectThemeColors } from "../../data/utils";
+import { FaEdit, FaPlus, FaSpinner, FaTrash } from "react-icons/fa";
 import { BiExport, BiSolidFileExport } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import axios from "axios";
+import Swal from "sweetalert2";
+import { CgSpinner } from "react-icons/cg";
 
 const UserManagement = () => {
   const user = useSelector((a) => a.auth.user);
+
+  const [search, setSearch] = useState(""); // Initialize search state with an empty string
+  const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const handleSearch = (event) => {
+    const value = event.target.value.toLowerCase();
+    setSearch(value);
+
+    const filtered = data.filter((item) => {
+      return (
+        (item?.nama_alkes && item.nama_alkes.toLowerCase().includes(value)) ||
+        (item?.standar_rawat_inap &&
+          item.standar_rawat_inap.toLowerCase().includes(value)) ||
+        (item?.standar_nonrawat_inap &&
+          item.standar_nonrawat_inap.toLowerCase().includes(value)) ||
+        (item?.merk && item.merk.toLowerCase().includes(value)) ||
+        (item?.tipe && item.tipe.toLowerCase().includes(value)) ||
+        (item?.satuan && item.satuan.toLowerCase().includes(value)) ||
+        (item?.harga_satuan &&
+          item.harga_satuan.toString().toLowerCase().includes(value)) ||
+        (item?.keterangan && item.keterangan.toLowerCase().includes(value))
+      );
+    });
+
+    setFilteredData(filtered);
+  };
+
+  const handleExport = () => {
+    // Implementasi untuk mengekspor data (misalnya ke CSV)
+  };
+
+  const fetchUserData = async () => {
+    setLoading(true);
+    setError(false);
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/users`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setData(response.data.data);
+      setFilteredData(response.data.data);
+    } catch (error) {
+      setError(true);
+      setFilteredData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  const deleteBarang = async (id) => {
+    await axios({
+      method: "delete",
+      url: `${import.meta.env.VITE_APP_API_URL}/api/users/${id}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user?.token}`,
+      },
+    })
+      .then(() => {
+        fetchUserData();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleConfirmDeleteBarang = async (id) => {
+    return Swal.fire({
+      title: "Are you sure?",
+      text: "You will Delete This Barang!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      confirmButtonColor: "#16B3AC",
+    }).then(async (result) => {
+      if (result.value) {
+        await deleteBarang(id);
+        Swal.fire({
+          icon: "success",
+          title: "Deleted!",
+          text: "Your User has been deleted.",
+        });
+      }
+    });
+  };
+
   const columns = useMemo(
     () => [
-      // { name: "No", selector: (row) => row.id, sortable: true },
       {
-        name: "Provinsi",
-        selector: (row) => row.provinsi,
+        name: "Email",
+        selector: (row) => row.email,
+        sortable: true,
+        width: "200px",
+      },
+      {
+        name: "Username",
+        selector: (row) => row.username,
+        sortable: true,
+      },
+      {
+        name: "Name",
+        selector: (row) => row.name,
+        sortable: true,
+      },
+      {
+        name: "Role",
+        selector: (row) =>
+          row.role === "1"
+            ? "Admin"
+            : row.role === "2"
+            ? "PPK"
+            : row.role === "3"
+            ? "User"
+            : row.role === "4"
+            ? "Pimpinan SATKER"
+            : "" || "",
+        sortable: true,
+      },
+      {
+        name: "Unit Kerja",
+        selector: (row) => row.unit_kerja || "",
         sortable: true,
         width: "100px",
-      },
-      {
-        name: "Kab/Kota",
-        selector: (row) => row.kab_kota,
-        sortable: true,
-        width: "100px",
-      },
-      { name: "Kecamatan", selector: (row) => row.kecamatan, sortable: true },
-      { name: "Puskesmas", selector: (row) => row.Puskesmas, sortable: true },
-      { name: "Nama Kapus", selector: (row) => row.nama_kapus, sortable: true },
-      {
-        name: "Nama Barang",
-        selector: (row) => row.nama_barang,
-        sortable: true,
-      },
-      {
-        name: "Jumlah Barang Dikirim",
-        selector: (row) => row.jumlah_barang_dikirim,
-        sortable: true,
-      },
-      {
-        name: "Jumlah Barang Diterima",
-        selector: (row) => row.jumlah_barang_diterima,
-        sortable: true,
-      },
-      {
-        name: "Status TTE",
-        selector: (row) => row.status_tte,
-        sortable: true,
-        width: "110px",
-      },
-      {
-        name: "Keterangan PPK Kemenkes",
-        selector: (row) => row.keterangan_ppk,
-        sortable: true,
       },
       {
         name: "Aksi",
         cell: (row) => (
           <div className="flex items-center space-x-2">
-            {/* <button
-              title="Input"
-              className="text-green-500 hover:text-green-700"
-            >
-              <Link to="/data-verifikasi/form-distribusi">
-                <FaPlus />
-              </Link>
-            </button> */}
             <button title="Edit" className="text-[#16B3AC] hover:text-cyan-500">
-              <Link to={`/data-distribusi/edit/${row.id}`}>
+              <Link
+                to={`/master-data-barang/edit/${encodeURIComponent(
+                  encryptId(row.id)
+                )}`}
+              >
                 <FaEdit size={16} />
               </Link>
             </button>
@@ -81,6 +172,7 @@ const UserManagement = () => {
               <button
                 title="Delete"
                 className="text-red-500 hover:text-red-700"
+                onClick={() => handleConfirmDeleteBarang(row.id)}
               >
                 <FaTrash size={16} />
               </button>
@@ -94,68 +186,8 @@ const UserManagement = () => {
         button: true,
       },
     ],
-    []
+    [handleConfirmDeleteBarang, user.role]
   );
-
-  const [search, setSearch] = useState("");
-  const [dataKecamatanState, setDataKecamatanState] = useState([
-    { label: "Semua Kecamatan", value: "all" },
-    ...dataKecamatan,
-  ]);
-  const [selectedKecamatan, setSelectedKecamatan] = useState(null);
-  const [filteredData, setFilteredData] = useState(dataDistribusiBekasi);
-
-  const handleSearch = (event) => {
-    const value = event.target.value.toLowerCase();
-    setSearch(value);
-
-    const filtered = dataDistribusiBekasi.filter(
-      (item) =>
-        item.provinsi.toLowerCase().includes(value) ||
-        item.kab_kota.toLowerCase().includes(value) ||
-        item.kecamatan.toLowerCase().includes(value) ||
-        item.Puskesmas.toLowerCase().includes(value) ||
-        item.nama_kapus.toLowerCase().includes(value) ||
-        item.nama_barang.toLowerCase().includes(value) ||
-        item.jumlah_barang_dikirim.toString().includes(value) ||
-        item.jumlah_barang_diterima.toString().includes(value) ||
-        item.status_tte.toLowerCase().includes(value) ||
-        item.keterangan_ppk.toLowerCase().includes(value)
-    );
-
-    if (selectedKecamatan) {
-      selectedKecamatan.value != "all"
-        ? setFilteredData(
-            filtered.filter(
-              (item) => item.kecamatan === selectedKecamatan.label
-            )
-          )
-        : setFilteredData(filtered);
-    } else {
-      setFilteredData(filtered);
-    }
-  };
-
-  const handleExport = () => {
-    // Implementasi untuk mengekspor data (misalnya ke CSV)
-  };
-  const fetchApiUser = async () => {
-    await axios({
-      method: "get",
-      url: `${import.meta.env.VITE_APP_API_URL}/api/news`,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then(function (response) {
-        setFilteredData(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  useEffect(() => {}, []);
 
   return (
     <div>
@@ -197,7 +229,7 @@ const UserManagement = () => {
           </div>
           <div className="div flex gap-2 flex-row">
             <button
-              title="Export Data Distribusi"
+              title="Export Data Barang"
               className="flex items-center gap-2 cursor-pointer text-base text-white px-4 py-2 bg-primary rounded-md tracking-tight"
               onClick={handleExport}
             >
@@ -206,9 +238,8 @@ const UserManagement = () => {
             </button>
             {user.role === "1" ? (
               <button
-                title="Tambah Data Distribusi"
+                title="Tambah Data User"
                 className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
-                onClick={handleExport}
               >
                 <Link
                   to="/user-management/add"
@@ -224,26 +255,34 @@ const UserManagement = () => {
           </div>
         </div>
         <div className="overflow-x-auto">
-          <DataTable
-            columns={columns}
-            data={filteredData}
-            pagination
-            persistTableHead
-            highlightOnHover
-            pointerOnHover
-            customStyles={{
-              headCells: {
-                style: {
-                  backgroundColor: "#EBFBFA",
-                  color: "#728294",
+          {loading ? (
+            <div className="flex justify-center items-center">
+              <CgSpinner className="animate-spin inline-block w-8 h-8 text-teal-400" />
+              <span className="ml-2">Loading...</span>
+            </div>
+          ) : error || filteredData.length === 0 ? (
+            <div className="text-center">Data Tidak Tersedia.</div>
+          ) : (
+            <DataTable
+              columns={columns}
+              data={filteredData}
+              pagination
+              persistTableHead
+              highlightOnHover
+              pointerOnHover
+              customStyles={{
+                headCells: {
+                  style: {
+                    backgroundColor: "#EBFBFA",
+                    color: "#728294",
+                  },
                 },
-              },
-            }}
-          />
+              }}
+            />
+          )}
         </div>
       </div>
     </div>
   );
 };
-
 export default UserManagement;

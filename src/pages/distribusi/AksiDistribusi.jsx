@@ -281,6 +281,10 @@ const AksiDistribusi = () => {
   }, []);
 
   const editDistribusi = async () => {
+    if (formData.dataBarang.length < 1) {
+      Swal.fire("Error", "Form Data Barang Masih Kosong", "error");
+      return;
+    }
     setLoading(true);
     await axios({
       method: "put",

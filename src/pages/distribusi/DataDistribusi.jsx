@@ -172,7 +172,7 @@ const DataDistribusi = () => {
     setSelectedKecamatan(null);
     setDataKota([]);
     setDataKecamatan([]);
-    if (selectedOption) {
+    if (selectedOption && selectedOption.value !== "") {
       fetchKota(selectedOption.value);
     }
   };
@@ -181,7 +181,7 @@ const DataDistribusi = () => {
     setSelectedKota(selectedOption);
     setSelectedKecamatan(null);
     setDataKecamatan([]);
-    if (selectedOption) {
+    if (selectedOption && selectedOption.value !== "") {
       fetchKecamatan(selectedOption.value);
     }
   };

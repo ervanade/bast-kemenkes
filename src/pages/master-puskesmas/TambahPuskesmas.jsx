@@ -13,6 +13,7 @@ import Select from "react-select";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import FormInput from "../../components/Form/FormInput";
 
 const TambahPuskesmas = () => {
   const [formData, setFormData] = useState({
@@ -30,12 +31,86 @@ const TambahPuskesmas = () => {
   const navigate = useNavigate();
   const user = useSelector((a) => a.auth.user);
 
+  const [dataProvinsi, setDataProvinsi] = useState([]);
+  const [dataKota, setDataKota] = useState([]);
+  const [dataKecamatan, setDataKecamatan] = useState([]);
+
+  const [selectedProvinsi, setSelectedProvinsi] = useState(null);
+  const [selectedKota, setSelectedKota] = useState(null);
+  const [selectedKecamatan, setSelectedKecamatan] = useState(null);
+
   const [listKota, setListKota] = useState([]);
   const [listKecamatan, setListKecamatan] = useState([]);
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
+
+  const fetchProvinsi = async () => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/provinsi`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataProvinsi([
+        ...response.data.data.map((item) => ({
+          label: item.name,
+          value: item.id,
+        })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setDataProvinsi([]);
+    }
+  };
+  const fetchKota = async (idProvinsi) => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${
+          import.meta.env.VITE_APP_API_URL
+        }/api/getkabupaten/${idProvinsi}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataKota([
+        ...response.data.data.map((item) => ({
+          label: item.name,
+          value: item.id,
+        })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setDataKota([]);
+    }
+  };
+  const fetchKecamatan = async (idKota) => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/getkecamatan/${idKota}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataKecamatan([
+        ...response.data.data.map((item) => ({
+          label: item.name,
+          value: item.id,
+        })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setDataKecamatan([]);
+    }
+  };
 
   const handleChange = (event) => {
     const { id, value, files } = event.target;
@@ -65,6 +140,46 @@ const TambahPuskesmas = () => {
     e.preventDefault();
     setLoading(true);
     tambahPuskesmas();
+  };
+
+  useEffect(() => {
+    fetchProvinsi();
+  }, []);
+
+  const handleProvinsiChange = (selectedOption) => {
+    setSelectedProvinsi(selectedOption);
+    setSelectedKota(null);
+    setSelectedKecamatan(null);
+    setDataKota([]);
+    setDataKecamatan([]);
+    setFormData((prev) => ({
+      ...prev,
+      id_provinsi: selectedOption ? selectedOption.value.toString() : "",
+    }));
+    if (selectedOption) {
+      fetchKota(selectedOption.value);
+    }
+  };
+
+  const handleKotaChange = (selectedOption) => {
+    setSelectedKota(selectedOption);
+    setSelectedKecamatan(null);
+    setDataKecamatan([]);
+    setFormData((prev) => ({
+      ...prev,
+      id_kabupaten: selectedOption ? selectedOption.value.toString() : "",
+    }));
+    if (selectedOption) {
+      fetchKecamatan(selectedOption.value);
+    }
+  };
+
+  const handleKecamatanChange = (selectedOption) => {
+    setSelectedKecamatan(selectedOption);
+    setFormData((prev) => ({
+      ...prev,
+      id_kecamatan: selectedOption ? selectedOption.value.toString() : "",
+    }));
   };
 
   return (
@@ -110,77 +225,44 @@ const TambahPuskesmas = () => {
               </div>
             </div>
 
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="id_provinsi"
-                >
-                  Provinsi :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="id_provinsi"
-                  value={formData.id_provinsi}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Provinsi"
-                />
-              </div>
-            </div>
+            <FormInput
+              select={true}
+              id="provinsi"
+              options={dataProvinsi}
+              value={selectedProvinsi}
+              onChange={handleProvinsiChange}
+              placeholder="Pilih Provinsi"
+              label="Provinsi :"
+              required
+            />
 
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="id_kabupaten"
-                >
-                  Kabupaten :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="id_kabupaten"
-                  value={formData.id_kabupaten}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Kabupaten"
-                />
-              </div>
-            </div>
+            <FormInput
+              select={true}
+              id="kota"
+              options={dataKota}
+              value={selectedKota}
+              isDisabled={!selectedProvinsi}
+              onChange={handleKotaChange}
+              placeholder={
+                selectedProvinsi ? "Pilih Kab / Kota" : "Pilih Provinsi Dahulu"
+              }
+              label="Kab / Kota :"
+              required
+            />
 
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="id_kecamatan"
-                >
-                  Kecamatan :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="id_kecamatan"
-                  value={formData.id_kecamatan}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Kecamatan"
-                />
-              </div>
-            </div>
+            <FormInput
+              select={true}
+              id="kecamatan"
+              options={dataKecamatan}
+              value={selectedKecamatan}
+              onChange={handleKecamatanChange}
+              placeholder={
+                selectedKota ? "Pilih Kecamatan" : "Pilih Kab / Kota Dahulu"
+              }
+              isDisabled={!selectedKota}
+              label="Kecamatan :"
+              required
+            />
 
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">

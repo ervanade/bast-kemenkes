@@ -342,7 +342,18 @@ const Profile = () => {
                   >
                     Role
                   </label>
-                  <input
+                  <p>
+                    {formData.role === "1"
+                      ? "Admin"
+                      : formData.role === "2"
+                      ? "PPK"
+                      : formData.role === "3"
+                      ? "User"
+                      : formData.role === "4"
+                      ? "Pimpinan SATKER"
+                      : ""}
+                  </p>
+                  {/* <input
                     className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
                     type="text"
                     name="Role"
@@ -356,7 +367,7 @@ const Profile = () => {
                         role: e.target.value,
                       }))
                     }
-                  />
+                  /> */}
                 </div>
 
                 <div className="mb-5.5">

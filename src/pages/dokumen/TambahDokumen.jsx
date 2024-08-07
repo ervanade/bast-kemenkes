@@ -14,6 +14,7 @@ import Select from "react-select";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import FormInput from "../../components/Form/FormInput";
 
 const TambahDokumen = () => {
   const [formData, setFormData] = useState({
@@ -31,17 +32,44 @@ const TambahDokumen = () => {
     id_user_pemberi: "",
     contractFile: null,
     contractFileName: "",
+    id_provinsi: "",
     // keterangan: "",
   });
 
   const navigate = useNavigate();
   const user = useSelector((a) => a.auth.user);
 
+  const [dataProvinsi, setDataProvinsi] = useState([]);
+
+  const [selectedProvinsi, setSelectedProvinsi] = useState(null);
+
   const [listKota, setListKota] = useState([]);
   const [listKecamatan, setListKecamatan] = useState([]);
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const fetchProvinsi = async () => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/provinsi`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataProvinsi([
+        ...response.data.data.map((item) => ({
+          label: item.name,
+          value: item.id,
+        })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setDataProvinsi([]);
+    }
+  };
 
   const handleChange = (event) => {
     const { id, value, files } = event.target;
@@ -99,6 +127,18 @@ const TambahDokumen = () => {
     tambahDokumen();
   };
 
+  useEffect(() => {
+    fetchProvinsi();
+  }, []);
+
+  const handleProvinsiChange = (selectedOption) => {
+    setSelectedProvinsi(selectedOption);
+    setFormData((prev) => ({
+      ...prev,
+      id_provinsi: selectedOption ? selectedOption.value.toString() : "",
+    }));
+  };
+
   return (
     <div>
       <Breadcrumb pageName="Form Tambah Data Dokumen" />
@@ -141,6 +181,17 @@ const TambahDokumen = () => {
                 />
               </div>
             </div>
+
+            <FormInput
+              select={true}
+              id="provinsi"
+              options={dataProvinsi}
+              value={selectedProvinsi}
+              onChange={handleProvinsiChange}
+              placeholder="Pilih Provinsi"
+              label="Provinsi :"
+              required
+            />
 
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">

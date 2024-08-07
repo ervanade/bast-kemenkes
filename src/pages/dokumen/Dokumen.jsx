@@ -147,7 +147,7 @@ const Dokumen = () => {
     setSelectedKecamatan(null);
     setDataKota([]);
     setDataKecamatan([]);
-    if (selectedOption) {
+    if (selectedOption && selectedOption.value !== "") {
       fetchKota(selectedOption.value);
     }
   };
@@ -156,7 +156,7 @@ const Dokumen = () => {
     setSelectedKota(selectedOption);
     setSelectedKecamatan(null);
     setDataKecamatan([]);
-    if (selectedOption) {
+    if (selectedOption && selectedOption.value !== "") {
       fetchKecamatan(selectedOption.value);
     }
   };

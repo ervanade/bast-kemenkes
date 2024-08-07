@@ -242,6 +242,10 @@ const TambahDistribusi = () => {
   }, []);
 
   const tambahDistribusi = async () => {
+    if (formData.dataBarang.length < 1) {
+      Swal.fire("Error", "Form Data Barang Masih Kosong", "error");
+      return;
+    }
     await axios({
       method: "post",
       url: `${import.meta.env.VITE_APP_API_URL}/api/distribusi`,
