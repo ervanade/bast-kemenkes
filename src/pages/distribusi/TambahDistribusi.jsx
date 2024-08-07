@@ -431,7 +431,7 @@ const TambahDistribusi = () => {
               type="date"
               required
               placeholder="Tanggal Kirim"
-              label="Tahun Lokus :"
+              label="Tanggal Kirim :"
             />
 
             <div className="mt-12">
