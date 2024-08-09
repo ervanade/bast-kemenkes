@@ -32,11 +32,9 @@ const UserManagement = () => {
 
     const filtered = data.filter((item) => {
       return (
-        (item?.nama_alkes && item.nama_alkes.toLowerCase().includes(value)) ||
-        (item?.standar_rawat_inap &&
-          item.standar_rawat_inap.toLowerCase().includes(value)) ||
-        (item?.standar_nonrawat_inap &&
-          item.standar_nonrawat_inap.toLowerCase().includes(value)) ||
+        (item?.email && item.email.toLowerCase().includes(value)) ||
+        (item?.username && item.username.toLowerCase().includes(value)) ||
+        (item?.name && item.name.toLowerCase().includes(value)) ||
         (item?.merk && item.merk.toLowerCase().includes(value)) ||
         (item?.tipe && item.tipe.toLowerCase().includes(value)) ||
         (item?.satuan && item.satuan.toLowerCase().includes(value)) ||
@@ -92,6 +90,7 @@ const UserManagement = () => {
         fetchUserData();
       })
       .catch((error) => {
+        fetchUserData();
         console.log(error);
       });
   };
@@ -161,7 +160,7 @@ const UserManagement = () => {
           <div className="flex items-center space-x-2">
             <button title="Edit" className="text-[#16B3AC] hover:text-cyan-500">
               <Link
-                to={`/master-data-barang/edit/${encodeURIComponent(
+                to={`/user-management/edit/${encodeURIComponent(
                   encryptId(row.id)
                 )}`}
               >

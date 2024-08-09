@@ -215,12 +215,40 @@ const Dokumen = () => {
         (item?.tanggal_bast &&
           item.tanggal_bast.toLowerCase().includes(value)) ||
         (item?.tahun_lokus && item.tahun_lokus.toLowerCase().includes(value)) ||
-        (item?.nama_kontrak_pengadaan &&
-          item.nama_kontrak_pengadaan.toLowerCase().includes(value))
+        (item?.penerima_hibah &&
+          item.penerima_hibah.toLowerCase().includes(value))
       );
     });
 
     setFilteredData(filtered);
+  };
+
+  const handleSearchClick = async () => {
+    setLoading(true);
+    setError(false);
+
+    try {
+      const response = await axios({
+        method: "post",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/searchdoc`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+        data: {
+          id_provinsi: selectedProvinsi?.value.toString() || "",
+          id_kabupaten: selectedKota?.value.toString() || "",
+          id_kecamatan: selectedKecamatan?.value.toString() || "",
+        },
+      });
+
+      setFilteredData(response.data.data);
+    } catch (error) {
+      setError(true);
+      setFilteredData([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const columns = useMemo(
@@ -233,35 +261,46 @@ const Dokumen = () => {
         // width: "100px",
       },
       {
+        name: "Provinsi",
+        selector: (row) => row.provinsi,
+        sortable: true,
+        width: "120px",
+      },
+      {
+        name: "Kab/Kota",
+        selector: (row) => row.kabupaten,
+        sortable: true,
+      },
+      {
         name: "Nomor BAST",
         selector: (row) => row.nomor_bast,
         sortable: true,
         // width: "100px",
       },
-      {
-        name: "Tanggal BAST",
-        selector: (row) => row.tanggal_bast,
-        sortable: true,
-        // width: "100px",
-      },
+      // {
+      //   name: "Tanggal BAST",
+      //   selector: (row) => row.tanggal_bast,
+      //   sortable: true,
+      //   // width: "100px",
+      // },
       {
         name: "Tahun Lokus",
         selector: (row) => row.tahun_lokus,
         sortable: true,
         // width: "100px",
       },
-      {
-        name: "Kepala Unit Pemberi",
-        selector: (row) => row.kepala_unit_pemberi,
-        sortable: true,
-        // width: "100px",
-      },
-      {
-        name: "Penerima Hibah",
-        selector: (row) => row.penerima_hibah,
-        sortable: true,
-        // width: "100px",
-      },
+      // {
+      //   name: "Kepala Unit Pemberi",
+      //   selector: (row) => row.kepala_unit_pemberi,
+      //   sortable: true,
+      //   // width: "100px",
+      // },
+      // {
+      //   name: "Penerima Hibah",
+      //   selector: (row) => row.penerima_hibah,
+      //   sortable: true,
+      //   // width: "100px",
+      // },
       {
         name: "Status TTE",
         selector: (row) => (row.status_tte === "0" ? "Belum TTE" : "Sudah TTE"),
@@ -502,11 +541,15 @@ const Dokumen = () => {
             </div> */}
           </div>
           <button
-            onClick={handleSearch}
+            onClick={handleSearchClick}
+            disabled={loading}
             className="mt-2 flex items-center gap-2 cursor-pointer text-base text-white px-5 py-2 bg-primary rounded-md tracking-tight"
           >
             <FaSearch />
-            <span className="lg:hidden xl:flex"> Cari Data</span>
+            <span className="lg:hidden xl:flex">
+              {" "}
+              {loading ? "Loading" : "Cari Data"}
+            </span>
           </button>
         </div>
       </div>

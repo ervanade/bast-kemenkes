@@ -48,39 +48,6 @@ const TambahDistribusi = () => {
     dataBarang: [],
   });
 
-  //   {
-  //     "id": "1",
-  //     "id_dokumen": null,
-  //     "id_provinsi": "31",
-  //     "provinsi": "DKI JAKARTA",
-  //     "id_id_kabupaten": "3101",
-  //     "id_kabupaten": "KAB. ADM. KEP. SERIBU",
-  //     "id_kecamatan": "310101",
-  //     "kecamatan": "Kepulauan Seribu Utara",
-  //     "id_puskesmas": "1",
-  //     "nama_puskesmas": "Puskesmas PUSAT",
-  //     "kodepusdatin_lama": "110000",
-  //     "kodepusdatin_baru": "1100001111",
-  //     "kriteria_lima_sdm": "1",
-  //     "listrik": "1",
-  //     "internet": "1",
-  //     "karakteristik_wilayah_kerja": "Perdesaan",
-  //     "tahun_lokus": "2025",
-  //     "konfirmasi_ppk": null,
-  //     "konfirmasi_daerah": null,
-  //     "keterangan_ppk": null,
-  //     "keterangan_daerah": null,
-  //     "tanggal_kirim": "2024-07-17",
-  //     "tanggal_terima": null,
-  //     "jenis_bmn": "SWASTA",
-  //     "total_nilai_perolehan": "40000000",
-  //     "jumlah_barang": "4",
-  //     "id_user_pemberi": "1",
-  //     "id_user_pembuat": "1",
-  //     "id_user_verifikator": "2",
-  //     "id_user_penerima": "3"
-  // }
-
   const navigate = useNavigate();
   const user = useSelector((a) => a.auth.user);
 
@@ -98,6 +65,7 @@ const TambahDistribusi = () => {
   const [selectedDokumen, setSelectedDokumen] = useState(null);
   const [selectedKecamatan, setSelectedKecamatan] = useState(null);
   const [selectedPuskesmas, setSelectedPuskesmas] = useState(null);
+  console.log(dataDokumen);
 
   const handleKotaChange = (selectedOption) => {
     setSelectedKota(selectedOption);
@@ -139,7 +107,10 @@ const TambahDistribusi = () => {
       setFormData((prev) => ({
         ...prev,
         id_dokumen: selectedOption.value.toString(),
+        id_kabupaten: selectedOption.id_kabupaten.toString(),
+        id_provinsi: selectedOption.id_provinsi.toString(),
       }));
+      fetchKecamatan(selectedOption.id_kabupaten);
     }
   };
 
@@ -196,7 +167,9 @@ const TambahDistribusi = () => {
     try {
       const response = await axios({
         method: "get",
-        url: `${import.meta.env.VITE_APP_API_URL}/api/getpuskesmas/${idKecamatan}`,
+        url: `${
+          import.meta.env.VITE_APP_API_URL
+        }/api/getpuskesmas/${idKecamatan}`,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user?.token}`,
@@ -228,6 +201,8 @@ const TambahDistribusi = () => {
         ...response.data.data.map((item) => ({
           label: item.nama_dokumen,
           value: item.id,
+          id_provinsi: item.id_provinsi,
+          id_kabupaten: item.id_kabupaten,
         })),
       ]);
     } catch (error) {
@@ -310,16 +285,6 @@ const TambahDistribusi = () => {
     setShowModal(true);
   };
 
-  // const handleEditBarang = (index, barang) => {
-  //   const updatedDataBarang = formData.dataBarang.map((item, i) =>
-  //     i === index ? barang : item
-  //   );
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     dataBarang: updatedDataBarang,
-  //   }));
-  // };
-
   const handleDeleteBarang = (index) => {
     const updatedDataBarang = formData.dataBarang.filter((_, i) => i !== index);
     setFormData((prev) => ({
@@ -371,25 +336,14 @@ const TambahDistribusi = () => {
 
             <FormInput
               select={true}
-              id="kota"
-              options={dataKota}
-              value={selectedKota}
-              onChange={handleKotaChange}
-              placeholder={"Pilih Kab / Kota"}
-              label="Kab / Kota :"
-              required
-            />
-
-            <FormInput
-              select={true}
               id="kecamatan"
               options={dataKecamatan}
               value={selectedKecamatan}
               onChange={handleKecamatanChange}
               placeholder={
-                selectedKota ? "Pilih Kecamatan" : "Pilih Kab / Kota Dahulu"
+                selectedDokumen ? "Pilih Kecamatan" : "Pilih Dokumen Dahulu"
               }
-              isDisabled={!selectedKota}
+              isDisabled={!selectedDokumen}
               label="Kecamatan :"
               required
             />
@@ -402,12 +356,15 @@ const TambahDistribusi = () => {
               onChange={handlePuskesmasChange}
               isDisabled={!selectedKecamatan || dataPuskesmas.length < 1}
               placeholder={
-                selectedKecamatan && dataPuskesmas.length > 0 ? "Pilih Puskesmas" : selectedKecamatan && dataPuskesmas.length < 1 ? "Data Puskesmas Tidak Ada " :"Pilih Kecamatan Dahulu"
+                selectedKecamatan && dataPuskesmas.length > 0
+                  ? "Pilih Puskesmas"
+                  : selectedKecamatan && dataPuskesmas.length < 1
+                  ? "Data Puskesmas Tidak Ada "
+                  : "Pilih Kecamatan Dahulu"
               }
               label="Puskesmas :"
               required
             />
-
 
             <FormInput
               id="tanggal_kirim"

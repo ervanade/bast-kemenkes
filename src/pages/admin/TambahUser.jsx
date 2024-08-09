@@ -21,7 +21,7 @@ const TambahUser = () => {
     c_password: "",
     username: "",
     name: "",
-    role: "",
+    role: roleOptions[2].value,
     provinsi: "",
     kabupaten: "",
     kecamatan: "",

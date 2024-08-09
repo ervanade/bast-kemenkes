@@ -45,6 +45,7 @@ import TambahDokumen from "./pages/dokumen/TambahDokumen";
 import EditDokumen from "./pages/dokumen/EditDokumen";
 import AksiDistribusi from "./pages/distribusi/AksiDistribusi";
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
+import EditUser from "./pages/admin/EditUser";
 
 function App() {
   const { pathname } = useLocation();
@@ -99,6 +100,10 @@ function App() {
               <Route path="/" element={<ProtectedRoutesAdmin />}>
                 <Route path="/user-management" element={<UserManagement />} />
                 <Route path="/user-management/add" element={<TambahUser />} />
+                <Route
+                  path="/user-management/edit/:id"
+                  element={<EditUser />}
+                />
                 <Route
                   path="data-distribusi/add"
                   element={<TambahDistribusi />}

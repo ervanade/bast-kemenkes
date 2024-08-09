@@ -236,13 +236,14 @@ export const dataBarang = [
 ]
 export const konfirmasiOptions = [
     {
-        "label": "Data Sudah Sesuai",
-        "value": "1"
-    },
-    {
         "label": "Data Belum Sesuai",
         "value": "0"
+    },
+    {
+        "label": "Data Sudah Sesuai",
+        "value": "1"
     }
+
 ]
 export const SelectOptions = [
     {

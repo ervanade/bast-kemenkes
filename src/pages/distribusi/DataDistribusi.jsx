@@ -167,16 +167,16 @@ const DataDistribusi = () => {
 
     try {
       const response = await axios({
-        method: 'post',
+        method: "post",
         url: `${import.meta.env.VITE_APP_API_URL}/api/search`,
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${user?.token}`,
         },
         data: {
-          id_provinsi: selectedProvinsi?.value.toString() || '',
-          id_kabupaten: selectedKota?.value.toString() || '',
-          id_kecamatan: selectedKecamatan?.value.toString() || '',
+          id_provinsi: selectedProvinsi?.value.toString() || "",
+          id_kabupaten: selectedKota?.value.toString() || "",
+          id_kecamatan: selectedKecamatan?.value.toString() || "",
         },
       });
 
@@ -188,7 +188,6 @@ const DataDistribusi = () => {
       setLoading(false);
     }
   };
-  console.log(filteredData)
 
   useEffect(() => {
     fetchDistribusiData();
@@ -275,7 +274,6 @@ const DataDistribusi = () => {
         name: "Kab/Kota",
         selector: (row) => row.kabupaten,
         sortable: true,
-        width: "120px",
       },
       { name: "Kecamatan", selector: (row) => row.kecamatan, sortable: true },
       {
@@ -499,13 +497,15 @@ const DataDistribusi = () => {
             </div>
           </div>
           <button
-          onClick={handleSearchClick}
+            onClick={handleSearchClick}
             disabled={loading}
-
             className="mt-2 flex items-center gap-2 cursor-pointer text-base text-white px-5 py-2 bg-primary rounded-md tracking-tight"
           >
             <FaSearch />
-            <span className="lg:hidden xl:flex"> {loading ? "Loading" : "Cari Data"}</span>
+            <span className="lg:hidden xl:flex">
+              {" "}
+              {loading ? "Loading" : "Cari Data"}
+            </span>
           </button>
         </div>
       </div>

@@ -15,12 +15,11 @@ import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { CgSpinner } from "react-icons/cg";
+import FormInput from "../../components/Form/FormInput";
 
 const EditDokumen = () => {
   const [formData, setFormData] = useState({
     nama_dokumen: "",
-    // standar_rawat_inap: "",
-    // standar_nonrawat_inap: "",
     nomor_bast: "",
     tanggal_bast: "",
     tahun_lokus: "",
@@ -32,12 +31,95 @@ const EditDokumen = () => {
     id_user_pemberi: "",
     contractFile: null,
     contractFileName: "",
-    // keterangan: "",
+    id_provinsi: "",
+    id_kabupaten: "",
   });
 
   const navigate = useNavigate();
   const user = useSelector((a) => a.auth.user);
   const { id } = useParams();
+
+  const [dataProvinsi, setDataProvinsi] = useState([]);
+  const [dataKota, setDataKota] = useState([]);
+  const [dataUser, setDataUser] = useState([]);
+
+  const [selectedProvinsi, setSelectedProvinsi] = useState(null);
+  const [selectedKota, setSelectedKota] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  const fetchUserData = async () => {
+    setLoading(true);
+    setError(false);
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/users`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataUser([
+        ...response.data.data
+          .filter((a) => a.role == "1")
+          .map((item) => ({
+            label: item.email,
+            value: item.id,
+          })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setDataProvinsi([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchProvinsi = async () => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/provinsi`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataProvinsi([
+        ...response.data.data.map((item) => ({
+          label: item.name,
+          value: item.id,
+        })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setDataProvinsi([]);
+    }
+  };
+
+  const fetchKota = async (idProvinsi) => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${
+          import.meta.env.VITE_APP_API_URL
+        }/api/getkabupaten/${idProvinsi}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataKota([
+        ...response.data.data.map((item) => ({
+          label: item.name,
+          value: item.id,
+        })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setDataKota([]);
+    }
+  };
 
   const fetchDokumenData = async () => {
     setGetLoading(true);
@@ -71,6 +153,8 @@ const EditDokumen = () => {
           contractFile: null,
           contractFileName: data.contractFileName || "",
           contractFileLink: data.contractFileLink || "",
+          id_provinsi: data.id_provinsi || "",
+          id_kabupaten: data.id_kabupaten || "",
         });
         setGetLoading(false);
       });
@@ -131,7 +215,7 @@ const EditDokumen = () => {
       data: JSON.stringify(formData),
     })
       .then(function (response) {
-        Swal.fire("Data Berhasil di Input!", "", "success");
+        Swal.fire("Data Berhasil di Update!", "", "success");
         navigate("/dokumen");
       })
       .catch((error) => {
@@ -146,7 +230,88 @@ const EditDokumen = () => {
   };
   useEffect(() => {
     fetchDokumenData();
+    fetchProvinsi();
+    fetchUserData();
   }, []);
+
+  const handleProvinsiChange = (selectedOption) => {
+    setSelectedProvinsi(selectedOption);
+    setSelectedKota(null);
+    setDataKota([]);
+    setFormData((prev) => ({
+      ...prev,
+      provinsi: selectedOption ? selectedOption.value : "",
+    }));
+    if (selectedOption) {
+      fetchKota(selectedOption.value);
+    }
+  };
+
+  const handleKotaChange = (selectedOption) => {
+    setSelectedKota(selectedOption);
+    setFormData((prev) => ({
+      ...prev,
+      kabupaten: selectedOption ? selectedOption.value : "",
+    }));
+    if (selectedOption) {
+      setFormData((prev) => ({
+        ...prev,
+        penerima_hibah: `Kepala Dinas Kesehatan ${selectedOption.label}`,
+      }));
+    }
+  };
+
+  const handleUserChange = (selectedOption) => {
+    setSelectedUser(selectedOption);
+    setFormData((prev) => ({
+      ...prev,
+      id_user_pemberi: selectedOption ? selectedOption.value.toString() : "",
+    }));
+  };
+
+  useEffect(() => {
+    if (formData.id_provinsi && dataProvinsi.length > 0) {
+      const initialOption = dataProvinsi?.find(
+        (prov) => prov.value == formData.id_provinsi
+      );
+      if (initialOption) {
+        setSelectedProvinsi({
+          label: initialOption.label,
+          value: initialOption.value,
+        });
+      }
+    }
+    if (formData.id_kabupaten && dataKota.length > 0) {
+      const initialOption = dataKota.find(
+        (kec) => kec.value == formData.id_kabupaten
+      );
+
+      if (initialOption) {
+        setSelectedKota({
+          label: initialOption.label,
+          value: initialOption.value,
+          provinsi: initialOption.provinsi,
+        });
+      }
+    }
+    if (formData.id_user_pemberi && dataUser.length > 0) {
+      const initialOption = dataUser.find(
+        (kec) => kec.value == formData.id_user_pemberi
+      );
+
+      if (initialOption) {
+        setSelectedUser({
+          label: initialOption.label,
+          value: initialOption.value,
+        });
+      }
+    }
+  }, [formData, dataProvinsi, dataKota, dataUser]);
+  useEffect(() => {
+    if (formData.id_provinsi) {
+      fetchKota(formData.id_provinsi);
+    }
+  }, [formData.id_provinsi]);
   if (getLoading) {
     return (
       <div className="flex justify-center items-center">
@@ -198,6 +363,31 @@ const EditDokumen = () => {
                 />
               </div>
             </div>
+
+            <FormInput
+              select={true}
+              id="provinsi"
+              options={dataProvinsi}
+              value={selectedProvinsi}
+              onChange={handleProvinsiChange}
+              placeholder="Pilih Provinsi"
+              label="Provinsi :"
+              required
+            />
+
+            <FormInput
+              select={true}
+              id="kota"
+              options={dataKota}
+              value={selectedKota}
+              isDisabled={!selectedProvinsi}
+              onChange={handleKotaChange}
+              placeholder={
+                selectedProvinsi ? "Pilih Kab / Kota" : "Pilih Provinsi Dahulu"
+              }
+              label="Kab / Kota :"
+              required
+            />
 
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
@@ -295,53 +485,16 @@ const EditDokumen = () => {
               </div>
             </div>
 
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="jenis_bmn"
-                >
-                  Jenis BMN :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="jenis_bmn"
-                  value={formData.jenis_bmn}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Jenis BMN"
-                />
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="kepala_unit_pemberi"
-                >
-                  Kepala Unit Pemberi :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="kepala_unit_pemberi"
-                  value={formData.kepala_unit_pemberi}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Kepala Unit Pemberi"
-                />
-              </div>
-            </div>
+            <FormInput
+              select={true}
+              id="kota"
+              options={dataUser}
+              value={selectedUser}
+              onChange={handleUserChange}
+              placeholder={"Pilih Email Kepala Unit Pemberi"}
+              label="Kepala Unit Pemberi :"
+              required
+            />
 
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">

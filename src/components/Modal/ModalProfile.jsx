@@ -49,7 +49,7 @@ const ModalProfile = ({
   return (
     <>
       {/* <button
-        className="bg-blue-200 text-black active:bg-blue-500 
+        className="bg-primary text-black active:bg-primary 
       font-bold px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
         type="button"
         onClick={() => setShowModal(true)}
@@ -155,7 +155,7 @@ const ModalProfile = ({
                       <div className="flex space-x-2 mt-4">
                         <button
                           type="button"
-                          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                          className="bg-primary hover:bg-primary text-white font-bold py-2 px-4 rounded"
                           onClick={handleSaveSignature}
                         >
                           Save TTE

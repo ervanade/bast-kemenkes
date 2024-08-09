@@ -42,8 +42,8 @@ const AksiDistribusi = () => {
     internet: "",
     karakteristik_wilayah_kerja: "",
     tahun_lokus: "",
-    konfirmasi_ppk: konfirmasiOptions[1],
-    konfirmasi_daerah: konfirmasiOptions[1],
+    konfirmasi_ppk: konfirmasiOptions[0],
+    konfirmasi_daerah: konfirmasiOptions[0],
     tanggal_terima: "",
     total_nilai_perolehan: "",
     jenis_bmn: "",
@@ -168,11 +168,13 @@ const AksiDistribusi = () => {
     }
   };
 
-  const fetchPuskesmas = async (idKota) => {
+  const fetchPuskesmas = async (idKecamatan) => {
     try {
       const response = await axios({
         method: "get",
-        url: `${import.meta.env.VITE_APP_API_URL}/api/puskesmas`,
+        url: `${
+          import.meta.env.VITE_APP_API_URL
+        }/api/getpuskesmas/${idKecamatan}`,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user?.token}`,
@@ -254,8 +256,8 @@ const AksiDistribusi = () => {
           internet: data.internet || "",
           karakteristik_wilayah_kerja: data.karakteristik_wilayah_kerja || "",
           tahun_lokus: data.tahun_lokus || "",
-          konfirmasi_ppk: konfirmasiOptions[1],
-          konfirmasi_daerah: konfirmasiOptions[1],
+          konfirmasi_ppk: konfirmasiOptions[0],
+          konfirmasi_daerah: konfirmasiOptions[0],
           tanggal_terima: "",
           total_nilai_perolehan: "",
           jenis_bmn: data.jenis_bmn || "",
@@ -352,13 +354,25 @@ const AksiDistribusi = () => {
   };
 
   useEffect(() => {
-    const jumlahDiterimaSum = formData.dataBarang.reduce((acc, curr) => acc + curr.jumlah_diterima, 0);
-    const jumlahDikirimSum = formData.dataBarang.reduce((acc, curr) => acc + curr.jumlah_dikirim, 0);
-  
+    const jumlahDiterimaSum = formData.dataBarang.reduce(
+      (acc, curr) => acc + curr.jumlah_diterima,
+      0
+    );
+    const jumlahDikirimSum = formData.dataBarang.reduce(
+      (acc, curr) => acc + curr.jumlah_dikirim,
+      0
+    );
+
     if (jumlahDiterimaSum === jumlahDikirimSum) {
-      setFormData((prev) => ({ ...prev, konfirmasi_daerah: konfirmasiOptions[0] }));
+      setFormData((prev) => ({
+        ...prev,
+        konfirmasi_daerah: konfirmasiOptions[1],
+      }));
     } else {
-      setFormData((prev) => ({ ...prev, konfirmasi_daerah: konfirmasiOptions[1] }));
+      setFormData((prev) => ({
+        ...prev,
+        konfirmasi_daerah: konfirmasiOptions[0],
+      }));
     }
   }, [formData.dataBarang]);
 
@@ -428,7 +442,10 @@ const AksiDistribusi = () => {
     if (formData.id_kabupaten) {
       fetchKecamatan(formData.id_kabupaten);
     }
-  }, [formData.id_kabupaten]);
+    if (formData.id_kecamatan) {
+      fetchPuskesmas(formData.id_kecamatan);
+    }
+  }, [formData.id_kabupaten, formData.id_kecamatan]);
   useEffect(() => {
     fetchPuskesmas();
   }, []);
@@ -489,7 +506,7 @@ const AksiDistribusi = () => {
                   onChange={handleDokumenChange}
                   placeholder="Pilih Dokumen"
                   className="w-full"
-                  isDisabled={user.role === "3"}
+                  isDisabled={user.role !== "1"}
                   theme={selectThemeColors}
                 />
               </div>
@@ -511,7 +528,7 @@ const AksiDistribusi = () => {
                   onChange={handleKotaChange}
                   placeholder={"Pilih Kab / Kota"}
                   className="w-full"
-                  isDisabled={user.role === "3"}
+                  isDisabled={user.role !== "1"}
                   theme={selectThemeColors}
                 />
               </div>
@@ -534,7 +551,7 @@ const AksiDistribusi = () => {
                   placeholder={
                     selectedKota ? "Pilih Kecamatan" : "Pilih Kab / Kota Dahulu"
                   }
-                  isDisabled={!selectedKota || user.role === "3"}
+                  isDisabled={!selectedKota || user.role !== "1"}
                   className="w-full"
                   theme={selectThemeColors}
                 />
@@ -555,7 +572,7 @@ const AksiDistribusi = () => {
                   options={dataPuskesmas}
                   value={selectedPuskesmas}
                   onChange={handlePuskesmasChange}
-                  isDisabled={!selectedKecamatan || user.role === "3"}
+                  isDisabled={!selectedKecamatan || user.role !== "1"}
                   placeholder={
                     selectedKota ? "Pilih Puskesmas" : "Pilih Kecamatan Dahulu"
                   }
@@ -564,7 +581,6 @@ const AksiDistribusi = () => {
                 />
               </div>
             </div>
-
 
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
@@ -585,7 +601,7 @@ const AksiDistribusi = () => {
                   onChange={handleChange}
                   type="date"
                   required
-                  disabled={user.role === "3"}
+                  disabled={user.role !== "1"}
                   placeholder="Tanggal Kirim"
                 />
               </div>
@@ -720,9 +736,17 @@ const AksiDistribusi = () => {
                                   <button
                                     title="Konfirmasi"
                                     onClick={(e) => handleEditBarang(e, index)}
-                                    className={`text-white py-2 w-22 rounded-md ${barang.jumlah_dikirim == barang.jumlah_diterima ? "bg-green-400" : "bg-orange-400"}`}
+                                    className={`text-white py-2 w-22 rounded-md ${
+                                      barang.jumlah_dikirim ==
+                                      barang.jumlah_diterima
+                                        ? "bg-green-500"
+                                        : "bg-yellow-500"
+                                    }`}
                                   >
-                                    {barang.jumlah_dikirim == barang.jumlah_diterima ? "Sudah Konfirmasi" : "Konfirmasi"}
+                                    {barang.jumlah_dikirim ==
+                                    barang.jumlah_diterima
+                                      ? "Sudah Konfirmasi"
+                                      : "Konfirmasi"}
                                   </button>
                                 </>
                               ) : (
@@ -740,7 +764,7 @@ const AksiDistribusi = () => {
               </div>
             </div>
 
-            {user.role === "2" ? (
+            {user.role === "2" || user.role === "3" ? (
               <>
                 <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
                   <div className="sm:flex-[2_2_0%]">
@@ -756,7 +780,7 @@ const AksiDistribusi = () => {
                       id="message"
                       rows="4"
                       value={formData.ket_daerah}
-                      disabled
+                      disabled={user.role !== "3"}
                       onChange={(e) =>
                         setFormData((prev) => ({
                           ...prev,
@@ -764,8 +788,8 @@ const AksiDistribusi = () => {
                         }))
                       }
                       className={` disabled:bg-[#F2F2F2] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                    "border-red-500" 
-                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                "border-red-500" 
+             rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
                       placeholder="Keterangan : misal: komplit dan baik atau kurang dari rensi dan baik"
                     ></textarea>
                   </div>
@@ -789,15 +813,20 @@ const AksiDistribusi = () => {
                           konfirmasi_daerah: e,
                         }))
                       }
-                      placeholder="Konfirmasi Daerah"
                       value={formData.konfirmasi_daerah}
+                      placeholder="Konfirmasi PPK"
                       className="w-full cursor-pointer"
                       theme={selectThemeColors}
                       isDisabled
                     />
                   </div>
                 </div>
-
+              </>
+            ) : (
+              ""
+            )}
+            {user.role === "2" ? (
+              <>
                 <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
                   <div className="sm:flex-[2_2_0%]">
                     <label
@@ -812,6 +841,7 @@ const AksiDistribusi = () => {
                       id="message"
                       rows="4"
                       value={formData.ket_ppk}
+                      disabled={user.role !== "2"}
                       onChange={(e) =>
                         setFormData((prev) => ({
                           ...prev,
@@ -819,8 +849,8 @@ const AksiDistribusi = () => {
                         }))
                       }
                       className={` bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                    "border-red-500" 
-                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                "border-red-500" 
+             rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
                       placeholder="Keterangan : misal: disetujui atau konfirmasi ke transporter barang sedang dikirim kembali"
                     ></textarea>
                   </div>
@@ -848,64 +878,6 @@ const AksiDistribusi = () => {
                       placeholder="Konfirmasi PPK"
                       className="w-full cursor-pointer"
                       theme={selectThemeColors}
-                    />
-                  </div>
-                </div>
-              </>
-            ) : user.role === "3" ? (
-              <>
-                <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-                  <div className="sm:flex-[2_2_0%]">
-                    <label
-                      className=" block text-[#728294] text-base font-semibold mb-2"
-                      htmlFor="email"
-                    >
-                      Keterangan Daerah :
-                    </label>
-                  </div>
-                  <div className="sm:flex-[5_5_0%]">
-                    <textarea
-                      id="message"
-                      rows="4"
-                      value={formData.ket_daerah}
-                      disabled={!user.role === "3"}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          ket_daerah: e.target.value,
-                        }))
-                      }
-                      className={` disabled:bg-[#F2F2F2] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                      placeholder="Keterangan : misal: komplit dan baik atau kurang dari rensi dan baik"
-                    ></textarea>
-                  </div>
-                </div>
-
-                <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-                  <div className="sm:flex-[2_2_0%]">
-                    <label
-                      className="block text-[#728294] text-base font-semibold mb-2"
-                      htmlFor="email"
-                    >
-                      Konfirmasi Daerah :
-                    </label>
-                  </div>
-                  <div className="sm:flex-[5_5_0%]">
-                    <Select
-                      options={konfirmasiOptions}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          konfirmasi_daerah: e,
-                        }))
-                      }
-                      value={formData.konfirmasi_daerah}
-                      placeholder="Konfirmasi PPK"
-                      className="w-full cursor-pointer"
-                      theme={selectThemeColors}
-                      isDisabled
                     />
                   </div>
                 </div>

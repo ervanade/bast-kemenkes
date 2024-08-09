@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
 import Card from "../../components/Card/Card";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   dataBarang,
   dataKecamatan,
   dataPuskesmas,
   roleOptions,
 } from "../../data/data";
-import { selectThemeColors } from "../../data/utils";
+import { decryptId, selectThemeColors } from "../../data/utils";
 import Select from "react-select";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { CgSpinner } from "react-icons/cg";
 
 const EditUser = () => {
   const [formData, setFormData] = useState({
@@ -38,10 +39,54 @@ const EditUser = () => {
   const [selectedProvinsi, setSelectedProvinsi] = useState(null);
   const [selectedKota, setSelectedKota] = useState(null);
   const [selectedKecamatan, setSelectedKecamatan] = useState(null);
-  const [selectedRole, setSelectedRole] = useState(roleOptions[2]);
+  const [selectedRole, setSelectedRole] = useState(null);
 
+  const [getLoading, setGetLoading] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const { id } = useParams();
+
+  const fetchUserData = async () => {
+    setGetLoading(true);
+    try {
+      // eslint-disable-next-line
+      const responseUser = await axios({
+        method: "get",
+        url: `${
+          import.meta.env.VITE_APP_API_URL
+        }/api/users/${encodeURIComponent(decryptId(id))}`,
+        headers: {
+          "Content-Type": "application/json",
+          //eslint-disable-next-line
+          Authorization: `Bearer ${user?.token}`,
+        },
+      }).then(function (response) {
+        // handle success
+        // console.log(response)
+        const data = response.data.data;
+        setFormData({
+          password: "",
+          email: data.email || "",
+          c_password: "",
+          username: data.username || "",
+          name: data.name || "",
+          role: data.role || "",
+          provinsi: data.provinsi || "",
+          kabupaten: data.kabupaten || "",
+          kecamatan: data.kecamatan || "",
+          nip: data.nip || "",
+        });
+        setSelectedRole(roleOptions.find((a) => a.value === data.role));
+        setGetLoading(false);
+      });
+    } catch (error) {
+      if (error.response.status == 404) {
+        navigate("/not-found");
+      }
+      console.log(error);
+    }
+  };
 
   const fetchProvinsi = async () => {
     try {
@@ -109,7 +154,7 @@ const EditUser = () => {
     }
   };
 
-  const tambahUser = async () => {
+  const updateUser = async () => {
     if (formData.password !== formData.c_password) {
       Swal.fire(
         "Error",
@@ -121,8 +166,10 @@ const EditUser = () => {
     }
     try {
       await axios({
-        method: "post",
-        url: `${import.meta.env.VITE_APP_API_URL}/api/register`,
+        method: "put",
+        url: `${
+          import.meta.env.VITE_APP_API_URL
+        }/api/users/${encodeURIComponent(decryptId(id))}`,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user?.token}`,
@@ -144,9 +191,10 @@ const EditUser = () => {
   const handleSimpan = async (e) => {
     e.preventDefault();
     setLoading(true);
-    tambahUser();
+    updateUser();
   };
   useEffect(() => {
+    fetchUserData();
     fetchProvinsi();
   }, []);
 
@@ -193,13 +241,68 @@ const EditUser = () => {
       role: selectedOption ? selectedOption.value : "",
     }));
   };
+
+  useEffect(() => {
+    if (formData.provinsi && dataProvinsi.length > 0) {
+      const initialOption = dataProvinsi?.find(
+        (prov) => prov.value == formData.provinsi
+      );
+      if (initialOption) {
+        setSelectedProvinsi({
+          label: initialOption.label,
+          value: initialOption.value,
+        });
+      }
+    }
+    if (formData.kecamatan && dataKecamatan.length > 0) {
+      const initialOption = dataKecamatan.find(
+        (kec) => kec.value == formData.kecamatan
+      );
+      if (initialOption) {
+        setSelectedKecamatan({
+          label: initialOption.label,
+          value: initialOption.value,
+        });
+      }
+    }
+    if (formData.kabupaten && dataKota.length > 0) {
+      const initialOption = dataKota.find(
+        (kec) => kec.value == formData.kabupaten
+      );
+
+      if (initialOption) {
+        setSelectedKota({
+          label: initialOption.label,
+          value: initialOption.value,
+          provinsi: initialOption.provinsi,
+        });
+      }
+    }
+  }, [formData, dataProvinsi, dataKecamatan, dataKota]);
+  useEffect(() => {
+    if (formData.provinsi) {
+      fetchKota(formData.provinsi);
+    }
+    if (formData.kabupaten) {
+      fetchKecamatan(formData.kabupaten);
+    }
+  }, [formData.provinsi, formData.kabupaten]);
+
+  if (getLoading) {
+    return (
+      <div className="flex justify-center items-center">
+        <CgSpinner className="animate-spin inline-block w-8 h-8 text-teal-400" />
+        <span className="ml-2">Loading...</span>
+      </div>
+    );
+  }
   return (
     <div>
-      <Breadcrumb pageName="Form Input Data User" />
+      <Breadcrumb pageName="Form Edit Data User" />
       <Card>
         <div className="card-header flex justify-between">
           <h1 className="mb-12 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
-            {user.role === "1" ? "Form Input Data User" : ""}
+            {user.role === "1" ? "Form Edit Data User" : ""}
           </h1>
           <div>
             <Link

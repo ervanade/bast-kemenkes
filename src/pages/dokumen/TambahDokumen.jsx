@@ -19,21 +19,14 @@ import FormInput from "../../components/Form/FormInput";
 const TambahDokumen = () => {
   const [formData, setFormData] = useState({
     nama_dokumen: "",
-    // standar_rawat_inap: "",
-    // standar_nonrawat_inap: "",
     nomor_bast: "",
     tanggal_bast: "",
     tahun_lokus: "",
     penerima_hibah: "",
-    jenis_bmn: "",
     kepala_unit_pemberi: "",
-    nama_kontrak_pengadaan: "",
-    tanggal_kontrak_pengadaan: "",
     id_user_pemberi: "",
-    contractFile: null,
-    contractFileName: "",
     id_provinsi: "",
-    // keterangan: "",
+    id_kabupaten: "",
   });
 
   const navigate = useNavigate();
@@ -42,16 +35,46 @@ const TambahDokumen = () => {
   const [dataProvinsi, setDataProvinsi] = useState([]);
   const [dataKota, setDataKota] = useState([]);
   const [dataKecamatan, setDataKecamatan] = useState([]);
+  const [dataUser, setDataUser] = useState([]);
 
   const [selectedProvinsi, setSelectedProvinsi] = useState(null);
   const [selectedKota, setSelectedKota] = useState(null);
   const [selectedKecamatan, setSelectedKecamatan] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   const [listKota, setListKota] = useState([]);
   const [listKecamatan, setListKecamatan] = useState([]);
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const fetchUserData = async () => {
+    setLoading(true);
+    setError(false);
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/users`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataUser([
+        ...response.data.data
+          .filter((a) => a.role == "1")
+          .map((item) => ({
+            label: item.email,
+            value: item.id,
+          })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setDataProvinsi([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchProvinsi = async () => {
     try {
@@ -98,27 +121,6 @@ const TambahDokumen = () => {
       setDataKota([]);
     }
   };
-  const fetchKecamatan = async (idKota) => {
-    try {
-      const response = await axios({
-        method: "get",
-        url: `${import.meta.env.VITE_APP_API_URL}/api/getkecamatan/${idKota}`,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user?.token}`,
-        },
-      });
-      setDataKecamatan([
-        ...response.data.data.map((item) => ({
-          label: item.name,
-          value: item.id,
-        })),
-      ]);
-    } catch (error) {
-      setError(true);
-      setDataKecamatan([]);
-    }
-  };
 
   const handleChange = (event) => {
     const { id, value, files } = event.target;
@@ -141,6 +143,7 @@ const TambahDokumen = () => {
       setFormData((prev) => ({ ...prev, [id]: value }));
     }
   };
+  console.log(formData);
 
   const tambahDokumen = async () => {
     const formDataToSend = new FormData();
@@ -178,6 +181,7 @@ const TambahDokumen = () => {
 
   useEffect(() => {
     fetchProvinsi();
+    fetchUserData();
   }, []);
 
   const handleProvinsiChange = (selectedOption) => {
@@ -185,10 +189,9 @@ const TambahDokumen = () => {
     setSelectedKota(null);
     setSelectedKecamatan(null);
     setDataKota([]);
-    setDataKecamatan([]);
     setFormData((prev) => ({
       ...prev,
-      provinsi: selectedOption ? selectedOption.value : "",
+      id_provinsi: selectedOption ? selectedOption.value.toString() : "",
     }));
     if (selectedOption) {
       fetchKota(selectedOption.value);
@@ -198,21 +201,23 @@ const TambahDokumen = () => {
   const handleKotaChange = (selectedOption) => {
     setSelectedKota(selectedOption);
     setSelectedKecamatan(null);
-    setDataKecamatan([]);
     setFormData((prev) => ({
       ...prev,
-      kabupaten: selectedOption ? selectedOption.value : "",
+      id_kabupaten: selectedOption ? selectedOption.value.toString() : "",
     }));
     if (selectedOption) {
-      fetchKecamatan(selectedOption.value);
+      setFormData((prev) => ({
+        ...prev,
+        penerima_hibah: `Kepala Dinas Kesehatan ${selectedOption.label}`,
+      }));
     }
   };
 
-  const handleKecamatanChange = (selectedOption) => {
-    setSelectedKecamatan(selectedOption);
+  const handleUserChange = (selectedOption) => {
+    setSelectedUser(selectedOption);
     setFormData((prev) => ({
       ...prev,
-      kecamatan: selectedOption ? selectedOption.value : "",
+      id_user_pemberi: selectedOption ? selectedOption.value.toString() : "",
     }));
   };
 
@@ -281,20 +286,6 @@ const TambahDokumen = () => {
                 selectedProvinsi ? "Pilih Kab / Kota" : "Pilih Provinsi Dahulu"
               }
               label="Kab / Kota :"
-              required
-            />
-
-            <FormInput
-              select={true}
-              id="kecamatan"
-              options={dataKecamatan}
-              value={selectedKecamatan}
-              onChange={handleKecamatanChange}
-              placeholder={
-                selectedKota ? "Pilih Kecamatan" : "Pilih Kab / Kota Dahulu"
-              }
-              isDisabled={!selectedKota}
-              label="Kecamatan :"
               required
             />
 
@@ -370,6 +361,17 @@ const TambahDokumen = () => {
               </div>
             </div>
 
+            <FormInput
+              select={true}
+              id="kota"
+              options={dataUser}
+              value={selectedUser}
+              onChange={handleUserChange}
+              placeholder={"Pilih Email Kepala Unit Pemberi"}
+              label="Kepala Unit Pemberi :"
+              required
+            />
+
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
                 <label
@@ -387,34 +389,10 @@ const TambahDokumen = () => {
                   id="penerima_hibah"
                   value={formData.penerima_hibah}
                   onChange={handleChange}
+                  disabled
                   type="text"
                   required
                   placeholder="Penerima Hibah"
-                />
-              </div>
-            </div>
-
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="kepala_unit_pemberi"
-                >
-                  Kepala Unit Pemberi :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="kepala_unit_pemberi"
-                  value={formData.kepala_unit_pemberi}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Kepala Unit Pemberi"
                 />
               </div>
             </div>
@@ -451,77 +429,6 @@ const TambahDokumen = () => {
                 </p>
               </div>
             </div>
-
-            {/* <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="nama_kontrak_pengadaan"
-                >
-                  Nama Kontrak Pengadaan :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="nama_kontrak_pengadaan"
-                  value={formData.nama_kontrak_pengadaan}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Nama Kontrak Pengadaan"
-                />
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="tanggal_kontrak_pengadaan"
-                >
-                  Tanggal Kontrak Pengadaan :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="tanggal_kontrak_pengadaan"
-                  value={formData.tanggal_kontrak_pengadaan}
-                  onChange={handleChange}
-                  type="date"
-                  required
-                  placeholder="Tanggal Kontrak Pengadaan"
-                />
-              </div>
-            </div> */}
-
-            {/* <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="keterangan"
-                >
-                  Keterangan :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <textarea
-                  id="keterangan"
-                  rows="4"
-                  value={formData.keterangan}
-                  onChange={handleChange}
-                  className={` bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                    "border-red-500" 
-                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  placeholder="Keterangan Barang"
-                ></textarea>
-              </div>
-            </div> */}
 
             <div className="flex items-center justify-center mt-6 sm:mt-12 sm:gap-8">
               <div className="div sm:flex-[2_2_0%]"></div>

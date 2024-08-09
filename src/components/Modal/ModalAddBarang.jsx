@@ -62,12 +62,9 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
     }
   }, [editIndex, dataBarang]);
 
-  const handleSave = () => {
-    if (
-      !barang.id_barang ||
-      !barang.jumlah_dikirim ||
-      !barang.jumlah_diterima
-    ) {
+  const handleSave = (e) => {
+    e.preventDefault();
+    if (!barang.id_barang || !barang.jumlah_dikirim) {
       Swal.fire("Error", "Ada Form yang belum di lengkapi", "error");
       return;
     }
@@ -198,9 +195,8 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                   />
                 </div>
               </div> */}
-              {
-                user.role === "1" ? 
-                  <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
+              {user.role === "1" ? (
+                <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
                   <div className="">
                     <label
                       className=" block text-[#728294] text-base font-semibold mb-2"
@@ -228,41 +224,38 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                     />
                   </div>
                 </div>
-                : user.role === "3" ?   <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
-                <div className="">
-                  <label
-                    className=" block text-[#728294] text-base font-semibold mb-2"
-                    htmlFor="email"
-                  >
-                    Jumlah Barang yang Diterima :
-                  </label>
-                </div>
-                <div className="">
-                  <input
-                    className={` bg-white disabled:bg-[#F2F2F2] appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+              ) : user.role === "3" ? (
+                <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
+                  <div className="">
+                    <label
+                      className=" block text-[#728294] text-base font-semibold mb-2"
+                      htmlFor="email"
+                    >
+                      Jumlah Barang yang Diterima :
+                    </label>
+                  </div>
+                  <div className="">
+                    <input
+                      className={` bg-white disabled:bg-[#F2F2F2] appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                     "border-red-500" 
                  rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                    id="jumlah_diterima"
-                    type="text"
-                    required
-                    value={barang.jumlah_diterima}
-                    onChange={(e) =>
-                      setBarang((prev) => ({
-                        ...prev,
-                        jumlah_diterima: e.target.value,
-                      }))
-                    }
-                    placeholder="Jumlah Barang yang Diterima"
-                  />
+                      id="jumlah_diterima"
+                      type="text"
+                      required
+                      value={barang.jumlah_diterima}
+                      onChange={(e) =>
+                        setBarang((prev) => ({
+                          ...prev,
+                          jumlah_diterima: e.target.value,
+                        }))
+                      }
+                      placeholder="Jumlah Barang yang Diterima"
+                    />
+                  </div>
                 </div>
-              </div> : ""
-                
-              }
-
-           
-              
-            
-
+              ) : (
+                ""
+              )}
             </div>
             <div className="flex items-center justify-end p-6 border-t gap-2 border-solid border-black/20 rounded-b">
               <button
