@@ -14,7 +14,6 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
     jumlah_dikirim: "",
     jumlah_diterima: "",
     nomor_kepemilikan: "",
-    jumlah_diterima: "",
     merk: "",
     satuan: "",
     harga_satuan: "",
