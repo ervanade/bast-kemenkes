@@ -13,6 +13,9 @@ import axios from "axios";
 import FormInput from "../../components/Form/FormInput";
 
 const TambahDistribusi = () => {
+  var today = new Date();
+  const defaultDate = today.toISOString().substring(0, 10);
+
   const [formData, setFormData] = useState({
     id_dokumen: "",
     provinsi: "",
@@ -26,7 +29,7 @@ const TambahDistribusi = () => {
     jumlah_barang_dikirim: "",
     jumlah_barang_diterima: "",
     tte: "",
-    tanggal_kirim: "",
+    tanggal_kirim: defaultDate,
     keterangan_daerah: "",
     keterangan_ppk: "",
     kodepusdatin_lama: "",
@@ -65,7 +68,6 @@ const TambahDistribusi = () => {
   const [selectedDokumen, setSelectedDokumen] = useState(null);
   const [selectedKecamatan, setSelectedKecamatan] = useState(null);
   const [selectedPuskesmas, setSelectedPuskesmas] = useState(null);
-  console.log(dataDokumen);
 
   const handleKotaChange = (selectedOption) => {
     setSelectedKota(selectedOption);

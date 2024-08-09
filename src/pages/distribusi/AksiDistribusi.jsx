@@ -18,6 +18,8 @@ import axios from "axios";
 import { CgSpinner } from "react-icons/cg";
 
 const AksiDistribusi = () => {
+  var today = new Date();
+  const defaultDate = today.toISOString().substring(0, 10);
   const [formData, setFormData] = useState({
     id_dokumen: "",
     provinsi: "",
@@ -246,7 +248,7 @@ const AksiDistribusi = () => {
           jumlah_barang_dikirim: "",
           jumlah_barang_diterima: "",
           tte: "",
-          tanggal_kirim: data.tanggal_kirim || "",
+          tanggal_kirim: data.tanggal_kirim || defaultDate,
           keterangan_daerah: data.keterangan_daerah || "",
           keterangan_ppk: data.keterangan_ppk || "",
           kodepusdatin_lama: data.kodepusdatin_lama || "",
@@ -446,9 +448,6 @@ const AksiDistribusi = () => {
       fetchPuskesmas(formData.id_kecamatan);
     }
   }, [formData.id_kabupaten, formData.id_kecamatan]);
-  useEffect(() => {
-    fetchPuskesmas();
-  }, []);
 
   // useEffect(() => {
   //   setFormData((prev) => ({
@@ -814,7 +813,7 @@ const AksiDistribusi = () => {
                         }))
                       }
                       value={formData.konfirmasi_daerah}
-                      placeholder="Konfirmasi PPK"
+                      placeholder="Konfirmasi Daerah"
                       className="w-full cursor-pointer"
                       theme={selectThemeColors}
                       isDisabled
@@ -856,7 +855,7 @@ const AksiDistribusi = () => {
                   </div>
                 </div>
 
-                <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+                {/* <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
                   <div className="sm:flex-[2_2_0%]">
                     <label
                       className="block text-[#728294] text-base font-semibold mb-2"
@@ -880,7 +879,7 @@ const AksiDistribusi = () => {
                       theme={selectThemeColors}
                     />
                   </div>
-                </div>
+                </div> */}
               </>
             ) : (
               ""
