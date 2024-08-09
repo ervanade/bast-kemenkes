@@ -351,15 +351,16 @@ const AksiDistribusi = () => {
     setShowModal(true);
   };
 
-  // const handleEditBarang = (index, barang) => {
-  //   const updatedDataBarang = formData.dataBarang.map((item, i) =>
-  //     i === index ? barang : item
-  //   );
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     dataBarang: updatedDataBarang,
-  //   }));
-  // };
+  useEffect(() => {
+    const jumlahDiterimaSum = formData.dataBarang.reduce((acc, curr) => acc + curr.jumlah_diterima, 0);
+    const jumlahDikirimSum = formData.dataBarang.reduce((acc, curr) => acc + curr.jumlah_dikirim, 0);
+  
+    if (jumlahDiterimaSum === jumlahDikirimSum) {
+      setFormData((prev) => ({ ...prev, konfirmasi_daerah: konfirmasiOptions[0] }));
+    } else {
+      setFormData((prev) => ({ ...prev, konfirmasi_daerah: konfirmasiOptions[1] }));
+    }
+  }, [formData.dataBarang]);
 
   const handleDeleteBarang = (e, index) => {
     e.preventDefault();
@@ -635,23 +636,17 @@ const AksiDistribusi = () => {
                         <th scope="col" className="px-6 py-3 text-center">
                           Merk/Tipe
                         </th>
-                        {/* <th scope="col" className="px-6 py-3 text-center">
-                          Nomor Bukti Kepemilikan
-                        </th> */}
                         <th scope="col" className="px-6 py-3 text-center">
                           Satuan
                         </th>
                         <th scope="col" className="px-6 py-3 text-center">
                           Jumlah Dikirim
                         </th>
-                        {/* <th scope="col" className="px-6 py-3 text-center">
-                    Jumlah Diterima
-                  </th> */}
-                        <th scope="col" className="px-6 py-3 text-center">
-                          Harga Satuan
-                        </th>
                         <th scope="col" className="px-6 py-3 text-center">
                           Jumlah Diterima
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-center">
+                          Harga Satuan
                         </th>
                         <th scope="col" className="px-6 py-3 text-center">
                           Keterangan
@@ -680,23 +675,17 @@ const AksiDistribusi = () => {
                           <td className="px-6 py-4 text-center">
                             {barang.merk}
                           </td>
-                          {/* <td className="px-6 py-4 text-center">
-                            {barang.nomor_kepemilikan}
-                          </td> */}
                           <td className="px-6 py-4 text-center">
                             {barang.satuan}
                           </td>
                           <td className="px-6 py-4 text-center">
                             {barang.jumlah_dikirim}
                           </td>
-                          {/* <td className="px-6 py-4 text-center">
-                      {barang.jumlah_diterima}
-                    </td> */}
-                          <td className="px-6 py-4 text-center">
-                            {barang.harga_satuan}
-                          </td>
                           <td className="px-6 py-4 text-center">
                             {barang.jumlah_diterima}
+                          </td>
+                          <td className="px-6 py-4 text-center">
+                            {barang.harga_satuan}
                           </td>
                           <td className="px-6 py-4 text-center">
                             {barang.keterangan}
@@ -731,9 +720,9 @@ const AksiDistribusi = () => {
                                   <button
                                     title="Konfirmasi"
                                     onClick={(e) => handleEditBarang(e, index)}
-                                    className="text-white py-2 w-22 bg-orange-400 rounded-md"
+                                    className={`text-white py-2 w-22 rounded-md ${barang.jumlah_dikirim == barang.jumlah_diterima ? "bg-green-400" : "bg-orange-400"}`}
                                   >
-                                    Konfirmasi
+                                    {barang.jumlah_dikirim == barang.jumlah_diterima ? "Sudah Konfirmasi" : "Konfirmasi"}
                                   </button>
                                 </>
                               ) : (
@@ -916,7 +905,7 @@ const AksiDistribusi = () => {
                       placeholder="Konfirmasi PPK"
                       className="w-full cursor-pointer"
                       theme={selectThemeColors}
-                      isDisabled={!user.role === "3"}
+                      isDisabled
                     />
                   </div>
                 </div>

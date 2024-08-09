@@ -282,6 +282,7 @@ const DataDistribusi = () => {
         name: "Puskesmas",
         selector: (row) => row.nama_puskesmas,
         sortable: true,
+        width: "200px",
       },
       // { name: "Nama Kapus", selector: (row) => row.nama_kapus, sortable: true },
       // {

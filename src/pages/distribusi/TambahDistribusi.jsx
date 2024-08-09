@@ -454,23 +454,17 @@ const TambahDistribusi = () => {
                         <th scope="col" className="px-6 py-3 text-center">
                           Merk/Tipe
                         </th>
-                        {/* <th scope="col" className="px-6 py-3 text-center">
-                          Nomor Bukti Kepemilikan
-                        </th> */}
                         <th scope="col" className="px-6 py-3 text-center">
                           Satuan
                         </th>
                         <th scope="col" className="px-6 py-3 text-center">
                           Jumlah Dikirim
                         </th>
-                        {/* <th scope="col" className="px-6 py-3 text-center">
-                    Jumlah Diterima
-                  </th> */}
-                        <th scope="col" className="px-6 py-3 text-center">
-                          Harga Satuan
-                        </th>
                         <th scope="col" className="px-6 py-3 text-center">
                           Jumlah Diterima
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-center">
+                          Harga Satuan
                         </th>
                         <th scope="col" className="px-6 py-3 text-center">
                           Keterangan
@@ -501,14 +495,11 @@ const TambahDistribusi = () => {
                           <td className="px-6 py-4 text-center">
                             {barang.jumlah_dikirim}
                           </td>
-                          {/* <td className="px-6 py-4 text-center">
-                      {barang.jumlah_diterima}
-                    </td> */}
-                          <td className="px-6 py-4 text-center">
-                            {barang.harga_satuan}
-                          </td>
                           <td className="px-6 py-4 text-center">
                             {barang.jumlah_diterima}
+                          </td>
+                          <td className="px-6 py-4 text-center">
+                            {barang.harga_satuan}
                           </td>
                           <td className="px-6 py-4 text-center">
                             {barang.keterangan}
