@@ -115,6 +115,7 @@ const EditDokumen = () => {
           value: item.id,
         })),
       ]);
+      setGetLoading(false);
     } catch (error) {
       setError(true);
       setDataKota([]);
@@ -156,7 +157,6 @@ const EditDokumen = () => {
           id_provinsi: data.id_provinsi || "",
           id_kabupaten: data.id_kabupaten || "",
         });
-        setGetLoading(false);
       });
     } catch (error) {
       console.log(error);
