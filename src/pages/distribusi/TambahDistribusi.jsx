@@ -408,25 +408,6 @@ const TambahDistribusi = () => {
               required
             />
 
-            {/* <FormInput
-              id="kodepusdatin_baru"
-              value={formData.kodepusdatin_baru}
-              onChange={handleChange}
-              type="text"
-              label="Kode Pusdatin :"
-              required
-              placeholder="Kode Pusdatin"
-            />
-
-            <FormInput
-              id="tahun_lokus"
-              value={formData.tahun_lokus}
-              onChange={handleChange}
-              type="text"
-              required
-              placeholder="Tahun Lokus"
-              label="Tahun Lokus :"
-            /> */}
 
             <FormInput
               id="tanggal_kirim"

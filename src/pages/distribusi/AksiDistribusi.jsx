@@ -42,8 +42,8 @@ const AksiDistribusi = () => {
     internet: "",
     karakteristik_wilayah_kerja: "",
     tahun_lokus: "",
-    konfirmasi_ppk: "",
-    konfirmasi_daerah: "",
+    konfirmasi_ppk: konfirmasiOptions[1],
+    konfirmasi_daerah: konfirmasiOptions[1],
     tanggal_terima: "",
     total_nilai_perolehan: "",
     jenis_bmn: "",
@@ -254,8 +254,8 @@ const AksiDistribusi = () => {
           internet: data.internet || "",
           karakteristik_wilayah_kerja: data.karakteristik_wilayah_kerja || "",
           tahun_lokus: data.tahun_lokus || "",
-          konfirmasi_ppk: "",
-          konfirmasi_daerah: "",
+          konfirmasi_ppk: konfirmasiOptions[1],
+          konfirmasi_daerah: konfirmasiOptions[1],
           tanggal_terima: "",
           total_nilai_perolehan: "",
           jenis_bmn: data.jenis_bmn || "",
@@ -432,6 +432,13 @@ const AksiDistribusi = () => {
     fetchPuskesmas();
   }, []);
 
+  // useEffect(() => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     konfirmasi_daerah: konfirmasiOptions[1],
+  //   }))
+  // }, []);
+
   if (getLoading) {
     return (
       <div className="flex justify-center items-center">
@@ -481,6 +488,7 @@ const AksiDistribusi = () => {
                   onChange={handleDokumenChange}
                   placeholder="Pilih Dokumen"
                   className="w-full"
+                  isDisabled={user.role === "3"}
                   theme={selectThemeColors}
                 />
               </div>
@@ -502,6 +510,7 @@ const AksiDistribusi = () => {
                   onChange={handleKotaChange}
                   placeholder={"Pilih Kab / Kota"}
                   className="w-full"
+                  isDisabled={user.role === "3"}
                   theme={selectThemeColors}
                 />
               </div>
@@ -524,7 +533,7 @@ const AksiDistribusi = () => {
                   placeholder={
                     selectedKota ? "Pilih Kecamatan" : "Pilih Kab / Kota Dahulu"
                   }
-                  isDisabled={!selectedKota}
+                  isDisabled={!selectedKota || user.role === "3"}
                   className="w-full"
                   theme={selectThemeColors}
                 />
@@ -545,7 +554,7 @@ const AksiDistribusi = () => {
                   options={dataPuskesmas}
                   value={selectedPuskesmas}
                   onChange={handlePuskesmasChange}
-                  isDisabled={!selectedKecamatan}
+                  isDisabled={!selectedKecamatan || user.role === "3"}
                   placeholder={
                     selectedKota ? "Pilih Puskesmas" : "Pilih Kecamatan Dahulu"
                   }
@@ -555,173 +564,6 @@ const AksiDistribusi = () => {
               </div>
             </div>
 
-            {/* <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="kodepusdatin_lama"
-                >
-                  Kode Pusdatin Lama :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="kodepusdatin_lama"
-                  value={formData.kodepusdatin_lama}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Kode Pusdatin Lama"
-                />
-              </div>
-            </div> */}
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="kodepusdatin_baru"
-                >
-                  Kode Pusdatin :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="kodepusdatin_baru"
-                  value={formData.kodepusdatin_baru}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Kode Pusdatin"
-                />
-              </div>
-            </div>
-
-            {/* <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="kriteria_lima_sdm"
-                >
-                  Kriteria Lima SDM :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="kriteria_lima_sdm"
-                  value={formData.kriteria_lima_sdm}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Kriteria Lima SDM"
-                />
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="listrik"
-                >
-                  Listrik :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="listrik"
-                  value={formData.listrik}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Listrik"
-                />
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="internet"
-                >
-                  Internet :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="internet"
-                  value={formData.internet}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Internet"
-                />
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="karakteristik_wilayah_kerja"
-                >
-                  Karakteristik Wilayah Kerja :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="karakteristik_wilayah_kerja"
-                  value={formData.karakteristik_wilayah_kerja}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Karakteristik Wilayah Kerja"
-                />
-              </div>
-            </div> */}
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="tahun_lokus"
-                >
-                  Tahun Lokus :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="tahun_lokus"
-                  value={formData.tahun_lokus}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Tahun Lokus"
-                />
-              </div>
-            </div>
 
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
@@ -742,34 +584,11 @@ const AksiDistribusi = () => {
                   onChange={handleChange}
                   type="date"
                   required
+                  disabled={user.role === "3"}
                   placeholder="Tanggal Kirim"
                 />
               </div>
             </div>
-
-            {/* <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="jenis_bmn"
-                >
-                  Jenis BMN :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="jenis_bmn"
-                  value={formData.jenis_bmn}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Jenis BMN"
-                />
-              </div>
-            </div> */}
 
             <div className="my-12">
               <div className="card-header flex flex-col ">
@@ -832,7 +651,7 @@ const AksiDistribusi = () => {
                           Harga Satuan
                         </th>
                         <th scope="col" className="px-6 py-3 text-center">
-                          Jumlah Existing
+                          Jumlah Diterima
                         </th>
                         <th scope="col" className="px-6 py-3 text-center">
                           Keterangan
@@ -877,7 +696,7 @@ const AksiDistribusi = () => {
                             {barang.harga_satuan}
                           </td>
                           <td className="px-6 py-4 text-center">
-                            {barang.jumlah_existing}
+                            {barang.jumlah_diterima}
                           </td>
                           <td className="px-6 py-4 text-center">
                             {barang.keterangan}
@@ -978,15 +797,11 @@ const AksiDistribusi = () => {
                       onChange={(e) =>
                         setFormData((prev) => ({
                           ...prev,
-                          tte: e,
+                          konfirmasi_daerah: e,
                         }))
                       }
-                      defaultValue={
-                        formData?.status_tte === "Sudah"
-                          ? konfirmasiOptions[0]
-                          : konfirmasiOptions[1]
-                      }
-                      placeholder="Konfrimasi PPK"
+                      placeholder="Konfirmasi Daerah"
+                      value={formData.konfirmasi_daerah}
                       className="w-full cursor-pointer"
                       theme={selectThemeColors}
                       isDisabled
@@ -1034,18 +849,14 @@ const AksiDistribusi = () => {
                   <div className="sm:flex-[5_5_0%]">
                     <Select
                       options={konfirmasiOptions}
+                      value={formData.konfirmasi_ppk}
                       onChange={(e) =>
                         setFormData((prev) => ({
                           ...prev,
-                          tte: e,
+                          konfirmasi_ppk: e,
                         }))
                       }
-                      defaultValue={
-                        formData?.status_tte === "Sudah"
-                          ? konfirmasiOptions[0]
-                          : konfirmasiOptions[1]
-                      }
-                      placeholder="Konfrimasi PPK"
+                      placeholder="Konfirmasi PPK"
                       className="w-full cursor-pointer"
                       theme={selectThemeColors}
                     />
@@ -1098,15 +909,11 @@ const AksiDistribusi = () => {
                       onChange={(e) =>
                         setFormData((prev) => ({
                           ...prev,
-                          tte: e,
+                          konfirmasi_daerah: e,
                         }))
                       }
-                      defaultValue={
-                        formData?.status_tte === "Sudah"
-                          ? konfirmasiOptions[0]
-                          : konfirmasiOptions[1]
-                      }
-                      placeholder="Konfrimasi PPK"
+                      value={formData.konfirmasi_daerah}
+                      placeholder="Konfirmasi PPK"
                       className="w-full cursor-pointer"
                       theme={selectThemeColors}
                       isDisabled={!user.role === "3"}
