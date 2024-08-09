@@ -771,6 +771,167 @@ const AksiDistribusi = () => {
               </div>
             </div> */}
 
+            <div className="my-12">
+              <div className="card-header flex flex-col ">
+                <h1 className="mb-8 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-center text-bodydark1">
+                  {user.role === "1"
+                    ? "Form Input Data Barang"
+                    : user.role === "2"
+                    ? "Data Barang"
+                    : user.role === "3"
+                    ? "Konfirmasi Data Barang"
+                    : ""}
+                </h1>
+                {user.role === "1" ? (
+                  <div className="flex justify-end mb-2">
+                    <button
+                      title="Tambah Data Distribusi"
+                      className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
+                      // onClick={handleExport}
+                    >
+                      <button
+                        onClick={(e) => tambahBarangClick(e)}
+                        to="/data-distribusi/add"
+                        className="flex items-center gap-2 px-4 py-2"
+                      >
+                        <FaPlus size={16} />
+                        <span className="hidden sm:block">
+                          Tambah Data Barang
+                        </span>
+                      </button>
+                    </button>
+                  </div>
+                ) : (
+                  ""
+                )}
+              </div>
+              <div className="w-full">
+                <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                  <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <thead className="text-xs text-bodydark2 uppercase bg-[#EBFBFA] dark:bg-gray-700 dark:text-gray-400">
+                      <tr>
+                        <th scope="col" className="px-6 py-3 text-center">
+                          Nama Barang
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-center">
+                          Merk/Tipe
+                        </th>
+                        {/* <th scope="col" className="px-6 py-3 text-center">
+                          Nomor Bukti Kepemilikan
+                        </th> */}
+                        <th scope="col" className="px-6 py-3 text-center">
+                          Satuan
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-center">
+                          Jumlah Dikirim
+                        </th>
+                        {/* <th scope="col" className="px-6 py-3 text-center">
+                    Jumlah Diterima
+                  </th> */}
+                        <th scope="col" className="px-6 py-3 text-center">
+                          Harga Satuan
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-center">
+                          Jumlah Existing
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-center">
+                          Keterangan
+                        </th>
+                        {user.role !== "2" ? (
+                          <th scope="col" className="px-6 py-3 text-center">
+                            Aksi
+                          </th>
+                        ) : (
+                          ""
+                        )}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {formData.dataBarang.map((barang, index) => (
+                        <tr
+                          key={index}
+                          className="bg-white  dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                        >
+                          <th
+                            scope="row"
+                            className="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                          >
+                            {barang.jenis_alkes}
+                          </th>
+                          <td className="px-6 py-4 text-center">
+                            {barang.merk}
+                          </td>
+                          {/* <td className="px-6 py-4 text-center">
+                            {barang.nomor_kepemilikan}
+                          </td> */}
+                          <td className="px-6 py-4 text-center">
+                            {barang.satuan}
+                          </td>
+                          <td className="px-6 py-4 text-center">
+                            {barang.jumlah_dikirim}
+                          </td>
+                          {/* <td className="px-6 py-4 text-center">
+                      {barang.jumlah_diterima}
+                    </td> */}
+                          <td className="px-6 py-4 text-center">
+                            {barang.harga_satuan}
+                          </td>
+                          <td className="px-6 py-4 text-center">
+                            {barang.jumlah_existing}
+                          </td>
+                          <td className="px-6 py-4 text-center">
+                            {barang.keterangan}
+                          </td>
+                          {user.role !== "2" ? (
+                            <td className="px-6 py-4 text-center flex items-center gap-2">
+                              {user.role === "1" ? (
+                                <>
+                                  {" "}
+                                  <button
+                                    title="Edit"
+                                    onClick={(e) => handleEditBarang(e, index)}
+                                    className="text-[#16B3AC] hover:text-cyan-500"
+                                  >
+                                    <FaEdit size={16} />
+                                  </button>
+                                  <button
+                                    onClick={(e) =>
+                                      handleDeleteBarang(e, index)
+                                    }
+                                    title="Delete"
+                                    className="text-red-500 hover:text-red-700"
+                                  >
+                                    <FaTrash size={16} />
+                                  </button>
+                                </>
+                              ) : user.role === "2" ? (
+                                ""
+                              ) : user.role === "3" ? (
+                                <>
+                                  {" "}
+                                  <button
+                                    title="Konfirmasi"
+                                    onClick={(e) => handleEditBarang(e, index)}
+                                    className="text-white py-2 w-22 bg-orange-400 rounded-md"
+                                  >
+                                    Konfirmasi
+                                  </button>
+                                </>
+                              ) : (
+                                ""
+                              )}
+                            </td>
+                          ) : (
+                            ""
+                          )}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
             {user.role === "2" ? (
               <>
                 <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
@@ -956,127 +1117,6 @@ const AksiDistribusi = () => {
             ) : (
               ""
             )}
-
-            <div className="mt-12">
-              <div className="card-header flex flex-col ">
-                <h1 className="mb-8 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-center text-bodydark1">
-                  Form Input Data Barang
-                </h1>
-                <div className="flex justify-end mb-2">
-                  <button
-                    title="Tambah Data Distribusi"
-                    className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
-                    // onClick={handleExport}
-                  >
-                    <button
-                      onClick={(e) => tambahBarangClick(e)}
-                      to="/data-distribusi/add"
-                      className="flex items-center gap-2 px-4 py-2"
-                    >
-                      <FaPlus size={16} />
-                      <span className="hidden sm:block">
-                        Tambah Data Barang
-                      </span>
-                    </button>
-                  </button>
-                </div>
-              </div>
-              <div className="w-full">
-                <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                  <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                    <thead className="text-xs text-bodydark2 uppercase bg-[#EBFBFA] dark:bg-gray-700 dark:text-gray-400">
-                      <tr>
-                        <th scope="col" className="px-6 py-3 text-center">
-                          Nama Barang
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-center">
-                          Merk/Tipe
-                        </th>
-                        {/* <th scope="col" className="px-6 py-3 text-center">
-                          Nomor Bukti Kepemilikan
-                        </th> */}
-                        <th scope="col" className="px-6 py-3 text-center">
-                          Satuan
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-center">
-                          Jumlah Dikirim
-                        </th>
-                        {/* <th scope="col" className="px-6 py-3 text-center">
-                    Jumlah Diterima
-                  </th> */}
-                        <th scope="col" className="px-6 py-3 text-center">
-                          Harga Satuan
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-center">
-                          Jumlah Existing
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-center">
-                          Keterangan
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-center">
-                          Aksi
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {formData.dataBarang.map((barang, index) => (
-                        <tr
-                          key={index}
-                          className="bg-white  dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                        >
-                          <th
-                            scope="row"
-                            className="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                          >
-                            {barang.jenis_alkes}
-                          </th>
-                          <td className="px-6 py-4 text-center">
-                            {barang.merk}
-                          </td>
-                          {/* <td className="px-6 py-4 text-center">
-                            {barang.nomor_kepemilikan}
-                          </td> */}
-                          <td className="px-6 py-4 text-center">
-                            {barang.satuan}
-                          </td>
-                          <td className="px-6 py-4 text-center">
-                            {barang.jumlah_dikirim}
-                          </td>
-                          {/* <td className="px-6 py-4 text-center">
-                      {barang.jumlah_diterima}
-                    </td> */}
-                          <td className="px-6 py-4 text-center">
-                            {barang.harga_satuan}
-                          </td>
-                          <td className="px-6 py-4 text-center">
-                            {barang.jumlah_existing}
-                          </td>
-                          <td className="px-6 py-4 text-center">
-                            {barang.keterangan}
-                          </td>
-                          <td className="px-6 py-4 text-center flex items-center gap-2">
-                            <button
-                              title="Edit"
-                              onClick={(e) => handleEditBarang(e, index)}
-                              className="text-[#16B3AC] hover:text-cyan-500"
-                            >
-                              <FaEdit size={16} />
-                            </button>
-                            <button
-                              onClick={(e) => handleDeleteBarang(e, index)}
-                              title="Delete"
-                              className="text-red-500 hover:text-red-700"
-                            >
-                              <FaTrash size={16} />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
 
             <div className="flex items-center justify-center mt-6 sm:mt-12 sm:gap-8">
               <div className="div sm:flex-[2_2_0%]"></div>

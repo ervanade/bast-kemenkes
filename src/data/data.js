@@ -267,10 +267,10 @@ export const roleOptions = [
         "label": "User",
         "value": "3"
     },
-    {
-        "label": "Pimpinan SATKER",
-        "value": "4"
-    }
+    // {
+    //     "label": "Pimpinan SATKER",
+    //     "value": "4"
+    // }
 ]
 export const dataPuskesmas = [
     {
