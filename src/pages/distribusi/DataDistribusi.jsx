@@ -161,6 +161,35 @@ const DataDistribusi = () => {
     }
   };
 
+  const handleSearchClick = async () => {
+    setLoading(true);
+    setError(false);
+
+    try {
+      const response = await axios({
+        method: 'post',
+        url: `${import.meta.env.VITE_APP_API_URL}/api/search`,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user?.token}`,
+        },
+        data: {
+          id_provinsi: selectedProvinsi?.value.toString() || '',
+          id_kabupaten: selectedKota?.value.toString() || '',
+          id_kecamatan: selectedKecamatan?.value.toString() || '',
+        },
+      });
+
+      setFilteredData(response.data.data);
+    } catch (error) {
+      setError(true);
+      setFilteredData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+  console.log(filteredData)
+
   useEffect(() => {
     fetchDistribusiData();
     fetchProvinsi();
@@ -264,18 +293,20 @@ const DataDistribusi = () => {
         name: "Jumlah Barang Dikirim",
         selector: (row) => row.jumlah_barang,
         sortable: true,
+        width: "200px",
       },
       {
         name: "Jumlah Barang Diterima",
         selector: (row) => row.jumlah_barang,
         sortable: true,
+        width: "200px",
       },
-      {
-        name: "Status TTE",
-        selector: (row) => row.status_tte,
-        sortable: true,
-        width: "110px",
-      },
+      // {
+      //   name: "Status TTE",
+      //   selector: (row) => row.status_tte,
+      //   sortable: true,
+      //   width: "110px",
+      // },
       // {
       //   name: "Keterangan PPK Kemenkes",
       //   selector: (row) => row.keterangan_ppk,
@@ -459,7 +490,7 @@ const DataDistribusi = () => {
                     primary: "grey",
                   },
                 })}
-                isDisabled={user.role === "3" || !selectedKota}
+                isDisabled={!selectedKota}
                 placeholder={
                   selectedKota ? "Pilih Kecamatan" : "Pilih Kab / Kota Dahulu"
                 }
@@ -467,11 +498,13 @@ const DataDistribusi = () => {
             </div>
           </div>
           <button
-            onClick={handleSearch}
+          onClick={handleSearchClick}
+            disabled={loading}
+
             className="mt-2 flex items-center gap-2 cursor-pointer text-base text-white px-5 py-2 bg-primary rounded-md tracking-tight"
           >
             <FaSearch />
-            <span className="lg:hidden xl:flex"> Cari Data</span>
+            <span className="lg:hidden xl:flex"> {loading ? "Loading" : "Cari Data"}</span>
           </button>
         </div>
       </div>

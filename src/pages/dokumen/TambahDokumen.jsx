@@ -40,8 +40,12 @@ const TambahDokumen = () => {
   const user = useSelector((a) => a.auth.user);
 
   const [dataProvinsi, setDataProvinsi] = useState([]);
+  const [dataKota, setDataKota] = useState([]);
+  const [dataKecamatan, setDataKecamatan] = useState([]);
 
   const [selectedProvinsi, setSelectedProvinsi] = useState(null);
+  const [selectedKota, setSelectedKota] = useState(null);
+  const [selectedKecamatan, setSelectedKecamatan] = useState(null);
 
   const [listKota, setListKota] = useState([]);
   const [listKecamatan, setListKecamatan] = useState([]);
@@ -68,6 +72,51 @@ const TambahDokumen = () => {
     } catch (error) {
       setError(true);
       setDataProvinsi([]);
+    }
+  };
+
+  const fetchKota = async (idProvinsi) => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${
+          import.meta.env.VITE_APP_API_URL
+        }/api/getkabupaten/${idProvinsi}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataKota([
+        ...response.data.data.map((item) => ({
+          label: item.name,
+          value: item.id,
+        })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setDataKota([]);
+    }
+  };
+  const fetchKecamatan = async (idKota) => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/getkecamatan/${idKota}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataKecamatan([
+        ...response.data.data.map((item) => ({
+          label: item.name,
+          value: item.id,
+        })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setDataKecamatan([]);
     }
   };
 
@@ -133,9 +182,37 @@ const TambahDokumen = () => {
 
   const handleProvinsiChange = (selectedOption) => {
     setSelectedProvinsi(selectedOption);
+    setSelectedKota(null);
+    setSelectedKecamatan(null);
+    setDataKota([]);
+    setDataKecamatan([]);
     setFormData((prev) => ({
       ...prev,
-      id_provinsi: selectedOption ? selectedOption.value.toString() : "",
+      provinsi: selectedOption ? selectedOption.value : "",
+    }));
+    if (selectedOption) {
+      fetchKota(selectedOption.value);
+    }
+  };
+
+  const handleKotaChange = (selectedOption) => {
+    setSelectedKota(selectedOption);
+    setSelectedKecamatan(null);
+    setDataKecamatan([]);
+    setFormData((prev) => ({
+      ...prev,
+      kabupaten: selectedOption ? selectedOption.value : "",
+    }));
+    if (selectedOption) {
+      fetchKecamatan(selectedOption.value);
+    }
+  };
+
+  const handleKecamatanChange = (selectedOption) => {
+    setSelectedKecamatan(selectedOption);
+    setFormData((prev) => ({
+      ...prev,
+      kecamatan: selectedOption ? selectedOption.value : "",
     }));
   };
 
@@ -190,6 +267,34 @@ const TambahDokumen = () => {
               onChange={handleProvinsiChange}
               placeholder="Pilih Provinsi"
               label="Provinsi :"
+              required
+            />
+
+            <FormInput
+              select={true}
+              id="kota"
+              options={dataKota}
+              value={selectedKota}
+              isDisabled={!selectedProvinsi}
+              onChange={handleKotaChange}
+              placeholder={
+                selectedProvinsi ? "Pilih Kab / Kota" : "Pilih Provinsi Dahulu"
+              }
+              label="Kab / Kota :"
+              required
+            />
+
+            <FormInput
+              select={true}
+              id="kecamatan"
+              options={dataKecamatan}
+              value={selectedKecamatan}
+              onChange={handleKecamatanChange}
+              placeholder={
+                selectedKota ? "Pilih Kecamatan" : "Pilih Kab / Kota Dahulu"
+              }
+              isDisabled={!selectedKota}
+              label="Kecamatan :"
               required
             />
 
@@ -289,29 +394,6 @@ const TambahDokumen = () => {
               </div>
             </div>
 
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="jenis_bmn"
-                >
-                  Jenis BMN :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="jenis_bmn"
-                  value={formData.jenis_bmn}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Jenis BMN"
-                />
-              </div>
-            </div>
 
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">

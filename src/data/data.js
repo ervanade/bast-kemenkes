@@ -254,6 +254,40 @@ export const SelectOptions = [
         "value": "0"
     }
 ]
+
+export const ProgramOptions = [
+    {
+        "label": "SOPHI",
+        "value": "0"
+    },
+    {
+        "label": "INPULS",
+        "value": "1"
+    }
+]
+
+export const batchOptions = [
+    {
+        "label": "Batch 1",
+        "value": "1"
+    },
+    {
+        "label": "Batch 2",
+        "value": "2"
+    },
+    {
+        "label": "Batch 3",
+        "value": "3"
+    },
+    {
+        "label": "Batch 4",
+        "value": "4"
+    },
+    {
+        "label": "Batch 5",
+        "value": "5"
+    },
+]
 export const roleOptions = [
     {
         "label": "Admin",

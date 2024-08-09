@@ -14,7 +14,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
     jumlah_dikirim: "",
     jumlah_diterima: "",
     nomor_kepemilikan: "",
-    jumlah_existing: "",
+    jumlah_diterima: "",
     merk: "",
     satuan: "",
     harga_satuan: "",
@@ -54,7 +54,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
         jumlah_dikirim: "",
         jumlah_diterima: "",
         nomor_kepemilikan: "",
-        jumlah_existing: "",
+        jumlah_diterima: "0",
         merk: "",
         satuan: "",
         harga_satuan: "",
@@ -67,7 +67,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
     if (
       !barang.id_barang ||
       !barang.jumlah_dikirim ||
-      !barang.jumlah_existing
+      !barang.jumlah_diterima
     ) {
       Swal.fire("Error", "Ada Form yang belum di lengkapi", "error");
       return;
@@ -79,7 +79,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
       jumlah_dikirim: "",
       jumlah_diterima: "",
       nomor_kepemilikan: "",
-      jumlah_existing: "",
+      jumlah_diterima: "0",
       merk: "",
       satuan: "",
       harga_satuan: "",
@@ -177,7 +177,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                 </div>
               </div>
 
-              <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
+              {/* <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
                 <div className="">
                   <label
                     className=" block text-[#728294] text-base font-semibold mb-2"
@@ -198,73 +198,44 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                     placeholder="Merk / Type"
                   />
                 </div>
-              </div>
-
-              {/* <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
-                <div className="">
-                  <label
-                    className=" block text-[#728294] text-base font-semibold mb-2"
-                    htmlFor="email"
-                  >
-                    Nomor Bukti Kepemilikan Barang :
-                  </label>
-                </div>
-                <div className="">
-                  <input
-                    className={` bg-white disabled:bg-[#F2F2F2] appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                    "border-red-500" 
-                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                    id="jumlah_barang_dikirim"
-                    type="text"
-                    required
-                    value={barang.nomor_kepemilikan}
-                    onChange={(e) =>
-                      setBarang((prev) => ({
-                        ...prev,
-                        nomor_kepemilikan: e.target.value,
-                      }))
-                    }
-                    placeholder="Nomor Bukti Kepemilikan Barang"
-                  />
-                </div>
               </div> */}
-
-              <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
+              {
+                user.role === "1" ? 
+                  <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
+                  <div className="">
+                    <label
+                      className=" block text-[#728294] text-base font-semibold mb-2"
+                      htmlFor="email"
+                    >
+                      Jumlah Barang yang dikirim :
+                    </label>
+                  </div>
+                  <div className="">
+                    <input
+                      className={` bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                      "border-red-500" 
+                   rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                      id="jumlah_barang_dikirim"
+                      type="number"
+                      required
+                      value={barang.jumlah_dikirim}
+                      onChange={(e) =>
+                        setBarang((prev) => ({
+                          ...prev,
+                          jumlah_dikirim: e.target.value,
+                        }))
+                      }
+                      placeholder="Jumlah Barang yang dikirim"
+                    />
+                  </div>
+                </div>
+                : user.role === "3" ?   <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
                 <div className="">
                   <label
                     className=" block text-[#728294] text-base font-semibold mb-2"
                     htmlFor="email"
                   >
-                    Jumlah Barang yang dikirim :
-                  </label>
-                </div>
-                <div className="">
-                  <input
-                    className={` bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                    "border-red-500" 
-                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                    id="jumlah_barang_dikirim"
-                    type="number"
-                    required
-                    value={barang.jumlah_dikirim}
-                    onChange={(e) =>
-                      setBarang((prev) => ({
-                        ...prev,
-                        jumlah_dikirim: e.target.value,
-                      }))
-                    }
-                    placeholder="Jumlah Barang yang dikirim"
-                  />
-                </div>
-              </div>
-
-              <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
-                <div className="">
-                  <label
-                    className=" block text-[#728294] text-base font-semibold mb-2"
-                    htmlFor="email"
-                  >
-                    Jumlah Existing :
+                    Jumlah Barang yang Diterima :
                   </label>
                 </div>
                 <div className="">
@@ -272,37 +243,9 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                     className={` bg-white disabled:bg-[#F2F2F2] appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                     "border-red-500" 
                  rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                    id="jumlah_existing"
+                    id="jumlah_diterima"
                     type="text"
                     required
-                    value={barang.jumlah_existing}
-                    onChange={(e) =>
-                      setBarang((prev) => ({
-                        ...prev,
-                        jumlah_existing: e.target.value,
-                      }))
-                    }
-                    placeholder="Jumlah Existing"
-                  />
-                </div>
-              </div>
-
-              {/* <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
-                <div className="">
-                  <label
-                    className=" block text-[#728294] text-base font-semibold mb-2"
-                    htmlFor="email"
-                  >
-                    Jumlah Barang yang diterima :
-                  </label>
-                </div>
-                <div className="">
-                  <input
-                    className={` bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                    "border-red-500" 
-                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                    id="jumlah_barang_diterima"
-                    type="number"
                     value={barang.jumlah_diterima}
                     onChange={(e) =>
                       setBarang((prev) => ({
@@ -310,10 +253,17 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                         jumlah_diterima: e.target.value,
                       }))
                     }
-                    placeholder="Jumlah Barang yang diterima"
+                    placeholder="Jumlah Barang yang Diterima"
                   />
                 </div>
-              </div> */}
+              </div> : ""
+                
+              }
+
+           
+              
+            
+
             </div>
             <div className="flex items-center justify-end p-6 border-t gap-2 border-solid border-black/20 rounded-b">
               <button

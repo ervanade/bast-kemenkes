@@ -6,15 +6,31 @@ import UserDefault from "../../assets/user/user-default.png";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../store/authSlice";
 import { returnRole } from "../../data/utils";
+import axios from "axios";
 
 const DropdownUser = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((a) => a.auth.user);
+  const fetchLogout = async () => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/logout`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      dispatch(logoutUser());
+    navigate("/login");
+    } catch (error) {
+      console.log(error)
+    }
+  };
   const handleLogout = (e) => {
     e.preventDefault();
-    dispatch(logoutUser());
-    navigate("/login");
+    fetchLogout()
   };
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -107,7 +123,7 @@ const DropdownUser = () => {
                 My Contacts
               </Link>
             </li> */}
-            <li>
+            {/* <li>
               <Link
                 to="/settings"
                 className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
@@ -131,7 +147,7 @@ const DropdownUser = () => {
                 </svg>
                 Account Settings
               </Link>
-            </li>
+            </li> */}
           </ul>
           <button
             onClick={handleLogout}

@@ -120,7 +120,7 @@ const TambahDistribusi = () => {
         ...prev,
         id_kecamatan: selectedOption.value.toString(),
       }));
-      fetchPuskesmas();
+      fetchPuskesmas(selectedOption.value);
     }
   };
   const handlePuskesmasChange = (selectedOption) => {
@@ -192,11 +192,11 @@ const TambahDistribusi = () => {
     }
   };
 
-  const fetchPuskesmas = async (idKota) => {
+  const fetchPuskesmas = async (idKecamatan) => {
     try {
       const response = await axios({
         method: "get",
-        url: `${import.meta.env.VITE_APP_API_URL}/api/puskesmas`,
+        url: `${import.meta.env.VITE_APP_API_URL}/api/getpuskesmas/${idKecamatan}`,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user?.token}`,
@@ -400,15 +400,15 @@ const TambahDistribusi = () => {
               options={dataPuskesmas}
               value={selectedPuskesmas}
               onChange={handlePuskesmasChange}
-              isDisabled={!selectedKecamatan}
+              isDisabled={!selectedKecamatan || dataPuskesmas.length < 1}
               placeholder={
-                selectedKota ? "Pilih Puskesmas" : "Pilih Kecamatan Dahulu"
+                selectedKecamatan && dataPuskesmas.length > 0 ? "Pilih Puskesmas" : selectedKecamatan && dataPuskesmas.length < 1 ? "Data Puskesmas Tidak Ada " :"Pilih Kecamatan Dahulu"
               }
               label="Puskesmas :"
               required
             />
 
-            <FormInput
+            {/* <FormInput
               id="kodepusdatin_baru"
               value={formData.kodepusdatin_baru}
               onChange={handleChange}
@@ -426,7 +426,7 @@ const TambahDistribusi = () => {
               required
               placeholder="Tahun Lokus"
               label="Tahun Lokus :"
-            />
+            /> */}
 
             <FormInput
               id="tanggal_kirim"
@@ -489,7 +489,7 @@ const TambahDistribusi = () => {
                           Harga Satuan
                         </th>
                         <th scope="col" className="px-6 py-3 text-center">
-                          Jumlah Existing
+                          Jumlah Diterima
                         </th>
                         <th scope="col" className="px-6 py-3 text-center">
                           Keterangan
@@ -527,7 +527,7 @@ const TambahDistribusi = () => {
                             {barang.harga_satuan}
                           </td>
                           <td className="px-6 py-4 text-center">
-                            {barang.jumlah_existing}
+                            {barang.jumlah_diterima}
                           </td>
                           <td className="px-6 py-4 text-center">
                             {barang.keterangan}

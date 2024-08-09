@@ -131,19 +131,19 @@ const DataPuskesmas = () => {
       },
       {
         name: "Provinsi",
-        selector: (row) => row.id_provinsi,
+        selector: (row) => row.provinsi,
         sortable: true,
         // width: "100px",
       },
       {
         name: "Kabupaten",
-        selector: (row) => row.id_kabupaten,
+        selector: (row) => row.kabupaten,
         sortable: true,
         // width: "100px",
       },
       {
         name: "Kecamatan",
-        selector: (row) => row.id_kecamatan,
+        selector: (row) => row.kecamatan,
         sortable: true,
         // width: "100px",
       },

@@ -9,17 +9,28 @@ import { roleOptions } from "../data/data";
 import axios from "axios";
 import ModalProfile from "../components/Modal/ModalProfile";
 import { selectThemeColors } from "../data/utils";
+import { CgSpinner } from "react-icons/cg";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const [signature, setSignature] = useState(null);
   const [file, setFile] = useState(null);
+  const [getLoading, setGetLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [activeTab, setActiveTab] = useState("tab2");
+  const [loading, setLoading] = useState(false);
+
+  const [previewImages, setPreviewImages] = useState({
+    profile: null,
+})
 
   const [selectedProvinsi, setSelectedProvinsi] = useState(null);
   const [selectedKecamatan, setSelectedKecamatan] = useState(null);
   const [listProvinsi, setListProvinsi] = useState([]);
   const [listKecamatan, setListKecamatan] = useState([]);
+  const [listKabupaten, setListKabupaten] = useState([]);
+  const navigate = useNavigate();
 
   const handleOpenPopup = () => {
     setShowPopup(true);
@@ -72,10 +83,14 @@ const Profile = () => {
     kabupaten: "",
     kecamatan: "",
     nip: "",
+    profile: null,
+    ttd: null,
+
   });
   const user = useSelector((a) => a.auth.user);
 
   const fetchProvinsiData = async () => {
+
     try {
       const response = await axios({
         method: "get",
@@ -85,12 +100,54 @@ const Profile = () => {
           Authorization: `Bearer ${user?.token}`,
         },
       });
-      setListProvinsi(response.data.data);
+      setListProvinsi(
+        response.data.data
+      );
     } catch (error) {
       console.log(error);
     }
   };
-  const fetchBarangData = async () => {
+  const fetchKota = async () => {
+    setGetLoading(true);
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/kabupaten`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setListKabupaten(
+        response.data.data
+      );
+    } catch (error) {
+      setError(true);
+      setListKabupaten([]);
+    }
+  };
+
+  const fetchKecamatan = async () => {
+    setGetLoading(true);
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/kecamatan`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setListKecamatan(
+        response.data.data
+      );
+    } catch (error) {
+      setError(true);
+      setListKecamatan([]);
+    }
+  };
+  const fetchUserData = async () => {
+    setGetLoading(true)
     try {
       // eslint-disable-next-line
       const responseUser = await axios({
@@ -111,38 +168,81 @@ const Profile = () => {
           no_telp: "",
           role: data.role,
           email: data.email,
+          profile: data.profile,
           provinsi: data.provinsi,
           kabupaten: data.kabupaten,
           kecamatan: data.kecamatan,
           username: data.username,
+          ttd: data.ttd
         });
       });
+      setGetLoading(false)
     } catch (error) {
       console.log(error);
     }
   };
   useEffect(() => {
-    fetchBarangData();
+    fetchUserData();
     fetchProvinsiData();
+    fetchKota()
+    fetchKecamatan()
   }, []);
 
-  const handleSelectChange = (selectedOption, actionMeta) => {
-    const { name } = actionMeta;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: selectedOption ? selectedOption.value : "",
-    }));
-
-    switch (name) {
-      case "provinsi":
-        setSelectedProvinsi(selectedOption);
-        break;
-      case "kecamatan":
-        setSelectedKecamatan(selectedOption);
-        break;
-      default:
-        break;
+  const editProfile = async () => {
+    if (!file && !signature) {
+      Swal.fire("Error", "TTE Masih Kosong", "error");
+      return;
     }
+    const formDataToSend = new FormData();
+    formDataToSend.append("name", formData.nama);
+    formDataToSend.append("username", formData.username);
+    formDataToSend.append("nip", formData.nip);
+    formDataToSend.append("profile", formData.profile);
+    if (file) {
+      formDataToSend.append("ttd", file);
+    } else if (signature) {
+      const response = await fetch(signature);
+      const blob = await response.blob();
+      formDataToSend.append(
+        "ttd",
+        new File([blob], `tte-${user?.nip || ""}.png`, { type: "image/png" })
+      );
+    }
+    setLoading(true);
+    await axios({
+      method: "post",
+      url: `${import.meta.env.VITE_APP_API_URL}/api/updateme`,
+      headers: {
+        Authorization: `Bearer ${user?.token}`,
+      },
+      data: formDataToSend,
+    })
+      .then(function (response) {
+        fetchUserData()
+        Swal.fire("Data Berhasil di Update!", "", "success");
+        navigate("/");
+        setLoading(true);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log(error);
+      });
+  };
+
+  const handleSimpan = async (e) => {
+    e.preventDefault();
+    Swal.fire({
+      title: "Perhatian",
+      text: "Data sudah sesuai, Simpan Data ini?",
+      showCancelButton: true,
+      confirmButtonColor: "#16B3AC",
+      confirmButtonText: "Ya, Simpan Data",
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        editProfile();
+      }
+    });
   };
 
   useEffect(() => {
@@ -170,6 +270,45 @@ const Profile = () => {
     }
   }, [formData, listProvinsi, listKecamatan]);
 
+  const handleChangeProfile = (event) => {
+    const { id, value, files } = event.target
+        const file = files[0]
+        if (file?.size > 2 * 1024 * 1024) {
+            Swal.fire(
+                'Error',
+                'File size should not exceed 2 MB',
+                'error'
+            )
+            return
+        }
+         const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg']
+if (!allowedTypes.includes(file?.type)) {
+  Swal.fire(
+    'Error',
+    'Only PNG, JPG, and JPEG files are allowed',
+    'error'
+  )
+  return
+}
+        const reader = new FileReader()
+        reader.onloadend = () => {
+            setPreviewImages(prev => ({ ...prev, profile: reader.result }))
+        }
+        reader.readAsDataURL(file)
+        setFormData((prev) => ({ ...prev, profile: file }))
+      
+}
+console.log(formData)
+
+  if (getLoading) {
+    return (
+      <div className="flex justify-center items-center">
+        <CgSpinner className="animate-spin inline-block w-8 h-8 text-teal-400" />
+        <span className="ml-2">Loading...</span>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto max-w-270">
       <Breadcrumb pageName="Settings" />
@@ -183,7 +322,7 @@ const Profile = () => {
               </h3>
             </div>
             <div className="p-7">
-              <form action="#">
+              <form onSubmit={handleSimpan}>
                 <div className="mb-5.5">
                   <div className="mb-4 flex items-center gap-3">
                     <div className="h-14 w-14 rounded-full">
@@ -202,6 +341,7 @@ const Profile = () => {
                     <input
                       type="file"
                       accept="image/*"
+                      onChange={handleChangeProfile}
                       className="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
                     />
                     <div className="flex flex-col items-center justify-center space-y-3">
@@ -213,6 +353,7 @@ const Profile = () => {
                       <p className="mt-1.5">SVG, PNG, JPG</p>
                       <p>(max: 1MB size:800 X 800px)</p>
                     </div>
+                    {formData.profile && previewImages.profile && <img src={previewImages.profile} alt="Profile Preview" className="mt-2 h-[100px] mx-auto" />}
                   </div>
                 </div>
 
@@ -255,6 +396,7 @@ const Profile = () => {
                       name="emailAddress"
                       id="emailAddress"
                       placeholder="Email"
+                      disabled
                       value={formData.email}
                       onChange={(e) =>
                         setFormData((prev) => ({
@@ -377,18 +519,31 @@ const Profile = () => {
                   >
                     Provinsi
                   </label>
-                  <Select
-                    name="provinsi"
-                    options={listProvinsi.map((item) => ({
-                      label: item.name,
-                      value: item.id,
-                    }))}
-                    value={selectedProvinsi}
-                    onChange={handleSelectChange}
-                    placeholder="Pilih Provinsi"
-                    className="w-full"
-                    theme={selectThemeColors}
-                  />
+                  {
+                    listProvinsi?.length > 0 && formData?.provinsi && listProvinsi?.find((x) => x.id == formData?.provinsi)?.name
+                  }
+                </div>
+                <div className="mb-5.5">
+                  <label
+                    className="mb-3 block text-sm font-medium text-black dark:text-white"
+                    htmlFor="Role"
+                  >
+                    Kab / Kota
+                  </label>
+                  {
+                    listKabupaten?.length > 0 && formData?.kabupaten && listKabupaten?.find((x) => x.id == formData?.kabupaten)?.name
+                  }
+                </div>
+                <div className="mb-5.5">
+                  <label
+                    className="mb-3 block text-sm font-medium text-black dark:text-white"
+                    htmlFor="Role"
+                  >
+                    Kecamatan
+                  </label>
+                  {
+                    listKecamatan?.length > 0 && formData?.kecamatan && listKecamatan?.find((x) => x.id == formData?.kecamatan)?.name
+                  }
                 </div>
 
                 <div className="flex justify-center gap-4.5">
