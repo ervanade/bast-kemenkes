@@ -491,8 +491,8 @@ const EditDokumen = () => {
               options={dataUser}
               value={selectedUser}
               onChange={handleUserChange}
-              placeholder={"Pilih Email Kepala Unit Pemberi"}
-              label="Kepala Unit Pemberi :"
+              placeholder={"Pilih Email Pihak Kesatu"}
+              label="Pihak Kesatu :"
               required
             />
 
