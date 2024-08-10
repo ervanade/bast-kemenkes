@@ -101,7 +101,7 @@ const ModalProfile = ({
                     >
                       <div
                         id="FileUpload"
-                        className="relative mb-2 block w-full cursor-pointer appearance-none rounded border border-dashed border-primary bg-gray py-4 px-4 dark:bg-meta-4 sm:py-7.5"
+                        className="relative my-2 block w-full cursor-pointer appearance-none rounded border border-dashed border-primary bg-gray py-4 px-4 dark:bg-meta-4 sm:py-4.5"
                       >
                         <input
                           type="file"
