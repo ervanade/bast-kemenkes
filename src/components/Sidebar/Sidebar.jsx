@@ -118,7 +118,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
               </li>
 
               {/* <!-- Menu Item Calendar --> */}
-              {user.role === "2" || user.role === "1" ? (
+              {user.role === "2" || user.role === "1" || user.role === "3" ? (
                 <li>
                   <NavLink
                     to="/dokumen"

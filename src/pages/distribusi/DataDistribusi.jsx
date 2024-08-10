@@ -8,7 +8,7 @@ import {
   dataKota,
   dataProvinsi,
 } from "../../data/data";
-import { selectThemeColors } from "../../data/utils";
+import { encryptId, selectThemeColors } from "../../data/utils";
 import {
   FaCheck,
   FaEdit,
@@ -557,7 +557,9 @@ const DataDistribusi = () => {
           onClick={handleExport}
         >
           <Link
-            to="/data-distribusi/preview-dokumen/1"
+            to={`/dokumen/preview-dokumen/${encodeURIComponent(
+              encryptId("1")
+            )}`}
             className="flex items-center gap-2 px-4 py-2"
           >
             <FaEye size={16} />
@@ -637,7 +639,9 @@ const DataDistribusi = () => {
                 onClick={handleExport}
               >
                 <Link
-                  to="/data-distribusi/preview-dokumen/1"
+                  to={`/dokumen/preview-dokumen/${encodeURIComponent(
+                    encryptId("1")
+                  )}`}
                   className="flex items-center gap-2 px-4 py-2"
                 >
                   <FaCheck size={16} />
