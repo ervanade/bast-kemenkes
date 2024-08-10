@@ -34,7 +34,9 @@ const Dokumen = () => {
   const [filteredData, setFilteredData] = useState([]);
 
   const [data, setData] = useState([]);
+  const [getLoading, setGetLoading] = useState(false);
 
+  const [dataUser, setDataUser] = useState([]);
   const [dataProvinsi, setDataProvinsi] = useState([]);
   const [dataKota, setDataKota] = useState([]);
   const [dataKecamatan, setDataKecamatan] = useState([]);
@@ -68,6 +70,29 @@ const Dokumen = () => {
   useEffect(() => {
     fetchDokumenData();
   }, []);
+
+  const fetchUserData = async () => {
+    setGetLoading(true);
+    try {
+      // eslint-disable-next-line
+      const responseUser = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/me`,
+        headers: {
+          "Content-Type": "application/json",
+          //eslint-disable-next-line
+          Authorization: `Bearer ${user?.token}`,
+        },
+      }).then(function (response) {
+        // handle success
+        // console.log(response)
+        setDataUser(response.data);
+        setGetLoading(false);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const fetchProvinsi = async () => {
     try {
@@ -139,6 +164,7 @@ const Dokumen = () => {
   };
   useEffect(() => {
     fetchProvinsi();
+    fetchUserData();
   }, []);
 
   const handleProvinsiChange = (selectedOption) => {
@@ -250,6 +276,45 @@ const Dokumen = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (user.role === "3" && dataUser.provinsi && dataProvinsi.length > 0) {
+      const initialOption = dataProvinsi?.find(
+        (prov) => prov.value == dataUser.provinsi
+      );
+      if (initialOption) {
+        setSelectedProvinsi({
+          label: initialOption.label,
+          value: initialOption.value,
+        });
+      }
+    }
+    if (user.role === "3" && dataUser.kabupaten && dataKota.length > 0) {
+      const initialOption = dataKota?.find(
+        (prov) => prov.value == dataUser.kabupaten
+      );
+      if (initialOption) {
+        setSelectedKota({
+          label: initialOption.label,
+          value: initialOption.value,
+        });
+      }
+    }
+  }, [dataKota, dataProvinsi]);
+  useEffect(() => {
+    if (selectedProvinsi) {
+      fetchKota(selectedProvinsi.value);
+    }
+    if (selectedKota) {
+      fetchKecamatan(selectedKota.value);
+    }
+  }, [selectedProvinsi, selectedKota]);
+
+  useEffect(() => {
+    if (user.role === "3") {
+      fetchUserData();
+    }
+  }, []);
 
   const columns = useMemo(
     () => [
@@ -469,6 +534,14 @@ const Dokumen = () => {
   const handleExport = () => {
     // Implementasi untuk mengekspor data (misalnya ke CSV)
   };
+  if (getLoading) {
+    return (
+      <div className="flex justify-center items-center">
+        <CgSpinner className="animate-spin inline-block w-8 h-8 text-teal-400" />
+        <span className="ml-2">Loading...</span>
+      </div>
+    );
+  }
 
   return (
     <div>
