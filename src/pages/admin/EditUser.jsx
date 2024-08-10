@@ -164,6 +164,15 @@ const EditUser = () => {
       setLoading(false);
       return;
     }
+    if (formData.role === "3" && (!formData.provinsi || !formData.kabupaten)) {
+      Swal.fire(
+        "Error",
+        "Jika User Daerah Harap Masukan Provinsi & Kabupaten",
+        "error"
+      );
+      setLoading(false);
+      return;
+    }
     try {
       await axios({
         method: "put",
@@ -186,6 +195,11 @@ const EditUser = () => {
     } catch (error) {
       setLoading(false);
       console.log(error);
+      if (error.response.status === 500) {
+        Swal.fire("Error", "Email Telah Digunakan", "error");
+        setLoading(false);
+        return;
+      }
     }
   };
   const handleSimpan = async (e) => {
