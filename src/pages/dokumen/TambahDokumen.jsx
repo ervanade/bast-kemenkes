@@ -17,10 +17,12 @@ import axios from "axios";
 import FormInput from "../../components/Form/FormInput";
 
 const TambahDokumen = () => {
+  var today = new Date();
+  const defaultDate = today.toISOString().substring(0, 10);
   const [formData, setFormData] = useState({
     nama_dokumen: "",
     nomor_bast: "",
-    tanggal_bast: "",
+    tanggal_bast: defaultDate,
     tahun_lokus: "",
     penerima_hibah: "",
     kepala_unit_pemberi: "",

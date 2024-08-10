@@ -23,7 +23,7 @@ const Profile = () => {
 
   const [previewImages, setPreviewImages] = useState({
     profile: null,
-})
+  });
 
   const [selectedProvinsi, setSelectedProvinsi] = useState(null);
   const [selectedKecamatan, setSelectedKecamatan] = useState(null);
@@ -85,12 +85,10 @@ const Profile = () => {
     nip: "",
     profile: null,
     ttd: null,
-
   });
   const user = useSelector((a) => a.auth.user);
 
   const fetchProvinsiData = async () => {
-
     try {
       const response = await axios({
         method: "get",
@@ -100,9 +98,7 @@ const Profile = () => {
           Authorization: `Bearer ${user?.token}`,
         },
       });
-      setListProvinsi(
-        response.data.data
-      );
+      setListProvinsi(response.data.data);
     } catch (error) {
       console.log(error);
     }
@@ -118,9 +114,7 @@ const Profile = () => {
           Authorization: `Bearer ${user?.token}`,
         },
       });
-      setListKabupaten(
-        response.data.data
-      );
+      setListKabupaten(response.data.data);
     } catch (error) {
       setError(true);
       setListKabupaten([]);
@@ -138,16 +132,14 @@ const Profile = () => {
           Authorization: `Bearer ${user?.token}`,
         },
       });
-      setListKecamatan(
-        response.data.data
-      );
+      setListKecamatan(response.data.data);
     } catch (error) {
       setError(true);
       setListKecamatan([]);
     }
   };
   const fetchUserData = async () => {
-    setGetLoading(true)
+    setGetLoading(true);
     try {
       // eslint-disable-next-line
       const responseUser = await axios({
@@ -173,10 +165,10 @@ const Profile = () => {
           kabupaten: data.kabupaten,
           kecamatan: data.kecamatan,
           username: data.username,
-          ttd: data.ttd
+          ttd: data.ttd,
         });
       });
-      setGetLoading(false)
+      setGetLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -184,8 +176,8 @@ const Profile = () => {
   useEffect(() => {
     fetchUserData();
     fetchProvinsiData();
-    fetchKota()
-    fetchKecamatan()
+    fetchKota();
+    fetchKecamatan();
   }, []);
 
   const editProfile = async () => {
@@ -218,7 +210,7 @@ const Profile = () => {
       data: formDataToSend,
     })
       .then(function (response) {
-        fetchUserData()
+        fetchUserData();
         Swal.fire("Data Berhasil di Update!", "", "success");
         navigate("/");
         setLoading(true);
@@ -271,34 +263,25 @@ const Profile = () => {
   }, [formData, listProvinsi, listKecamatan]);
 
   const handleChangeProfile = (event) => {
-    const { id, value, files } = event.target
-        const file = files[0]
-        if (file?.size > 2 * 1024 * 1024) {
-            Swal.fire(
-                'Error',
-                'File size should not exceed 2 MB',
-                'error'
-            )
-            return
-        }
-         const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg']
-if (!allowedTypes.includes(file?.type)) {
-  Swal.fire(
-    'Error',
-    'Only PNG, JPG, and JPEG files are allowed',
-    'error'
-  )
-  return
-}
-        const reader = new FileReader()
-        reader.onloadend = () => {
-            setPreviewImages(prev => ({ ...prev, profile: reader.result }))
-        }
-        reader.readAsDataURL(file)
-        setFormData((prev) => ({ ...prev, profile: file }))
-      
-}
-console.log(formData)
+    const { id, value, files } = event.target;
+    const file = files[0];
+    if (file?.size > 2 * 1024 * 1024) {
+      Swal.fire("Error", "File size should not exceed 2 MB", "error");
+      return;
+    }
+    const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+    if (!allowedTypes.includes(file?.type)) {
+      Swal.fire("Error", "Only PNG, JPG, and JPEG files are allowed", "error");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreviewImages((prev) => ({ ...prev, profile: reader.result }));
+    };
+    reader.readAsDataURL(file);
+    setFormData((prev) => ({ ...prev, profile: file }));
+  };
+  console.log(formData);
 
   if (getLoading) {
     return (
@@ -353,7 +336,13 @@ console.log(formData)
                       <p className="mt-1.5">SVG, PNG, JPG</p>
                       <p>(max: 1MB size:800 X 800px)</p>
                     </div>
-                    {formData.profile && previewImages.profile && <img src={previewImages.profile} alt="Profile Preview" className="mt-2 h-[100px] mx-auto" />}
+                    {formData.profile && previewImages.profile && (
+                      <img
+                        src={previewImages.profile}
+                        alt="Profile Preview"
+                        className="mt-2 h-[100px] mx-auto"
+                      />
+                    )}
                   </div>
                 </div>
 
@@ -511,40 +500,49 @@ console.log(formData)
                     }
                   /> */}
                 </div>
-
-                <div className="mb-5.5">
-                  <label
-                    className="mb-3 block text-sm font-medium text-black dark:text-white"
-                    htmlFor="Role"
-                  >
-                    Provinsi
-                  </label>
-                  {
-                    listProvinsi?.length > 0 && formData?.provinsi && listProvinsi?.find((x) => x.id == formData?.provinsi)?.name
-                  }
-                </div>
-                <div className="mb-5.5">
-                  <label
-                    className="mb-3 block text-sm font-medium text-black dark:text-white"
-                    htmlFor="Role"
-                  >
-                    Kab / Kota
-                  </label>
-                  {
-                    listKabupaten?.length > 0 && formData?.kabupaten && listKabupaten?.find((x) => x.id == formData?.kabupaten)?.name
-                  }
-                </div>
-                <div className="mb-5.5">
-                  <label
-                    className="mb-3 block text-sm font-medium text-black dark:text-white"
-                    htmlFor="Role"
-                  >
-                    Kecamatan
-                  </label>
-                  {
-                    listKecamatan?.length > 0 && formData?.kecamatan && listKecamatan?.find((x) => x.id == formData?.kecamatan)?.name
-                  }
-                </div>
+                {user.role === "3" ? (
+                  <>
+                    {" "}
+                    <div className="mb-5.5">
+                      <label
+                        className="mb-3 block text-sm font-medium text-black dark:text-white"
+                        htmlFor="Role"
+                      >
+                        Provinsi
+                      </label>
+                      {listProvinsi?.length > 0 &&
+                        formData?.provinsi &&
+                        listProvinsi?.find((x) => x.id == formData?.provinsi)
+                          ?.name}
+                    </div>
+                    <div className="mb-5.5">
+                      <label
+                        className="mb-3 block text-sm font-medium text-black dark:text-white"
+                        htmlFor="Role"
+                      >
+                        Kab / Kota
+                      </label>
+                      {listKabupaten?.length > 0 &&
+                        formData?.kabupaten &&
+                        listKabupaten?.find((x) => x.id == formData?.kabupaten)
+                          ?.name}
+                    </div>
+                    <div className="mb-5.5">
+                      <label
+                        className="mb-3 block text-sm font-medium text-black dark:text-white"
+                        htmlFor="Role"
+                      >
+                        Kecamatan
+                      </label>
+                      {listKecamatan?.length > 0 &&
+                        formData?.kecamatan &&
+                        listKecamatan?.find((x) => x.id == formData?.kecamatan)
+                          ?.name}
+                    </div>
+                  </>
+                ) : (
+                  ""
+                )}
 
                 <div className="flex justify-center gap-4.5">
                   {/* <button

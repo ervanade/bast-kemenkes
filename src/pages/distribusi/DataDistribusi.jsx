@@ -348,21 +348,20 @@ const DataDistribusi = () => {
                 <FaPlus />
               </Link>
             </button> */}
-            {row.status_tte !== "Sudah" ? (
+            {row.konfirmasi_daerah !== "1" ? (
               <button
                 title="Konfirmasi"
-                className="text-white py-2 w-22 bg-blue-500 rounded-md"
+                className="text-white font-semibold py-2 w-22 bg-red-500 rounded-md"
                 onClick={() => {
                   navigate(`/data-distribusi/edit/${row.id}`);
                 }}
               >
-                {/* <FaEdit size={16} /> */}
                 <Link to={`/data-distribusi/edit/${row.id}`}>Konfirmasi</Link>
               </button>
             ) : (
               <button
                 title="Konfirmasi"
-                className="text-white  py-2 w-22 bg-green-500 rounded-md"
+                className="text-white font-semibold  py-2 w-22 bg-green-500 rounded-md"
                 onClick={() => {
                   navigate(`/data-distribusi/edit/${row.id}`);
                 }}
@@ -373,37 +372,6 @@ const DataDistribusi = () => {
                 </Link>
               </button>
             )}
-            {/* {row.status_tte === "Belum" ? (
-              <button
-                title="Konfirmasi"
-                className="text-blue-400 rounded-md"
-                onClick={() => {}}
-              >
-                <FaCheck size={16} />
-              </button>
-            ) : (
-              <button
-                title="Konfirmasi"
-                className="text-blue-400  rounded-md"
-                onClick={() => {}}
-              >
-                <FaCheck size={16} />
-              </button>
-            )}
-            <button
-              title="Detail"
-              className="text-green-400 hover:text-green-500"
-            >
-              <Link to={`/data-distribusi/edit/${row.id_puskesmas}`}>
-                <FaEye size={16} />
-              </Link>
-            </button> */}
-
-            {/* <button title="Edit" className="text-[#16B3AC] hover:text-cyan-500">
-              <Link to={`/data-distribusi/edit/${row.id}`}>
-                <FaEdit size={16} />
-              </Link>
-            </button> */}
             {user.role === "1" ? (
               <button
                 title="Delete"
@@ -572,7 +540,7 @@ const DataDistribusi = () => {
           <button
             onClick={handleSearchClick}
             disabled={loading}
-            className="mt-2 flex items-center gap-2 cursor-pointer text-base text-white px-5 py-2 bg-primary rounded-md tracking-tight"
+            className="mt-2 flex items-center gap-2 cursor-pointer text-base font-semibold text-white px-5 py-2 bg-primary rounded-md tracking-tight"
           >
             <FaSearch />
             <span className="lg:hidden xl:flex">
@@ -582,6 +550,23 @@ const DataDistribusi = () => {
           </button>
         </div>
       </div>
+      {user.role === "3" ? (
+        <button
+          title="Lihat Dokumen BMN"
+          className="mb-3 flex items-center gap-2 cursor-pointer text-base font-semibold text-white  bg-blue-600 rounded-md tracking-tight"
+          onClick={handleExport}
+        >
+          <Link
+            to="/data-distribusi/preview-dokumen/1"
+            className="flex items-center gap-2 px-4 py-2"
+          >
+            <FaEye size={16} />
+            <span className="hidden sm:block">Lihat Dokumen BMN</span>
+          </Link>
+        </button>
+      ) : (
+        ""
+      )}
       <div className="rounded-md flex flex-col gap-4 overflow-hidden overflow-x-auto  border border-stroke bg-white py-4 md:py-8 px-4 md:px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex justify-between mb-4 items-center">
           <div className="relative">
@@ -620,7 +605,7 @@ const DataDistribusi = () => {
           <div className="div flex gap-2 flex-row">
             <button
               title="Export Data Distribusi"
-              className="flex items-center gap-2 cursor-pointer text-base text-white px-4 py-2 bg-primary rounded-md tracking-tight"
+              className="flex items-center gap-2 cursor-pointer text-base font-semibold text-white px-4 py-2 bg-primary rounded-md tracking-tight"
               onClick={handleExport}
             >
               <BiExport />
@@ -629,7 +614,7 @@ const DataDistribusi = () => {
             {user.role === "1" ? (
               <button
                 title="Tambah Data Distribusi"
-                className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
+                className="flex items-center gap-2 cursor-pointer text-base font-semibold text-white  bg-primary rounded-md tracking-tight"
                 onClick={handleExport}
               >
                 <Link
@@ -648,7 +633,7 @@ const DataDistribusi = () => {
             {user.role === "3" ? (
               <button
                 title="Tandatangani Dokumen BMN"
-                className="flex items-center gap-2 cursor-pointer text-base text-white  bg-blue-600 rounded-md tracking-tight"
+                className="flex items-center gap-2 cursor-pointer text-base font-semibold text-white  bg-red-600 rounded-md tracking-tight"
                 onClick={handleExport}
               >
                 <Link

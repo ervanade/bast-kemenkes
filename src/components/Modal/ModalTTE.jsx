@@ -7,7 +7,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-const ModalTTE = ({ show, onClose, onSave, editIndex, dataBarang }) => {
+const ModalTTE = ({ show, onClose, onSave, editIndex, jsonData, user }) => {
   const [formData, setFormData] = useState({
     nip: "",
     password: "",
@@ -49,7 +49,9 @@ const ModalTTE = ({ show, onClose, onSave, editIndex, dataBarang }) => {
         <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
           <div className="flex items-start justify-between p-5 border-b border-solid border-black/20 rounded-t ">
             <h3 className="text-xl font-bold text-primary">
-              {editIndex !== null ? "TTE Dokumen Ini" : "TTE Dokumen Ini"}
+              {editIndex !== null
+                ? `TTE Dokumen ${jsonData?.nama_dokumen}`
+                : `TTE Dokumen ${jsonData?.nama_dokumen}`}
             </h3>
             <button
               className="bg-transparent border-0 text-black float-right"
@@ -119,6 +121,10 @@ const ModalTTE = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                   />
                 </div>
               </div>
+              <p className="text-center text-bodydark2 font-bold">
+                TTE Dokumen Ini Sebagai{" "}
+                {user?.role === "3" ? "User Daerah" : "PPK / Admin Pusat"}
+              </p>
             </div>
             <div className="flex items-center justify-end p-6 border-t gap-2 border-solid border-black/20 rounded-b">
               <button

@@ -328,7 +328,11 @@ const Dokumen = () => {
               title="Lihat"
               className="text-[#16B3AC] hover:text-cyan-500"
             >
-              <Link to={`/data-distribusi/preview-dokumen/${row.id}`}>
+              <Link
+                to={`/dokumen/preview-dokumen/${encodeURIComponent(
+                  encryptId(row.id)
+                )}`}
+              >
                 <FaEye size={16} />
               </Link>
             </button>
@@ -336,7 +340,11 @@ const Dokumen = () => {
               title="Download"
               className="text-green-400 hover:text-green-500"
             >
-              <Link to={`/data-distribusi/preview-dokumen/${row.id}`}>
+              <Link
+                to={`/dokumen/preview-dokumen/${encodeURIComponent(
+                  encryptId(row.id)
+                )}`}
+              >
                 <FaDownload size={16} />
               </Link>
             </button>
@@ -350,29 +358,45 @@ const Dokumen = () => {
         name: "TTE",
         cell: (row) => (
           <div className="flex items-center space-x-2">
-            {row.status_tte === "Belum" ? (
+            {row.status_tte === "0" ? (
               <button
-                title="Konfirmasi"
-                className="text-white py-2 w-22 bg-blue-500 rounded-md"
+                title="TTE"
+                className="text-white py-2 w-22 bg-teal-500 rounded-md"
                 onClick={() => {
-                  navigate(`/data-distribusi/preview-dokumen/${row.id}`);
+                  navigate(
+                    `/dokumen/preview-dokumen/${encodeURIComponent(
+                      encryptId(row.id)
+                    )}`
+                  );
                 }}
               >
                 {/* <FaEdit size={16} /> */}
-                <Link to={`/data-distribusi/preview-dokumen/${row.id}`}>
+                <Link
+                  to={`/dokumen/preview-dokumen/${encodeURIComponent(
+                    encryptId(row.id)
+                  )}`}
+                >
                   TTE
                 </Link>
               </button>
             ) : (
               <button
-                title="Konfirmasi"
+                title="TTE"
                 className="text-white  py-2 w-22 bg-green-500 rounded-md"
                 onClick={() => {
-                  navigate(`/data-distribusi/preview-dokumen/${row.id}`);
+                  navigate(
+                    `/dokumen/preview-dokumen/${encodeURIComponent(
+                      encryptId(row.id)
+                    )}`
+                  );
                 }}
               >
                 {/* <FaEdit size={16} /> */}
-                <Link to={`/data-distribusi/preview-dokumen/${row.id}`}>
+                <Link
+                  to={`/dokumen/preview-dokumen/${encodeURIComponent(
+                    encryptId(row.id)
+                  )}`}
+                >
                   Sudah TTE
                 </Link>
               </button>
@@ -426,7 +450,9 @@ const Dokumen = () => {
               title="Edit"
               className="text-white p-2 bg-blue-600 rounded-md"
             >
-              <Link to={`/data-distribusi/preview-dokumen/${row.id}`}>
+              <Link to={`/dokumen/preview-dokumen/${encodeURIComponent(
+                  encryptId(row.id)
+                )}`}>
                 TTE
               </Link>
             </button> */}

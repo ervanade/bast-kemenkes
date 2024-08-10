@@ -38,7 +38,11 @@ const Breadcrumb = ({ pageName, back, tte, jsonData, linkBack, title }) => {
       ) : (
         ""
       )}
-      <ModalTTE show={showModal} onClose={() => setShowModal(false)} />
+      <ModalTTE
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        jsonData={jsonData}
+      />
       {tte ? (
         <div>
           <button

@@ -87,7 +87,7 @@ function App() {
                 element={<AksiDistribusi />}
               />
               <Route
-                path="data-distribusi/preview-dokumen/:id"
+                path="dokumen/preview-dokumen/:id"
                 element={<PreviewDokumen />}
               />
               <Route path="laporan" element={<Laporan />} />

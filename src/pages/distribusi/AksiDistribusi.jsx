@@ -297,7 +297,11 @@ const AksiDistribusi = () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${user?.token}`,
       },
-      data: JSON.stringify(formData),
+      data: JSON.stringify({
+        ...formData,
+        konfirmasi_daerah: formData.konfirmasi_daerah?.value,
+        konfirmasi_ppk: formData.konfirmasi_ppk?.value,
+      }),
     })
       .then(function (response) {
         Swal.fire("Data Berhasil di Input!", "", "success");
@@ -735,7 +739,7 @@ const AksiDistribusi = () => {
                                   <button
                                     title="Konfirmasi"
                                     onClick={(e) => handleEditBarang(e, index)}
-                                    className={`text-white py-2 w-22 rounded-md ${
+                                    className={`text-white py-2 font-semibold w-22 rounded-md ${
                                       barang.jumlah_dikirim ==
                                       barang.jumlah_diterima
                                         ? "bg-green-500"
@@ -778,12 +782,12 @@ const AksiDistribusi = () => {
                     <textarea
                       id="message"
                       rows="4"
-                      value={formData.ket_daerah}
+                      value={formData.keterangan_daerah}
                       disabled={user.role !== "3"}
                       onChange={(e) =>
                         setFormData((prev) => ({
                           ...prev,
-                          ket_daerah: e.target.value,
+                          keterangan_daerah: e.target.value,
                         }))
                       }
                       className={` disabled:bg-[#F2F2F2] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
@@ -839,12 +843,12 @@ const AksiDistribusi = () => {
                     <textarea
                       id="message"
                       rows="4"
-                      value={formData.ket_ppk}
+                      value={formData.keterangan_ppk}
                       disabled={user.role !== "2"}
                       onChange={(e) =>
                         setFormData((prev) => ({
                           ...prev,
-                          ket_ppk: e.target.value,
+                          keterangan_ppk: e.target.value,
                         }))
                       }
                       className={` bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]

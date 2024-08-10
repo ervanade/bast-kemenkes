@@ -13,7 +13,7 @@ import ReactDOMServer from "react-dom/server";
 
 import Html from "react-pdf-html";
 import { dataDistribusiBekasi } from "../../data/data";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import {
   DataTableCell,
@@ -23,14 +23,106 @@ import {
   TableHeader,
 } from "@david.kucsai/react-pdf-table";
 import { TableRow } from "@david.kucsai/react-pdf-table/lib/TableRow";
+import ModalTTE from "../../components/Modal/ModalTTE";
+import { decryptId } from "../../data/utils";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { CgSpinner } from "react-icons/cg";
+import HeaderDokumen from "../../components/Title/HeaderDokumen";
 
 const PreviewDokumen = () => {
   const { id } = useParams();
+  const user = useSelector((a) => a.auth.user);
   const [jsonData, setJsonData] = useState(null);
-  const navigate = useNavigate();
+  const [getLoading, setGetLoading] = useState(false);
+  var today = new Date();
+  const defaultDate = today.toISOString().substring(0, 10);
+  const [formData, setFormData] = useState({
+    nama_dokumen: "",
+    nomor_bast: "",
+    tanggal_bast: defaultDate,
+    tahun_lokus: "",
+    penerima_hibah: "",
+    kepala_unit_pemberi: "",
+    id_user_pemberi: "",
+    id_provinsi: "",
+    id_kabupaten: "",
+  });
+  const [showModal, setShowModal] = useState(false);
+
+  const handleTTE = async (e) => {
+    e.preventDefault();
+    setShowModal(true);
+  };
 
   const iframeRef = useRef(null);
   const [isIFrameLoaded, setIsIFrameLoaded] = useState(false);
+
+  const fetchDokumenData = async () => {
+    setGetLoading(true);
+    try {
+      // eslint-disable-next-line
+      const responseUser = await axios({
+        method: "get",
+        url: `${
+          import.meta.env.VITE_APP_API_URL
+        }/api/dokumen/${encodeURIComponent(decryptId(id))}`,
+        headers: {
+          "Content-Type": "application/json",
+          //eslint-disable-next-line
+          Authorization: `Bearer ${user?.token}`,
+        },
+      }).then(function (response) {
+        // handle success
+        // console.log(response)
+        const data = response.data.data;
+        setFormData({
+          nama_dokumen: data.nama_dokumen || "",
+          nomor_bast: data.nomor_bast || "",
+          tanggal_bast: data.tanggal_bast || defaultDate,
+          tahun_lokus: data.tahun_lokus || "",
+          penerima_hibah: data.penerima_hibah || "",
+          kepala_unit_pemberi: data.kepala_unit_pemberi || "",
+          nama_kontrak_pengadaan: data.nama_kontrak_pengadaan || "",
+          tanggal_kontrak_pengadaan: data.tanggal_kontrak_pengadaan || "",
+          id_user_pemberi: data.id_user_pemberi || "",
+          id_provinsi: data.id_provinsi || "",
+          id_kabupaten: data.id_kabupaten || "",
+        });
+        setJsonData({
+          nama_dokumen: data.nama_dokumen || "",
+          id: data.id,
+          nomorSurat: data.nomor_bast || "",
+          tanggal: data.tanggal_bast || defaultDate,
+          kecamatan: data.kecamatan,
+          puskesmas: data.Puskesmas,
+          namaKapus: data.nama_kapus,
+          nipKapus: "nip.121212",
+          namaBarang: data.nama_barang,
+          jumlahDikirim: "24",
+          jumlahDiterima: "24",
+          tte: "",
+          tteDaerah: {
+            image_url:
+              "https://www.shutterstock.com/image-vector/fake-autograph-samples-handdrawn-signatures-260nw-2332469589.jpg",
+            width: 50,
+            height: 50,
+          },
+          ket_daerah: "",
+          ket_ppk: data.keterangan_ppk,
+        });
+        setGetLoading(false);
+      });
+    } catch (error) {
+      // if (error.response.status == 404) {
+      //   navigate("/not-found");
+      // }
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    fetchDokumenData();
+  }, []);
 
   useEffect(() => {
     const iframeCurrent = iframeRef.current;
@@ -48,33 +140,6 @@ const PreviewDokumen = () => {
     };
   }, [jsonData]);
 
-  useEffect(() => {
-    const data = dataDistribusiBekasi.find((a) => a.id === parseInt(id));
-    if (!data) {
-      navigate("/not-found");
-    }
-    setJsonData({
-      id: data.id,
-      nomorSurat: new Date().toISOString().substring(0, 10),
-      tanggal: new Date().toISOString().substring(0, 10),
-      kecamatan: data.kecamatan,
-      puskesmas: data.Puskesmas,
-      namaKapus: data.nama_kapus,
-      nipKapus: "nip.121212",
-      namaBarang: data.nama_barang,
-      jumlahDikirim: data.jumlah_barang_dikirim.toString(),
-      jumlahDiterima: data.jumlah_barang_diterima.toString(),
-      tte: "",
-      tteDaerah: {
-        image_url:
-          "https://www.shutterstock.com/image-vector/fake-autograph-samples-handdrawn-signatures-260nw-2332469589.jpg",
-        width: 50,
-        height: 50,
-      },
-      ket_daerah: "",
-      ket_ppk: data.keterangan_ppk,
-    });
-  }, []);
   Font.register({
     family: "Arial",
     fonts: [
@@ -185,6 +250,15 @@ const PreviewDokumen = () => {
       fontFamily: "Arial",
     },
   });
+
+  if (getLoading) {
+    return (
+      <div className="flex justify-center items-center">
+        <CgSpinner className="animate-spin inline-block w-8 h-8 text-teal-400" />
+        <span className="ml-2">Loading...</span>
+      </div>
+    );
+  }
 
   const Dokumen = () => (
     <Document title={`Dokumen BMN ${jsonData?.nomorSurat}`}>
@@ -419,12 +493,14 @@ const PreviewDokumen = () => {
   return (
     <div>
       <Breadcrumb
-        pageName={`Dokumen BMN ${jsonData?.nomorSurat}`}
+        pageName={`Dokumen BMN ${formData?.nama_dokumen}`}
         back={true}
-        tte={true}
+        // tte={true}
         linkBack="/dokumen"
         jsonData={jsonData}
       />
+      <HeaderDokumen formData={formData} jsonData={jsonData} user={user} />
+
       {isIFrameLoaded === false ? (
         <div className="flex h-[81vh]">
           <div className="m-auto">
@@ -467,15 +543,6 @@ const PreviewDokumen = () => {
           </PDFViewer>
         </div>
       )}
-      {/* {jsonData ? (
-        <PDFViewer style={styles.viewer} className="app">
-          <Dokumen />
-        </PDFViewer>
-      ) : (
-        
-""
-
-      )} */}
     </div>
   );
 };

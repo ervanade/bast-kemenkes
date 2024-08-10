@@ -18,10 +18,12 @@ import { CgSpinner } from "react-icons/cg";
 import FormInput from "../../components/Form/FormInput";
 
 const EditDokumen = () => {
+  var today = new Date();
+  const defaultDate = today.toISOString().substring(0, 10);
   const [formData, setFormData] = useState({
     nama_dokumen: "",
     nomor_bast: "",
-    tanggal_bast: "",
+    tanggal_bast: defaultDate,
     tahun_lokus: "",
     penerima_hibah: "",
     jenis_bmn: "",
@@ -143,7 +145,7 @@ const EditDokumen = () => {
         setFormData({
           nama_dokumen: data.nama_dokumen || "",
           nomor_bast: data.nomor_bast || "",
-          tanggal_bast: data.tanggal_bast || "",
+          tanggal_bast: data.tanggal_bast || defaultDate,
           tahun_lokus: data.tahun_lokus || "",
           penerima_hibah: data.penerima_hibah || "",
           jenis_bmn: data.jenis_bmn || "",
