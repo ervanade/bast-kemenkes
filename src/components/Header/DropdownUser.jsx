@@ -23,16 +23,17 @@ const DropdownUser = () => {
         },
       });
       dispatch(logoutUser());
-    navigate("/login");
+      navigate("/login");
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
   const handleLogout = (e) => {
     e.preventDefault();
-    fetchLogout()
+    fetchLogout();
   };
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const userAvatar = user?.profile || UserDefault;
 
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
@@ -46,12 +47,12 @@ const DropdownUser = () => {
             {user.username || "Username"}
           </span>
           <span className="block text-xs capitalize">
-          {user.role ? returnRole(user.role) : "" || "Role"}
+            {user.role ? returnRole(user.role) : "" || "Role"}
           </span>
         </span>
 
         <span className="h-12 w-12 rounded-full">
-          <img src={UserDefault} alt="User" />
+          <img src={userAvatar} alt="User" className="rounded-full" />
         </span>
 
         <svg
