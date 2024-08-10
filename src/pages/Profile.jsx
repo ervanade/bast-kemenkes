@@ -627,7 +627,6 @@ const Profile = () => {
                       src={URL.createObjectURL(file)}
                       alt="File"
                       className="w-28 mx-auto py-2"
-                      style={{ width: "200px", height: "100px" }}
                     />
                   </div>
                 )}

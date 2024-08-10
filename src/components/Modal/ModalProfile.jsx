@@ -116,8 +116,10 @@ const ModalProfile = ({
                             </span>{" "}
                             or drag and drop
                           </p>
-                          <p className="mt-1.5">SVG, PNG, JPG</p>
-                          <p>(max, 800 X 800px)</p>
+                          <p className="mt-1.5">
+                            Disarankan Background Berwarna Putih
+                          </p>
+                          <p>(FILE PNG, 800 X 800px)</p>
                         </div>
                       </div>
                       {/* <input
@@ -126,7 +128,7 @@ const ModalProfile = ({
                         onChange={onUploadFile}
                       /> */}
                       {file && (
-                        <div className="mt-2">
+                        <div className="my-2">
                           <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
                             Preview File
                           </label>
