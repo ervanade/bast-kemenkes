@@ -3,9 +3,11 @@ import Card from "../../components/Card/Card";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
+  batchOptions,
   dataBarang,
   dataKecamatan,
   dataPuskesmas,
+  ProgramOptions,
   roleOptions,
   SelectOptions,
 } from "../../data/data";
@@ -43,6 +45,8 @@ const TambahDokumen = () => {
   const [selectedKota, setSelectedKota] = useState(null);
   const [selectedKecamatan, setSelectedKecamatan] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedProgram, setSelectedProgram] = useState(null);
+  const [selectedBatch, setSelectedBatch] = useState(null);
 
   const [listKota, setListKota] = useState([]);
   const [listKecamatan, setListKecamatan] = useState([]);
@@ -223,6 +227,20 @@ const TambahDokumen = () => {
     }));
   };
 
+  const handleProgramChange = (selectedOption) => {
+    setSelectedProgram(selectedOption);
+    setFormData((prev) => ({
+      ...prev,
+      program: selectedOption ? selectedOption.value.toString() : "",
+    }));
+  };
+  const handleBatchChange = (selectedOption) => {
+    setSelectedBatch(selectedOption);
+    setFormData((prev) => ({
+      ...prev,
+      program: selectedOption ? selectedOption.value.toString() : "",
+    }));
+  };
   return (
     <div>
       <Breadcrumb pageName="Form Tambah Data Dokumen" />
@@ -288,6 +306,27 @@ const TambahDokumen = () => {
                 selectedProvinsi ? "Pilih Kab / Kota" : "Pilih Provinsi Dahulu"
               }
               label="Kab / Kota :"
+              required
+            />
+
+            <FormInput
+              select={true}
+              name="program"
+              options={ProgramOptions}
+              value={selectedProgram}
+              onChange={handleProgramChange}
+              placeholder={"Pilih Program"}
+              label="Program :"
+              required
+            />
+            <FormInput
+              select={true}
+              name="batch"
+              options={batchOptions}
+              value={selectedBatch}
+              onChange={handleBatchChange}
+              placeholder={"Pilih Batch"}
+              label="Batch :"
               required
             />
 

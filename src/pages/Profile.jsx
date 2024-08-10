@@ -180,9 +180,11 @@ const Profile = () => {
   };
   useEffect(() => {
     fetchUserData();
-    fetchProvinsiData();
-    fetchKota();
-    fetchKecamatan();
+    if (user.role === "3") {
+      fetchProvinsiData();
+      fetchKota();
+      fetchKecamatan();
+    }
   }, []);
 
   const editProfile = async () => {
