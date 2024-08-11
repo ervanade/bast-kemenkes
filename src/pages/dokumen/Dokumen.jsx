@@ -448,7 +448,101 @@ const Dokumen = () => {
         name: "TTE",
         cell: (row) => (
           <div className="flex items-center space-x-2 font-semibold">
-            {row.status_tte === "0" ? (
+            {user.role === "2" ? (
+              row.status_tte === "1" ? (
+                <button
+                  title="TTE"
+                  className="text-white py-2 w-22 bg-teal-500 rounded-md"
+                  onClick={() => {
+                    navigate(
+                      `/dokumen/preview-dokumen/${encodeURIComponent(
+                        encryptId(row.id)
+                      )}`
+                    );
+                  }}
+                >
+                  <Link
+                    to={`/dokumen/preview-dokumen/${encodeURIComponent(
+                      encryptId(row.id)
+                    )}`}
+                  >
+                    TTE
+                  </Link>
+                </button>
+              ) : row.status_tte === "2" ? (
+                <button
+                  title="TTE"
+                  className="text-white  py-2 w-22 bg-green-500 rounded-md"
+                  onClick={() => {
+                    navigate(
+                      `/dokumen/preview-dokumen/${encodeURIComponent(
+                        encryptId(row.id)
+                      )}`
+                    );
+                  }}
+                >
+                  <Link
+                    to={`/dokumen/preview-dokumen/${encodeURIComponent(
+                      encryptId(row.id)
+                    )}`}
+                  >
+                    Sudah TTE
+                  </Link>
+                </button>
+              ) : (
+                <button
+                  title="Pending"
+                  className="text-white py-2 w-22 bg-yellow-500 rounded-md"
+                >
+                  Daerah Belum TTE
+                </button>
+              )
+            ) : user.role === "3" ? (
+              row.status_tte === "0" ? (
+                <button
+                  title="TTE"
+                  className="text-white py-2 w-22 bg-teal-500 rounded-md"
+                  onClick={() => {
+                    navigate(
+                      `/dokumen/preview-dokumen/${encodeURIComponent(
+                        encryptId(row.id)
+                      )}`
+                    );
+                  }}
+                >
+                  <Link
+                    to={`/dokumen/preview-dokumen/${encodeURIComponent(
+                      encryptId(row.id)
+                    )}`}
+                  >
+                    TTE
+                  </Link>
+                </button>
+              ) : (
+                <button
+                  title="TTE"
+                  className="text-white  py-2 w-22 bg-green-500 rounded-md"
+                  onClick={() => {
+                    navigate(
+                      `/dokumen/preview-dokumen/${encodeURIComponent(
+                        encryptId(row.id)
+                      )}`
+                    );
+                  }}
+                >
+                  <Link
+                    to={`/dokumen/preview-dokumen/${encodeURIComponent(
+                      encryptId(row.id)
+                    )}`}
+                  >
+                    Sudah TTE
+                  </Link>
+                </button>
+              )
+            ) : (
+              ""
+            )}
+            {user.role === "1" ? (
               <button
                 title="TTE"
                 className="text-white py-2 w-22 bg-teal-500 rounded-md"
@@ -460,36 +554,16 @@ const Dokumen = () => {
                   );
                 }}
               >
-                {/* <FaEdit size={16} /> */}
                 <Link
                   to={`/dokumen/preview-dokumen/${encodeURIComponent(
                     encryptId(row.id)
                   )}`}
                 >
-                  TTE
+                  Detail
                 </Link>
               </button>
             ) : (
-              <button
-                title="TTE"
-                className="text-white  py-2 w-22 bg-green-500 rounded-md"
-                onClick={() => {
-                  navigate(
-                    `/dokumen/preview-dokumen/${encodeURIComponent(
-                      encryptId(row.id)
-                    )}`
-                  );
-                }}
-              >
-                {/* <FaEdit size={16} /> */}
-                <Link
-                  to={`/dokumen/preview-dokumen/${encodeURIComponent(
-                    encryptId(row.id)
-                  )}`}
-                >
-                  Sudah TTE
-                </Link>
-              </button>
+              ""
             )}
           </div>
         ),
