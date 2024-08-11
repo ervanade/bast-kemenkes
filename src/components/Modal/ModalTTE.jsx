@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const ModalTTE = ({ show, onClose, onSave, editIndex, jsonData, user }) => {
+  console.log(user);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -18,7 +19,13 @@ const ModalTTE = ({ show, onClose, onSave, editIndex, jsonData, user }) => {
   const navigate = useNavigate();
   const cekTte = async () => {
     if (!formData.email && !formData.password) {
-      Swal.fire("Error", "File Kontrak Masih Kosong", "error");
+      Swal.fire("Error", "Form Belum Lengkap Diisi", "error");
+      setLoading(false);
+      return;
+    }
+    if (!user.ttd) {
+      Swal.fire("Error", "Anda Belum Input TTE", "error");
+      navigate("/profile");
       setLoading(false);
       return;
     }

@@ -88,6 +88,7 @@ const PreviewDokumen = () => {
           id_user_pemberi: data.id_user_pemberi || "",
           id_provinsi: data.id_provinsi || "",
           id_kabupaten: data.id_kabupaten || "",
+          status_tte: data.status_tte || "",
         });
         setJsonData({
           nama_dokumen: data.nama_dokumen || "",
@@ -99,6 +100,7 @@ const PreviewDokumen = () => {
           namaKapus: data.nama_kapus,
           nipKapus: "nip.121212",
           namaBarang: data.nama_barang,
+          status_tte: data.status_tte || "",
           jumlahDikirim: "24",
           jumlahDiterima: "24",
           tte: "",
