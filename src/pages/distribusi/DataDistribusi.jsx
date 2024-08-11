@@ -60,8 +60,10 @@ const DataDistribusi = () => {
         (item?.kepala_unit_pemberi &&
           item.kepala_unit_pemberi.toLowerCase().includes(value)) ||
         (item?.status_tte && item.status_tte.toLowerCase().includes(value)) ||
-        (item?.jumlah_barang &&
-          item.jumlah_barang.toLowerCase().includes(value))
+        (item?.jumlah_barang_diterima &&
+          item.jumlah_barang_diterima.toLowerCase().includes(value)) ||
+        (item?.jumlah_barang_dikirim &&
+          item.jumlah_barang_dikirim.toLowerCase().includes(value))
       );
     });
 
@@ -315,13 +317,13 @@ const DataDistribusi = () => {
       // },
       {
         name: "Jumlah Barang Dikirim",
-        selector: (row) => row.jumlah_barang,
+        selector: (row) => row.jumlah_barang_dikirim || 0,
         sortable: true,
         width: "200px",
       },
       {
         name: "Jumlah Barang Diterima",
-        selector: (row) => row.jumlah_barang,
+        selector: (row) => row.jumlah_barang_diterima || 0,
         sortable: true,
         width: "200px",
       },

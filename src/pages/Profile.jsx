@@ -57,28 +57,6 @@ const Profile = () => {
     setActiveTab(tab);
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    // Kirim data ke API sesuai dengan kebutuhan Anda
-    const formData = new FormData();
-    if (file) {
-      formData.append("file", file);
-    } else if (signature) {
-      const response = await fetch(signature);
-      const blob = await response.blob();
-      formData.append(
-        "signature",
-        new File([blob], "signature.png", { type: "image/png" })
-      );
-    }
-    // Fetch API call example
-    await fetch("your-api-endpoint", {
-      method: "POST",
-      body: formData,
-    });
-    alert("Data submitted successfully");
-  };
-
   const [formData, setFormData] = useState({
     email: "",
     username: "",
@@ -92,7 +70,6 @@ const Profile = () => {
     ttd: null,
   });
   const user = useSelector((a) => a.auth.user);
-
   const fetchProvinsiData = async () => {
     try {
       const response = await axios({
@@ -158,7 +135,7 @@ const Profile = () => {
       }).then(function (response) {
         // handle success
         // console.log(response)
-        const data = response.data;
+        const data = response.data.data;
         setFormData({
           name: data.name,
           nip: data.nip,
@@ -171,6 +148,10 @@ const Profile = () => {
           kecamatan: data.kecamatan,
           username: data.username,
           ttd: data.ttd,
+        });
+        setPreviewImages({
+          profile: data.profile ? `${data.profile}` : null,
+          ttd: data.ttd ? `${data.ttd}` : null,
         });
       });
       setGetLoading(false);
@@ -198,7 +179,7 @@ const Profile = () => {
     formDataToSend.append("nip", formData.nip);
     formDataToSend.append("profile", formData.profile);
     if (file) {
-      formDataToSend.append("ttd", file);
+      formDataToSend.append("ttd", file || formData.ttd);
     } else if (signature) {
       const response = await fetch(signature);
       const blob = await response.blob();
@@ -327,7 +308,12 @@ const Profile = () => {
                 <div className="mb-5.5">
                   <div className="mb-4 flex items-center gap-3">
                     <div className="h-14 w-14 rounded-full">
-                      <img src={UserDefault} alt="User" />
+                      {formData.profile && previewImages.profile && (
+                        <img
+                          src={previewImages.profile || UserDefault}
+                          alt="Profile Preview"
+                        />
+                      )}
                     </div>
                     <div>
                       <span className="mb-1.5 text-black dark:text-white">
@@ -597,17 +583,27 @@ const Profile = () => {
                   Input TTE
                 </button>
 
-                {!signature && !file ? (
+                {!file && !signature && !previewImages.ttd ? (
                   <div className="w-full  rounded border border-dashed border-primary bg-gray py-4 px-4 dark:bg-meta-4 sm:py-7.5 ">
                     <p className="text-center text-red-400 p-2 font-semibold">
                       Anda Belum Input TTE!
                     </p>
                   </div>
-                ) : (
-                  ""
-                )}
+                ) : null}
 
-                {signature && (
+                {file ? (
+                  <div className="mb-6">
+                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 text-center">
+                      Preview TTE
+                    </label>
+                    <img
+                      src={URL.createObjectURL(file)}
+                      alt="File"
+                      className="w-48 mx-auto py-2"
+                      style={{ width: "200px", height: "100px" }}
+                    />
+                  </div>
+                ) : signature ? (
                   <div className="mb-6">
                     <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 text-center">
                       Preview TTE
@@ -619,19 +615,19 @@ const Profile = () => {
                       style={{ width: "200px", height: "100px" }}
                     />
                   </div>
-                )}
-                {file && (
+                ) : previewImages.ttd ? (
                   <div className="mb-6">
                     <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 text-center">
                       Preview TTE
                     </label>
                     <img
-                      src={URL.createObjectURL(file)}
-                      alt="File"
-                      className="w-28 mx-auto py-2"
+                      src={previewImages.ttd}
+                      alt="Signature"
+                      className="w-48 mx-auto py-2"
+                      style={{ width: "200px", height: "100px" }}
                     />
                   </div>
-                )}
+                ) : null}
 
                 <ModalProfile
                   isVisible={showPopup}
@@ -657,6 +653,8 @@ const Profile = () => {
                     onClick={() => {
                       setSignature(null);
                       setFile(null);
+                      setFormData((prev) => ({ ...prev, ttd: null }));
+                      setPreviewImages((prev) => ({ ...prev, ttd: null }));
                     }}
                   >
                     Reset
