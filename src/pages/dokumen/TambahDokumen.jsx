@@ -161,7 +161,9 @@ const TambahDokumen = () => {
     if (
       !formData.id_user_pemberi ||
       !formData.id_provinsi ||
-      !formData.id_kabupaten
+      !formData.id_kabupaten ||
+      !selectedBatch ||
+      !selectedProgram
     ) {
       Swal.fire("Error", "Ada Form yang belum di lengkapi", "error");
       setLoading(false);

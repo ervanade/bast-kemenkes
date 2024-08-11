@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import UserDefault from "../assets/user/user-default.png";
+import NoImage from "../assets/no-image.png";
 import Breadcrumb from "../components/Breadcrumbs/Breadcrumb";
 import SignatureCanvas from "react-signature-canvas";
 import Select from "react-select";
@@ -311,7 +312,12 @@ const Profile = () => {
                       {formData.profile && previewImages.profile && (
                         <img
                           src={previewImages.profile || UserDefault}
+                          className="rounded-full"
                           alt="Profile Preview"
+                          onError={({ currentTarget }) => {
+                            currentTarget.onerror = null; // prevents looping
+                            currentTarget.src = UserDefault;
+                          }}
                         />
                       )}
                     </div>
@@ -342,9 +348,13 @@ const Profile = () => {
                     </div>
                     {formData.profile && previewImages.profile && (
                       <img
-                        src={previewImages.profile}
+                        src={previewImages.profile || UserDefault}
+                        className="rounded-full mt-2 h-[100px] mx-auto"
                         alt="Profile Preview"
-                        className="mt-2 h-[100px] mx-auto"
+                        onError={({ currentTarget }) => {
+                          currentTarget.onerror = null; // prevents looping
+                          currentTarget.src = UserDefault;
+                        }}
                       />
                     )}
                   </div>
@@ -621,10 +631,14 @@ const Profile = () => {
                       Preview TTE
                     </label>
                     <img
-                      src={previewImages.ttd}
-                      alt="Signature"
-                      className="w-48 mx-auto py-2"
+                      src={previewImages.ttd || NoImage}
+                      className="w-48 mx-auto py-2 rounded-md"
+                      alt="Profile Preview"
                       style={{ width: "200px", height: "100px" }}
+                      onError={({ currentTarget }) => {
+                        currentTarget.onerror = null; // prevents looping
+                        currentTarget.src = NoImage;
+                      }}
                     />
                   </div>
                 ) : null}

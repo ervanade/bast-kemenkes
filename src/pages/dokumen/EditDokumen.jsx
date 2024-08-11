@@ -51,8 +51,8 @@ const EditDokumen = () => {
   const [selectedProvinsi, setSelectedProvinsi] = useState(null);
   const [selectedKota, setSelectedKota] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [selectedProgram, setSelectedProgram] = useState(null);
-  const [selectedBatch, setSelectedBatch] = useState(null);
+  const [selectedProgram, setSelectedProgram] = useState(ProgramOptions[0]);
+  const [selectedBatch, setSelectedBatch] = useState(batchOptions[0]);
 
   const fetchUserData = async () => {
     setLoading(true);
@@ -163,8 +163,6 @@ const EditDokumen = () => {
           contractFileLink: data.file_kontrak || "",
           id_provinsi: data.id_provinsi || "",
           id_kabupaten: data.id_kabupaten || "",
-          program: data.program || "",
-          batch: data.batch || "",
         });
       });
     } catch (error) {
@@ -225,10 +223,10 @@ const EditDokumen = () => {
       formDataToSend.append("file_kontrak", formData.contractFileLink);
     }
     await axios({
-      method: "put",
+      method: "post",
       url: `${
         import.meta.env.VITE_APP_API_URL
-      }/api/dokumen/${encodeURIComponent(decryptId(id))}`,
+      }/api/update/dokumen/${encodeURIComponent(decryptId(id))}`,
       headers: {
         Authorization: `Bearer ${user?.token}`,
       },

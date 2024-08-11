@@ -52,7 +52,15 @@ const DropdownUser = () => {
         </span>
 
         <span className="h-12 w-12 rounded-full">
-          <img src={userAvatar} alt="User" className="rounded-full" />
+          <img
+            src={userAvatar}
+            className="rounded-full"
+            alt="Brand Image"
+            onError={({ currentTarget }) => {
+              currentTarget.onerror = null; // prevents looping
+              currentTarget.src = UserDefault;
+            }}
+          />
         </span>
 
         <svg
