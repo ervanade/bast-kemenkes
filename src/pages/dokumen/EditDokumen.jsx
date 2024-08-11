@@ -3,9 +3,11 @@ import Card from "../../components/Card/Card";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
+  batchOptions,
   dataBarang,
   dataKecamatan,
   dataPuskesmas,
+  ProgramOptions,
   roleOptions,
   SelectOptions,
 } from "../../data/data";
@@ -33,6 +35,7 @@ const EditDokumen = () => {
     id_user_pemberi: "",
     contractFile: null,
     contractFileName: "",
+    contractFileLink: "",
     id_provinsi: "",
     id_kabupaten: "",
   });
@@ -48,6 +51,8 @@ const EditDokumen = () => {
   const [selectedProvinsi, setSelectedProvinsi] = useState(null);
   const [selectedKota, setSelectedKota] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedProgram, setSelectedProgram] = useState(null);
+  const [selectedBatch, setSelectedBatch] = useState(null);
 
   const fetchUserData = async () => {
     setLoading(true);
@@ -63,7 +68,7 @@ const EditDokumen = () => {
       });
       setDataUser([
         ...response.data.data
-          .filter((a) => a.role == "1")
+          .filter((a) => a.role == "1" || a.role == "2")
           .map((item) => ({
             label: item.email,
             value: item.id,
@@ -155,9 +160,11 @@ const EditDokumen = () => {
           id_user_pemberi: data.id_user_pemberi || "",
           contractFile: null,
           contractFileName: data.contractFileName || "",
-          contractFileLink: data.contractFileLink || "",
+          contractFileLink: data.file_kontrak || "",
           id_provinsi: data.id_provinsi || "",
           id_kabupaten: data.id_kabupaten || "",
+          program: data.program || "",
+          batch: data.batch || "",
         });
       });
     } catch (error) {
@@ -195,15 +202,27 @@ const EditDokumen = () => {
   };
 
   const updateDokumen = async () => {
+    if (!formData.contractFile && !formData.contractFileLink) {
+      Swal.fire("Error", "File Kontrak Masih Kosong", "error");
+      return;
+    }
     const formDataToSend = new FormData();
-    for (const key in formData) {
-      if (key === "contractFile" && formData[key]) {
-        formDataToSend.append("contractFile", formData[key]);
-      } else if (key === "contractFileLink" && !formData.contractFile) {
-        formDataToSend.append("contractFileLink", formData[key]);
-      } else {
-        formDataToSend.append(key, formData[key]);
-      }
+    formDataToSend.append("nama_dokumen", formData.nama_dokumen);
+    formDataToSend.append("nomor_bast", formData.nomor_bast);
+    formDataToSend.append("tanggal_bast", formData.tanggal_bast);
+    formDataToSend.append("penerima_hibah", formData.penerima_hibah);
+    formDataToSend.append("tahun_lokus", formData.tahun_lokus);
+    formDataToSend.append("kepala_unit_pemberi", formData.kepala_unit_pemberi);
+    formDataToSend.append("id_user_pemberi", formData.id_user_pemberi);
+    formDataToSend.append("id_provinsi", formData.id_provinsi);
+    formDataToSend.append("id_kabupaten", formData.id_kabupaten);
+    formDataToSend.append("program", selectedProgram.value);
+    formDataToSend.append("batch", selectedBatch.value);
+    if (formData.contractFile) {
+      formDataToSend.append("file_kontrak", formData.contractFile);
+    }
+    if (!formData.contractFile && formData.contractFileLink) {
+      formDataToSend.append("file_kontrak", formData.contractFileLink);
     }
     await axios({
       method: "put",
@@ -211,10 +230,9 @@ const EditDokumen = () => {
         import.meta.env.VITE_APP_API_URL
       }/api/dokumen/${encodeURIComponent(decryptId(id))}`,
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${user?.token}`,
       },
-      data: JSON.stringify(formData),
+      data: formDataToSend,
     })
       .then(function (response) {
         Swal.fire("Data Berhasil di Update!", "", "success");
@@ -271,6 +289,21 @@ const EditDokumen = () => {
     }));
   };
 
+  const handleProgramChange = (selectedOption) => {
+    setSelectedProgram(selectedOption);
+    setFormData((prev) => ({
+      ...prev,
+      program: selectedOption ? selectedOption.value.toString() : "",
+    }));
+  };
+  const handleBatchChange = (selectedOption) => {
+    setSelectedBatch(selectedOption);
+    setFormData((prev) => ({
+      ...prev,
+      program: selectedOption ? selectedOption.value.toString() : "",
+    }));
+  };
+
   useEffect(() => {
     if (formData.id_provinsi && dataProvinsi.length > 0) {
       const initialOption = dataProvinsi?.find(
@@ -308,12 +341,37 @@ const EditDokumen = () => {
         });
       }
     }
+    if (formData.batch) {
+      const initialOption = batchOptions.find(
+        (kec) => kec.value == formData.batch
+      );
+
+      if (initialOption) {
+        setSelectedBatch({
+          label: initialOption.label,
+          value: initialOption.value,
+        });
+      }
+    }
+    if (formData.program) {
+      const initialOption = ProgramOptions.find(
+        (kec) => kec.value == formData.program
+      );
+
+      if (initialOption) {
+        setSelectedProgram({
+          label: initialOption.label,
+          value: initialOption.value,
+        });
+      }
+    }
   }, [formData, dataProvinsi, dataKota, dataUser]);
   useEffect(() => {
     if (formData.id_provinsi) {
       fetchKota(formData.id_provinsi);
     }
   }, [formData.id_provinsi]);
+  console.log(formData);
   if (getLoading) {
     return (
       <div className="flex justify-center items-center">
@@ -388,6 +446,27 @@ const EditDokumen = () => {
                 selectedProvinsi ? "Pilih Kab / Kota" : "Pilih Provinsi Dahulu"
               }
               label="Kab / Kota :"
+              required
+            />
+
+            <FormInput
+              select={true}
+              name="program"
+              options={ProgramOptions}
+              value={selectedProgram}
+              onChange={handleProgramChange}
+              placeholder={"Pilih Program"}
+              label="Program :"
+              required
+            />
+            <FormInput
+              select={true}
+              name="batch"
+              options={batchOptions}
+              value={selectedBatch}
+              onChange={handleBatchChange}
+              placeholder={"Pilih Batch"}
+              label="Batch :"
               required
             />
 
@@ -520,11 +599,28 @@ const EditDokumen = () => {
                     Upload File
                   </label>
                   {formData.contractFileName && (
-                    <p className="text-gray-500 text-xs ml-4">
+                    <p className="text-gray-500 text-xs mx-4">
                       File: {formData.contractFileName}
                     </p>
                   )}
+                  {formData.contractFileLink && !formData.contractFile ? (
+                    <a
+                      href={formData.contractFileLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="ml-1 px-4 py-2 bg-blue-500 text-white rounded-md"
+                    >
+                      File Kontrak Anda
+                    </a>
+                  ) : !formData.contractFileLink && !formData.contractFile ? (
+                    <p className="text-gray-500 text-xs ml-1">
+                      Anda Belum Mengupload File Kontrak
+                    </p>
+                  ) : (
+                    ""
+                  )}
                 </div>
+
                 <p className="text-gray-500 text-xs mt-1">
                   Max file size: 15MB, Type: PDF
                 </p>

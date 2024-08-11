@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Card from "../../components/Card/Card";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import { Link, useNavigate } from "react-router-dom";
@@ -11,6 +11,7 @@ import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import ModalAddBarang from "../../components/Modal/ModalAddBarang";
 import axios from "axios";
 import FormInput from "../../components/Form/FormInput";
+import DataTable from "react-data-table-component";
 
 const TambahDistribusi = () => {
   var today = new Date();
@@ -299,6 +300,75 @@ const TambahDistribusi = () => {
       setShowModal(true);
     }
   }, [editIndex]);
+
+  const columns = useMemo(
+    () => [
+      {
+        name: "Nama Barang",
+        selector: (row) => row.jenis_alkes,
+        sortable: true,
+        width: "200px",
+      },
+      {
+        name: "Merk/Tipe",
+        selector: (row) => row.merk,
+        sortable: true,
+      },
+      {
+        name: "Satuan",
+        selector: (row) => row.satuan,
+        sortable: true,
+      },
+      {
+        name: "Jumlah Dikirim",
+        selector: (row) => row.jumlah_dikirim,
+        sortable: true,
+        width: "140px",
+      },
+      {
+        name: "Jumlah Diterima",
+        selector: (row) => row.jumlah_diterima || 0,
+        sortable: true,
+        width: "140px",
+      },
+      {
+        name: "Harga Satuan",
+        selector: (row) => row.harga_satuan || 0,
+        sortable: true,
+        width: "140px",
+      },
+      {
+        name: "Aksi",
+        id: "Aksi",
+        cell: (row, index) => (
+          <div className="flex items-center space-x-2">
+            <button
+              title="Edit"
+              onClick={(e) => handleEditBarang(e, index)}
+              className="text-[#16B3AC] hover:text-cyan-500"
+            >
+              <FaEdit size={16} />
+              {index}
+            </button>
+            <button
+              onClick={() => handleDeleteBarang(index)}
+              title="Delete"
+              className="text-red-500 hover:text-red-700"
+            >
+              <FaTrash size={16} />
+              {index}
+            </button>
+          </div>
+        ),
+        ignoreRowClick: true,
+        allowOverflow: true,
+        button: true,
+        sortable: true,
+        selector: (row) => row.konfirmasi_daerah,
+      },
+    ],
+    []
+  );
   return (
     <div>
       <Breadcrumb pageName="Form Input Data BAST" />
@@ -426,9 +496,6 @@ const TambahDistribusi = () => {
                           Harga Satuan
                         </th>
                         <th scope="col" className="px-6 py-3 text-center">
-                          Keterangan
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-center">
                           Aksi
                         </th>
                       </tr>
@@ -459,9 +526,6 @@ const TambahDistribusi = () => {
                           </td>
                           <td className="px-6 py-4 text-center">
                             {barang.harga_satuan}
-                          </td>
-                          <td className="px-6 py-4 text-center">
-                            {barang.keterangan}
                           </td>
                           <td className="px-6 py-4 text-center flex items-center gap-2">
                             <button

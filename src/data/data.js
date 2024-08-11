@@ -259,11 +259,11 @@ export const SelectOptions = [
 export const ProgramOptions = [
     {
         "label": "SOPHI",
-        "value": "0"
+        "value": "sophi"
     },
     {
         "label": "INPULS",
-        "value": "1"
+        "value": "inpuls"
     }
 ]
 

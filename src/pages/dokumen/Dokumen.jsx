@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import Select from "react-select";
 import DataTable from "react-data-table-component";
@@ -71,30 +71,30 @@ const Dokumen = () => {
     fetchDokumenData();
   }, []);
 
-  const fetchUserData = async () => {
+  const fetchUserData = useCallback(async () => {
     setGetLoading(true);
     try {
-      // eslint-disable-next-line
       const responseUser = await axios({
         method: "get",
         url: `${import.meta.env.VITE_APP_API_URL}/api/me`,
         headers: {
           "Content-Type": "application/json",
-          //eslint-disable-next-line
           Authorization: `Bearer ${user?.token}`,
         },
-      }).then(function (response) {
-        // handle success
-        // console.log(response)
-        setDataUser(response.data);
-        setGetLoading(false);
       });
+
+      setDataUser(responseUser.data.data);
     } catch (error) {
       console.log(error);
+    } finally {
+      setGetLoading(false);
     }
-  };
+  }, [user?.token]);
 
-  const fetchProvinsi = async () => {
+  // Fetch provinces only if dataProvinsi is empty
+  const fetchProvinsi = useCallback(async () => {
+    if (dataProvinsi.length > 0) return;
+
     try {
       const response = await axios({
         method: "get",
@@ -104,6 +104,7 @@ const Dokumen = () => {
           Authorization: `Bearer ${user?.token}`,
         },
       });
+
       setDataProvinsi([
         { label: "Semua Provinsi", value: "" },
         ...response.data.data.map((item) => ({
@@ -115,53 +116,69 @@ const Dokumen = () => {
       setError(true);
       setDataProvinsi([]);
     }
-  };
-  const fetchKota = async (idProvinsi) => {
-    try {
-      const response = await axios({
-        method: "get",
-        url: `${
-          import.meta.env.VITE_APP_API_URL
-        }/api/getkabupaten/${idProvinsi}`,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user?.token}`,
-        },
-      });
-      setDataKota([
-        { label: "Semua Kabupaten/Kota", value: "" },
-        ...response.data.data.map((item) => ({
-          label: item.name,
-          value: item.id,
-        })),
-      ]);
-    } catch (error) {
-      setError(true);
-      setDataKota([]);
-    }
-  };
-  const fetchKecamatan = async (idKota) => {
-    try {
-      const response = await axios({
-        method: "get",
-        url: `${import.meta.env.VITE_APP_API_URL}/api/getkecamatan/${idKota}`,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user?.token}`,
-        },
-      });
-      setDataKecamatan([
-        { label: "Semua Kecamatan", value: "" },
-        ...response.data.data.map((item) => ({
-          label: item.name,
-          value: item.id,
-        })),
-      ]);
-    } catch (error) {
-      setError(true);
-      setDataKecamatan([]);
-    }
-  };
+  }, [dataProvinsi.length, user?.token]);
+
+  // Fetch cities based on the selected province
+  const fetchKota = useCallback(
+    async (idProvinsi) => {
+      if (dataKota.length > 0 && selectedProvinsi?.value === idProvinsi) return;
+
+      try {
+        const response = await axios({
+          method: "get",
+          url: `${
+            import.meta.env.VITE_APP_API_URL
+          }/api/getkabupaten/${idProvinsi}`,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user?.token}`,
+          },
+        });
+
+        setDataKota([
+          { label: "Semua Kabupaten/Kota", value: "" },
+          ...response.data.data.map((item) => ({
+            label: item.name,
+            value: item.id,
+          })),
+        ]);
+      } catch (error) {
+        setError(true);
+        setDataKota([]);
+      }
+    },
+    [dataKota.length, selectedProvinsi?.value, user?.token]
+  );
+
+  // Fetch subdistricts based on the selected city
+  const fetchKecamatan = useCallback(
+    async (idKota) => {
+      if (dataKecamatan.length > 0 && selectedKota?.value === idKota) return;
+
+      try {
+        const response = await axios({
+          method: "get",
+          url: `${import.meta.env.VITE_APP_API_URL}/api/getkecamatan/${idKota}`,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user?.token}`,
+          },
+        });
+
+        setDataKecamatan([
+          { label: "Semua Kecamatan", value: "" },
+          ...response.data.data.map((item) => ({
+            label: item.name,
+            value: item.id,
+          })),
+        ]);
+      } catch (error) {
+        setError(true);
+        setDataKecamatan([]);
+      }
+    },
+    [dataKecamatan.length, selectedKota?.value, user?.token]
+  );
   useEffect(() => {
     fetchProvinsi();
     fetchUserData();
@@ -278,9 +295,31 @@ const Dokumen = () => {
   };
 
   useEffect(() => {
-    if (user.role === "3" && dataUser.provinsi && dataProvinsi.length > 0) {
-      const initialOption = dataProvinsi?.find(
-        (prov) => prov.value == dataUser.provinsi
+    if (user.role === "3") {
+      fetchUserData();
+    }
+  }, [user.role, fetchUserData]);
+
+  // Fetch provinces and cities based on selected options
+  useEffect(() => {
+    fetchProvinsi();
+    if (selectedProvinsi) {
+      fetchKota(selectedProvinsi.value);
+    }
+  }, [fetchProvinsi, selectedProvinsi, fetchKota]);
+
+  // Fetch subdistricts based on the selected city
+  useEffect(() => {
+    if (selectedKota) {
+      fetchKecamatan(selectedKota.value);
+    }
+  }, [selectedKota, fetchKecamatan]);
+
+  // Set selected options for provinces and cities based on user's initial data
+  useEffect(() => {
+    if (user.role === "3" && user.provinsi && dataProvinsi.length > 0) {
+      const initialOption = dataProvinsi.find(
+        (prov) => prov.value == user.provinsi
       );
       if (initialOption) {
         setSelectedProvinsi({
@@ -289,9 +328,9 @@ const Dokumen = () => {
         });
       }
     }
-    if (user.role === "3" && dataUser.kabupaten && dataKota.length > 0) {
-      const initialOption = dataKota?.find(
-        (prov) => prov.value == dataUser.kabupaten
+    if (user.role === "3" && user.kabupaten && dataKota.length > 0) {
+      const initialOption = dataKota.find(
+        (prov) => prov.value == user.kabupaten
       );
       if (initialOption) {
         setSelectedKota({
@@ -300,21 +339,7 @@ const Dokumen = () => {
         });
       }
     }
-  }, [dataKota, dataProvinsi]);
-  useEffect(() => {
-    if (selectedProvinsi) {
-      fetchKota(selectedProvinsi.value);
-    }
-    if (selectedKota) {
-      fetchKecamatan(selectedKota.value);
-    }
-  }, [selectedProvinsi, selectedKota]);
-
-  useEffect(() => {
-    if (user.role === "3") {
-      fetchUserData();
-    }
-  }, []);
+  }, [user.role, user.provinsi, user.kabupaten, dataProvinsi, dataKota]);
 
   const columns = useMemo(
     () => [

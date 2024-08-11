@@ -31,6 +31,8 @@ const TambahDokumen = () => {
     id_user_pemberi: "",
     id_provinsi: "",
     id_kabupaten: "",
+    contractFile: null,
+    contractFileName: "",
   });
 
   const navigate = useNavigate();
@@ -68,7 +70,7 @@ const TambahDokumen = () => {
       });
       setDataUser([
         ...response.data.data
-          .filter((a) => a.role == "1")
+          .filter((a) => a.role == "1" || a.role == "2")
           .map((item) => ({
             label: item.email,
             value: item.id,
@@ -149,28 +151,49 @@ const TambahDokumen = () => {
       setFormData((prev) => ({ ...prev, [id]: value }));
     }
   };
-  console.log(formData);
 
   const tambahDokumen = async () => {
+    if (!formData.contractFile) {
+      Swal.fire("Error", "File Kontrak Masih Kosong", "error");
+      setLoading(false);
+      return;
+    }
+    if (
+      !formData.id_user_pemberi ||
+      !formData.id_provinsi ||
+      !formData.id_kabupaten
+    ) {
+      Swal.fire("Error", "Ada Form yang belum di lengkapi", "error");
+      setLoading(false);
+      return;
+    }
     const formDataToSend = new FormData();
-    for (const key in formData) {
-      if (key === "contractFile" && formData[key]) {
-        formDataToSend.append("contractFile", formData[key]);
-      } else {
-        formDataToSend.append(key, formData[key]);
-      }
+    formDataToSend.append("nama_dokumen", formData.nama_dokumen);
+    formDataToSend.append("nomor_bast", formData.nomor_bast);
+    formDataToSend.append("tanggal_bast", formData.tanggal_bast);
+    formDataToSend.append("penerima_hibah", formData.penerima_hibah);
+    formDataToSend.append("tahun_lokus", formData.tahun_lokus);
+    formDataToSend.append("kepala_unit_pemberi", formData.kepala_unit_pemberi);
+    formDataToSend.append("id_user_pemberi", formData.id_user_pemberi);
+    formDataToSend.append("id_provinsi", formData.id_provinsi);
+    formDataToSend.append("id_kabupaten", formData.id_kabupaten);
+    formDataToSend.append("program", selectedProgram.value);
+    formDataToSend.append("batch", selectedBatch.value);
+    if (formData.contractFile) {
+      formDataToSend.append("file_kontrak", formData.contractFile);
     }
 
     await axios({
       method: "post",
       url: `${import.meta.env.VITE_APP_API_URL}/api/dokumen`,
       headers: {
-        "Content-Type": "application/json",
+        // "Content-Type": "application/json",
         Authorization: `Bearer ${user?.token}`,
       },
-      data: JSON.stringify(formData),
+      data: formDataToSend,
     })
       .then(function (response) {
+        setLoading(false);
         Swal.fire("Data Berhasil di Input!", "", "success");
         navigate("/dokumen");
       })

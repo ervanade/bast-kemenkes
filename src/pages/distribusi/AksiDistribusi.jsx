@@ -667,9 +667,6 @@ const AksiDistribusi = () => {
                         <th scope="col" className="px-6 py-3 text-center">
                           Harga Satuan
                         </th>
-                        <th scope="col" className="px-6 py-3 text-center">
-                          Keterangan
-                        </th>
                         {user.role !== "2" ? (
                           <th scope="col" className="px-6 py-3 text-center">
                             Aksi
@@ -705,9 +702,6 @@ const AksiDistribusi = () => {
                           </td>
                           <td className="px-6 py-4 text-center">
                             {barang.harga_satuan}
-                          </td>
-                          <td className="px-6 py-4 text-center">
-                            {barang.keterangan}
                           </td>
                           {user.role !== "2" ? (
                             <td className="px-6 py-4 text-center flex items-center gap-2">

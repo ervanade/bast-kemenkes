@@ -169,7 +169,7 @@ const Profile = () => {
   }, []);
 
   const editProfile = async () => {
-    if (!file && !signature) {
+    if (!file && !signature && !formData.ttd) {
       Swal.fire("Error", "TTE Masih Kosong", "error");
       return;
     }

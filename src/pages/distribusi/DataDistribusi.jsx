@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import Select from "react-select";
 import DataTable from "react-data-table-component";
@@ -75,30 +75,30 @@ const DataDistribusi = () => {
   };
   const navigate = useNavigate();
 
-  const fetchUserData = async () => {
+  const fetchUserData = useCallback(async () => {
     setGetLoading(true);
     try {
-      // eslint-disable-next-line
       const responseUser = await axios({
         method: "get",
         url: `${import.meta.env.VITE_APP_API_URL}/api/me`,
         headers: {
           "Content-Type": "application/json",
-          //eslint-disable-next-line
           Authorization: `Bearer ${user?.token}`,
         },
-      }).then(function (response) {
-        // handle success
-        // console.log(response)
-        setDataUser(response.data);
-        setGetLoading(false);
       });
+
+      setDataUser(responseUser.data.data);
     } catch (error) {
       console.log(error);
+    } finally {
+      setGetLoading(false);
     }
-  };
+  }, [user?.token]);
 
-  const fetchProvinsi = async () => {
+  // Fetch provinces only if dataProvinsi is empty
+  const fetchProvinsi = useCallback(async () => {
+    if (dataProvinsi.length > 0) return;
+
     try {
       const response = await axios({
         method: "get",
@@ -108,6 +108,7 @@ const DataDistribusi = () => {
           Authorization: `Bearer ${user?.token}`,
         },
       });
+
       setDataProvinsi([
         { label: "Semua Provinsi", value: "" },
         ...response.data.data.map((item) => ({
@@ -119,54 +120,72 @@ const DataDistribusi = () => {
       setError(true);
       setDataProvinsi([]);
     }
-  };
-  const fetchKota = async (idProvinsi) => {
-    try {
-      const response = await axios({
-        method: "get",
-        url: `${
-          import.meta.env.VITE_APP_API_URL
-        }/api/getkabupaten/${idProvinsi}`,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user?.token}`,
-        },
-      });
-      setDataKota([
-        { label: "Semua Kabupaten/Kota", value: "" },
-        ...response.data.data.map((item) => ({
-          label: item.name,
-          value: item.id,
-        })),
-      ]);
-    } catch (error) {
-      setError(true);
-      setDataKota([]);
-    }
-  };
-  const fetchKecamatan = async (idKota) => {
-    try {
-      const response = await axios({
-        method: "get",
-        url: `${import.meta.env.VITE_APP_API_URL}/api/getkecamatan/${idKota}`,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user?.token}`,
-        },
-      });
-      setDataKecamatan([
-        { label: "Semua Kecamatan", value: "" },
-        ...response.data.data.map((item) => ({
-          label: item.name,
-          value: item.id,
-        })),
-      ]);
-    } catch (error) {
-      setError(true);
-      setDataKecamatan([]);
-    }
-  };
-  const fetchDistribusiData = async () => {
+  }, [dataProvinsi.length, user?.token]);
+
+  // Fetch cities based on the selected province
+  const fetchKota = useCallback(
+    async (idProvinsi) => {
+      if (dataKota.length > 0 && selectedProvinsi?.value === idProvinsi) return;
+
+      try {
+        const response = await axios({
+          method: "get",
+          url: `${
+            import.meta.env.VITE_APP_API_URL
+          }/api/getkabupaten/${idProvinsi}`,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user?.token}`,
+          },
+        });
+
+        setDataKota([
+          { label: "Semua Kabupaten/Kota", value: "" },
+          ...response.data.data.map((item) => ({
+            label: item.name,
+            value: item.id,
+          })),
+        ]);
+      } catch (error) {
+        setError(true);
+        setDataKota([]);
+      }
+    },
+    [dataKota.length, selectedProvinsi?.value, user?.token]
+  );
+
+  // Fetch subdistricts based on the selected city
+  const fetchKecamatan = useCallback(
+    async (idKota) => {
+      if (dataKecamatan.length > 0 && selectedKota?.value === idKota) return;
+
+      try {
+        const response = await axios({
+          method: "get",
+          url: `${import.meta.env.VITE_APP_API_URL}/api/getkecamatan/${idKota}`,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user?.token}`,
+          },
+        });
+
+        setDataKecamatan([
+          { label: "Semua Kecamatan", value: "" },
+          ...response.data.data.map((item) => ({
+            label: item.name,
+            value: item.id,
+          })),
+        ]);
+      } catch (error) {
+        setError(true);
+        setDataKecamatan([]);
+      }
+    },
+    [dataKecamatan.length, selectedKota?.value, user?.token]
+  );
+
+  // Fetch distribution data
+  const fetchDistribusiData = useCallback(async () => {
     setLoading(true);
     setError(false);
     try {
@@ -178,6 +197,7 @@ const DataDistribusi = () => {
           Authorization: `Bearer ${user?.token}`,
         },
       });
+
       setData(response.data.data);
       setFilteredData(response.data.data);
     } catch (error) {
@@ -186,7 +206,7 @@ const DataDistribusi = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user?.token]);
 
   const handleSearchClick = async () => {
     setLoading(true);
@@ -296,25 +316,32 @@ const DataDistribusi = () => {
         selector: (row) => row.provinsi,
         sortable: true,
         width: "120px",
+        omit: user.role === "3",
       },
       {
         name: "Kab/Kota",
         selector: (row) => row.kabupaten,
         sortable: true,
+        minWidth: "150px",
       },
-      { name: "Kecamatan", selector: (row) => row.kecamatan, sortable: true },
+      {
+        name: "Kecamatan",
+        selector: (row) => row.kecamatan,
+        sortable: true,
+        minWidth: "150px",
+      },
       {
         name: "Puskesmas",
         selector: (row) => row.nama_puskesmas,
         sortable: true,
         width: "200px",
       },
-      // { name: "Nama Kapus", selector: (row) => row.nama_kapus, sortable: true },
-      // {
-      //   name: "Nama Barang",
-      //   selector: (row) => row.nama_barang,
-      //   sortable: true,
-      // },
+      {
+        name: "Tahun Lokus",
+        selector: (row) => row.tahun_lokus,
+        sortable: true,
+        width: "120px",
+      },
       {
         name: "Jumlah Barang Dikirim",
         selector: (row) => row.jumlah_barang_dikirim || 0,
@@ -327,54 +354,65 @@ const DataDistribusi = () => {
         sortable: true,
         width: "200px",
       },
-      // {
-      //   name: "Status TTE",
-      //   selector: (row) => row.status_tte,
-      //   sortable: true,
-      //   width: "110px",
-      // },
-      // {
-      //   name: "Keterangan PPK Kemenkes",
-      //   selector: (row) => row.keterangan_ppk,
-      //   sortable: true,
-      // },
       {
         name: "Aksi",
         id: "Aksi",
         cell: (row) => (
           <div className="flex items-center space-x-2">
-            {/* <button
-              title="Input"
-              className="text-green-500 hover:text-green-700"
-            >
-              <Link to="/data-verifikasi/form-distribusi">
-                <FaPlus />
-              </Link>
-            </button> */}
-            {row.konfirmasi_daerah !== "1" ? (
-              <button
-                title="Konfirmasi"
-                className="text-white font-semibold py-2 w-22 bg-red-500 rounded-md"
-                onClick={() => {
-                  navigate(`/data-distribusi/edit/${row.id}`);
-                }}
-              >
-                <Link to={`/data-distribusi/edit/${row.id}`}>Konfirmasi</Link>
-              </button>
+            {user.role === "2" || user.role === "1" ? (
+              row.konfirmasi_ppk !== "1" ? (
+                <button
+                  title="Konfirmasi"
+                  className="text-white font-semibold py-2 w-22 bg-red-500 rounded-md"
+                  onClick={() => {
+                    navigate(`/data-distribusi/edit/${row.id}`);
+                  }}
+                >
+                  <Link to={`/data-distribusi/edit/${row.id}`}>Konfirmasi</Link>
+                </button>
+              ) : (
+                <button
+                  title="Konfirmasi"
+                  className="text-white font-semibold  py-2 w-22 bg-green-500 rounded-md"
+                  onClick={() => {
+                    navigate(`/data-distribusi/edit/${row.id}`);
+                  }}
+                >
+                  {/* <FaEdit size={16} /> */}
+                  <Link to={`/data-distribusi/edit/${row.id}`}>
+                    Sudah Konfirmasi
+                  </Link>
+                </button>
+              )
+            ) : user.role === "3" ? (
+              row.konfirmasi_daerah !== "1" ? (
+                <button
+                  title="Konfirmasi"
+                  className="text-white font-semibold py-2 w-22 bg-red-500 rounded-md"
+                  onClick={() => {
+                    navigate(`/data-distribusi/edit/${row.id}`);
+                  }}
+                >
+                  <Link to={`/data-distribusi/edit/${row.id}`}>Konfirmasi</Link>
+                </button>
+              ) : (
+                <button
+                  title="Konfirmasi"
+                  className="text-white font-semibold  py-2 w-22 bg-green-500 rounded-md"
+                  onClick={() => {
+                    navigate(`/data-distribusi/edit/${row.id}`);
+                  }}
+                >
+                  {/* <FaEdit size={16} /> */}
+                  <Link to={`/data-distribusi/edit/${row.id}`}>
+                    Sudah Konfirmasi
+                  </Link>
+                </button>
+              )
             ) : (
-              <button
-                title="Konfirmasi"
-                className="text-white font-semibold  py-2 w-22 bg-green-500 rounded-md"
-                onClick={() => {
-                  navigate(`/data-distribusi/edit/${row.id}`);
-                }}
-              >
-                {/* <FaEdit size={16} /> */}
-                <Link to={`/data-distribusi/edit/${row.id}`}>
-                  Sudah Konfirmasi
-                </Link>
-              </button>
+              ""
             )}
+
             {user.role === "1" ? (
               <button
                 title="Delete"
@@ -399,9 +437,31 @@ const DataDistribusi = () => {
   );
 
   useEffect(() => {
-    if (user.role === "3" && dataUser.provinsi && dataProvinsi.length > 0) {
-      const initialOption = dataProvinsi?.find(
-        (prov) => prov.value == dataUser.provinsi
+    if (user.role === "3") {
+      fetchUserData();
+    }
+  }, [user.role, fetchUserData]);
+
+  // Fetch provinces and cities based on selected options
+  useEffect(() => {
+    fetchProvinsi();
+    if (selectedProvinsi) {
+      fetchKota(selectedProvinsi.value);
+    }
+  }, [fetchProvinsi, selectedProvinsi, fetchKota]);
+
+  // Fetch subdistricts based on the selected city
+  useEffect(() => {
+    if (selectedKota) {
+      fetchKecamatan(selectedKota.value);
+    }
+  }, [selectedKota, fetchKecamatan]);
+
+  // Set selected options for provinces and cities based on user's initial data
+  useEffect(() => {
+    if (user.role === "3" && user.provinsi && dataProvinsi.length > 0) {
+      const initialOption = dataProvinsi.find(
+        (prov) => prov.value == user.provinsi
       );
       if (initialOption) {
         setSelectedProvinsi({
@@ -410,9 +470,9 @@ const DataDistribusi = () => {
         });
       }
     }
-    if (user.role === "3" && dataUser.kabupaten && dataKota.length > 0) {
-      const initialOption = dataKota?.find(
-        (prov) => prov.value == dataUser.kabupaten
+    if (user.role === "3" && user.kabupaten && dataKota.length > 0) {
+      const initialOption = dataKota.find(
+        (prov) => prov.value == user.kabupaten
       );
       if (initialOption) {
         setSelectedKota({
@@ -421,21 +481,7 @@ const DataDistribusi = () => {
         });
       }
     }
-  }, [dataKota, dataProvinsi]);
-  useEffect(() => {
-    if (selectedProvinsi) {
-      fetchKota(selectedProvinsi.value);
-    }
-    if (selectedKota) {
-      fetchKecamatan(selectedKota.value);
-    }
-  }, [selectedProvinsi, selectedKota]);
-
-  useEffect(() => {
-    if (user.role === "3") {
-      fetchUserData();
-    }
-  }, []);
+  }, [user.role, user.provinsi, user.kabupaten, dataProvinsi, dataKota]);
 
   if (getLoading) {
     return (
@@ -555,25 +601,7 @@ const DataDistribusi = () => {
           </button>
         </div>
       </div>
-      {user.role === "3" ? (
-        <button
-          title="Lihat Dokumen BMN"
-          className="mb-3 flex items-center gap-2 cursor-pointer text-base font-semibold text-white  bg-blue-600 rounded-md tracking-tight"
-          onClick={handleExport}
-        >
-          <Link
-            to={`/dokumen/preview-dokumen/${encodeURIComponent(
-              encryptId("1")
-            )}`}
-            className="flex items-center gap-2 px-4 py-2"
-          >
-            <FaEye size={16} />
-            <span className="hidden sm:block">Lihat Dokumen BMN</span>
-          </Link>
-        </button>
-      ) : (
-        ""
-      )}
+
       <div className="rounded-md flex flex-col gap-4 overflow-hidden overflow-x-auto  border border-stroke bg-white py-4 md:py-8 px-4 md:px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex justify-between mb-4 items-center">
           <div className="relative">
@@ -644,9 +672,7 @@ const DataDistribusi = () => {
                 onClick={handleExport}
               >
                 <Link
-                  to={`/dokumen/preview-dokumen/${encodeURIComponent(
-                    encryptId("1")
-                  )}`}
+                  to={`/dokumen`}
                   className="flex items-center gap-2 px-4 py-2"
                 >
                   <FaCheck size={16} />
