@@ -29,7 +29,7 @@ const EditDokumen = () => {
     tahun_lokus: "",
     penerima_hibah: "",
     jenis_bmn: "",
-    kepala_unit_pemberi: "",
+    kepala_unit_pemberi: "Pejabat Pembuat Keputusan",
     nama_kontrak_pengadaan: "",
     tanggal_kontrak_pengadaan: "",
     id_user_pemberi: "",
@@ -154,7 +154,8 @@ const EditDokumen = () => {
           tahun_lokus: data.tahun_lokus || "",
           penerima_hibah: data.penerima_hibah || "",
           jenis_bmn: data.jenis_bmn || "",
-          kepala_unit_pemberi: data.kepala_unit_pemberi || "",
+          kepala_unit_pemberi:
+            data.kepala_unit_pemberi || "Pejabat Pembuat Keputusan",
           nama_kontrak_pengadaan: data.nama_kontrak_pengadaan || "",
           tanggal_kontrak_pengadaan: data.tanggal_kontrak_pengadaan || "",
           id_user_pemberi: data.id_user_pemberi || "",
@@ -573,6 +574,16 @@ const EditDokumen = () => {
               placeholder={"Pilih Email Pihak Kesatu"}
               label="Pihak Kesatu :"
               required
+            />
+
+            <FormInput
+              id="kepala_unit_pemberi"
+              value={formData.kepala_unit_pemberi}
+              onChange={handleChange}
+              type="text"
+              required
+              placeholder="Kepala Unit Pemberi"
+              label="Kepala Unit Pemberi :"
             />
 
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">

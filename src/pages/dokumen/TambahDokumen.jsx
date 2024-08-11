@@ -27,7 +27,7 @@ const TambahDokumen = () => {
     tanggal_bast: defaultDate,
     tahun_lokus: "",
     penerima_hibah: "",
-    kepala_unit_pemberi: "",
+    kepala_unit_pemberi: "Pejabat Pembuat Keputusan",
     id_user_pemberi: "",
     id_provinsi: "",
     id_kabupaten: "",
@@ -437,6 +437,15 @@ const TambahDokumen = () => {
               label="Pihak Kesatu :"
               required
             />
+            <FormInput
+              id="kepala_unit_pemberi"
+              value={formData.kepala_unit_pemberi}
+              onChange={handleChange}
+              type="text"
+              required
+              placeholder="Kepala Unit Pemberi"
+              label="Kepala Unit Pemberi :"
+            />
 
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
@@ -455,7 +464,6 @@ const TambahDokumen = () => {
                   id="penerima_hibah"
                   value={formData.penerima_hibah}
                   onChange={handleChange}
-                  disabled
                   type="text"
                   required
                   placeholder="Penerima Hibah"
