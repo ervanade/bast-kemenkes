@@ -422,7 +422,7 @@ const Dokumen = () => {
       {
         name: "TTE",
         cell: (row) => (
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 font-semibold">
             {row.status_tte === "0" ? (
               <button
                 title="TTE"
@@ -642,7 +642,7 @@ const Dokumen = () => {
           <button
             onClick={handleSearchClick}
             disabled={loading}
-            className="mt-2 flex items-center gap-2 cursor-pointer text-base text-white px-5 py-2 bg-primary rounded-md tracking-tight"
+            className="mt-2 flex items-center font-semibold gap-2 cursor-pointer text-base text-white px-5 py-2 bg-primary rounded-md tracking-tight"
           >
             <FaSearch />
             <span className="lg:hidden xl:flex">
@@ -687,7 +687,7 @@ const Dokumen = () => {
               className="w-full bg-white pl-9 pr-4 text-black outline outline-1 outline-zinc-200 focus:outline-primary dark:text-white xl:w-125 py-2 rounded-md"
             />
           </div>
-          <div className="div flex gap-2 flex-row">
+          <div className="div flex gap-2 flex-row font-semibold">
             <button
               title="Export Data Distribusi"
               className="flex items-center gap-2 cursor-pointer text-base text-white px-4 py-2 bg-primary rounded-md tracking-tight"
@@ -699,7 +699,7 @@ const Dokumen = () => {
             {user.role === "1" ? (
               <button
                 title="Tambah Data Dokumen"
-                className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
+                className="flex font-semibold items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
                 onClick={handleExport}
               >
                 <Link

@@ -160,7 +160,7 @@ const Profile = () => {
         // console.log(response)
         const data = response.data;
         setFormData({
-          nama: data.name,
+          name: data.name,
           nip: data.nip,
           no_telp: "",
           role: data.role,
@@ -193,7 +193,7 @@ const Profile = () => {
       return;
     }
     const formDataToSend = new FormData();
-    formDataToSend.append("name", formData.nama);
+    formDataToSend.append("name", formData.name);
     formDataToSend.append("username", formData.username);
     formDataToSend.append("nip", formData.nip);
     formDataToSend.append("profile", formData.profile);
@@ -428,11 +428,11 @@ const Profile = () => {
                     name="Username"
                     id="Username"
                     placeholder="Username"
-                    value={formData.nama}
+                    value={formData.username}
                     onChange={(e) =>
                       setFormData((prev) => ({
                         ...prev,
-                        nama: e.target.value,
+                        username: e.target.value,
                       }))
                     }
                   />
@@ -451,11 +451,11 @@ const Profile = () => {
                     name="nama"
                     id="nama"
                     placeholder="nama"
-                    value={formData.nama}
+                    value={formData.name}
                     onChange={(e) =>
                       setFormData((prev) => ({
                         ...prev,
-                        nama: e.target.value,
+                        name: e.target.value,
                       }))
                     }
                   />

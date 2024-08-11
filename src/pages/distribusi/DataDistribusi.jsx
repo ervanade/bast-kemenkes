@@ -338,6 +338,7 @@ const DataDistribusi = () => {
       // },
       {
         name: "Aksi",
+        id: "Aksi",
         cell: (row) => (
           <div className="flex items-center space-x-2">
             {/* <button
@@ -388,6 +389,8 @@ const DataDistribusi = () => {
         ignoreRowClick: true,
         allowOverflow: true,
         button: true,
+        sortable: true,
+        selector: (row) => row.konfirmasi_daerah,
       },
     ],
     []
@@ -668,6 +671,8 @@ const DataDistribusi = () => {
               columns={columns}
               data={filteredData}
               pagination
+              defaultSortFieldId="Aksi"
+              defaultSortAsc={false}
               persistTableHead
               highlightOnHover
               pointerOnHover
