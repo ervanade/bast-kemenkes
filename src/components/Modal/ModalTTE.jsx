@@ -8,11 +8,38 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const ModalTTE = ({ show, onClose, onSave, editIndex, jsonData, user }) => {
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    nip: "",
+    email: "",
     password: "",
+    id_dokumen: jsonData?.id || "",
   });
   const navigate = useNavigate();
+  const cekTte = async () => {
+    if (!formData.email && !formData.password) {
+      Swal.fire("Error", "File Kontrak Masih Kosong", "error");
+      setLoading(false);
+      return;
+    }
+    await axios({
+      method: "post",
+      url: `${import.meta.env.VITE_APP_API_URL}/api/update/tte`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user?.token}`,
+      },
+      data: JSON.stringify(formData),
+    })
+      .then(function (response) {
+        Swal.fire("Data Berhasil di Input!", "", "success");
+        navigate("/dokumen");
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log(error);
+      });
+  };
 
   const handleSave = () => {
     Swal.fire({
@@ -26,15 +53,13 @@ const ModalTTE = ({ show, onClose, onSave, editIndex, jsonData, user }) => {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
         Swal.fire("Data Berhasil di Input!", "", "success");
-        navigate("/data-distribusi");
-      } else if (result.isDenied) {
-        Swal.fire("Simpan Data Berhasil!", "", "success");
-        navigate("/data-distribusi");
+        cekTte();
       }
     });
     setFormData({
-      nip: "",
+      email: "",
       password: "",
+      id_dokumen: jsonData?.id || "",
     });
     onClose();
   };
@@ -72,7 +97,7 @@ const ModalTTE = ({ show, onClose, onSave, editIndex, jsonData, user }) => {
                     className=" block text-[#728294] text-base font-semibold mb-2"
                     htmlFor="email"
                   >
-                    NIP :
+                    Email :
                   </label>
                 </div>
                 <div className="">
@@ -81,15 +106,16 @@ const ModalTTE = ({ show, onClose, onSave, editIndex, jsonData, user }) => {
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
                     id="jumlah_barang_dikirim"
-                    type="text"
+                    type="email"
                     onChange={(e) =>
                       setFormData((prev) => ({
                         ...prev,
-                        nip: e.target.value,
+                        email: e.target.value,
                       }))
                     }
-                    value={formData.nip}
-                    placeholder="NIP"
+                    value={formData.email}
+                    placeholder="Email"
+                    required
                   />
                 </div>
               </div>
@@ -110,6 +136,7 @@ const ModalTTE = ({ show, onClose, onSave, editIndex, jsonData, user }) => {
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
                     id="password"
                     type="password"
+                    required
                     value={formData.password}
                     onChange={(e) =>
                       setFormData((prev) => ({
