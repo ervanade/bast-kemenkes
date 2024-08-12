@@ -761,7 +761,7 @@ const AksiDistribusi = () => {
               </div>
             </div>
 
-            {user.role === "2" || user.role === "3" ? (
+            {user.role === "2" || user.role === "3" || user.role === "1" ? (
               <>
                 <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
                   <div className="sm:flex-[2_2_0%]">
@@ -818,12 +818,7 @@ const AksiDistribusi = () => {
                     />
                   </div>
                 </div>
-              </>
-            ) : (
-              ""
-            )}
-            {user.role === "2" ? (
-              <>
+
                 <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
                   <div className="sm:flex-[2_2_0%]">
                     <label
@@ -845,39 +840,13 @@ const AksiDistribusi = () => {
                           keterangan_ppk: e.target.value,
                         }))
                       }
-                      className={` bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                      className={`disabled:bg-[#F2F2F2] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                 "border-red-500" 
              rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
                       placeholder="Keterangan : misal: disetujui atau konfirmasi ke transporter barang sedang dikirim kembali"
                     ></textarea>
                   </div>
                 </div>
-
-                {/* <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-                  <div className="sm:flex-[2_2_0%]">
-                    <label
-                      className="block text-[#728294] text-base font-semibold mb-2"
-                      htmlFor="email"
-                    >
-                      Konfirmasi PPK :
-                    </label>
-                  </div>
-                  <div className="sm:flex-[5_5_0%]">
-                    <Select
-                      options={konfirmasiOptions}
-                      value={formData.konfirmasi_ppk}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          konfirmasi_ppk: e,
-                        }))
-                      }
-                      placeholder="Konfirmasi PPK"
-                      className="w-full cursor-pointer"
-                      theme={selectThemeColors}
-                    />
-                  </div>
-                </div> */}
               </>
             ) : (
               ""
