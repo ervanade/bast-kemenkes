@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CardDataStats from "../components/CardDataStats";
 import { MdOutlineDomainVerification } from "react-icons/md";
 import { AiOutlineDatabase } from "react-icons/ai";
@@ -9,9 +9,53 @@ import Article2 from "../assets/article/article-2.jpg";
 import Article3 from "../assets/article/article-3.jpg";
 import { useSelector } from "react-redux";
 import { returnRole } from "../data/utils";
+import axios from "axios";
+import { CgSpinner } from "react-icons/cg";
 
 const Dashboard = () => {
   const user = useSelector((a) => a.auth.user);
+  const [formData, setFormData] = useState({});
+  const [getLoading, setGetLoading] = useState(false);
+  const fetchDashboardData = async () => {
+    setGetLoading(true);
+    try {
+      // eslint-disable-next-line
+      const responseUser = await axios({
+        method: "get",
+        url: `${
+          import.meta.env.VITE_APP_API_URL
+        }/api/dashboard`,
+        headers: {
+          "Content-Type": "application/json",
+          //eslint-disable-next-line
+          Authorization: `Bearer ${user?.token}`,
+        },
+      }).then(function (response) {
+        // handle success
+        // console.log(response)
+        const data = response.data.data;
+        setFormData(data)
+        setGetLoading(false);
+      });
+    } catch (error) {
+      if (error.response.status == 404) {
+        navigate("/not-found");
+      }
+      console.log(error);
+    }
+  };
+ 
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+  if (getLoading) {
+    return (
+      <div className="flex justify-center items-center">
+        <CgSpinner className="animate-spin inline-block w-8 h-8 text-teal-400" />
+        <span className="ml-2">Loading...</span>
+      </div>
+    );
+  }
   return (
     <div className="">
       <div className="rounded-md border border-stroke bg-white py-4 md:py-12 px-4 md:px-8 shadow-default dark:border-strokedark dark:bg-boxdark flex items-center gap-6 text-bodydark2">
@@ -31,7 +75,7 @@ const Dashboard = () => {
       <div className="mt-4 md:mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardDataStats
           title="Data Distribusi"
-          total={user.role === "3" ? "500" : "8.000"}
+          total={formData?.total || "0"}
           rate="0.43%"
           color="text-[#42DFC3]"
           levelUp
@@ -42,7 +86,7 @@ const Dashboard = () => {
         </CardDataStats>
         <CardDataStats
           title="Data Terverifikasi"
-          total={user.role === "3" ? "400" : "6.000"}
+          total={formData?.verifikasi || "0"}
           rate="4.35%"
           color="text-[#79DF42]"
           levelUp
@@ -56,7 +100,7 @@ const Dashboard = () => {
         </CardDataStats>
         <CardDataStats
           title="Data Belum Terverifikasi"
-          total={user.role === "3" ? "50" : "1.000"}
+          total={formData?.belum_verifikasi || "0"}
           rate="2.59%"
           color="text-[#DFB342]"
           levelUp
@@ -67,7 +111,7 @@ const Dashboard = () => {
         </CardDataStats>
         <CardDataStats
           title="Data Belum Diproses"
-          total={user.role === "3" ? "50" : "1.000"}
+          total={formData?.belum_proses || "0"}
           rate="0.95%"
           color="text-[#F46D6D]"
           levelDown

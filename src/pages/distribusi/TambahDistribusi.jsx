@@ -477,25 +477,25 @@ const TambahDistribusi = () => {
                   <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-bodydark2 uppercase bg-[#EBFBFA] dark:bg-gray-700 dark:text-gray-400">
                       <tr>
-                        <th scope="col" className="px-6 py-3 text-center">
+                        <th scope="col" className="px-4 py-3 text-center">
                           Nama Barang
                         </th>
-                        <th scope="col" className="px-6 py-3 text-center">
+                        <th scope="col" className="px-4 py-3 text-center">
                           Merk/Tipe
                         </th>
-                        <th scope="col" className="px-6 py-3 text-center">
+                        <th scope="col" className="px-4 py-3 text-center">
                           Satuan
                         </th>
-                        <th scope="col" className="px-6 py-3 text-center">
+                        <th scope="col" className="px-4 py-3 text-center">
                           Jumlah Dikirim
                         </th>
-                        <th scope="col" className="px-6 py-3 text-center">
+                        <th scope="col" className="px-4 py-3 text-center">
                           Jumlah Diterima
                         </th>
-                        <th scope="col" className="px-6 py-3 text-center">
+                        <th scope="col" className="px-4 py-3 text-center">
                           Harga Satuan
                         </th>
-                        <th scope="col" className="px-6 py-3 text-center">
+                        <th scope="col" className="px-4 py-3 text-center">
                           Aksi
                         </th>
                       </tr>
@@ -504,30 +504,30 @@ const TambahDistribusi = () => {
                       {formData.dataBarang.map((barang, index) => (
                         <tr
                           key={index}
-                          className="bg-white  dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                          className="bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                         >
                           <th
                             scope="row"
-                            className="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                            className="px-2 py-2 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white"
                           >
                             {barang.jenis_alkes}
                           </th>
-                          <td className="px-6 py-4 text-center">
+                          <td className="px-2 py-2 text-center">
                             {barang.merk}
                           </td>
-                          <td className="px-6 py-4 text-center">
+                          <td className="px-2 py-2 text-center">
                             {barang.satuan}
                           </td>
-                          <td className="px-6 py-4 text-center">
+                          <td className="px-2 py-2 text-center">
                             {barang.jumlah_dikirim}
                           </td>
-                          <td className="px-6 py-4 text-center">
+                          <td className="px-2 py-2 text-center">
                             {barang.jumlah_diterima}
                           </td>
-                          <td className="px-6 py-4 text-center">
+                          <td className="px-2 py-2 text-center">
                             {barang.harga_satuan}
                           </td>
-                          <td className="px-6 py-4 text-center flex items-center gap-2">
+                          <td className="px-2 py-2 text-center flex items-center gap-2">
                             <button
                               title="Edit"
                               onClick={(e) => handleEditBarang(e, index)}

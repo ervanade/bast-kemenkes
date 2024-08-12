@@ -140,12 +140,12 @@ const DataBarang = () => {
         selector: (row) => row.merk || "",
         sortable: true,
       },
-      {
-        name: "Tipe",
-        selector: (row) => row.tipe || "",
-        sortable: true,
-        width: "100px",
-      },
+      // {
+      //   name: "Tipe",
+      //   selector: (row) => row.tipe || "",
+      //   sortable: true,
+      //   width: "100px",
+      // },
       {
         name: "Satuan",
         selector: (row) => row.satuan || "",
