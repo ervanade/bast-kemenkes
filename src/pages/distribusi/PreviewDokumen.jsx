@@ -118,10 +118,10 @@ const PreviewDokumen = () => {
           },
           ket_daerah: "",
           ket_ppk: data.keterangan_ppk,
-          tte_daerah : data.tte_daerah || "",
+          tte_daerah : data.tte_daerah || "https://media.istockphoto.com/id/1472819341/photo/background-white-light-grey-total-grunge-abstract-concrete-cement-wall-paper-texture-platinum.webp?b=1&s=170667a&w=0&k=20&c=yoY1jUAKlKVdakeUsRRsNEZdCx2RPIEgaIxSwQ0lS1k=",
           nama_daerah : data.nama_daerah || "",
           nip_daerah : data.nip_daerah || "",
-          tte_ppk : data.tte_ppk || "",
+          tte_ppk : data.tte_ppk || "https://media.istockphoto.com/id/1472819341/photo/background-white-light-grey-total-grunge-abstract-concrete-cement-wall-paper-texture-platinum.webp?b=1&s=170667a&w=0&k=20&c=yoY1jUAKlKVdakeUsRRsNEZdCx2RPIEgaIxSwQ0lS1k=",
           nama_ppk : data.nama_ppk || "",
           nip_ppk : data.nip_ppk || ""
         });
