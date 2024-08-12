@@ -137,7 +137,6 @@ const PreviewDokumen = () => {
   useEffect(() => {
     fetchDokumenData();
   }, []);
-  console.log(jsonData)
 
   useEffect(() => {
     const iframeCurrent = iframeRef.current;
