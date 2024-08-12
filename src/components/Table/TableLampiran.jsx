@@ -404,7 +404,7 @@ export const RenderBarangPages = (jsonData) => {
                 </View>
                 <View style={{ ...styles.tableCol, width: "11.875%" }}>
                   <Text style={styles.tableCell}>
-                    {totalJumlahDikirim.toFixed(0)}
+                    {jsonData?.total_barang_dikirim}
                   </Text>
                 </View>
                 <View style={{ ...styles.tableCol, width: "11.875%" }}>
