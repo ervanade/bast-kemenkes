@@ -214,15 +214,50 @@ const styles = StyleSheet.create({
 
 const ITEMS_PER_PAGE = 8;
 
-export const RenderBarangPages = (dataBarang, jsonData) => {
+const getAllDetailDistribusi = (distribusi) => {
+  return distribusi.flatMap((d) =>
+    d.detail_distribusi.map((item, index) => ({
+      no: index + 1 || "",
+      namaBarang: item.jenis_alkes || "",
+      merk: item.merk || "",
+      nomorBukti: item.nomor_bukti || "",
+      jumlah: item.jumlah_total || "",
+      jumlah_dikirim: item.jumlah_dikirim || "",
+      jumlah_diterima: item.jumlah_diterima || "",
+      hargaSatuan: item.harga_satuan || "",
+      jumlahNilai: `Rp. ${item.jumlah_total || ""}`,
+      keterangan: item.keterangan || "",
+    }))
+  );
+};
+
+export const RenderBarangPages = (jsonData) => {
+  const dataBarang = getAllDetailDistribusi(jsonData?.distribusi || []);
   const pages = [];
   const totalItems = dataBarang.length;
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+
+  const totalJumlahDikirim = dataBarang.reduce(
+    (acc, item) => acc + (parseFloat(item.jumlah_dikirim) || 0),
+    0
+  );
+  const totalHargaSatuan = dataBarang.reduce(
+    (acc, item) => acc + (parseFloat(item.hargaSatuan) || 0),
+    0
+  );
+  const totalJumlahNilai = dataBarang.reduce(
+    (acc, item) =>
+      acc +
+      (parseFloat(item.jumlahNilai.replace(/Rp\. /, "").replace(/,/g, "")) ||
+        0),
+    0
+  );
 
   for (let i = 0; i < totalPages; i++) {
     const start = i * ITEMS_PER_PAGE;
     const end = start + ITEMS_PER_PAGE;
     const currentData = dataBarang.slice(start, end);
+    const isLastPage = i === totalPages - 1;
 
     pages.push(
       <Page
@@ -362,23 +397,31 @@ export const RenderBarangPages = (dataBarang, jsonData) => {
               </View>
             ))}
 
-            <View style={styles.tableRow}>
-              <View style={{ ...styles.tableCol1, width: `52.5%` }}>
-                <Text style={styles.tableCell}>Total</Text>
+            {isLastPage && (
+              <View style={styles.tableRow}>
+                <View style={{ ...styles.tableCol1, width: `52.5%` }}>
+                  <Text style={styles.tableCell}>Total</Text>
+                </View>
+                <View style={{ ...styles.tableCol, width: "11.875%" }}>
+                  <Text style={styles.tableCell}>
+                    {totalJumlahDikirim.toFixed(0)}
+                  </Text>
+                </View>
+                <View style={{ ...styles.tableCol, width: "11.875%" }}>
+                  <Text style={styles.tableCell}>
+                    {totalHargaSatuan.toFixed(0)}
+                  </Text>
+                </View>
+                <View style={{ ...styles.tableCol, width: "11.875%" }}>
+                  <Text style={styles.tableCell}>
+                    Rp. {totalJumlahNilai.toFixed(0)}
+                  </Text>
+                </View>
+                <View style={{ ...styles.tableCol, width: "11.875%" }}>
+                  <Text style={styles.tableCell}></Text>
+                </View>
               </View>
-              <View style={{ ...styles.tableCol, width: "11.875%" }}>
-                <Text style={styles.tableCell}></Text>
-              </View>
-              <View style={{ ...styles.tableCol, width: "11.875%" }}>
-                <Text style={styles.tableCell}></Text>
-              </View>
-              <View style={{ ...styles.tableCol, width: "11.875%" }}>
-                <Text style={styles.tableCell}></Text>
-              </View>
-              <View style={{ ...styles.tableCol, width: "11.875%" }}>
-                <Text style={styles.tableCell}></Text>
-              </View>
-            </View>
+            )}
           </View>
 
           <View style={{ marginTop: 16 }}>

@@ -106,7 +106,7 @@ const PreviewDokumen = () => {
           kabupaten: data.kabupaten || "",
           penerima_hibah: data.penerima_hibah || "",
           kepala_unit_pemberi: data.kepala_unit_pemberi || "",
-          distribusi: data.distribusi[0] || [],
+          distribusi: data.distribusi || [],
           nipKapus: "nip.121212",
           namaBarang: data.nama_barang,
           status_tte: data.status_tte || "",
@@ -1338,7 +1338,7 @@ const PreviewDokumen = () => {
           </View>
         </View>
       </Page>
-      {RenderBarangPages(dataBarang, jsonData)}
+      {RenderBarangPages(jsonData)}
 
       {/* <Page
         size="FOLIO"
