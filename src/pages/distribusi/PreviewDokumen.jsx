@@ -127,6 +127,8 @@ const PreviewDokumen = () => {
           tte_ppk: data.tte_ppk || defaultImage,
           nama_ppk: data.nama_ppk || "",
           nip_ppk: data.nip_ppk || "",
+          total_barang_dikirim: data.total_barang_dikirim || "",
+          total_harga: data.total_harga || "",
         });
         setGetLoading(false);
       });
@@ -682,9 +684,8 @@ const PreviewDokumen = () => {
               }}
             >
               Jumlah barang yang dihibahkan adalah{" "}
-              {jsonData?.distribusi?.jumlah_barang_dikirim || ""} unit dan
-              jumlah nilai perolehan sebesar Rp{" "}
-              {jsonData?.distribusi?.total_nilai_perolehan || ""} dengan rincian
+              {jsonData?.total_barang_dikirim || ""} unit dan jumlah nilai
+              perolehan sebesar Rp {jsonData?.dtotal_harga || ""} dengan rincian
               sebagaimana tercantum dalam lampiran, yang merupakan bagian tidak
               terpisahkan dari Berita Acara Serah Terima Operasional (BASTO)
               ini.
@@ -1621,12 +1622,11 @@ const PreviewDokumen = () => {
             oleh dan PIHAK KEDUA dalam hal ini Masyarakat/Pemerintah Daerah yang
             diwakili oleh Kepala Dinas Kesehatan {jsonData?.kabupaten} berupa
             BMN dengan rincian terlampir , sejumlah{" "}
-            {jsonData?.distribusi.jumlah_barang_dikirim} dengan total nilai
-            perolehan sebesar Rp{jsonData?.distribusi.total_nilai_perolehan},
-            sesuai dengan Berita Acara Serah Terima Operasional (BASTO) nomor{" "}
-            {jsonData?.nomorSurat} tanggal {jsonData?.tanggal} (terlampir).
-            Demikian Naskah Hibah dan BAST ini kami buat, selanjutnya agar
-            digunakan sebagaimana mestinya.
+            {jsonData?.total_barang_dikirim} dengan total nilai perolehan
+            sebesar Rp{jsonData?.total_harga}, sesuai dengan Berita Acara Serah
+            Terima Operasional (BASTO) nomor {jsonData?.nomorSurat} tanggal{" "}
+            {jsonData?.tanggal} (terlampir). Demikian Naskah Hibah dan BAST ini
+            kami buat, selanjutnya agar digunakan sebagaimana mestinya.
           </Text>
 
           <View style={styles.ttdContainer}>
