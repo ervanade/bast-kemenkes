@@ -381,7 +381,270 @@ const PreviewDokumen = () => {
       jumlahNilai: `Rp. ${distribusi.jumlah_total || ""}` || "",
       keterangan: distribusi.keterangan || "",
     })) || [];
-  console.log(jsonData?.tte_daerah);
+
+  const ITEMS_PER_PAGE = 8;
+
+  const renderBarangPages = () => {
+    const pages = [];
+    const totalItems = dataBarang.length;
+    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+
+    for (let i = 0; i < totalPages; i++) {
+      const start = i * ITEMS_PER_PAGE;
+      const end = start + ITEMS_PER_PAGE;
+      const currentData = dataBarang.slice(start, end);
+
+      pages.push(
+        <Page
+          key={i}
+          size="FOLIO"
+          style={{ paddingTop: 0, ...styles.page }}
+          orientation="landscape"
+        >
+          <View
+            style={{
+              paddingVertical: 0,
+              marginTop: 0,
+              ...styles.docContainerBorder,
+              height: 520,
+            }}
+          >
+            <View
+              style={{
+                ...styles.titleContainer,
+                marginBottom: 0,
+                marginTop: 0,
+              }}
+            >
+              <Text
+                style={{
+                  ...styles.reportTitle,
+                  width: "40%",
+                  letterSpacing: 1,
+                }}
+              ></Text>
+              <Text
+                style={{
+                  ...styles.reportTitle,
+                  letterSpacing: 0.7,
+                  width: "60%",
+                  lineHeight: 1.5,
+                }}
+              >
+                LAMPIRAN{"\n"}BERITA ACARA SERAH TERIMA OPERASIONAL BARANG MILIK
+                NEGARA{"\n"}NOMOR: {jsonData?.nomorSurat}
+                {"\n"}TANGGAL: {jsonData?.tanggal}
+              </Text>
+            </View>
+
+            <View
+              style={{
+                ...styles.titleContainer,
+                width: "100%",
+                marginBottom: 8,
+                marginTop: 16,
+              }}
+            >
+              <Text
+                style={{
+                  ...styles.reportTitle,
+                  width: "100%",
+                  textAlign: "center",
+                  letterSpacing: 1,
+                  marginTop: 8,
+                }}
+              >
+                DAFTAR BARANG MILIK NEGARA YANG DARI SEJAK AWAL DISERAHKAN
+                KEPADA MASYARAKAT/PEMERINTAH DAERAH DINAS KESEHATAN KOTA /
+                KABUPATEN {jsonData?.kabupaten}
+              </Text>
+            </View>
+            <View style={styles.table}>
+              <View style={styles.tableRow}>
+                <View style={styles.tableCol1Header}>
+                  <Text style={styles.tableCellHeader}>No</Text>
+                </View>
+                <View style={styles.tableColHeader}>
+                  <Text style={styles.tableCellHeader}>Nama Barang</Text>
+                </View>
+                <View style={styles.tableColHeader}>
+                  <Text style={styles.tableCellHeader}>Merk/Tipe</Text>
+                </View>
+                <View style={styles.tableColHeader}>
+                  <Text style={styles.tableCellHeader}>
+                    Nomor Bukti Kepemilikan
+                  </Text>
+                </View>
+                <View style={styles.tableColHeader}>
+                  <Text style={styles.tableCellHeader}>Satuan</Text>
+                </View>
+                <View style={styles.tableColHeader}>
+                  <Text style={styles.tableCellHeader}>Jumlah</Text>
+                </View>
+                <View style={styles.tableColHeader}>
+                  <Text style={styles.tableCellHeader}>Harga Satuan</Text>
+                </View>
+                <View style={styles.tableColHeader}>
+                  <Text style={styles.tableCellHeader}>
+                    Jumlah Total Nilai Perolehan (Rp)
+                  </Text>
+                </View>
+                <View style={styles.tableColHeader}>
+                  <Text style={styles.tableCellHeader}>Keterangan</Text>
+                </View>
+              </View>
+              {currentData.map((items, index) => (
+                <View style={styles.tableRow} key={index}>
+                  <View style={styles.tableCol1}>
+                    <Text style={styles.tableCell}>{start + index + 1}</Text>
+                  </View>
+                  <View style={styles.tableCol}>
+                    <Text style={styles.tableCell}>
+                      {items.namaBarang || ""}
+                    </Text>
+                  </View>
+                  <View style={styles.tableCol}>
+                    <Text style={styles.tableCell}>{items.merk || ""}</Text>
+                  </View>
+                  <View style={styles.tableCol}>
+                    <Text style={styles.tableCell}>
+                      {items.nomorBukti || ""}
+                    </Text>
+                  </View>
+                  <View style={styles.tableCol}>
+                    <Text style={styles.tableCell}>{items.satuan || ""}</Text>
+                  </View>
+                  <View style={styles.tableCol}>
+                    <Text style={styles.tableCell}>
+                      {items.jumlah_dikirim || ""}
+                    </Text>
+                  </View>
+                  <View style={styles.tableCol}>
+                    <Text style={styles.tableCell}>
+                      {items.hargaSatuan || ""}
+                    </Text>
+                  </View>
+                  <View style={styles.tableCol}>
+                    <Text style={styles.tableCell}>
+                      {items.jumlahNilai || ""}
+                    </Text>
+                  </View>
+                  <View style={styles.tableCol}>
+                    <Text style={styles.tableCell}>
+                      {items.keterangan || ""}
+                    </Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+
+            <View style={{ marginTop: 16 }}>
+              <View style={styles.table}>
+                <View style={styles.tableRow}>
+                  <View
+                    style={{
+                      ...styles.tableCol1Header,
+                      width: "70%",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        ...styles.tableCellHeader,
+                        color: "#000",
+                        fontSize: 11,
+                        lineHeight: 1.5,
+                        fontWeight: "bold",
+                        textAlign: "left",
+                        fontFamily: "Arial",
+                      }}
+                    >
+                      PIHAK KESATU
+                    </Text>
+                  </View>
+                  <View style={{ ...styles.tableColHeader, width: "30%" }}>
+                    <Text
+                      style={{
+                        ...styles.tableCellHeader,
+                        color: "#000",
+                        fontSize: 11,
+                        lineHeight: 1.5,
+                        fontWeight: "bold",
+                        textAlign: "left",
+                        fontFamily: "Arial",
+                      }}
+                    >
+                      PIHAK KEDUA
+                    </Text>
+                  </View>
+                </View>
+
+                <View style={styles.tableRow}>
+                  <View style={{ ...styles.tableCol, width: "70%" }}>
+                    <Text style={{ ...styles.tableCell, ...styles.text }}>
+                      Kementerian Kesehatan{" "}
+                      {jsonData?.kepala_unit_pemberi || ""}
+                    </Text>
+                  </View>
+                  <View style={{ ...styles.tableCol, width: "30%" }}>
+                    <Text style={{ ...styles.tableCell, ...styles.text }}>
+                      Kepala Dinas Kesehatan Kota/ Kabupaten{" "}
+                      {jsonData?.penerima_hibah || ""}
+                    </Text>
+                  </View>
+                </View>
+
+                <View style={styles.tableRow}>
+                  <View style={{ ...styles.tableCol, width: "70%" }}>
+                    <Text
+                      style={{
+                        ...styles.tableCell,
+                        ...styles.text,
+                        marginBottom: 0,
+                      }}
+                    >
+                      Nama {jsonData?.nama_ppk || ""}
+                    </Text>
+                    <Text
+                      style={{
+                        ...styles.tableCell,
+                        ...styles.text,
+                        marginBottom: 0,
+                      }}
+                    >
+                      NIP {jsonData?.nip_ppk || ""}
+                    </Text>
+                  </View>
+                  <View style={{ ...styles.tableCol, width: "30%" }}>
+                    <Text
+                      style={{
+                        ...styles.tableCell,
+                        ...styles.text,
+                        marginBottom: 0,
+                      }}
+                    >
+                      Nama {jsonData?.nama_daerah || ""}
+                    </Text>
+                    <Text
+                      style={{
+                        ...styles.tableCell,
+                        ...styles.text,
+                        marginBottom: 0,
+                      }}
+                    >
+                      NIP {jsonData?.nip_daerah || ""}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </View>
+        </Page>
+      );
+    }
+
+    return pages;
+  };
 
   const Dokumen = () => (
     <Document title={`Dokumen ${jsonData?.nomorSurat}`}>
@@ -1337,6 +1600,8 @@ const PreviewDokumen = () => {
           </View>
         </View>
       </Page>
+      {renderBarangPages()}
+
       <Page
         size="FOLIO"
         style={{ paddingTop: 0, ...styles.page }}
