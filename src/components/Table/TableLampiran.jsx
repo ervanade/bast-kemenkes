@@ -261,8 +261,9 @@ export const RenderBarangPages = (dataBarang, jsonData) => {
                 lineHeight: 1.5,
               }}
             >
-              LAMPIRAN{"\n"}BERITA ACARA SERAH TERIMA OPERASIONAL BARANG MILIK
-              NEGARA{"\n"}NOMOR: {jsonData?.nomorSurat}
+              LAMPIRAN {i + 1}
+              {"\n"}BERITA ACARA SERAH TERIMA OPERASIONAL BARANG MILIK NEGARA
+              {"\n"}NOMOR: {jsonData?.nomorSurat}
               {"\n"}TANGGAL: {jsonData?.tanggal}
             </Text>
           </View>
