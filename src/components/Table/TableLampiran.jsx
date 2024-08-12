@@ -361,6 +361,24 @@ export const RenderBarangPages = (dataBarang, jsonData) => {
                 </View>
               </View>
             ))}
+
+            <View style={styles.tableRow}>
+              <View style={{ ...styles.tableCol1, width: `52.5%` }}>
+                <Text style={styles.tableCell}>Total</Text>
+              </View>
+              <View style={{ ...styles.tableCol, width: "11.875%" }}>
+                <Text style={styles.tableCell}></Text>
+              </View>
+              <View style={{ ...styles.tableCol, width: "11.875%" }}>
+                <Text style={styles.tableCell}></Text>
+              </View>
+              <View style={{ ...styles.tableCol, width: "11.875%" }}>
+                <Text style={styles.tableCell}></Text>
+              </View>
+              <View style={{ ...styles.tableCol, width: "11.875%" }}>
+                <Text style={styles.tableCell}></Text>
+              </View>
+            </View>
           </View>
 
           <View style={{ marginTop: 16 }}>
