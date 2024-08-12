@@ -29,6 +29,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { CgSpinner } from "react-icons/cg";
 import HeaderDokumen from "../../components/Title/HeaderDokumen";
+import { RenderBarangPages } from "../../components/Table/TableLampiran";
 
 const PreviewDokumen = () => {
   const { id } = useParams();
@@ -1600,9 +1601,9 @@ const PreviewDokumen = () => {
           </View>
         </View>
       </Page>
-      {renderBarangPages()}
+      {RenderBarangPages(dataBarang, jsonData)}
 
-      <Page
+      {/* <Page
         size="FOLIO"
         style={{ paddingTop: 0, ...styles.page }}
         orientation="landscape"
@@ -1831,37 +1832,9 @@ const PreviewDokumen = () => {
                 </View>
               </View>
             </View>
-
-            {/* <View style={{ flex: 1 }}>
-              <Text style={styles.textBold}>PIHAK KESATU</Text>
-              <Text style={styles.text}>Kementerian Kesehatan... (4) </Text>
-              <Image
-                style={{ ...styles.imageTtd, marginVertical: 16 }}
-                src={jsonData?.tteDaerah.image_url}
-              />
-              <Text style={{ marginTop: 8 }}>
-                Nama : Nama Pegawai Kemenkes {"\n"}
-                Nip :
-              </Text>
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.textBold}>PIHAK KEDUA</Text>
-              <Text style={styles.text}>
-                Kepala Dinas Kesehatan Provinsi/ Kota/ Kabupaten/RSUD/Swasta/
-                {jsonData?.puskesmas}
-              </Text>
-              <Image
-                style={{ ...styles.imageTtd, marginVertical: 8 }}
-                src={jsonData?.tteDaerah.image_url}
-              />
-              <Text style={{ marginTop: 8 }}>
-                Nama : {jsonData?.namaKapus} {"\n"}
-                Nip : 1996202491
-              </Text>
-            </View> */}
           </View>
         </View>
-      </Page>
+      </Page> */}
 
       <Page size="FOLIO" style={styles.page}>
         <View style={styles.docContainer}>
