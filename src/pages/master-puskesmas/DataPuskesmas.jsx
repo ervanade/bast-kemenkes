@@ -39,7 +39,8 @@ const DataPuskesmas = () => {
         (item?.id_kecamatan &&
           item.id_kecamatan.toLowerCase().includes(value)) ||
         (item?.alamat && item.alamat.toLowerCase().includes(value)) ||
-        (item?.nomor_telpon && item.nomor_telpon.toLowerCase().includes(value))
+        (item?.kode_pusdatin_baru &&
+          item.kode_pusdatin_baru.toLowerCase().includes(value))
       );
     });
 
@@ -153,12 +154,12 @@ const DataPuskesmas = () => {
         sortable: true,
         width: "100px",
       },
-      {
-        name: "Nomor Telpon",
-        selector: (row) => row.nomor_telpon,
-        sortable: true,
-        width: "100px",
-      },
+      // {
+      //   name: "Kode Pusdatin",
+      //   selector: (row) => row.kode_pusdatin_baru,
+      //   sortable: true,
+      //   width: "100px",
+      // },
       {
         name: "Aksi",
         cell: (row) => (

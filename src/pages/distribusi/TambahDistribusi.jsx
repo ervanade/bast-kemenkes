@@ -74,6 +74,8 @@ const TambahDistribusi = () => {
     setSelectedKota(selectedOption);
     setSelectedKecamatan(null);
     setDataKecamatan([]);
+    setSelectedPuskesmas(null);
+    setDataPuskesmas([]);
     if (selectedOption) {
       setFormData((prev) => ({
         ...prev,
@@ -85,6 +87,8 @@ const TambahDistribusi = () => {
   };
 
   const handleKecamatanChange = (selectedOption) => {
+    setSelectedPuskesmas(null);
+    setDataPuskesmas([]);
     setSelectedKecamatan(selectedOption);
     if (selectedOption) {
       setFormData((prev) => ({
@@ -105,6 +109,10 @@ const TambahDistribusi = () => {
   };
 
   const handleDokumenChange = (selectedOption) => {
+    setSelectedKecamatan(null);
+    setDataKecamatan([]);
+    setSelectedPuskesmas(null);
+    setDataPuskesmas([]);
     setSelectedDokumen(selectedOption);
     if (selectedOption) {
       setFormData((prev) => ({
@@ -201,12 +209,14 @@ const TambahDistribusi = () => {
         },
       });
       setDataDokumen([
-        ...response.data.data.map((item) => ({
-          label: item.nama_dokumen,
-          value: item.id,
-          id_provinsi: item.id_provinsi,
-          id_kabupaten: item.id_kabupaten,
-        })),
+        ...response.data.data
+          .filter((a) => a.status_tte == "0")
+          .map((item) => ({
+            label: item.nama_dokumen,
+            value: item.id,
+            id_provinsi: item.id_provinsi,
+            id_kabupaten: item.id_kabupaten,
+          })),
       ]);
     } catch (error) {
       setError(true);

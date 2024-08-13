@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { encryptId } from "../../data/utils";
 
 const HeaderDokumen = ({ formData, jsonData, user }) => {
-  console.log(jsonData);
   const [showModal, setShowModal] = useState(false);
   const handleTTE = async (e) => {
     e.preventDefault();

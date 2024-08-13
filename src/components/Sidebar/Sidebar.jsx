@@ -512,7 +512,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                               </NavLink>
                             </li>
 
-                            <li>
+                            {/* <li>
                               <NavLink
                                 to="/tes-template"
                                 className={({ isActive }) =>
@@ -522,7 +522,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                               >
                                 Template Dokumen
                               </NavLink>
-                            </li>
+                            </li> */}
                           </ul>
                         </div>
                         {/* <!-- Dropdown Menu End --> */}

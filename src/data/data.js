@@ -267,6 +267,36 @@ export const ProgramOptions = [
     }
 ]
 
+export const wilayahKerjaOptions = [
+    {
+        "label": "Perkotaan",
+        "value": "Perkotaan"
+    },
+    {
+        "label": "Perdesaan",
+        "value": "Perdesaan"
+    },
+    {
+        "label": "Terpencil",
+        "value": "Terpencil"
+    },
+    {
+        "label": "Sangat Terpencil",
+        "value": "Sangat Terpencil"
+    }
+]
+
+export const pelayananOptions = [
+    {
+        "label": "Rawat Inap",
+        "value": "Rawat Inap"
+    },
+    {
+        "label": "Non Rawat Inap",
+        "value": "Non Rawat Inap"
+    }
+]
+
 export const batchOptions = [
     {
         "label": "Batch 1",

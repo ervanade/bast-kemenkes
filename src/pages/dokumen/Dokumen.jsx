@@ -653,7 +653,7 @@ const Dokumen = () => {
             : user.role === "2"
             ? "ADMIN PPK"
             : user.role === "3"
-            ? `ADMIN KAB/KOTA BEKASI`
+            ? `ADMIN KAB/KOTA`
             : ""}
         </h1>
         <div className="flex items-center lg:items-end mt-8 gap-4 flex-col lg:flex-row">

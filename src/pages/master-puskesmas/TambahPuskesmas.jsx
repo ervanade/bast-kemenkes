@@ -6,7 +6,9 @@ import {
   dataBarang,
   dataKecamatan,
   dataPuskesmas,
+  pelayananOptions,
   roleOptions,
+  wilayahKerjaOptions,
 } from "../../data/data";
 import { decryptId, selectThemeColors } from "../../data/utils";
 import Select from "react-select";
@@ -25,6 +27,9 @@ const TambahPuskesmas = () => {
     nomor_telpon: "",
     email: "",
     status_puskesmas: "",
+    wilayah_kerja: "",
+    kode_pusdatin_baru: "",
+    pelayanan: "",
     keterangan: "",
   });
 
@@ -38,6 +43,8 @@ const TambahPuskesmas = () => {
   const [selectedProvinsi, setSelectedProvinsi] = useState(null);
   const [selectedKota, setSelectedKota] = useState(null);
   const [selectedKecamatan, setSelectedKecamatan] = useState(null);
+  const [selectedWilayahKerja, setSelectedWilayahKerja] = useState(null);
+  const [selectedPelayanan, setSelectedPelayanan] = useState(null);
 
   const [listKota, setListKota] = useState([]);
   const [listKecamatan, setListKecamatan] = useState([]);
@@ -182,13 +189,29 @@ const TambahPuskesmas = () => {
     }));
   };
 
+  const handleWilayahKerjaChange = (selectedOption) => {
+    setSelectedWilayahKerja(selectedOption);
+    setFormData((prev) => ({
+      ...prev,
+      wilayah_kerja: selectedOption ? selectedOption.value.toString() : "",
+    }));
+  };
+
+  const handlePelayananChange = (selectedOption) => {
+    setSelectedPelayanan(selectedOption);
+    setFormData((prev) => ({
+      ...prev,
+      pelayanan: selectedOption ? selectedOption.value.toString() : "",
+    }));
+  };
+
   return (
     <div>
-      <Breadcrumb pageName="Form Edit Data Puskesmas" />
+      <Breadcrumb pageName="Form Tambah Data Puskesmas" />
       <Card>
         <div className="card-header flex justify-between">
           <h1 className="mb-12 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
-            {user.role === "1" ? "Form Edit Data Puskesmas" : ""}
+            {user.role === "1" ? "Form Tambah Data Puskesmas" : ""}
           </h1>
           <div>
             <Link
@@ -288,7 +311,38 @@ const TambahPuskesmas = () => {
               </div>
             </div>
 
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+            <FormInput
+              id="kode_pusdatin_baru"
+              value={formData.kode_pusdatin_baru}
+              onChange={handleChange}
+              type="text"
+              placeholder={"Kode Pusdatin"}
+              label="Kode Pusdatin :"
+              required
+            />
+            <FormInput
+              select={true}
+              id="wilayah_kerja"
+              options={wilayahKerjaOptions}
+              value={selectedWilayahKerja}
+              onChange={handleWilayahKerjaChange}
+              placeholder={"Pilih Karakteristik Wilayah Kerja"}
+              label="Karakteristik Wilayah Kerja :"
+              required
+            />
+
+            <FormInput
+              select={true}
+              id="pelayanan"
+              options={pelayananOptions}
+              value={selectedPelayanan}
+              onChange={handlePelayananChange}
+              placeholder={"Pilih Pelayanan"}
+              label="Pelayanan :"
+              required
+            />
+
+            {/* <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
                 <label
                   className="block text-[#728294] text-base font-normal mb-2"
@@ -334,7 +388,7 @@ const TambahPuskesmas = () => {
                   placeholder="Email"
                 />
               </div>
-            </div>
+            </div> */}
 
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
@@ -354,7 +408,6 @@ const TambahPuskesmas = () => {
                   value={formData.status_puskesmas}
                   onChange={handleChange}
                   type="text"
-                  required
                   placeholder="Status Puskesmas"
                 />
               </div>

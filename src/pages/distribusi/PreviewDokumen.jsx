@@ -30,6 +30,7 @@ import { useSelector } from "react-redux";
 import { CgSpinner } from "react-icons/cg";
 import HeaderDokumen from "../../components/Title/HeaderDokumen";
 import { RenderBarangPages } from "../../components/Table/TableLampiran";
+import { RenderHibahPages } from "../../components/Table/TableHibah";
 
 const PreviewDokumen = () => {
   const { id } = useParams();
@@ -1573,7 +1574,7 @@ const PreviewDokumen = () => {
         </View>
       </Page> */}
 
-      <Page size="FOLIO" style={styles.page}>
+      {/* <Page size="FOLIO" style={styles.page}>
         <View style={styles.docContainer}>
           <Text style={styles.text}>
             B. Format II, Naskah Hibah dan Berita Acara Serah Terima BMN
@@ -1653,7 +1654,8 @@ const PreviewDokumen = () => {
             </View>
           </View>
         </View>
-      </Page>
+      </Page> */}
+      {RenderHibahPages(jsonData)}
     </Document>
   );
   return (

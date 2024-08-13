@@ -161,8 +161,8 @@ const DetailKota = () => {
   return (
     <div>
       <Breadcrumb
-        pageName="Data Detail Kab/Kota"
-        title="Data Detail Kab/Kota"
+        pageName="Data Detail Kecamatan"
+        title="Data Detail Kecamatan"
       />
       <div className="flex justify-end mb-4">
         <button
@@ -209,7 +209,7 @@ const DetailKota = () => {
           </div>
           <div className="div flex gap-2 flex-row">
             <button
-              title="Export Data Kota"
+              title="Export Data Kecamatan"
               className="flex items-center gap-2 cursor-pointer text-base text-white px-4 py-2 bg-primary rounded-md tracking-tight"
               onClick={handleExport}
             >
@@ -218,7 +218,7 @@ const DetailKota = () => {
             </button>
             {user.role === "1" ? (
               <button
-                title="Tambah Data Kota"
+                title="Tambah Data Kecamatan"
                 className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
                 onClick={handleExport}
               >
@@ -227,7 +227,7 @@ const DetailKota = () => {
                   className="flex items-center gap-2 px-4 py-2"
                 >
                   <FaPlus size={16} />
-                  <span className="hidden sm:block">Tambah Data Kota</span>
+                  <span className="hidden sm:block">Tambah Data Kecamatan</span>
                 </Link>
               </button>
             ) : (

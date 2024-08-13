@@ -8,7 +8,6 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const ModalTTE = ({ show, onClose, onSave, editIndex, jsonData, user }) => {
-  console.log(user);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -39,10 +38,12 @@ const ModalTTE = ({ show, onClose, onSave, editIndex, jsonData, user }) => {
       data: JSON.stringify(formData),
     })
       .then(function (response) {
-        Swal.fire("Data Berhasil di Input!", "", "success");
+        Swal.fire("Dokumen Berhasil di TTE!", "", "success");
         navigate("/dokumen");
       })
       .catch((error) => {
+        Swal.fire("Gagal TTE! Pastikan TTE Sudah di Input", "", "error");
+        navigate("/profile");
         setLoading(false);
         console.log(error);
       });
@@ -59,7 +60,6 @@ const ModalTTE = ({ show, onClose, onSave, editIndex, jsonData, user }) => {
     }).then((result) => {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
-        Swal.fire("Data Berhasil di Input!", "", "success");
         cekTte();
       }
     });

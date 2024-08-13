@@ -80,11 +80,11 @@ const TambahKecamatan = () => {
 
   return (
     <div>
-      <Breadcrumb pageName="Form Edit Data Kota" />
+      <Breadcrumb pageName="Form Tambah Data Kecamatan" />
       <Card>
         <div className="card-header flex justify-between">
           <h1 className="mb-12 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
-            {user.role === "1" ? "Form Edit Data Kota" : ""}
+            {user.role === "1" ? "Form Tambah Data Kecamatan" : ""}
           </h1>
           <div>
             <Link
@@ -103,7 +103,7 @@ const TambahKecamatan = () => {
                   className="block text-[#728294] text-base font-normal mb-2"
                   htmlFor="name"
                 >
-                  Nama Kota :
+                  Nama Kecamatan :
                 </label>
               </div>
               <div className="sm:flex-[5_5_0%]">
@@ -118,7 +118,7 @@ const TambahKecamatan = () => {
                   }
                   type="text"
                   required
-                  placeholder="Nama Kota"
+                  placeholder="Nama Kecamatan"
                 />
               </div>
             </div>
@@ -129,7 +129,7 @@ const TambahKecamatan = () => {
                   className="block text-[#728294] text-base font-normal mb-2"
                   htmlFor="provinsi"
                 >
-                  Provinsi :
+                  Kab / Kota :
                 </label>
               </div>
               <div className="sm:flex-[5_5_0%]">
@@ -140,7 +140,7 @@ const TambahKecamatan = () => {
                   }))}
                   value={selectedProvinsi}
                   onChange={handleSelectChange}
-                  placeholder="Pilih Provinsi"
+                  placeholder="Pilih Kab/Kota"
                   className="w-full"
                   theme={selectThemeColors}
                 />

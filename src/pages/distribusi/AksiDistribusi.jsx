@@ -79,6 +79,8 @@ const AksiDistribusi = () => {
     setSelectedKota(selectedOption);
     setSelectedKecamatan(null);
     setDataKecamatan([]);
+    setSelectedPuskesmas(null);
+    setDataPuskesmas([]);
     if (selectedOption) {
       setFormData((prev) => ({
         ...prev,
@@ -90,13 +92,16 @@ const AksiDistribusi = () => {
   };
 
   const handleKecamatanChange = (selectedOption) => {
+    setSelectedPuskesmas(null);
+    setDataPuskesmas([]);
+    setSelectedKecamatan(selectedOption);
     setSelectedKecamatan(selectedOption);
     if (selectedOption) {
       setFormData((prev) => ({
         ...prev,
         id_kecamatan: selectedOption.value.toString(),
       }));
-      fetchPuskesmas();
+      fetchPuskesmas(selectedOption.value);
     }
   };
   const handlePuskesmasChange = (selectedOption) => {
@@ -110,12 +115,19 @@ const AksiDistribusi = () => {
   };
 
   const handleDokumenChange = (selectedOption) => {
+    setSelectedKecamatan(null);
+    setDataKecamatan([]);
+    setSelectedPuskesmas(null);
+    setDataPuskesmas([]);
     setSelectedDokumen(selectedOption);
     if (selectedOption) {
       setFormData((prev) => ({
         ...prev,
         id_dokumen: selectedOption.value.toString(),
+        id_kabupaten: selectedOption.id_kabupaten.toString(),
+        id_provinsi: selectedOption.id_provinsi.toString(),
       }));
+      fetchKecamatan(selectedOption.id_kabupaten);
     }
   };
 
@@ -208,6 +220,9 @@ const AksiDistribusi = () => {
         ...response.data.data.map((item) => ({
           label: item.nama_dokumen,
           value: item.id,
+          id_provinsi: item.id_provinsi,
+          id_kabupaten: item.id_kabupaten,
+          status_tte: item.status_tte,
         })),
       ]);
     } catch (error) {
@@ -405,6 +420,9 @@ const AksiDistribusi = () => {
         setSelectedDokumen({
           label: initialOption.label,
           value: initialOption.value,
+          id_provinsi: initialOption.id_provinsi,
+          id_kabupaten: initialOption.id_kabupaten,
+          status_tte: initialOption.status_tte,
         });
       }
     }
@@ -459,7 +477,7 @@ const AksiDistribusi = () => {
   //     konfirmasi_daerah: konfirmasiOptions[1],
   //   }))
   // }, []);
-
+  console.log(selectedDokumen);
   if (getLoading) {
     return (
       <div className="flex justify-center items-center">
@@ -509,13 +527,15 @@ const AksiDistribusi = () => {
                   onChange={handleDokumenChange}
                   placeholder="Pilih Dokumen"
                   className="w-full"
-                  isDisabled={user.role !== "1"}
+                  isDisabled={
+                    user.role !== "1" || selectedDokumen?.status_tte !== "0"
+                  }
                   theme={selectThemeColors}
                 />
               </div>
             </div>
 
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+            {/* <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
                 <label
                   className="block text-[#728294] text-base font-normal mb-2"
@@ -535,7 +555,7 @@ const AksiDistribusi = () => {
                   theme={selectThemeColors}
                 />
               </div>
-            </div>
+            </div> */}
 
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
@@ -552,9 +572,13 @@ const AksiDistribusi = () => {
                   value={selectedKecamatan}
                   onChange={handleKecamatanChange}
                   placeholder={
-                    selectedKota ? "Pilih Kecamatan" : "Pilih Kab / Kota Dahulu"
+                    selectedKota ? "Pilih Kecamatan" : "Pilih Dokumen Dahulu"
                   }
-                  isDisabled={!selectedKota || user.role !== "1"}
+                  isDisabled={
+                    !selectedKota ||
+                    user.role !== "1" ||
+                    selectedDokumen?.status_tte !== "0"
+                  }
                   className="w-full"
                   theme={selectThemeColors}
                 />
@@ -575,7 +599,11 @@ const AksiDistribusi = () => {
                   options={dataPuskesmas}
                   value={selectedPuskesmas}
                   onChange={handlePuskesmasChange}
-                  isDisabled={!selectedKecamatan || user.role !== "1"}
+                  isDisabled={
+                    !selectedKecamatan ||
+                    user.role !== "1" ||
+                    selectedDokumen?.status_tte !== "0"
+                  }
                   placeholder={
                     selectedKota ? "Pilih Puskesmas" : "Pilih Kecamatan Dahulu"
                   }
