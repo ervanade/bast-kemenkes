@@ -22,8 +22,8 @@ const ModalTTE = ({ show, onClose, onSave, editIndex, jsonData, user }) => {
       setLoading(false);
       return;
     }
-    if (!user.ttd) {
-      Swal.fire("Error", "Anda Belum Input TTE", "error");
+    if (!user.ttd || !user.nama || !user.nip) {
+      Swal.fire("Error", "Anda Belum Input TTE / Nama / NIP", "error");
       navigate("/profile");
       setLoading(false);
       return;
@@ -42,7 +42,11 @@ const ModalTTE = ({ show, onClose, onSave, editIndex, jsonData, user }) => {
         navigate("/dokumen");
       })
       .catch((error) => {
-        Swal.fire("Gagal TTE! Pastikan TTE Sudah di Input", "", "error");
+        Swal.fire(
+          "Gagal TTE! Pastikan TTE, Nama, NIP Sudah di Input",
+          "",
+          "error"
+        );
         navigate("/profile");
         setLoading(false);
         console.log(error);
