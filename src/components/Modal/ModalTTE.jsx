@@ -22,7 +22,7 @@ const ModalTTE = ({ show, onClose, onSave, editIndex, jsonData, user }) => {
       setLoading(false);
       return;
     }
-    if (!user.ttd || !user.nama || !user.nip) {
+    if (!user.ttd || !user.name || !user.nip) {
       Swal.fire("Error", "Anda Belum Input TTE / Nama / NIP", "error");
       navigate("/profile");
       setLoading(false);
