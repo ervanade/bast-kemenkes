@@ -202,7 +202,7 @@ const TambahDistribusi = () => {
     try {
       const response = await axios({
         method: "get",
-        url: `${import.meta.env.VITE_APP_API_URL}/api/dokumen`,
+        url: `${import.meta.env.VITE_APP_API_URL}/api/getdokumen/0`,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user?.token}`,
@@ -210,7 +210,7 @@ const TambahDistribusi = () => {
       });
       setDataDokumen([
         ...response.data.data
-          .filter((a) => a.status_tte == "0")
+          // .filter((a) => a.status_tte == "0")
           .map((item) => ({
             label: item.nama_dokumen,
             value: item.id,
