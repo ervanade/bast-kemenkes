@@ -334,7 +334,7 @@ export const RenderHibahPages = (jsonData) => {
                     JAKARTA, {jsonData?.tanggal || ""}
                   </Text>
                   <Text style={styles.text}>
-                    Kepala Dinas Kesehatan {jsonData?.kabupaten || ""}
+                    {jsonData?.kepala_unit_pemberi}
                   </Text>
                   <Image
                     style={{
@@ -345,8 +345,8 @@ export const RenderHibahPages = (jsonData) => {
                     src={jsonData?.tte_daerah}
                   />
                   <Text style={{ marginTop: 8 }}>
-                    Nama : {jsonData?.nama_daerah || ""} {"\n"}
-                    Nip : {jsonData?.nip_daerah || ""}
+                    Nama : {jsonData?.nama_ppk || ""} {"\n"}
+                    Nip : {jsonData?.nip_ppk || ""}
                   </Text>
                 </View>
               </View>
