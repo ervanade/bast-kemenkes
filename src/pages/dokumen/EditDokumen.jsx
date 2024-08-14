@@ -566,7 +566,7 @@ const EditDokumen = () => {
               </div>
             </div>
 
-            <FormInput
+            {/* <FormInput
               select={true}
               id="kota"
               options={dataUser}
@@ -575,7 +575,7 @@ const EditDokumen = () => {
               placeholder={"Pilih Email Pihak Kesatu"}
               label="Pihak Kesatu :"
               required
-            />
+            /> */}
 
             <FormInput
               id="kepala_unit_pemberi"

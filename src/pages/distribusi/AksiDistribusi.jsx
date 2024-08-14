@@ -210,7 +210,7 @@ const AksiDistribusi = () => {
     try {
       const response = await axios({
         method: "get",
-        url: `${import.meta.env.VITE_APP_API_URL}/api/dokumen`,
+        url: `${import.meta.env.VITE_APP_API_URL}/api/getdokumen/all`,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user?.token}`,
