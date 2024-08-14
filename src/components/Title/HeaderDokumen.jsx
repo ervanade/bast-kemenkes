@@ -10,7 +10,7 @@ const HeaderDokumen = ({ formData, jsonData, user }) => {
     setShowModal(true);
   };
   return (
-    <div className="my-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div className="mt-6 mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <h1 className="font-semibold mb-3 text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
         Dokumen {formData?.nama_dokumen || ""}
       </h1>

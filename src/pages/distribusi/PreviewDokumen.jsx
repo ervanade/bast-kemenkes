@@ -8,6 +8,7 @@ import {
   Text,
   PDFViewer,
   Font,
+  PDFDownloadLink
 } from "@react-pdf/renderer";
 import ReactDOMServer from "react-dom/server";
 
@@ -23,6 +24,7 @@ import {
   TableHeader,
 } from "@david.kucsai/react-pdf-table";
 import { TableRow } from "@david.kucsai/react-pdf-table/lib/TableRow";
+import { useMediaQuery } from 'react-responsive';
 import ModalTTE from "../../components/Modal/ModalTTE";
 import { decryptId } from "../../data/utils";
 import axios from "axios";
@@ -31,6 +33,7 @@ import { CgSpinner } from "react-icons/cg";
 import HeaderDokumen from "../../components/Title/HeaderDokumen";
 import { RenderBarangPages } from "../../components/Table/TableLampiran";
 import { RenderHibahPages } from "../../components/Table/TableHibah";
+import { FaDownload } from "react-icons/fa";
 
 const PreviewDokumen = () => {
   const { id } = useParams();
@@ -51,6 +54,8 @@ const PreviewDokumen = () => {
     id_kabupaten: "",
   });
   const [showModal, setShowModal] = useState(false);
+  const isMobile = useMediaQuery({ maxWidth: 500 }); // adjust the max width to your desired breakpoint
+
 
   const handleTTE = async (e) => {
     e.preventDefault();
@@ -1667,6 +1672,16 @@ const PreviewDokumen = () => {
         jsonData={jsonData}
       />
       <HeaderDokumen formData={formData} jsonData={jsonData} user={user} />
+      {
+      jsonData && isMobile && (
+        <div className="flex justify-end items-center">
+          <PDFDownloadLink document={<Dokumen />} fileName={`Dokumen ${formData?.nama_dokumen}`} className="flex justify-center items-center bg-teal-500 text-white px-4 py-2 rounded-md">
+            {({ blob, url, loading, error }) => (loading ? 'Loading dokumen...' : <><FaDownload size={16} className="mr-2"/><span>Download Dokumen</span></>)}
+          </PDFDownloadLink>
+        </div>
+      )
+    }
+    
 
       {isIFrameLoaded === false ? (
         <div className="flex h-[81vh]">
@@ -1697,7 +1712,7 @@ const PreviewDokumen = () => {
       ) : null}
       {jsonData && (
         <div
-          className={`flex [&>*]:w-full ${isIFrameLoaded ? "h-[81vh]" : "h-0"}`}
+          className={`mt-4 flex [&>*]:w-full ${isIFrameLoaded ? "h-[81vh]" : "h-0"}`}
         >
           <PDFViewer
             height="100%"
