@@ -393,7 +393,29 @@ const Dokumen = () => {
       // },
       {
         name: "Status TTE",
-        selector: (row) => (row.status_tte === "0" ? "Belum TTE" : "Sudah TTE"),
+        selector: (row) => (
+          user.role === "2" ? (
+            row.status_tte === "1" ? (
+              "Belum TTE"
+            ) : row.status_tte === "2" ? (
+            "Sudah TTE"
+            ) : "Daerah Belum TTE"
+          ) : user.role === "3" ? (
+            row.status_tte === "0" ? (
+              "Belum TTE"
+            ) : (
+              "Sudah TTE"
+            )
+          ) : user.role === "1" ? (
+            row.status_tte === "2" ? (
+              "Sudah TTE"
+            ) : row.status_tte === "1" ? "PPK Belum TTE" :(
+              "Belum TTE"
+            )
+          ) : (
+            ""
+          )
+        ),
         sortable: true,
         // width: "110px",
       },
