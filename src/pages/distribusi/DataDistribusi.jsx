@@ -37,6 +37,7 @@ const DataDistribusi = () => {
   const [dataProvinsi, setDataProvinsi] = useState([]);
   const [dataKota, setDataKota] = useState([]);
   const [dataKecamatan, setDataKecamatan] = useState([]);
+  const [dataDokumen, setDataDokumen] = useState([]);
 
   const [selectedProvinsi, setSelectedProvinsi] = useState(null);
   const [selectedKota, setSelectedKota] = useState(null);
@@ -233,6 +234,24 @@ const DataDistribusi = () => {
       setFilteredData([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchDokumen = async () => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/getdokumen/0`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataDokumen(
+        ...response.data.data);
+    } catch (error) {
+      setError(true);
+      setDataDokumen([]);
     }
   };
 
@@ -665,10 +684,10 @@ const DataDistribusi = () => {
             ) : (
               ""
             )}
-            {user.role === "3" ? (
+            {user.role === "3" && dataDokumen.length > 0 ? (
               <button
                 title="Tandatangani Dokumen BMN"
-                className="flex items-center gap-2 cursor-pointer text-base font-semibold text-white  bg-red-600 rounded-md tracking-tight"
+                className="flex items-center gap-2 cursor-pointer text-base font-semibold text-white  bg-teal-600 rounded-md tracking-tight"
                 onClick={handleExport}
               >
                 <Link

@@ -342,11 +342,11 @@ export const RenderHibahPages = (jsonData) => {
                       marginVertical: 8,
                       marginLeft: 16,
                     }}
-                    src={jsonData?.tte_ppk}
+                    src={jsonData?.tte_daerah}
                   />
                   <Text style={{ marginTop: 8 }}>
-                    Nama : {jsonData?.nama_ppk || ""} {"\n"}
-                    Nip : {jsonData?.nip_ppk || ""}
+                    Nama : {jsonData?.nama_daerah || ""} {"\n"}
+                    Nip : {jsonData?.nip_daerah || ""}
                   </Text>
                 </View>
               </View>
