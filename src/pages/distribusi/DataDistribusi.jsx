@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import Select from "react-select";
 import DataTable from "react-data-table-component";
+import * as XLSX from "xlsx";
 import {
   dataDistribusiBekasi,
   dataKecamatan,
@@ -73,6 +74,54 @@ const DataDistribusi = () => {
 
   const handleExport = () => {
     // Implementasi untuk mengekspor data (misalnya ke CSV)
+    const exportData = filteredData?.map((item) => ({
+      Provinsi: item?.provinsi,
+      Kabupaten_Kota: item?.kabupaten,
+      Kecamatan: item?.kecamatan,
+      Puskesmas: item?.nama_puskesmas,
+      Dokumen: item?.nama_dokumen,
+      Program: item?.program,
+      Batch: item?.batch,
+      Tahun_Lokus: item?.tahun_lokus,
+      BAST: item?.nomor_bast,
+      Tanggal_Kirim: item?.tanggal_kirim,
+      Tanggal_Terima: item?.tanggal_terima,
+      Jumlah_Kirim: item?.jumlah_barang_dikirim,
+      Jumlah_Terima: item?.jumlah_barang_diterima,
+      Ket_Daerah: item?.keterangan_daerah,
+      Ket_Ppk: item?.keterangan_ppk,
+      Konfirmasi_Daerah:
+        item?.konfirmasi_daerah === "1"
+          ? "Sudah Konfirmasi"
+          : "Belum Konfirmasi",
+      Konfirmasi_Ppk:
+        item?.konfirmasi_ppk === "1" ? "Sudah Konfirmasi" : "Belum Konfirmasi",
+    }));
+    const wb = XLSX.utils.book_new(),
+      ws = XLSX.utils.json_to_sheet(exportData);
+
+    ws["!cols"] = [
+      { wch: 20 }, // Kolom 1 (Provinsi)
+      { wch: 20 }, // Kolom 2 (Kabupaten_Kota)
+      { wch: 20 }, // Kolom 3 (Kecamatan)
+      { wch: 25 }, // Kolom 4 (Puskesmas)
+      { wch: 20 }, // Kolom 5 (Dokumen)
+      { wch: 15 }, // Kolom 6 (Program)
+      { wch: 10 }, // Kolom 7 (Batch)
+      { wch: 15 }, // Kolom 8 (Tahun_Lokus)
+      { wch: 15 }, // Kolom 9 (BAST)
+      { wch: 15 }, // Kolom 10 (Tanggal_Kirim)
+      { wch: 15 }, // Kolom 11 (Tanggal_Terima)
+      { wch: 10 }, // Kolom 12 (Jumlah_Kirim)
+      { wch: 10 }, // Kolom 13 (Jumlah_Terima)
+      { wch: 20 }, // Kolom 14 (Ket_Daerah)
+      { wch: 20 }, // Kolom 15 (Ket_Ppk)
+      { wch: 20 }, // Kolom 16 (Konfirmasi_Daerah)
+      { wch: 20 }, // Kolom 17 (Konfirmasi_Ppk)
+    ];
+
+    XLSX.utils.book_append_sheet(wb, ws, `Data Distribusi`);
+    XLSX.writeFile(wb, "Data Distribusi.xlsx");
   };
   const navigate = useNavigate();
 
@@ -247,8 +296,7 @@ const DataDistribusi = () => {
           Authorization: `Bearer ${user?.token}`,
         },
       });
-      setDataDokumen(
-        ...response.data.data);
+      setDataDokumen(...response.data.data);
     } catch (error) {
       setError(true);
       setDataDokumen([]);
@@ -669,7 +717,6 @@ const DataDistribusi = () => {
               <button
                 title="Tambah Data Distribusi"
                 className="flex items-center gap-2 cursor-pointer text-base font-semibold text-white  bg-primary rounded-md tracking-tight"
-                onClick={handleExport}
               >
                 <Link
                   to="/data-distribusi/add"
@@ -688,7 +735,6 @@ const DataDistribusi = () => {
               <button
                 title="Tandatangani Dokumen BMN"
                 className="flex items-center gap-2 cursor-pointer text-base font-semibold text-white  bg-teal-600 rounded-md tracking-tight"
-                onClick={handleExport}
               >
                 <Link
                   to={`/dokumen`}

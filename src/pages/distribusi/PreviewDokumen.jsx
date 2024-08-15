@@ -8,10 +8,11 @@ import {
   Text,
   PDFViewer,
   Font,
-  PDFDownloadLink
+  PDFDownloadLink,
 } from "@react-pdf/renderer";
 import ReactDOMServer from "react-dom/server";
-
+import moment from "moment";
+import "moment/locale/id";
 import Html from "react-pdf-html";
 import { dataDistribusiBekasi } from "../../data/data";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -24,7 +25,7 @@ import {
   TableHeader,
 } from "@david.kucsai/react-pdf-table";
 import { TableRow } from "@david.kucsai/react-pdf-table/lib/TableRow";
-import { useMediaQuery } from 'react-responsive';
+import { useMediaQuery } from "react-responsive";
 import ModalTTE from "../../components/Modal/ModalTTE";
 import { decryptId } from "../../data/utils";
 import axios from "axios";
@@ -55,7 +56,6 @@ const PreviewDokumen = () => {
   });
   const [showModal, setShowModal] = useState(false);
   const isMobile = useMediaQuery({ maxWidth: 500 }); // adjust the max width to your desired breakpoint
-
 
   const handleTTE = async (e) => {
     e.preventDefault();
@@ -105,6 +105,8 @@ const PreviewDokumen = () => {
           id: data.id,
           nomorSurat: data.nomor_bast || "",
           tanggal: data.tanggal_bast || defaultDate,
+          tanggal_tte_ppk: data.tanggal_tte_ppk || defaultDate,
+          tanggal_tte_daerah: data.tanggal_tte_daerah || defaultDate,
           kecamatan: data.kecamatan,
           puskesmas: data.Puskesmas,
           namaKapus: data.nama_kapus,
@@ -147,6 +149,7 @@ const PreviewDokumen = () => {
   };
   useEffect(() => {
     fetchDokumenData();
+    moment.locale("id");
   }, []);
 
   useEffect(() => {
@@ -448,10 +451,27 @@ const PreviewDokumen = () => {
             {"\n"}
             Berita Acara Serah Terima Operasional (BASTO) dibuat dan
             ditandatangani oleh PIHAK KESATU dan PIHAK KEDUA pada hari tanggal{" "}
-            {jsonData?.tanggal.substring(8)} bulan{" "}
-            {jsonData?.tanggal.substring(6, 7)} tahun{" "}
-            {jsonData?.tanggal.substring(6, 7)} {jsonData?.tanggal} sebagaimana
-            tersebut di atas.
+            {moment(jsonData?.tanggal_tte_ppk || defaultDate).format(
+              "d",
+              "id"
+            )}{" "}
+            bulan{" "}
+            {moment(jsonData?.tanggal_tte_ppk || defaultDate).format(
+              "MM",
+              "id"
+            )}{" "}
+            tahun{" "}
+            {moment(jsonData?.tanggal_tte_ppk || defaultDate).format(
+              "yyyy",
+              "id"
+            )}
+            {" ("}
+            {moment(jsonData?.tanggal_tte_ppk || defaultDate).format(
+              "D-MM-YYYY",
+              "id"
+            )}
+            {") "}
+            sebagaimana tersebut di atas.
           </Text>
           <Text style={{ ...styles.text, marginTop: 8 }}>Berdasarkan :</Text>
 
@@ -1291,7 +1311,7 @@ const PreviewDokumen = () => {
                 </Text>
                 <Image
                   style={{ ...styles.imageTtd, marginVertical: 8 }}
-                  src={jsonData?.tte_ppk}
+                  src={`${jsonData?.tte_ppk}?not-from-cache-please`}
                   onError={(error) => {
                     error.target.src = defaultImage;
                   }}
@@ -1320,7 +1340,7 @@ const PreviewDokumen = () => {
                 </Text>
                 <Image
                   style={{ ...styles.imageTtd, marginVertical: 8 }}
-                  src={jsonData?.tte_daerah}
+                  src={`${jsonData?.tte_daerah}?not-from-cache-please`}
                   onError={(error) => {
                     error.target.src = defaultImage;
                   }}
@@ -1672,16 +1692,26 @@ const PreviewDokumen = () => {
         jsonData={jsonData}
       />
       <HeaderDokumen formData={formData} jsonData={jsonData} user={user} />
-      {
-      jsonData && isMobile && (
+      {jsonData && isMobile && (
         <div className="flex justify-end items-center">
-          <PDFDownloadLink document={<Dokumen />} fileName={`Dokumen ${formData?.nama_dokumen}`} className="flex justify-center items-center bg-teal-500 text-white px-4 py-2 rounded-md">
-            {({ blob, url, loading, error }) => (loading ? 'Loading dokumen...' : <><FaDownload size={16} className="mr-2"/><span>Download Dokumen</span></>)}
+          <PDFDownloadLink
+            document={<Dokumen />}
+            fileName={`Dokumen ${formData?.nama_dokumen}`}
+            className="flex justify-center items-center bg-teal-500 text-white px-4 py-2 rounded-md"
+          >
+            {({ blob, url, loading, error }) =>
+              loading ? (
+                "Loading dokumen..."
+              ) : (
+                <>
+                  <FaDownload size={16} className="mr-2" />
+                  <span>Download Dokumen</span>
+                </>
+              )
+            }
           </PDFDownloadLink>
         </div>
-      )
-    }
-    
+      )}
 
       {isIFrameLoaded === false ? (
         <div className="flex h-[81vh]">
@@ -1712,7 +1742,9 @@ const PreviewDokumen = () => {
       ) : null}
       {jsonData && (
         <div
-          className={`mt-4 flex [&>*]:w-full ${isIFrameLoaded ? "h-[81vh]" : "h-0"}`}
+          className={`mt-4 flex [&>*]:w-full ${
+            isIFrameLoaded ? "h-[81vh]" : "h-0"
+          }`}
         >
           <PDFViewer
             height="100%"

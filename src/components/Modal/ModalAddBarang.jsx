@@ -239,7 +239,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                     "border-red-500" 
                  rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
                       id="jumlah_diterima"
-                      type="text"
+                      type="number"
                       required
                       value={barang.jumlah_diterima}
                       onChange={(e) =>

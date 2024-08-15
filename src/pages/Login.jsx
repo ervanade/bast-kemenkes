@@ -40,14 +40,22 @@ const Login = () => {
         dispatch(loginUser(data));
         localStorage.setItem("user", JSON.stringify(data));
         setLoading(false);
-        if (!data.ttd || !data.name || !data.nip) {
-          navigate("/profile");
+        if (
+          (data.role === "2" || data.role === "3") &&
+          (!data.ttd || !data.name || !data.nip)
+        ) {
+          setLoading(false);
           Swal.fire("Warning", "Anda Belum Input TTE / Nama / NIP", "warning");
           navigate("/profile");
-          setLoading(false);
+          return;
+        } else if (data.role == "1") {
+          navigate("/");
+          return;
+        } else {
+          // handle other roles or default behavior
+          navigate("/");
           return;
         }
-        navigate("/");
       })
       .catch((error) => {
         setLoading(false);

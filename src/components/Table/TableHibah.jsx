@@ -8,6 +8,7 @@ import {
   PDFViewer,
   Font,
 } from "@react-pdf/renderer";
+import moment from "moment";
 
 Font.register({
   family: "Arial",
@@ -331,7 +332,11 @@ export const RenderHibahPages = (jsonData) => {
                 <View style={{ flex: 1 }}></View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.textBold}>
-                    JAKARTA, {jsonData?.tanggal || ""}
+                    JAKARTA,{" "}
+                    {moment(jsonData?.tanggal_tte_ppk).format(
+                      "D-MM-YYYY",
+                      "id"
+                    )}{" "}
                   </Text>
                   <Text style={styles.text}>
                     {jsonData?.kepala_unit_pemberi}
@@ -342,7 +347,7 @@ export const RenderHibahPages = (jsonData) => {
                       marginVertical: 8,
                       marginLeft: 16,
                     }}
-                    src={jsonData?.tte_daerah}
+                    src={`${jsonData?.tte_ppk}?not-from-cache-please`}
                   />
                   <Text style={{ marginTop: 8 }}>
                     Nama : {jsonData?.nama_ppk || ""} {"\n"}
