@@ -36,9 +36,17 @@ const Login = () => {
       }),
     })
       .then(function (response) {
-        dispatch(loginUser(response.data.data));
-        localStorage.setItem("user", JSON.stringify(response.data.data));
+        const data = response.data.data;
+        dispatch(loginUser(data));
+        localStorage.setItem("user", JSON.stringify(data));
         setLoading(false);
+        if (!data.ttd || !data.name || !data.nip) {
+          navigate("/profile");
+          Swal.fire("Warning", "Anda Belum Input TTE / Nama / NIP", "warning");
+          navigate("/profile");
+          setLoading(false);
+          return;
+        }
         navigate("/");
       })
       .catch((error) => {
