@@ -144,7 +144,7 @@ const UserManagement = () => {
             : row.role === "3"
             ? "User"
             : row.role === "4"
-            ? "Pimpinan SATKER"
+            ? "Direktur"
             : "" || "",
         sortable: true,
       },

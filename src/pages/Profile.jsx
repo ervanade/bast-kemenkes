@@ -495,7 +495,7 @@ const Profile = () => {
                       : formData.role === "3"
                       ? "User"
                       : formData.role === "4"
-                      ? "Pimpinan SATKER"
+                      ? "Direktur"
                       : ""}
                   </p>
                   {/* <input
