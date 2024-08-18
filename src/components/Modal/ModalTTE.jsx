@@ -74,10 +74,14 @@ const ModalTTE = ({ show, onClose, onSave, editIndex, jsonData, user }) => {
     });
     onClose();
   };
+  useEffect(() => {
+    setFormData((prev) => ({ ...prev, id_dokumen: jsonData?.id }));
+  }, [jsonData]);
 
   if (!show) {
     return null;
   }
+
   return (
     <div className="flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-999 outline-none focus:outline-none">
       <div className="overlay fixed top-0 left-0 w-screen h-screen -z-99 bg-black/15"></div>

@@ -23,6 +23,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { CgSpinner } from "react-icons/cg";
+import ModalTTE from "../../components/Modal/ModalTTE";
 
 const Dokumen = () => {
   const user = useSelector((a) => a.auth.user);
@@ -44,6 +45,20 @@ const Dokumen = () => {
   const [selectedProvinsi, setSelectedProvinsi] = useState(null);
   const [selectedKota, setSelectedKota] = useState(null);
   const [selectedKecamatan, setSelectedKecamatan] = useState(null);
+
+  const [showModal, setShowModal] = useState(false);
+  const [jsonData, setJsonData] = useState({
+    id: "",
+    nama_dokumen: "",
+  });
+  const handleTTE = async (e, id, nama_dokumen) => {
+    e.preventDefault();
+    setShowModal(true);
+    setJsonData({
+      id: id,
+      nama_dokumen: nama_dokumen,
+    });
+  };
 
   const fetchDokumenData = async () => {
     setLoading(true);
@@ -519,21 +534,9 @@ const Dokumen = () => {
                 <button
                   title="TTE"
                   className="text-white py-2 w-22 bg-teal-500 rounded-md"
-                  onClick={() => {
-                    navigate(
-                      `/dokumen/preview-dokumen/${encodeURIComponent(
-                        encryptId(row.id)
-                      )}`
-                    );
-                  }}
+                  onClick={(e) => handleTTE(e, row.id, row.nama_dokumen)}
                 >
-                  <Link
-                    to={`/dokumen/preview-dokumen/${encodeURIComponent(
-                      encryptId(row.id)
-                    )}`}
-                  >
-                    TTE
-                  </Link>
+                  TTE
                 </button>
               ) : (
                 <button
@@ -768,6 +771,12 @@ const Dokumen = () => {
           </button>
         </div>
       </div>
+      <ModalTTE
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        jsonData={jsonData}
+        user={user}
+      />
       <div className="rounded-md flex flex-col gap-4 overflow-hidden overflow-x-auto  border border-stroke bg-white py-4 md:py-8 px-4 md:px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex justify-between mb-4 items-center">
           <div className="relative">
