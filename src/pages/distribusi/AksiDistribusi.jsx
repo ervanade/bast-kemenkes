@@ -477,7 +477,6 @@ const AksiDistribusi = () => {
   //     konfirmasi_daerah: konfirmasiOptions[1],
   //   }))
   // }, []);
-  console.log(selectedDokumen);
   if (getLoading) {
     return (
       <div className="flex justify-center items-center">

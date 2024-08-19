@@ -432,7 +432,7 @@ const DataDistribusi = () => {
                   title="Konfirmasi"
                   className="text-white font-semibold py-2 w-22 bg-red-500 rounded-md"
                   onClick={() => {
-                    navigate(`/data-distribusi/edit/${row.id}`);
+                    navigate(`/data-distribusi/edit/${row.id}`, {replace: true});
                   }}
                 >
                   <Link to={`/data-distribusi/edit/${row.id}`}>Konfirmasi</Link>
@@ -442,7 +442,7 @@ const DataDistribusi = () => {
                   title="Konfirmasi"
                   className="text-white font-semibold  py-2 w-22 bg-green-500 rounded-md"
                   onClick={() => {
-                    navigate(`/data-distribusi/edit/${row.id}`);
+                    navigate(`/data-distribusi/edit/${row.id}`, {replace: true});
                   }}
                 >
                   {/* <FaEdit size={16} /> */}
@@ -457,7 +457,7 @@ const DataDistribusi = () => {
                   title="Konfirmasi"
                   className="text-white font-semibold py-2 w-22 bg-red-500 rounded-md"
                   onClick={() => {
-                    navigate(`/data-distribusi/edit/${row.id}`);
+                    navigate(`/data-distribusi/edit/${row.id}`, {replace: true});
                   }}
                 >
                   <Link to={`/data-distribusi/edit/${row.id}`}>Konfirmasi</Link>
@@ -467,7 +467,7 @@ const DataDistribusi = () => {
                   title="Konfirmasi"
                   className="text-white font-semibold  py-2 w-22 bg-green-500 rounded-md"
                   onClick={() => {
-                    navigate(`/data-distribusi/edit/${row.id}`);
+                    navigate(`/data-distribusi/edit/${row.id}`, {replace: true});
                   }}
                 >
                   {/* <FaEdit size={16} /> */}
@@ -497,7 +497,7 @@ const DataDistribusi = () => {
         allowOverflow: true,
         button: true,
         sortable: true,
-        selector: (row) => row.konfirmasi_daerah,
+        selector: (row) => user.role === "3" ? row.konfirmasi_daerah : row.konfirmasi_ppk,
       },
     ],
     []
