@@ -35,6 +35,7 @@ const TemplateDokumen = () => {
       ket_daerah: "",
       ket_ppk: data.keterangan_ppk,
     });
+  }, []);
 
   // if using a class, equivalent of componentDidMount
   useEffect(() => {
