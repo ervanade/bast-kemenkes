@@ -35,8 +35,6 @@ const TemplateDokumen = () => {
       ket_daerah: "",
       ket_ppk: data.keterangan_ppk,
     });
-  }, []);
-  console.log(jsonData);
 
   // if using a class, equivalent of componentDidMount
   useEffect(() => {
