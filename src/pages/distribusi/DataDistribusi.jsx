@@ -410,16 +410,16 @@ const DataDistribusi = () => {
         width: "120px",
       },
       {
-        name: "Jumlah Barang Dikirim",
+        name: "Jumlah Dikirim",
         selector: (row) => row.jumlah_barang_dikirim || 0,
         sortable: true,
-        width: "200px",
+        width: "140px",
       },
       {
-        name: "Jumlah Barang Diterima",
+        name: "Jumlah Diterima",
         selector: (row) => row.jumlah_barang_diterima || 0,
         sortable: true,
-        width: "200px",
+        width: "140px",
       },
       {
         name: "Aksi",
@@ -432,7 +432,9 @@ const DataDistribusi = () => {
                   title="Konfirmasi"
                   className="text-white font-semibold py-2 w-22 bg-red-500 rounded-md"
                   onClick={() => {
-                    navigate(`/data-distribusi/edit/${row.id}`, {replace: true});
+                    navigate(`/data-distribusi/edit/${row.id}`, {
+                      replace: true,
+                    });
                   }}
                 >
                   <Link to={`/data-distribusi/edit/${row.id}`}>Konfirmasi</Link>
@@ -442,7 +444,9 @@ const DataDistribusi = () => {
                   title="Konfirmasi"
                   className="text-white font-semibold  py-2 w-22 bg-green-500 rounded-md"
                   onClick={() => {
-                    navigate(`/data-distribusi/edit/${row.id}`, {replace: true});
+                    navigate(`/data-distribusi/edit/${row.id}`, {
+                      replace: true,
+                    });
                   }}
                 >
                   {/* <FaEdit size={16} /> */}
@@ -457,7 +461,9 @@ const DataDistribusi = () => {
                   title="Konfirmasi"
                   className="text-white font-semibold py-2 w-22 bg-red-500 rounded-md"
                   onClick={() => {
-                    navigate(`/data-distribusi/edit/${row.id}`, {replace: true});
+                    navigate(`/data-distribusi/edit/${row.id}`, {
+                      replace: true,
+                    });
                   }}
                 >
                   <Link to={`/data-distribusi/edit/${row.id}`}>Konfirmasi</Link>
@@ -467,7 +473,9 @@ const DataDistribusi = () => {
                   title="Konfirmasi"
                   className="text-white font-semibold  py-2 w-22 bg-green-500 rounded-md"
                   onClick={() => {
-                    navigate(`/data-distribusi/edit/${row.id}`, {replace: true});
+                    navigate(`/data-distribusi/edit/${row.id}`, {
+                      replace: true,
+                    });
                   }}
                 >
                   {/* <FaEdit size={16} /> */}
@@ -497,7 +505,8 @@ const DataDistribusi = () => {
         allowOverflow: true,
         button: true,
         sortable: true,
-        selector: (row) => user.role === "3" ? row.konfirmasi_daerah : row.konfirmasi_ppk,
+        selector: (row) =>
+          user.role === "3" ? row.konfirmasi_daerah : row.konfirmasi_ppk,
       },
     ],
     []
