@@ -408,25 +408,51 @@ const Dokumen = () => {
       // },
       {
         name: "Status TTE",
-        selector: (row) =>
-          user.role === "2"
-            ? row.status_tte === "1"
-              ? "Belum TTE"
-              : row.status_tte === "2"
-              ? "Sudah TTE"
-              : "Daerah Belum TTE"
-            : user.role === "3"
-            ? row.status_tte === "0"
-              ? "Belum TTE"
-              : "Sudah TTE"
-            : user.role === "1"
-            ? row.status_tte === "2"
-              ? "Sudah TTE"
-              : row.status_tte === "1"
-              ? "PPK Belum TTE"
-              : "Belum TTE"
-            : "",
+        cell: (row) =>
+          user.role === "2" ? (
+            row.status_tte === "1" ? (
+              <div className="p-2 bg-red-500 rounded-md text-white">
+                Belum TTE
+              </div>
+            ) : row.status_tte === "2" ? (
+              <div className="p-2 bg-green-500 rounded-md text-white">
+                Sudah TTE
+              </div>
+            ) : (
+              <div className="p-2 bg-yellow-500 rounded-md text-white">
+                Daerah Belum TTE
+              </div>
+            )
+          ) : user.role === "3" ? (
+            row.status_tte === "0" ? (
+              <div className="p-2 bg-red-500 rounded-md text-white">
+                Belum TTE
+              </div>
+            ) : (
+              <div className="p-2 bg-green-500 rounded-md text-white">
+                Sudah TTE
+              </div>
+            )
+          ) : user.role === "1" ? (
+            row.status_tte === "2" ? (
+              <div className="p-2 bg-green-500 rounded-md text-white">
+                Sudah TTE
+              </div>
+            ) : row.status_tte === "1" ? (
+              <div className="p-2 bg-yellow-500 rounded-md text-white">
+                PPK Belum TTE
+              </div>
+            ) : (
+              <div className="p-2 bg-red-500 rounded-md text-white">
+                Belum TTE
+              </div>
+            )
+          ) : (
+            ""
+          ),
         sortable: true,
+        selector: (row) => row.status_tte,
+
         // width: "110px",
       },
       // {
@@ -534,11 +560,30 @@ const Dokumen = () => {
                 <button
                   title="TTE"
                   className="text-white py-2 w-22 bg-teal-500 rounded-md"
-                  onClick={(e) => handleTTE(e, row.id, row.nama_dokumen)}
+                  onClick={() => {
+                    navigate(
+                      `/dokumen/preview-dokumen/${encodeURIComponent(
+                        encryptId(row.id)
+                      )}`
+                    );
+                  }}
                 >
-                  TTE
+                  <Link
+                    to={`/dokumen/preview-dokumen/${encodeURIComponent(
+                      encryptId(row.id)
+                    )}`}
+                  >
+                    TTE
+                  </Link>
                 </button>
               ) : (
+                // <button
+                //   title="TTE"
+                //   className="text-white py-2 w-22 bg-teal-500 rounded-md"
+                //   onClick={(e) => handleTTE(e, row.id, row.nama_dokumen)}
+                // >
+                //   TTE
+                // </button>
                 <button
                   title="TTE"
                   className="text-white  py-2 w-22 bg-green-500 rounded-md"

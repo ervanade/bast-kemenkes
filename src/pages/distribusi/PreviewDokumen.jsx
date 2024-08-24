@@ -235,7 +235,7 @@ const PreviewDokumen = () => {
       borderWidth: 1.5,
       display: "flex",
       width: "100%",
-      height: 600,
+      height: 800,
       paddingVertical: "24px",
       paddingLeft: "10px",
       paddingRight: "16px",
@@ -397,7 +397,7 @@ const PreviewDokumen = () => {
   const Dokumen = () => (
     <Document title={`Dokumen ${jsonData?.nomorSurat}`}>
       <Page size="FOLIO" style={styles.page}>
-        <View style={styles.titleContainer}>
+        {/* <View style={styles.titleContainer}>
           <Text style={{ ...styles.reportTitle, width: "40%" }}></Text>
           <Text style={{ ...styles.reportTitle, width: "50%" }}>
             LAMPIRAN{"\n"}SURAT EDARAN{"\n"}NOMOR HK.02.02/A/1902/2024{"\n"}
@@ -410,7 +410,7 @@ const PreviewDokumen = () => {
           <Text style={styles.text}>
             A. Format I Berita Acara dan Daftar BMN
           </Text>
-        </View>
+        </View> */}
         <View
           style={{
             ...styles.docContainerBorder,
@@ -418,11 +418,29 @@ const PreviewDokumen = () => {
             paddingVertical: 16,
           }}
         >
-          <Text
+          {/* <Text
             style={{ ...styles.text, textAlign: "center", marginBottom: 24 }}
           >
             --------------------------------------------Kop----------------------------------------
-          </Text>
+          </Text> */}
+          <View
+            style={{
+              textAlign: "center",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              marginBottom: 24,
+            }}
+          >
+            <Image
+              style={{
+                width: "490px",
+                height: "120px",
+                // marginVertical: 16,
+              }}
+              src="/kop_surat.png"
+            />
+          </View>
           <Text
             style={{
               ...styles.textBoldTitle,
@@ -528,7 +546,7 @@ const PreviewDokumen = () => {
               />
               <Text style={{ marginTop: 8 }}>
                 Nama : {jsonData?.nama_ppk || ""} {"\n"}
-                Nip : {jsonData?.nip_ppk || ""}
+                NIP : {jsonData?.nip_ppk || ""}
               </Text>
             </View>
             <View style={{ flex: 1 }}>
@@ -543,7 +561,7 @@ const PreviewDokumen = () => {
               />
               <Text style={{ marginTop: 8 }}>
                 Nama : {jsonData?.penerima_hibah || ""} {"\n"}
-                Nip : {jsonData?.nip_daerah || ""}
+                NIP : {jsonData?.nip_daerah || ""}
               </Text>
             </View>
           </View> */}
@@ -1328,7 +1346,7 @@ const PreviewDokumen = () => {
                   }}
                 >
                   Nama : {jsonData?.nama_ppk || ""} {"\n"}
-                  Nip : {jsonData?.nip_ppk || ""}
+                  NIP : {jsonData?.nip_ppk || ""}
                 </Text>
               </View>
               <View style={{ flex: 1 }}>
@@ -1357,7 +1375,7 @@ const PreviewDokumen = () => {
                   }}
                 >
                   Nama : {jsonData?.nama_daerah || ""} {"\n"}
-                  Nip : {jsonData?.nip_daerah || ""}
+                  NIP : {jsonData?.nip_daerah || ""}
                 </Text>
               </View>
             </View>
@@ -1674,12 +1692,114 @@ const PreviewDokumen = () => {
               />
               <Text style={{ marginTop: 8 }}>
                 Nama : {jsonData?.nama_ppk || ""} {"\n"}
-                Nip : {jsonData?.nip_ppk || ""}
+                NIP : {jsonData?.nip_ppk || ""}
               </Text>
             </View>
           </View>
         </View>
       </Page> */}
+      <Page size="FOLIO" style={styles.page}>
+        {/* <View style={styles.docContainer}>
+              <Text style={styles.text}>
+                B. Format II, Naskah Hibah dan Berita Acara Serah Terima BMN
+              </Text>
+            </View> */}
+        <View
+          style={{
+            ...styles.docContainerBorder,
+            paddingHorizontal: 24,
+            paddingVertical: 16,
+            height: 800,
+          }}
+        >
+          {/* <Text
+                style={{
+                  ...styles.text,
+                  textAlign: "center",
+                  marginBottom: 24,
+                }}
+              >
+                --------------------------------------------Kop----------------------------------------
+              </Text> */}
+          <View
+            style={{
+              textAlign: "center",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              marginBottom: 24,
+            }}
+          >
+            <Image
+              style={{
+                width: "490px",
+                height: "120px",
+                // marginVertical: 16,
+              }}
+              src="/kop_surat.png"
+            />
+          </View>
+          <Text
+            style={{
+              ...styles.textBoldTitle,
+              marginBottom: 32,
+              lineHeight: 1.8,
+            }}
+          >
+            NASKAH HIBAH {"\n"} DAN {"\n"} BERITA ACARA SERAH TERIMA {"\n"}{" "}
+            BARANG MILIK NEGARA {"\n"} ANTARA {"\n"}
+            KEMENTERIAN KESEHATAN {"\n"} DENGAN {"\n"} DINAS KESEHATAN{" "}
+            {jsonData?.kabupaten} {"\n"} NOMOR {jsonData?.nomorSurat} {"\n"}
+            TENTANG {"\n"} HIBAH BARANG MILIK NEGARA YANG DARI SEJAK AWAL
+            DISERAHKAN KEPADA {"\n"}
+            MASYARAKAT/PEMERINTAH {"\n"} DAERAH DINAS KESEHATAN{" "}
+            {jsonData?.kabupaten}{" "}
+          </Text>
+          <Text style={styles.text}>
+            Berdasarkan Peraturan Menteri Keuangan Nomor 111/PMK.06/2016 tentang
+            Tata Cara Pelaksanaan Pemindahtanganan Barang Milik Negara (Berita
+            Negara Republik Indonesia Tahun 2016 Nomor 1018) sebagaimana telah
+            diubah dengan Peraturan Menteri Keuangan Nomor 165/PMK.06/2021
+            tentang Perubahan atas Peraturan Menteri Keuangan Nomor
+            111/PMK.06/2016 tentang Tata Cara Pelaksanaan Pemindahtanganan
+            Barang Milik Negara (Berita Negara Republik Indonesia Tahun 2021
+            Nomor 1292), dengan ini kami sampaikan bahwa telah dilaksanakan
+            pemindahtanganan BMN berupa Hibah antara PIHAK KESATU dalam hal ini
+            {jsonData?.kepala_unit_pemberi} yang diwakili {jsonData?.nama_ppk}{" "}
+            oleh dan PIHAK KEDUA dalam hal ini Masyarakat/Pemerintah Daerah yang
+            diwakili oleh Kepala Dinas Kesehatan {jsonData?.kabupaten} berupa
+            BMN dengan rincian terlampir , sejumlah{" "}
+            {jsonData?.total_barang_dikirim} dengan total nilai perolehan
+            sebesar Rp{jsonData?.total_harga}, sesuai dengan Berita Acara Serah
+            Terima Operasional (BASTO) nomor {jsonData?.nomorSurat} tanggal{" "}
+            {jsonData?.tanggal} (terlampir). Demikian Naskah Hibah dan BAST ini
+            kami buat, selanjutnya agar digunakan sebagaimana mestinya.
+          </Text>
+
+          <View style={styles.ttdContainer}>
+            <View style={{ flex: 1 }}></View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.textBold}>
+                JAKARTA,{" "}
+                {moment(jsonData?.tanggal_tte_ppk).format("D-MM-YYYY", "id")}{" "}
+              </Text>
+              <Text style={styles.text}>{jsonData?.kepala_unit_pemberi}</Text>
+              <Image
+                style={{
+                  ...styles.imageTtd,
+                  marginVertical: 8,
+                  marginLeft: 16,
+                }}
+                src={`${jsonData?.tte_ppk}?not-from-cache-please`}
+              />
+              <Text style={{ marginTop: 8 }}>
+                Nama : {jsonData?.nama_ppk || ""} {"\n"}
+                NIP : {jsonData?.nip_ppk || ""}
+              </Text>
+            </View>
+          </View>
+        </View>
+      </Page>
       {RenderHibahPages(jsonData)}
     </Document>
   );

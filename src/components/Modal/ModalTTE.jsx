@@ -165,7 +165,7 @@ const ModalTTE = ({ show, onClose, onSave, editIndex, jsonData, user }) => {
               </div>
               <p className="text-center text-bodydark2 font-bold">
                 TTE Dokumen Ini Sebagai{" "}
-                {user?.role === "3" ? "User Daerah" : "PPK / Admin Pusat"}
+                {user?.role === "3" ? "User Daerah" : "Direktur"}
               </p>
             </div>
             <div className="flex items-center justify-end p-6 border-t gap-2 border-solid border-black/20 rounded-b">

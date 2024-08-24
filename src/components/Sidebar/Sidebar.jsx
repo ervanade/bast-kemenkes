@@ -118,7 +118,64 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
               </li>
 
               {/* <!-- Menu Item Calendar --> */}
-              {user.role === "2" || user.role === "1" || user.role === "3" ? (
+              {user.role === "2" || user.role === "3" ? (
+                <>
+                  <li>
+                    <NavLink
+                      to="/data-distribusi"
+                      className={`group relative flex items-center gap-2.5 rounded-md py-3 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                        pathname.includes("data-distribusi") &&
+                        "bg-graydark dark:bg-meta-4 text-primary"
+                      }`}
+                    >
+                      <AiOutlineDatabase size={20} />
+                      Data Distribusi
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/dokumen"
+                      className={`group relative flex items-center gap-2.5 rounded-md py-3 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                        pathname.includes("dokumen") &&
+                        "bg-graydark dark:bg-meta-4 text-primary"
+                      }`}
+                    >
+                      <MdOutlineDomainVerification size={22} />
+                      Dokumen & TTE
+                    </NavLink>
+                  </li>
+                </>
+              ) : user.role === "1" || user.role === "4" ? (
+                <>
+                  <li>
+                    <NavLink
+                      to="/dokumen"
+                      className={`group relative flex items-center gap-2.5 rounded-md py-3 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                        pathname.includes("dokumen") &&
+                        "bg-graydark dark:bg-meta-4 text-primary"
+                      }`}
+                    >
+                      <MdOutlineDomainVerification size={22} />
+                      Dokumen & TTE
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/data-distribusi"
+                      className={`group relative flex items-center gap-2.5 rounded-md py-3 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                        pathname.includes("data-distribusi") &&
+                        "bg-graydark dark:bg-meta-4 text-primary"
+                      }`}
+                    >
+                      <AiOutlineDatabase size={20} />
+                      Data Distribusi
+                    </NavLink>
+                  </li>
+                </>
+              ) : (
+                ""
+              )}
+              {/* {user.role === "2" || user.role === "1" || user.role === "3" ? (
                 <li>
                   <NavLink
                     to="/dokumen"
@@ -145,7 +202,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                   <AiOutlineDatabase size={20} />
                   Data Distribusi
                 </NavLink>
-              </li>
+              </li> */}
               {/* <!-- Menu Item Calendar --> */}
 
               {/* <!-- Menu Item Profile --> */}
