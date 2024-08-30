@@ -32,10 +32,12 @@ const Laporan = () => {
   const [dataProvinsi, setDataProvinsi] = useState([]);
   const [dataKota, setDataKota] = useState([]);
   const [dataKecamatan, setDataKecamatan] = useState([]);
+  const [dataPuskesmas, setDataPuskesmas] = useState([]);
 
   const [selectedProvinsi, setSelectedProvinsi] = useState(null);
   const [selectedKota, setSelectedKota] = useState(null);
   const [selectedKecamatan, setSelectedKecamatan] = useState(null);
+  const [selectedPuskesmas, setSelectedPuskesmas] = useState(null);
 
   const fetchDokumenData = async () => {
     setLoading(true);
@@ -58,11 +60,11 @@ const Laporan = () => {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     fetchDokumenData();
   }, []);
 
+  // fetch provinsi
   const fetchProvinsi = async () => {
     try {
       const response = await axios({
@@ -85,6 +87,11 @@ const Laporan = () => {
       setDataProvinsi([]);
     }
   };
+  useEffect(() => {
+    fetchProvinsi();
+  }, []);
+
+  // fetch kota
   const fetchKota = async (idProvinsi) => {
     try {
       const response = await axios({
@@ -109,6 +116,7 @@ const Laporan = () => {
       setDataKota([]);
     }
   };
+
   const fetchKecamatan = async (idKota) => {
     try {
       const response = await axios({
@@ -131,16 +139,43 @@ const Laporan = () => {
       setDataKecamatan([]);
     }
   };
-  useEffect(() => {
-    fetchProvinsi();
-  }, []);
+
+  // fetch puskesmas data base on selected kecamatan
+  const fetchPuskesmasData = async (idKecamatan) => {
+    setLoading(true);
+    setError(false);
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/puskesmas`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataPuskesmas([
+        { label: "semua puskesmas", value: "" },
+        ...response.data.data.map((item) => ({
+          label: item.nama_puskesmas,
+          value: item.id,
+        })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setFilteredData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleProvinsiChange = (selectedOption) => {
     setSelectedProvinsi(selectedOption);
     setSelectedKota(null);
     setSelectedKecamatan(null);
+    setDataPuskesmas(null);
     setDataKota([]);
     setDataKecamatan([]);
+    setDataPuskesmas([]);
     if (selectedOption && selectedOption.value !== "") {
       fetchKota(selectedOption.value);
     }
@@ -149,7 +184,9 @@ const Laporan = () => {
   const handleKotaChange = (selectedOption) => {
     setSelectedKota(selectedOption);
     setSelectedKecamatan(null);
+    setSelectedPuskesmas(null);
     setDataKecamatan([]);
+    setDataPuskesmas([]);
     if (selectedOption && selectedOption.value !== "") {
       fetchKecamatan(selectedOption.value);
     }
@@ -157,6 +194,15 @@ const Laporan = () => {
 
   const handleKecamatanChange = (selectedOption) => {
     setSelectedKecamatan(selectedOption);
+    setSelectedPuskesmas(null);
+    setDataPuskesmas([]);
+    if (selectedOption && selectedOption.value !== "") {
+      fetchPuskesmasData(selectedOption.value);
+    }
+  };
+
+  const handlePuskesmasChange = (selectedOption) => {
+    setSelectedPuskesmas(selectedOption);
   };
 
   const deleteDokumen = async (id) => {
@@ -442,9 +488,12 @@ const Laporan = () => {
     <div>
       <Breadcrumb pageName="Dokumen TTE" linkBack="/dokumen" />
       <div className="flex flex-col items-center justify-center w-full tracking-tight mb-12">
+        {/* Header report page */}
         <h1 className="font-normal mb-3 text-xl lg:text-[28px] tracking-tight text-center text-bodydark1">
           Data Laporan
         </h1>
+
+        {/* Filtering data */}
         <div className="flex items-center lg:items-end mt-8 gap-4 flex-col lg:flex-row">
           <div className="flex items-center gap-4 flex-col sm:flex-row">
             <div className="text-base">
@@ -472,6 +521,7 @@ const Laporan = () => {
                 isDisabled={user.role === "3"}
               />
             </div>
+
             <div>
               <label
                 className="block text-[#728294] text-base font-normal mb-2"
@@ -500,7 +550,8 @@ const Laporan = () => {
                 }
               />
             </div>
-            {/* <div>
+
+            <div>
               <label
                 className="block text-[#728294] text-base font-normal mb-2"
                 htmlFor="kecamatan"
@@ -525,7 +576,37 @@ const Laporan = () => {
                   selectedKota ? "Pilih Kecamatan" : "Pilih Kab / Kota Dahulu"
                 }
               />
-            </div> */}
+            </div>
+
+            {/* filtering base on puskesmas name */}
+            <div>
+              <label
+                className="block text-[#728294] text-base font-normal mb-2"
+                htmlFor="nama puskesmas"
+              >
+                Nama puskesmas
+              </label>
+              <Select
+                options={dataPuskesmas}
+                value={selectedPuskesmas}
+                onChange={handlePuskesmasChange}
+                className="w-64 sm:w-32 xl:w-60"
+                theme={(theme) => ({
+                  ...theme,
+                  colors: {
+                    ...theme.colors,
+                    primary25: "lightgrey",
+                    primary: "grey",
+                  },
+                })}
+                isDisabled={user.role === "3" || !selectedKecamatan}
+                placeholder={
+                  selectedKecamatan
+                    ? "Pilih Puskesmas"
+                    : "Pilih Kecamatan dahulu"
+                }
+              />
+            </div>
           </div>
           <button
             onClick={handleSearchClick}
@@ -540,6 +621,7 @@ const Laporan = () => {
           </button>
         </div>
       </div>
+
       <div className="rounded-md flex flex-col gap-4 overflow-hidden overflow-x-auto  border border-stroke bg-white py-4 md:py-8 px-4 md:px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex justify-between mb-4 items-center">
           <div className="relative">
