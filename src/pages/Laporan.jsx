@@ -17,6 +17,8 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { CgSpinner } from "react-icons/cg";
+import * as XLSX from "xlsx";
+import moment from "moment/moment";
 
 const Laporan = () => {
   const user = useSelector((a) => a.auth.user);
@@ -32,21 +34,29 @@ const Laporan = () => {
   const [dataProvinsi, setDataProvinsi] = useState([]);
   const [dataKota, setDataKota] = useState([]);
   const [dataKecamatan, setDataKecamatan] = useState([]);
+  const [dataPuskesmas, setDataPuskesmas] = useState([]);
 
   const [selectedProvinsi, setSelectedProvinsi] = useState(null);
   const [selectedKota, setSelectedKota] = useState(null);
   const [selectedKecamatan, setSelectedKecamatan] = useState(null);
+  const [selectedPuskesmas, setSelectedPuskesmas] = useState(null);
 
-  const fetchDokumenData = async () => {
+  const fetchDataLaporan = async () => {
     setLoading(true);
     setError(false);
     try {
       const response = await axios({
-        method: "get",
-        url: `${import.meta.env.VITE_APP_API_URL}/api/dokumen`,
+        method: "post",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/laporan`,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user?.token}`,
+        },
+        data: {
+          id_provinsi: 0,
+          id_kabupaten: 0,
+          id_kecamatan: 0,
+          id_puskesmas: 0,
         },
       });
       setData(response.data.data);
@@ -58,11 +68,11 @@ const Laporan = () => {
       setLoading(false);
     }
   };
-
   useEffect(() => {
-    fetchDokumenData();
+    fetchDataLaporan();
   }, []);
 
+  // fetch provinsi
   const fetchProvinsi = async () => {
     try {
       const response = await axios({
@@ -85,6 +95,11 @@ const Laporan = () => {
       setDataProvinsi([]);
     }
   };
+  useEffect(() => {
+    fetchProvinsi();
+  }, []);
+
+  // fetch kota
   const fetchKota = async (idProvinsi) => {
     try {
       const response = await axios({
@@ -109,6 +124,7 @@ const Laporan = () => {
       setDataKota([]);
     }
   };
+
   const fetchKecamatan = async (idKota) => {
     try {
       const response = await axios({
@@ -131,16 +147,45 @@ const Laporan = () => {
       setDataKecamatan([]);
     }
   };
-  useEffect(() => {
-    fetchProvinsi();
-  }, []);
+
+  // fetch puskesmas data base on selected kecamatan
+  const fetchPuskesmasData = async (idKecamatan) => {
+    setLoading(true);
+    setError(false);
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${
+          import.meta.env.VITE_APP_API_URL
+        }/api/getpuskesmas/${idKecamatan}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataPuskesmas([
+        { label: "semua puskesmas", value: "" },
+        ...response.data.data.map((item) => ({
+          label: item.nama_puskesmas,
+          value: item.id,
+        })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setFilteredData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleProvinsiChange = (selectedOption) => {
     setSelectedProvinsi(selectedOption);
     setSelectedKota(null);
     setSelectedKecamatan(null);
+    setDataPuskesmas(null);
     setDataKota([]);
     setDataKecamatan([]);
+    setDataPuskesmas([]);
     if (selectedOption && selectedOption.value !== "") {
       fetchKota(selectedOption.value);
     }
@@ -149,7 +194,9 @@ const Laporan = () => {
   const handleKotaChange = (selectedOption) => {
     setSelectedKota(selectedOption);
     setSelectedKecamatan(null);
+    setSelectedPuskesmas(null);
     setDataKecamatan([]);
+    setDataPuskesmas([]);
     if (selectedOption && selectedOption.value !== "") {
       fetchKecamatan(selectedOption.value);
     }
@@ -157,6 +204,15 @@ const Laporan = () => {
 
   const handleKecamatanChange = (selectedOption) => {
     setSelectedKecamatan(selectedOption);
+    setSelectedPuskesmas(null);
+    setDataPuskesmas([]);
+    if (selectedOption && selectedOption.value !== "") {
+      fetchPuskesmasData(selectedOption.value);
+    }
+  };
+
+  const handlePuskesmasChange = (selectedOption) => {
+    setSelectedPuskesmas(selectedOption);
   };
 
   const deleteDokumen = async (id) => {
@@ -197,20 +253,19 @@ const Laporan = () => {
     });
   };
 
+  // search bar
   const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();
     setSearch(value);
 
     const filtered = data.filter((item) => {
       return (
-        (item?.nama_dokumen &&
-          item.nama_dokumen.toLowerCase().includes(value)) ||
-        (item?.nomor_bast && item.nomor_bast.toLowerCase().includes(value)) ||
-        (item?.tanggal_bast &&
-          item.tanggal_bast.toLowerCase().includes(value)) ||
-        (item?.tahun_lokus && item.tahun_lokus.toLowerCase().includes(value)) ||
-        (item?.penerima_hibah &&
-          item.penerima_hibah.toLowerCase().includes(value))
+        (item?.jenis_alkes && item.jenis_alkes.toLowerCase().includes(value)) ||
+        (item?.jumlah_dikirim &&
+          item.jumlah_dikirim.toLowerCase().includes(value)) ||
+        (item?.jumlah_diterima &&
+          item.jumlah_diterima.toLowerCase().includes(value)) ||
+        (item?.total_harga && item.total_harga.toLowerCase().includes(value))
       );
     });
 
@@ -224,18 +279,18 @@ const Laporan = () => {
     try {
       const response = await axios({
         method: "post",
-        url: `${import.meta.env.VITE_APP_API_URL}/api/searchdoc`,
+        url: `${import.meta.env.VITE_APP_API_URL}/api/laporan`,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user?.token}`,
         },
         data: {
-          id_provinsi: selectedProvinsi?.value.toString() || "",
-          id_kabupaten: selectedKota?.value.toString() || "",
-          id_kecamatan: selectedKecamatan?.value.toString() || "",
+          id_provinsi: selectedProvinsi?.value || 0,
+          id_kabupaten: selectedKota?.value || 0,
+          id_kecamatan: selectedKecamatan?.value || 0,
+          id_puskesmas: selectedPuskesmas?.value || 0,
         },
       });
-
       setFilteredData(response.data.data);
     } catch (error) {
       setError(true);
@@ -249,186 +304,29 @@ const Laporan = () => {
     () => [
       // { name: "No", selector: (row) => row.id, sortable: true },
       {
-        name: "Nama Dokumen",
-        selector: (row) => row.nama_dokumen,
+        name: "Jenis Alkes",
+        selector: (row) => row.jenis_alkes,
+        sortable: true,
+        width: "400px",
+      },
+      {
+        name: "Jumlah Dikirim",
+        selector: (row) => row.jumlah_dikirim,
+        sortable: true,
+        width: "300px",
+      },
+      {
+        name: "Jumlah Diterima",
+        selector: (row) => row.jumlah_diterima,
+        width: "300px",
+        sortable: true,
+      },
+      {
+        name: "Total harga",
+        // tolong di cek ulang, apakah total harga diambil dari field ini
+        selector: (row) => row.total_harga,
         sortable: true,
         // width: "100px",
-      },
-      {
-        name: "Provinsi",
-        selector: (row) => row.provinsi,
-        sortable: true,
-        width: "120px",
-      },
-      {
-        name: "Kab/Kota",
-        selector: (row) => row.kabupaten,
-        sortable: true,
-      },
-      {
-        name: "Nomor BAST",
-        selector: (row) => row.nomor_bast,
-        sortable: true,
-        // width: "100px",
-      },
-      // {
-      //   name: "Tanggal BAST",
-      //   selector: (row) => row.tanggal_bast,
-      //   sortable: true,
-      //   // width: "100px",
-      // },
-      {
-        name: "Tahun Lokus",
-        selector: (row) => row.tahun_lokus,
-        sortable: true,
-        // width: "100px",
-      },
-      // {
-      //   name: "Kepala Unit Pemberi",
-      //   selector: (row) => row.kepala_unit_pemberi,
-      //   sortable: true,
-      //   // width: "100px",
-      // },
-      // {
-      //   name: "Penerima Hibah",
-      //   selector: (row) => row.penerima_hibah,
-      //   sortable: true,
-      //   // width: "100px",
-      // },
-      {
-        name: "Status TTE",
-        selector: (row) => (row.status_tte === "0" ? "Belum TTE" : "Sudah TTE"),
-        sortable: true,
-        // width: "110px",
-      },
-      // {
-      //   name: "Keterangan PPK Kemenkes",
-      //   selector: (row) => row.keterangan_ppk,
-      //   sortable: true,
-      // },
-      {
-        name: "Dokumen BAST",
-        cell: (row) => (
-          <div className="flex items-center space-x-2">
-            {/* <button
-              title="Input"
-              className="text-green-500 hover:text-green-700"
-            >
-              <Link to="/data-verifikasi/form-distribusi">
-                <FaPlus />
-              </Link>
-            </button> */}
-            <button
-              title="Lihat"
-              className="text-[#16B3AC] hover:text-cyan-500"
-            >
-              <Link to={`/data-distribusi/preview-dokumen/${row.id}`}>
-                <FaEye size={16} />
-              </Link>
-            </button>
-            <button
-              title="Download"
-              className="text-green-400 hover:text-green-500"
-            >
-              <Link to={`/data-distribusi/preview-dokumen/${row.id}`}>
-                <FaDownload size={16} />
-              </Link>
-            </button>
-          </div>
-        ),
-        ignoreRowClick: true,
-        allowOverflow: true,
-        button: true,
-      },
-      {
-        name: "TTE",
-        cell: (row) => (
-          <div className="flex items-center space-x-2">
-            {row.status_tte === "Belum" ? (
-              <button
-                title="Konfirmasi"
-                className="text-white py-2 w-22 bg-blue-500 rounded-md"
-                onClick={() => {
-                  navigate(`/data-distribusi/preview-dokumen/${row.id}`);
-                }}
-              >
-                {/* <FaEdit size={16} /> */}
-                <Link to={`/data-distribusi/preview-dokumen/${row.id}`}>
-                  TTE
-                </Link>
-              </button>
-            ) : (
-              <button
-                title="Konfirmasi"
-                className="text-white  py-2 w-22 bg-green-500 rounded-md"
-                onClick={() => {
-                  navigate(`/data-distribusi/preview-dokumen/${row.id}`);
-                }}
-              >
-                {/* <FaEdit size={16} /> */}
-                <Link to={`/data-distribusi/preview-dokumen/${row.id}`}>
-                  Sudah TTE
-                </Link>
-              </button>
-            )}
-          </div>
-        ),
-        ignoreRowClick: true,
-        allowOverflow: true,
-        button: true,
-      },
-      {
-        name: "Aksi",
-        omit: user.role !== "1",
-        cell: (row) => (
-          <div className="flex items-center space-x-2">
-            {/* <button
-              title="Input"
-              className="text-green-500 hover:text-green-700"
-            >
-              <Link to="/data-verifikasi/form-distribusi">
-                <FaPlus />
-              </Link>
-            </button> */}
-
-            {user.role === "1" ? (
-              <>
-                <button
-                  title="Edit"
-                  className="text-[#16B3AC] hover:text-cyan-500"
-                >
-                  <Link
-                    to={`/dokumen/edit/${encodeURIComponent(
-                      encryptId(row.id)
-                    )}`}
-                  >
-                    <FaEdit size={16} />
-                  </Link>
-                </button>
-                <button
-                  title="Delete"
-                  className="text-red-500 hover:text-red-700"
-                  onClick={() => handleConfirmDeleteDokumen(row.id)}
-                >
-                  <FaTrash size={16} />
-                </button>
-              </>
-            ) : (
-              ""
-            )}
-            {/* <button
-              title="Edit"
-              className="text-white p-2 bg-blue-600 rounded-md"
-            >
-              <Link to={`/data-distribusi/preview-dokumen/${row.id}`}>
-                TTE
-              </Link>
-            </button> */}
-          </div>
-        ),
-        ignoreRowClick: true,
-        allowOverflow: true,
-        button: true,
       },
     ],
     []
@@ -436,15 +334,44 @@ const Laporan = () => {
 
   const handleExport = () => {
     // Implementasi untuk mengekspor data (misalnya ke CSV)
+    const exportData = filteredData?.map((data) => ({
+      "Jenis Alkes": data.jenis_alkes,
+      "Jumlah Dikirim": data.jumlah_dikirim,
+      "Jumlah Diterima": data.jumlah_diterima,
+      "Total Harga": data.total_harga,
+    }));
+
+    if (!exportData || exportData.length === 0) {
+      alert("Tidak ada data untuk diekspor");
+      return;
+    }
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(exportData);
+
+    ws["!cols"] = [
+      { wch: 30 }, // Kolom 1 (jenis alkes)
+      { wch: 20 }, // Kolom 2 (jumlah dikirim)
+      { wch: 20 }, // Kolom 3 (jumlah diterima)
+      { wch: 20 }, // Kolom 4 (total harga)
+    ];
+
+    const tanggal = moment().locale("id").format("DD MMMM YYYY HH:mm");
+
+    XLSX.utils.book_append_sheet(wb, ws, "Data Laporan");
+    XLSX.writeFile(wb, `Data laporan ${tanggal}.xlsx`);
   };
 
   return (
     <div>
       <Breadcrumb pageName="Dokumen TTE" linkBack="/dokumen" />
       <div className="flex flex-col items-center justify-center w-full tracking-tight mb-12">
+        {/* Header report page */}
         <h1 className="font-normal mb-3 text-xl lg:text-[28px] tracking-tight text-center text-bodydark1">
           Data Laporan
         </h1>
+
+        {/* Filtering data */}
         <div className="flex items-center lg:items-end mt-8 gap-4 flex-col lg:flex-row">
           <div className="flex items-center gap-4 flex-col sm:flex-row">
             <div className="text-base">
@@ -472,6 +399,7 @@ const Laporan = () => {
                 isDisabled={user.role === "3"}
               />
             </div>
+
             <div>
               <label
                 className="block text-[#728294] text-base font-normal mb-2"
@@ -500,7 +428,8 @@ const Laporan = () => {
                 }
               />
             </div>
-            {/* <div>
+
+            <div>
               <label
                 className="block text-[#728294] text-base font-normal mb-2"
                 htmlFor="kecamatan"
@@ -525,7 +454,37 @@ const Laporan = () => {
                   selectedKota ? "Pilih Kecamatan" : "Pilih Kab / Kota Dahulu"
                 }
               />
-            </div> */}
+            </div>
+
+            {/* filtering base on puskesmas name */}
+            <div>
+              <label
+                className="block text-[#728294] text-base font-normal mb-2"
+                htmlFor="nama puskesmas"
+              >
+                Nama puskesmas
+              </label>
+              <Select
+                options={dataPuskesmas}
+                value={selectedPuskesmas}
+                onChange={handlePuskesmasChange}
+                className="w-64 sm:w-32 xl:w-60"
+                theme={(theme) => ({
+                  ...theme,
+                  colors: {
+                    ...theme.colors,
+                    primary25: "lightgrey",
+                    primary: "grey",
+                  },
+                })}
+                isDisabled={user.role === "3" || !selectedKecamatan}
+                placeholder={
+                  selectedKecamatan
+                    ? "Pilih Puskesmas"
+                    : "Pilih Kecamatan dahulu"
+                }
+              />
+            </div>
           </div>
           <button
             onClick={handleSearchClick}
@@ -540,6 +499,7 @@ const Laporan = () => {
           </button>
         </div>
       </div>
+
       <div className="rounded-md flex flex-col gap-4 overflow-hidden overflow-x-auto  border border-stroke bg-white py-4 md:py-8 px-4 md:px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex justify-between mb-4 items-center">
           <div className="relative">
