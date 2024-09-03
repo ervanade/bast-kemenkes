@@ -47,6 +47,8 @@ import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import EditUser from "./pages/admin/EditUser";
 import DetailLaporanProvinsi from "./pages/laporan/DetailLaporanProvinsi";
 import Laporan from "./pages/laporan/Laporan";
+import DetailLaporanKabupaten from "./pages/laporan/DetailLaporanKabupaten";
+import DetailLaporanPuskesmas from "./pages/laporan/DetailLaporanPuskesmas";
 
 function App() {
   const { pathname } = useLocation();
@@ -93,8 +95,12 @@ function App() {
               />
               <Route path="laporan" element={<Laporan />} />
               <Route
-                path="laporan/detail/:idProvinsi/:idKota"
-                element={<DetailKota />}
+                path="laporan/detail/:idProvinsi/:idKabupaten/:idKecamatan"
+                element={<DetailLaporanPuskesmas />}
+              />
+              <Route
+                path="laporan/detail/:idProvinsi/:idKabupaten"
+                element={<DetailLaporanKabupaten />}
               />
               <Route
                 path="laporan/detail/:idProvinsi"

@@ -26,6 +26,7 @@ const TambahUser = () => {
     kabupaten: "",
     kecamatan: "",
     nip: "",
+    no_tlp: "",
   });
 
   const navigate = useNavigate();
@@ -395,6 +396,34 @@ const TambahUser = () => {
                   type="text"
                   required
                   placeholder="NIP"
+                />
+              </div>
+            </div>
+            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+              <div className="sm:flex-[2_2_0%]">
+                <label
+                  className="block text-[#728294] text-base font-normal mb-2"
+                  htmlFor="no_tlp"
+                >
+                  No Handphone :
+                </label>
+              </div>
+              <div className="sm:flex-[5_5_0%]">
+                <input
+                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                  "border-red-500" 
+               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                  id="no_tlp"
+                  value={formData.no_tlp}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      no_tlp: e.target.value,
+                    }))
+                  }
+                  type="text"
+                  required
+                  placeholder="No Handphone"
                 />
               </div>
             </div>

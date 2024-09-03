@@ -22,6 +22,7 @@ import { PiShieldWarningBold } from "react-icons/pi";
 import { MdOutlineDomainVerification } from "react-icons/md";
 import { AiOutlineDatabase } from "react-icons/ai";
 import LaporanCard from "../../components/Card/LaporanCard";
+import { data } from "autoprefixer";
 
 const Laporan = () => {
   const user = useSelector((a) => a.auth.user);
@@ -32,7 +33,9 @@ const Laporan = () => {
   const [search, setSearch] = useState("");
   const [filteredData, setFilteredData] = useState([]);
 
-  const [data, setData] = useState([]);
+  const [dataCard, setDataCard] = useState({});
+
+  const [data, setData] = useState({});
 
   const [dataProvinsi, setDataProvinsi] = useState([]);
   const [dataKota, setDataKota] = useState([]);
@@ -48,8 +51,8 @@ const Laporan = () => {
     setLoading(true);
     try {
       const response = await axios({
-        method: "get",
-        url: `${import.meta.env.VITE_APP_API_URL}/api/provinsi`,
+        method: "post",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/laporan/provinsi`,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user?.token}`,
@@ -57,13 +60,26 @@ const Laporan = () => {
       });
       setFilteredData(response.data.data);
       setLoading(false);
-      setDataProvinsi([
-        { label: "Semua Provinsi", value: "" },
-        ...response.data.data.map((item) => ({
-          label: item.name,
-          value: item.id,
-        })),
-      ]);
+      setData(response.data.data);
+    } catch (error) {
+      setError(true);
+      setDataProvinsi([]);
+    }
+  };
+
+  const fetchDataCard = async () => {
+    setLoading(true);
+    try {
+      const response = await axios({
+        method: "post",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/laporan/dashboard`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataCard(response?.data?.data[0]);
+      setLoading(false);
     } catch (error) {
       setError(true);
       setDataProvinsi([]);
@@ -71,22 +87,14 @@ const Laporan = () => {
   };
   useEffect(() => {
     fetchProvinsi();
+    fetchDataCard();
   }, []);
-
   const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();
     setSearch(value);
 
     const filtered = data.filter((item) => {
-      return (
-        (item?.name && item.name.toLowerCase().includes(value)) ||
-        (item?.nomor_bast && item.nomor_bast.toLowerCase().includes(value)) ||
-        (item?.tanggal_bast &&
-          item.tanggal_bast.toLowerCase().includes(value)) ||
-        (item?.tahun_lokus && item.tahun_lokus.toLowerCase().includes(value)) ||
-        (item?.penerima_hibah &&
-          item.penerima_hibah.toLowerCase().includes(value))
-      );
+      return item?.provinsi && item.provinsi.toLowerCase().includes(value);
     });
 
     setFilteredData(filtered);
@@ -97,31 +105,31 @@ const Laporan = () => {
       // { name: "No", selector: (row) => row.id, sortable: true },
       {
         name: "Provinsi",
-        selector: (row) => row.name,
+        selector: (row) => row.provinsi,
         sortable: true,
         width: "180px",
       },
       {
         name: "Data Distribusi",
-        selector: (row) => 24,
+        selector: (row) => row.jumlah_distribusi,
         sortable: true,
         // width: "100px",
       },
       {
         name: "Jumlah Dikirim",
-        selector: (row) => 80,
+        selector: (row) => row.jumlah_dikirim,
         sortable: true,
         // width: "100px",
       },
       {
         name: "Jumlah Diterima",
-        selector: (row) => 80,
+        selector: (row) => row.jumlah_diterima,
         sortable: true,
         // width: "100px",
       },
       {
         name: "Total Harga (Rp)",
-        selector: (row) => "Rp.1,000,000",
+        selector: (row) => row.total_harga,
         sortable: true,
         width: "200px",
       },
@@ -134,7 +142,9 @@ const Laporan = () => {
               className="text-green-400 hover:text-green-500"
             >
               <Link
-                to={`/laporan/detail/${encodeURIComponent(encryptId(row.id))}`}
+                to={`/laporan/detail/${encodeURIComponent(
+                  encryptId(row.id_provinsi)
+                )}`}
               >
                 <FaEye size={16} />
               </Link>
@@ -157,15 +167,39 @@ const Laporan = () => {
     <div>
       <Breadcrumb pageName="Data Laporan" title="Data Laporan" />
       <div className="flex flex-col items-center justify-center w-full tracking-tight mb-8">
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-          <LaporanCard title="Data Distribusi" total="564" />
-          <LaporanCard title="Data Terverifikasi" total="400" />
-          <LaporanCard title="Data Belum Diverifikasi" total="24" />
-          <LaporanCard title="Data Belum Diproses" total="140" />
-          <LaporanCard title="Jumlah Barang Dikirim" total="1,504" />
-          <LaporanCard title="Jumlah Barang Diterima" total="1,504" />
-          <LaporanCard title="Total Harga (Rp)" total="Rp. 32,000,000" />
-          <LaporanCard title="Jumlah Dokumen" total="56" />
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-4 xl:grid-cols-4 2xl:gap-7.5">
+          <LaporanCard
+            title="Data Distribusi"
+            total={dataCard.jumlah_distribusi || 0}
+          />
+          <LaporanCard
+            title="Data Terverifikasi"
+            total={dataCard.terverifikasi || 0}
+          />
+          <LaporanCard
+            title="Data Belum Diverifikasi"
+            total={dataCard.belum_terverifikasi || 0}
+          />
+          <LaporanCard
+            title="Data Belum Diproses"
+            total={dataCard.belum_diproses || 0}
+          />
+          <LaporanCard
+            title="Jumlah Barang Dikirim"
+            total={dataCard.jumlah_dikirim || 0}
+          />
+          <LaporanCard
+            title="Jumlah Barang Diterima"
+            total={dataCard.jumlah_diterima || 0}
+          />
+          <LaporanCard
+            title="Total Harga (Rp)"
+            total={dataCard.total_harga || 0}
+          />
+          <LaporanCard
+            title="Jumlah Dokumen"
+            total={dataCard.jumlah_dokumen || 0}
+          />
         </div>
       </div>
       <div className="rounded-md flex flex-col gap-4 overflow-hidden overflow-x-auto  border border-stroke bg-white py-4 md:py-8 px-4 md:px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -212,7 +246,7 @@ const Laporan = () => {
               <BiExport />
               <span className="hidden sm:block">Export</span>
             </button>
-            {user.role === "1" ? (
+            {/* {user.role === "1" ? (
               <button
                 title="Tambah Data Laporan"
                 className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
@@ -228,7 +262,7 @@ const Laporan = () => {
               </button>
             ) : (
               ""
-            )}
+            )} */}
           </div>
         </div>
         <div className="overflow-x-auto">

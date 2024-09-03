@@ -11,6 +11,7 @@ import {
   roleOptions,
   SelectOptions,
 } from "../../data/data";
+import { FaEdit, FaPlus, FaSpinner, FaTrash } from "react-icons/fa";
 import { decryptId, selectThemeColors } from "../../data/utils";
 import Select from "react-select";
 import Swal from "sweetalert2";
@@ -34,6 +35,9 @@ const TambahDokumen = () => {
     contractFile: null,
     contractFileName: "",
   });
+
+  const [isPenerimaEditable, setIsPenerimaEditable] = useState(false);
+  const [isKepalaEditable, setIsKepalaEditable] = useState(false);
 
   const navigate = useNavigate();
   const user = useSelector((a) => a.auth.user);
@@ -426,25 +430,39 @@ const TambahDokumen = () => {
               </div>
             </div>
 
-            {/* <FormInput
-              select={true}
-              id="kota"
-              options={dataUser}
-              value={selectedUser}
-              onChange={handleUserChange}
-              placeholder={"Pilih Email Pihak Kesatu"}
-              label="Pihak Kesatu :"
-              required
-            /> */}
-            <FormInput
-              id="kepala_unit_pemberi"
-              value={formData.kepala_unit_pemberi}
-              onChange={handleChange}
-              type="text"
-              required
-              placeholder="Kepala Unit Pemberi"
-              label="Kepala Unit Pemberi :"
-            />
+            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+              <div className="sm:flex-[2_2_0%]">
+                <label
+                  className="block text-[#728294] text-base font-normal mb-2"
+                  htmlFor="kepala_unit_pemberi"
+                >
+                  Kepala Unit Pemberi :
+                </label>
+              </div>
+              <div className="sm:flex-[5_5_0%] flex items-center">
+                <input
+                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                  "border-red-500" 
+               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                  id="kepala_unit_pemberi"
+                  value={formData.kepala_unit_pemberi}
+                  onChange={handleChange}
+                  type="text"
+                  required
+                  disabled={!isKepalaEditable}
+                  placeholder="Kepala Unit Pemberi"
+                />
+                <button
+                  type="button"
+                  onClick={() => setIsKepalaEditable((prev) => !prev)}
+                  className={`focus:outline-none ml-2 ${
+                    isKepalaEditable ? "text-teal-500" : "text-[#728294]"
+                  }`}
+                >
+                  <FaEdit />
+                </button>
+              </div>
+            </div>
 
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
@@ -455,7 +473,7 @@ const TambahDokumen = () => {
                   Penerima Hibah :
                 </label>
               </div>
-              <div className="sm:flex-[5_5_0%]">
+              <div className="sm:flex-[5_5_0%] flex items-center">
                 <input
                   className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                   "border-red-500" 
@@ -465,8 +483,18 @@ const TambahDokumen = () => {
                   onChange={handleChange}
                   type="text"
                   required
+                  disabled={!isPenerimaEditable}
                   placeholder="Penerima Hibah"
                 />
+                <button
+                  type="button"
+                  onClick={() => setIsPenerimaEditable((prev) => !prev)}
+                  className={`focus:outline-none ml-2 ${
+                    isPenerimaEditable ? "text-teal-500" : "text-[#728294]"
+                  }`}
+                >
+                  <FaEdit />
+                </button>
               </div>
             </div>
 

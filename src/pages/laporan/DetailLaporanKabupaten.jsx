@@ -9,7 +9,7 @@ import {
   dataProvinsi,
 } from "../../data/data";
 import { decryptId, encryptId, selectThemeColors } from "../../data/utils";
-import { FaDownload, FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa";
+import { FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa";
 import { BiExport, BiSolidFileExport } from "react-icons/bi";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -18,7 +18,7 @@ import Swal from "sweetalert2";
 import { CgSpinner } from "react-icons/cg";
 import LaporanCard from "../../components/Card/LaporanCard";
 
-const DetailLaporanProvinsi = () => {
+const DetailLaporanKabupaten = () => {
   const user = useSelector((a) => a.auth.user);
 
   const [search, setSearch] = useState(""); // Initialize search state with an empty string
@@ -27,14 +27,17 @@ const DetailLaporanProvinsi = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const { idProvinsi } = useParams();
+  const { idProvinsi, idKabupaten } = useParams();
 
   const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();
     setSearch(value);
 
     const filtered = data.filter((item) => {
-      return item?.kabupaten && item.kabupaten.toLowerCase().includes(value);
+      return (
+        (item?.kecamatan && item.kecamatan.toLowerCase().includes(value)) ||
+        (item?.puskesmas && item.puskesmas.toLowerCase().includes(value))
+      );
     });
 
     setFilteredData(filtered);
@@ -49,13 +52,14 @@ const DetailLaporanProvinsi = () => {
     try {
       const response = await axios({
         method: "post",
-        url: `${import.meta.env.VITE_APP_API_URL}/api/laporan/kabupaten`,
+        url: `${import.meta.env.VITE_APP_API_URL}/api/laporan/kecamatan`,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user?.token}`,
         },
         data: JSON.stringify({
           id_provinsi: encodeURIComponent(decryptId(idProvinsi)),
+          id_kabupaten: encodeURIComponent(decryptId(idKabupaten)),
         }),
       });
       setFilteredData(response.data.data);
@@ -78,6 +82,7 @@ const DetailLaporanProvinsi = () => {
         },
         data: JSON.stringify({
           id_provinsi: encodeURIComponent(decryptId(idProvinsi)),
+          id_kabupaten: encodeURIComponent(decryptId(idKabupaten)),
         }),
       });
       setDataCard(response?.data?.data[0]);
@@ -133,8 +138,14 @@ const DetailLaporanProvinsi = () => {
   const columns = useMemo(
     () => [
       {
-        name: "Kab / Kota",
-        selector: (row) => row.kabupaten,
+        name: "Kecamatan",
+        selector: (row) => row.kecamatan,
+        sortable: true,
+        width: "180px",
+      },
+      {
+        name: "Puskesmas",
+        selector: (row) => row.nama_puskesmas,
         sortable: true,
         width: "180px",
       },
@@ -163,32 +174,6 @@ const DetailLaporanProvinsi = () => {
         width: "200px",
       },
       {
-        name: "Dokumen BAST",
-        cell: (row) => (
-          <div className="flex items-center space-x-2">
-            {/* <button
-              title="Input"
-              className="text-green-500 hover:text-green-700"
-            >
-              <Link to="/data-verifikasi/form-distribusi">
-                <FaPlus />
-              </Link>
-            </button> */}
-            <button
-              title="Download"
-              className="text-green-400 hover:text-green-500"
-            >
-              <Link to={`/dokumen/preview-dokumen/`}>
-                <FaDownload size={16} />
-              </Link>
-            </button>
-          </div>
-        ),
-        ignoreRowClick: true,
-        allowOverflow: true,
-        button: true,
-      },
-      {
         name: "Aksi",
         cell: (row) => (
           <div className="flex items-center space-x-2">
@@ -199,7 +184,9 @@ const DetailLaporanProvinsi = () => {
               <Link
                 to={`/laporan/detail/${encodeURIComponent(
                   idProvinsi
-                )}/${encodeURIComponent(encryptId(row.id_kabupaten))}`}
+                )}/${encodeURIComponent(idKabupaten)}/${encodeURIComponent(
+                  encryptId(row.id_kecamatan)
+                )}`}
               >
                 <FaEye size={16} />
               </Link>
@@ -217,12 +204,14 @@ const DetailLaporanProvinsi = () => {
   return (
     <div>
       <Breadcrumb
-        pageName={"Data Laporan Provinsi " + (filteredData[0]?.provinsi || "")}
-        title={"Data Laporan Provinsi " + (filteredData[0]?.provinsi || "")}
+        pageName={"Data Laporan " + (filteredData[0]?.kabupaten || "")}
+        title={"Data Laporan " + (filteredData[0]?.kabupaten || "")}
       />
       <div className="flex justify-end mb-4">
         <button
-          onClick={() => navigate(`/laporan`)}
+          onClick={() =>
+            navigate(`/laporan/detail/${encodeURIComponent(idProvinsi)}`)
+          }
           className="flex items-center px-4 py-2 bg-primary text-white rounded-md font-semibold"
         >
           Back
@@ -359,4 +348,4 @@ const DetailLaporanProvinsi = () => {
   );
 };
 
-export default DetailLaporanProvinsi;
+export default DetailLaporanKabupaten;

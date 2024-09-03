@@ -27,6 +27,7 @@ const EditUser = () => {
     kabupaten: "",
     kecamatan: "",
     nip: "",
+    no_tlp: "",
   });
 
   const navigate = useNavigate();
@@ -76,6 +77,7 @@ const EditUser = () => {
           kabupaten: data.kabupaten || "",
           kecamatan: data.kecamatan || "",
           nip: data.nip || "",
+          no_tlp: data.no_tlp || "",
         });
         setSelectedRole(roleOptions.find((a) => a.value === data.role));
         setGetLoading(false);
@@ -173,6 +175,27 @@ const EditUser = () => {
       setLoading(false);
       return;
     }
+
+    const formDataToSend = {
+      email: formData.email,
+      username: formData.username,
+      name: formData.name,
+      role: formData.role,
+      provinsi: formData.provinsi.toString(),
+      kabupaten: formData.kabupaten.toString(),
+      kecamatan: formData.kecamatan.toString(),
+      nip: formData.nip,
+      no_tlp: formData.no_tlp,
+    };
+
+    // Add password fields only if they are not empty
+    if (formData.password) {
+      formDataToSend.password = formData.password;
+    }
+    if (formData.c_password) {
+      formDataToSend.c_password = formData.c_password;
+    }
+
     try {
       await axios({
         method: "put",
@@ -183,12 +206,7 @@ const EditUser = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user?.token}`,
         },
-        data: JSON.stringify({
-          ...formData,
-          provinsi: formData.provinsi.toString(),
-          kabupaten: formData.kabupaten.toString(),
-          kecamatan: formData.kecamatan.toString(),
-        }),
+        data: JSON.stringify(formDataToSend),
       });
       Swal.fire("Data Berhasil di Input!", "", "success");
       navigate("/user-management");
@@ -373,7 +391,6 @@ const EditUser = () => {
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
                   id="password"
-                  required
                   type="password"
                   value={formData.password}
                   onChange={(e) =>
@@ -402,7 +419,6 @@ const EditUser = () => {
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
                   id="password"
-                  required
                   type="password"
                   value={formData.c_password}
                   onChange={(e) =>
@@ -498,6 +514,34 @@ const EditUser = () => {
                   type="text"
                   required
                   placeholder="NIP"
+                />
+              </div>
+            </div>
+            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+              <div className="sm:flex-[2_2_0%]">
+                <label
+                  className="block text-[#728294] text-base font-normal mb-2"
+                  htmlFor="no_tlp"
+                >
+                  No Handphone :
+                </label>
+              </div>
+              <div className="sm:flex-[5_5_0%]">
+                <input
+                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                  "border-red-500" 
+               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                  id="no_tlp"
+                  value={formData.no_tlp}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      no_tlp: e.target.value,
+                    }))
+                  }
+                  type="text"
+                  required
+                  placeholder="No Handphone"
                 />
               </div>
             </div>

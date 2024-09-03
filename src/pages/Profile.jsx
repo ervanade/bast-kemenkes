@@ -67,6 +67,7 @@ const Profile = () => {
     kabupaten: "",
     kecamatan: "",
     nip: "",
+    no_tlp: "",
     profile: null,
     ttd: null,
   });
@@ -140,7 +141,7 @@ const Profile = () => {
         setFormData({
           name: data.name,
           nip: data.nip,
-          no_telp: "",
+          no_tlp: data.no_tlp,
           role: data.role,
           email: data.email,
           profile: data.profile,
@@ -178,6 +179,7 @@ const Profile = () => {
     formDataToSend.append("name", formData.name);
     formDataToSend.append("username", formData.username);
     formDataToSend.append("nip", formData.nip);
+    formDataToSend.append("no_tlp", formData.no_tlp);
     formDataToSend.append("profile", formData.profile);
     if (file) {
       formDataToSend.append("ttd", file || formData.ttd);
@@ -208,6 +210,7 @@ const Profile = () => {
             username: data.username,
             name: data.name,
             nip: data.nip,
+            no_tlp: data.no_tlp,
           })
         );
         fetchUserData();
@@ -475,6 +478,29 @@ const Profile = () => {
                       setFormData((prev) => ({
                         ...prev,
                         nip: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+
+                <div className="mb-5.5">
+                  <label
+                    className="mb-3 block text-sm font-medium text-black dark:text-white"
+                    htmlFor="Nip"
+                  >
+                    No Handphone
+                  </label>
+                  <input
+                    className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                    type="text"
+                    name="Nip"
+                    id="no_tlp"
+                    placeholder="No Handphone"
+                    value={formData.no_tlp}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        no_tlp: e.target.value,
                       }))
                     }
                   />

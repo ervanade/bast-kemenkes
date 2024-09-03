@@ -335,6 +335,10 @@ export const roleOptions = [
     {
         "label": "Direktur",
         "value": "4"
+    },
+    {
+        "label": "User Eksternal",
+        "value": "5"
     }
 ]
 export const dataPuskesmas = [
