@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
-import Breadcrumb from "../components/Breadcrumbs/Breadcrumb";
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import Select from "react-select";
 import DataTable from "react-data-table-component";
-import { encryptId, selectThemeColors } from "../data/utils";
+import { encryptId, selectThemeColors } from "../../data/utils";
 import {
   FaDownload,
   FaEdit,
@@ -17,11 +17,11 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { CgSpinner } from "react-icons/cg";
-import CardDataStats from "../components/CardDataStats";
+import CardDataStats from "../../components/CardDataStats";
 import { PiShieldWarningBold } from "react-icons/pi";
 import { MdOutlineDomainVerification } from "react-icons/md";
 import { AiOutlineDatabase } from "react-icons/ai";
-import LaporanCard from "../components/Card/LaporanCard";
+import LaporanCard from "../../components/Card/LaporanCard";
 
 const Laporan = () => {
   const user = useSelector((a) => a.auth.user);
