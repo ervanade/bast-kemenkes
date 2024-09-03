@@ -9,7 +9,6 @@ import Dashboard from "./pages/Dashboard";
 import DataDistribusi from "./pages/distribusi/DataDistribusi";
 import TambahDistribusi from "./pages/distribusi/TambahDistribusi";
 import UserManagement from "./pages/admin/UserManagement";
-import Laporan from "./pages/Laporan";
 import LaporanPreview from "./pages/LaporanPreview";
 import ProtectedRoute from "./components/Layout/ProtectedRoutes";
 import EditDistribusi from "./pages/distribusi/EditDistribusi";
@@ -47,6 +46,7 @@ import AksiDistribusi from "./pages/distribusi/AksiDistribusi";
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import EditUser from "./pages/admin/EditUser";
 import DetailLaporanProvinsi from "./pages/laporan/DetailLaporanProvinsi";
+import Laporan from "./pages/laporan/Laporan";
 
 function App() {
   const { pathname } = useLocation();
