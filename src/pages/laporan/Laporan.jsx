@@ -79,8 +79,7 @@ const Laporan = () => {
 
     const filtered = data.filter((item) => {
       return (
-        (item?.nama_dokumen &&
-          item.nama_dokumen.toLowerCase().includes(value)) ||
+        (item?.name && item.name.toLowerCase().includes(value)) ||
         (item?.nomor_bast && item.nomor_bast.toLowerCase().includes(value)) ||
         (item?.tanggal_bast &&
           item.tanggal_bast.toLowerCase().includes(value)) ||
