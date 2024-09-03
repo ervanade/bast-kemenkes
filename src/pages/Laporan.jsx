@@ -45,6 +45,7 @@ const Laporan = () => {
   const [formData, setFormData] = useState({});
 
   const fetchProvinsi = async () => {
+    setLoading(true);
     try {
       const response = await axios({
         method: "get",
@@ -55,6 +56,7 @@ const Laporan = () => {
         },
       });
       setFilteredData(response.data.data);
+      setLoading(false);
       setDataProvinsi([
         { label: "Semua Provinsi", value: "" },
         ...response.data.data.map((item) => ({
