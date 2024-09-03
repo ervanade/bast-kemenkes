@@ -46,6 +46,7 @@ import EditDokumen from "./pages/dokumen/EditDokumen";
 import AksiDistribusi from "./pages/distribusi/AksiDistribusi";
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import EditUser from "./pages/admin/EditUser";
+import DetailLaporanProvinsi from "./pages/laporan/DetailLaporanProvinsi";
 
 function App() {
   const { pathname } = useLocation();
@@ -91,6 +92,14 @@ function App() {
                 element={<PreviewDokumen />}
               />
               <Route path="laporan" element={<Laporan />} />
+              <Route
+                path="laporan/detail/:idProvinsi/:idKota"
+                element={<DetailKota />}
+              />
+              <Route
+                path="laporan/detail/:idProvinsi"
+                element={<DetailLaporanProvinsi />}
+              />
               <Route path="preview-laporan" element={<LaporanPreview />} />
               <Route
                 path="/data-verifikasi/form-distribusi"

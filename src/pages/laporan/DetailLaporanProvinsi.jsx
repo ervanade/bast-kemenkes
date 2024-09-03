@@ -1,101 +1,120 @@
 import React, { useEffect, useMemo, useState } from "react";
-import Breadcrumb from "../components/Breadcrumbs/Breadcrumb";
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import Select from "react-select";
 import DataTable from "react-data-table-component";
-import { encryptId, selectThemeColors } from "../data/utils";
 import {
-  FaDownload,
-  FaEdit,
-  FaEye,
-  FaPlus,
-  FaSearch,
-  FaTrash,
-} from "react-icons/fa";
+  dataDistribusiBekasi,
+  dataKecamatan,
+  dataKota,
+  dataProvinsi,
+} from "../../data/data";
+import { decryptId, encryptId, selectThemeColors } from "../../data/utils";
+import { FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa";
 import { BiExport, BiSolidFileExport } from "react-icons/bi";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { CgSpinner } from "react-icons/cg";
-import CardDataStats from "../components/CardDataStats";
-import { PiShieldWarningBold } from "react-icons/pi";
-import { MdOutlineDomainVerification } from "react-icons/md";
-import { AiOutlineDatabase } from "react-icons/ai";
-import LaporanCard from "../components/Card/LaporanCard";
+import LaporanCard from "../../components/Card/LaporanCard";
 
-const Laporan = () => {
+const DetailLaporanProvinsi = () => {
   const user = useSelector((a) => a.auth.user);
-  const navigate = useNavigate();
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [search, setSearch] = useState("");
-  const [filteredData, setFilteredData] = useState([]);
-
+  const [search, setSearch] = useState(""); // Initialize search state with an empty string
   const [data, setData] = useState([]);
-
-  const [dataProvinsi, setDataProvinsi] = useState([]);
-  const [dataKota, setDataKota] = useState([]);
-  const [dataKecamatan, setDataKecamatan] = useState([]);
-
-  const [selectedProvinsi, setSelectedProvinsi] = useState(null);
-  const [selectedKota, setSelectedKota] = useState(null);
-  const [selectedKecamatan, setSelectedKecamatan] = useState(null);
-
-  const [formData, setFormData] = useState({});
-
-  const fetchProvinsi = async () => {
-    try {
-      const response = await axios({
-        method: "get",
-        url: `${import.meta.env.VITE_APP_API_URL}/api/provinsi`,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user?.token}`,
-        },
-      });
-      setFilteredData(response.data.data);
-      setDataProvinsi([
-        { label: "Semua Provinsi", value: "" },
-        ...response.data.data.map((item) => ({
-          label: item.name,
-          value: item.id,
-        })),
-      ]);
-    } catch (error) {
-      setError(true);
-      setDataProvinsi([]);
-    }
-  };
-  useEffect(() => {
-    fetchProvinsi();
-  }, []);
+  const [filteredData, setFilteredData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const { idProvinsi } = useParams();
 
   const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();
     setSearch(value);
 
     const filtered = data.filter((item) => {
-      return (
-        (item?.nama_dokumen &&
-          item.nama_dokumen.toLowerCase().includes(value)) ||
-        (item?.nomor_bast && item.nomor_bast.toLowerCase().includes(value)) ||
-        (item?.tanggal_bast &&
-          item.tanggal_bast.toLowerCase().includes(value)) ||
-        (item?.tahun_lokus && item.tahun_lokus.toLowerCase().includes(value)) ||
-        (item?.penerima_hibah &&
-          item.penerima_hibah.toLowerCase().includes(value))
-      );
+      return item?.name && item.name.toLowerCase().includes(value);
     });
 
     setFilteredData(filtered);
   };
 
+  const handleExport = () => {
+    // Implementasi untuk mengekspor data (misalnya ke CSV)
+  };
+  console.log(idProvinsi);
+
+  const fetchProvinsiData = async () => {
+    setLoading(true);
+    setError(false);
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${
+          import.meta.env.VITE_APP_API_URL
+        }/api/getkabupaten/${encodeURIComponent(decryptId(idProvinsi))}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setData(response.data.data);
+      setFilteredData(response.data.data);
+    } catch (error) {
+      setError(true);
+      setFilteredData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProvinsiData();
+  }, []);
+
+  const deleteProvinsi = async (id) => {
+    await axios({
+      method: "delete",
+      url: `${import.meta.env.VITE_APP_API_URL}/api/kabupaten/${id}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user?.token}`,
+      },
+    })
+      .then(() => {
+        fetchProvinsiData();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const navigate = useNavigate();
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleConfirmDeleteProvinsi = async (id) => {
+    return Swal.fire({
+      title: "Are you sure?",
+      text: "You will Delete This Provinsi!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      confirmButtonColor: "#16B3AC",
+    }).then(async (result) => {
+      if (result.value) {
+        await deleteProvinsi(id);
+        Swal.fire({
+          icon: "success",
+          title: "Deleted!",
+          text: "Your Provinsi has been deleted.",
+        });
+      }
+    });
+  };
+
   const columns = useMemo(
     () => [
-      // { name: "No", selector: (row) => row.id, sortable: true },
       {
-        name: "Provinsi",
+        name: "Kab / Kota",
         selector: (row) => row.name,
         sortable: true,
         width: "180px",
@@ -133,7 +152,9 @@ const Laporan = () => {
               className="text-green-400 hover:text-green-500"
             >
               <Link
-                to={`/laporan/detail/${encodeURIComponent(encryptId(row.id))}`}
+                to={`/laporan/detail/${encodeURIComponent(
+                  idProvinsi
+                )}/${encodeURIComponent(encryptId(row.id))}`}
               >
                 <FaEye size={16} />
               </Link>
@@ -145,25 +166,32 @@ const Laporan = () => {
         button: true,
       },
     ],
-    []
+    [handleConfirmDeleteProvinsi, user.role]
   );
-
-  const handleExport = () => {
-    // Implementasi untuk mengekspor data (misalnya ke CSV)
-  };
 
   return (
     <div>
-      <Breadcrumb pageName="Data Laporan" title="Data Laporan" />
+      <Breadcrumb
+        pageName="Data Laporan Provinsi"
+        title="Data Laporan Provinsi"
+      />
+      <div className="flex justify-end mb-4">
+        <button
+          onClick={() => navigate(`/laporan`)}
+          className="flex items-center px-4 py-2 bg-primary text-white rounded-md font-semibold"
+        >
+          Back
+        </button>
+      </div>
       <div className="flex flex-col items-center justify-center w-full tracking-tight mb-8">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-          <LaporanCard title="Data Distribusi" total="564" />
-          <LaporanCard title="Data Terverifikasi" total="400" />
+          <LaporanCard title="Data Distribusi" total="124" />
+          <LaporanCard title="Data Terverifikasi" total="100" />
           <LaporanCard title="Data Belum Diverifikasi" total="24" />
-          <LaporanCard title="Data Belum Diproses" total="140" />
-          <LaporanCard title="Jumlah Barang Dikirim" total="1,504" />
-          <LaporanCard title="Jumlah Barang Diterima" total="1,504" />
-          <LaporanCard title="Total Harga (Rp)" total="Rp. 32,000,000" />
+          <LaporanCard title="Data Belum Diproses" total="0" />
+          <LaporanCard title="Jumlah Barang Dikirim" total="80" />
+          <LaporanCard title="Jumlah Barang Diterima" total="80" />
+          <LaporanCard title="Total Harga (Rp)" total="Rp. 1,000,000" />
           <LaporanCard title="Jumlah Dokumen" total="56" />
         </div>
       </div>
@@ -204,7 +232,7 @@ const Laporan = () => {
           </div>
           <div className="div flex gap-2 flex-row">
             <button
-              title="Export Data Distribusi"
+              title="Export Data Kota"
               className="flex items-center gap-2 cursor-pointer text-base text-white px-4 py-2 bg-primary rounded-md tracking-tight"
               onClick={handleExport}
             >
@@ -213,16 +241,16 @@ const Laporan = () => {
             </button>
             {user.role === "1" ? (
               <button
-                title="Tambah Data Laporan"
+                title="Tambah Data Kota"
                 className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
                 onClick={handleExport}
               >
                 <Link
-                  to="/dokumen/add"
+                  to="/master-data-kota/add"
                   className="flex items-center gap-2 px-4 py-2"
                 >
                   <FaPlus size={16} />
-                  <span className="hidden sm:block">Tambah Data Laporan</span>
+                  <span className="hidden sm:block">Tambah Data Kota</span>
                 </Link>
               </button>
             ) : (
@@ -262,4 +290,4 @@ const Laporan = () => {
   );
 };
 
-export default Laporan;
+export default DetailLaporanProvinsi;
