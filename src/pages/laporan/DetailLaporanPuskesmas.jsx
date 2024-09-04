@@ -62,7 +62,7 @@ const DetailLaporanPuskesmas = () => {
     ];
     const exportData = filteredData?.map((item) => ({
       Provinsi: item?.provinsi,
-      "Data Distribusi": item?.jumlah_distribusi,
+      "Nama Barang": item?.jenis_alkes,
       "Jumlah Barang Dikirim": item?.jumlah_dikirim,
       "Jumlah Barang Diterima": item?.jumlah_diterima,
       "Total Harga": item?.total_harga,
@@ -95,7 +95,7 @@ const DetailLaporanPuskesmas = () => {
 
   // Export file excel
   const tanggal = moment().locale("id").format("DD MMMM YYYY HH:mm");
-  XLSX.writeFile(wb, `Data laporan ${tanggal}.xlsx`);
+  XLSX.writeFile(wb, `Data laporan Puskesmas ${tanggal}.xlsx`);
   };
 
   const fetchProvinsi = async () => {

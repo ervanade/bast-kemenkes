@@ -95,7 +95,7 @@ const DetailLaporanKabupaten = () => {
 
   // Export file excel
   const tanggal = moment().locale("id").format("DD MMMM YYYY HH:mm");
-  XLSX.writeFile(wb, `Data laporan Provinsi ${(filteredData[0]?.kabupaten || "")} ${tanggal}.xlsx`);
+  XLSX.writeFile(wb, `Data laporan ${(filteredData[0]?.kabupaten || "")} ${tanggal}.xlsx`);
   };
 
   const fetchProvinsi = async () => {
