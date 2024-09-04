@@ -11,6 +11,7 @@ import {
   FaSearch,
   FaTrash,
 } from "react-icons/fa";
+import * as XLSX from "xlsx";
 import { BiExport, BiSolidFileExport } from "react-icons/bi";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -23,6 +24,7 @@ import { MdOutlineDomainVerification } from "react-icons/md";
 import { AiOutlineDatabase } from "react-icons/ai";
 import LaporanCard from "../../components/Card/LaporanCard";
 import { data } from "autoprefixer";
+import moment from "moment/moment";
 
 const Laporan = () => {
   const user = useSelector((a) => a.auth.user);
@@ -34,6 +36,8 @@ const Laporan = () => {
   const [filteredData, setFilteredData] = useState([]);
 
   const [dataCard, setDataCard] = useState({});
+  const [getLoading, setGetLoading] = useState(false);
+
 
   const [data, setData] = useState({});
 
@@ -49,6 +53,7 @@ const Laporan = () => {
 
   const fetchProvinsi = async () => {
     setLoading(true);
+    setGetLoading(true);
     try {
       const response = await axios({
         method: "post",
@@ -60,9 +65,12 @@ const Laporan = () => {
       });
       setFilteredData(response.data.data);
       setLoading(false);
+      setGetLoading(false);
       setData(response.data.data);
     } catch (error) {
       setError(true);
+      setLoading(false);
+      setGetLoading(false);
       setDataProvinsi([]);
     }
   };
@@ -161,7 +169,64 @@ const Laporan = () => {
 
   const handleExport = () => {
     // Implementasi untuk mengekspor data (misalnya ke CSV)
+    const dashboardData = [
+      {
+        "Data Distribusi": dataCard.jumlah_distribusi,
+        "Data Terverifikasi": dataCard.terverifikasi,
+        "Data Belum Terverifikasi": dataCard.belum_terverifikasi,
+        "Data Belum Diproses": dataCard.belum_diproses,
+        "Jumlah Barang Dikirim": dataCard.jumlah_dikirim,
+        "Jumlah Barang Diterima": dataCard.jumlah_diterima,
+        "Total Harga": dataCard.total_harga,
+        "Jumlah Dokumen": dataCard.jumlah_dokumen,
+      }
+    ];
+    const exportData = filteredData?.map((item) => ({
+      Provinsi: item?.provinsi,
+      "Data Distribusi": item?.jumlah_distribusi,
+      "Jumlah Barang Dikirim": item?.jumlah_dikirim,
+      "Jumlah Barang Diterima": item?.jumlah_diterima,
+      "Total Harga": item?.total_harga,
+    }));
+    const wb = XLSX.utils.book_new();
+
+  // Membuat sheet untuk data dashboard
+  const wsDashboard = XLSX.utils.json_to_sheet(dashboardData);
+
+  // Kolom yang konsisten untuk semua tabel
+  const cols = [
+    { wch: 20 }, // Kolom 1
+    { wch: 20 }, // Kolom 2
+    { wch: 20 }, // Kolom 3
+    { wch: 25 }, // Kolom 4
+    { wch: 20 }, // Kolom 5
+    { wch: 20 }, // Kolom 6
+    { wch: 20 }, // Kolom 7
+    { wch: 20 }, // Kolom 8
+  ];
+  wsDashboard["!cols"] = cols;
+
+  // Membuat sheet untuk data filteredData
+  const wsFilteredData = XLSX.utils.json_to_sheet(exportData);
+  wsFilteredData["!cols"] = cols;
+
+  // Menambahkan sheet ke workbook
+  XLSX.utils.book_append_sheet(wb, wsDashboard, "Total Data");
+  XLSX.utils.book_append_sheet(wb, wsFilteredData, "Data Distribusi");
+
+  // Export file excel
+  const tanggal = moment().locale("id").format("DD MMMM YYYY HH:mm");
+  XLSX.writeFile(wb, `Data laporan ${tanggal}.xlsx`);
   };
+
+  if (getLoading) {
+    return (
+      <div className="flex justify-center items-center">
+        <CgSpinner className="animate-spin inline-block w-8 h-8 text-teal-400" />
+        <span className="ml-2">Loading...</span>
+      </div>
+    );
+  }
 
   return (
     <div>

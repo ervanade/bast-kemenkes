@@ -8,6 +8,8 @@ import {
   dataKota,
   dataProvinsi,
 } from "../../data/data";
+import * as XLSX from "xlsx";
+import moment from "moment/moment";
 import { decryptId, encryptId, selectThemeColors } from "../../data/utils";
 import { FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa";
 import { BiExport, BiSolidFileExport } from "react-icons/bi";
@@ -26,6 +28,7 @@ const DetailLaporanKabupaten = () => {
   const [data, setData] = useState({});
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [getLoading, setGetLoading] = useState(false);
   const [error, setError] = useState(false);
   const { idProvinsi, idKabupaten } = useParams();
 
@@ -45,10 +48,59 @@ const DetailLaporanKabupaten = () => {
 
   const handleExport = () => {
     // Implementasi untuk mengekspor data (misalnya ke CSV)
+    const dashboardData = [
+      {
+        "Data Distribusi": dataCard.jumlah_distribusi,
+        "Data Terverifikasi": dataCard.terverifikasi,
+        "Data Belum Terverifikasi": dataCard.belum_terverifikasi,
+        "Data Belum Diproses": dataCard.belum_diproses,
+        "Jumlah Barang Dikirim": dataCard.jumlah_dikirim,
+        "Jumlah Barang Diterima": dataCard.jumlah_diterima,
+        "Total Harga": dataCard.total_harga,
+        "Jumlah Dokumen": dataCard.jumlah_dokumen,
+      }
+    ];
+    const exportData = filteredData?.map((item) => ({
+      Kecamatan: item?.kecamatan,
+      "Data Distribusi": item?.jumlah_distribusi,
+      "Jumlah Barang Dikirim": item?.jumlah_dikirim,
+      "Jumlah Barang Diterima": item?.jumlah_diterima,
+      "Total Harga": item?.total_harga,
+    }));
+    const wb = XLSX.utils.book_new();
+
+  // Membuat sheet untuk data dashboard
+  const wsDashboard = XLSX.utils.json_to_sheet(dashboardData);
+
+  // Kolom yang konsisten untuk semua tabel
+  const cols = [
+    { wch: 20 }, // Kolom 1
+    { wch: 20 }, // Kolom 2
+    { wch: 20 }, // Kolom 3
+    { wch: 25 }, // Kolom 4
+    { wch: 20 }, // Kolom 5
+    { wch: 20 }, // Kolom 6
+    { wch: 20 }, // Kolom 7
+    { wch: 20 }, // Kolom 8
+  ];
+  wsDashboard["!cols"] = cols;
+
+  // Membuat sheet untuk data filteredData
+  const wsFilteredData = XLSX.utils.json_to_sheet(exportData);
+  wsFilteredData["!cols"] = cols;
+
+  // Menambahkan sheet ke workbook
+  XLSX.utils.book_append_sheet(wb, wsDashboard, "Total Data");
+  XLSX.utils.book_append_sheet(wb, wsFilteredData, "Data Distribusi");
+
+  // Export file excel
+  const tanggal = moment().locale("id").format("DD MMMM YYYY HH:mm");
+  XLSX.writeFile(wb, `Data laporan Provinsi ${(filteredData[0]?.kabupaten || "")} ${tanggal}.xlsx`);
   };
 
   const fetchProvinsi = async () => {
     setLoading(true);
+    setGetLoading(true);
     try {
       const response = await axios({
         method: "post",
@@ -65,8 +117,10 @@ const DetailLaporanKabupaten = () => {
       setFilteredData(response.data.data);
       setData(response.data.data);
       setLoading(false);
+      setGetLoading(false);
     } catch (error) {
       setError(true);
+      setGetLoading(false);
     }
   };
 
@@ -200,6 +254,15 @@ const DetailLaporanKabupaten = () => {
     ],
     [handleConfirmDeleteProvinsi, user.role]
   );
+
+  if (getLoading) {
+    return (
+      <div className="flex justify-center items-center">
+        <CgSpinner className="animate-spin inline-block w-8 h-8 text-teal-400" />
+        <span className="ml-2">Loading...</span>
+      </div>
+    );
+  }
 
   return (
     <div>
