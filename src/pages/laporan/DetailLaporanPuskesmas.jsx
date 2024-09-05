@@ -58,7 +58,7 @@ const DetailLaporanPuskesmas = () => {
         "Jumlah Barang Diterima": dataCard.jumlah_diterima,
         "Total Harga": dataCard.total_harga,
         "Jumlah Dokumen": dataCard.jumlah_dokumen,
-      }
+      },
     ];
     const exportData = filteredData?.map((item) => ({
       Provinsi: item?.provinsi,
@@ -69,33 +69,33 @@ const DetailLaporanPuskesmas = () => {
     }));
     const wb = XLSX.utils.book_new();
 
-  // Membuat sheet untuk data dashboard
-  const wsDashboard = XLSX.utils.json_to_sheet(dashboardData);
+    // Membuat sheet untuk data dashboard
+    const wsDashboard = XLSX.utils.json_to_sheet(dashboardData);
 
-  // Kolom yang konsisten untuk semua tabel
-  const cols = [
-    { wch: 20 }, // Kolom 1
-    { wch: 20 }, // Kolom 2
-    { wch: 20 }, // Kolom 3
-    { wch: 25 }, // Kolom 4
-    { wch: 20 }, // Kolom 5
-    { wch: 20 }, // Kolom 6
-    { wch: 20 }, // Kolom 7
-    { wch: 20 }, // Kolom 8
-  ];
-  wsDashboard["!cols"] = cols;
+    // Kolom yang konsisten untuk semua tabel
+    const cols = [
+      { wch: 20 }, // Kolom 1
+      { wch: 20 }, // Kolom 2
+      { wch: 20 }, // Kolom 3
+      { wch: 25 }, // Kolom 4
+      { wch: 20 }, // Kolom 5
+      { wch: 20 }, // Kolom 6
+      { wch: 20 }, // Kolom 7
+      { wch: 20 }, // Kolom 8
+    ];
+    wsDashboard["!cols"] = cols;
 
-  // Membuat sheet untuk data filteredData
-  const wsFilteredData = XLSX.utils.json_to_sheet(exportData);
-  wsFilteredData["!cols"] = cols;
+    // Membuat sheet untuk data filteredData
+    const wsFilteredData = XLSX.utils.json_to_sheet(exportData);
+    wsFilteredData["!cols"] = cols;
 
-  // Menambahkan sheet ke workbook
-  XLSX.utils.book_append_sheet(wb, wsDashboard, "Total Data");
-  XLSX.utils.book_append_sheet(wb, wsFilteredData, "Data Distribusi");
+    // Menambahkan sheet ke workbook
+    XLSX.utils.book_append_sheet(wb, wsDashboard, "Total Data");
+    XLSX.utils.book_append_sheet(wb, wsFilteredData, "Data Distribusi");
 
-  // Export file excel
-  const tanggal = moment().locale("id").format("DD MMMM YYYY HH:mm");
-  XLSX.writeFile(wb, `Data laporan Puskesmas ${tanggal}.xlsx`);
+    // Export file excel
+    const tanggal = moment().locale("id").format("DD MMMM YYYY HH:mm");
+    XLSX.writeFile(wb, `Data laporan Puskesmas ${tanggal}.xlsx`);
   };
 
   const fetchProvinsi = async () => {
@@ -104,7 +104,7 @@ const DetailLaporanPuskesmas = () => {
     try {
       const response = await axios({
         method: "post",
-        url: `${import.meta.env.VITE_APP_API_URL}/api/laporan`,
+        url: `${import.meta.env.VITE_APP_API_URL}/api/laporan/detail`,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user?.token}`,
@@ -123,7 +123,6 @@ const DetailLaporanPuskesmas = () => {
       setError(true);
       setGetLoading(false);
       setLoading(false);
-
     }
   };
 

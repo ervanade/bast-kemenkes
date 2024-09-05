@@ -21,7 +21,7 @@ const HeaderDokumen = ({ formData, jsonData, user }) => {
         jsonData={jsonData}
         user={user}
       />
-      {user.role === "2" ? (
+      {user.role === "4" ? (
         jsonData?.status_tte === "1" ? (
           <button
             type="button"

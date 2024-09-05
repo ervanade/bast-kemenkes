@@ -145,7 +145,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                     </NavLink>
                   </li>
                 </>
-              ) : user.role === "1" || user.role === "4" ? (
+              ) : user.role === "1" ? (
                 <>
                   <li>
                     <NavLink
@@ -169,6 +169,21 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                     >
                       <AiOutlineDatabase size={20} />
                       Data Distribusi
+                    </NavLink>
+                  </li>
+                </>
+              ) : user.role === "4" ? (
+                <>
+                  <li>
+                    <NavLink
+                      to="/dokumen"
+                      className={`group relative flex items-center gap-2.5 rounded-md py-3 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                        pathname.includes("dokumen") &&
+                        "bg-graydark dark:bg-meta-4 text-primary"
+                      }`}
+                    >
+                      <MdOutlineDomainVerification size={22} />
+                      Dokumen & TTE
                     </NavLink>
                   </li>
                 </>

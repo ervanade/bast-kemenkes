@@ -409,7 +409,7 @@ const Dokumen = () => {
       {
         name: "Status TTE",
         cell: (row) =>
-          user.role === "2" ? (
+          user.role === "2" || user.role === "4" ? (
             row.status_tte === "1" ? (
               <div className="p-2 bg-red-500 rounded-md text-white">
                 Belum TTE
@@ -440,7 +440,7 @@ const Dokumen = () => {
               </div>
             ) : row.status_tte === "1" ? (
               <div className="p-2 bg-yellow-500 rounded-md text-white">
-                PPK Belum TTE
+                Direktur Belum TTE
               </div>
             ) : (
               <div className="p-2 bg-red-500 rounded-md text-white">
