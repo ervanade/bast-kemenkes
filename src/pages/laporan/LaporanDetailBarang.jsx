@@ -412,7 +412,10 @@ const LaporanDetailBarang = () => {
 
   return (
     <div>
-      <Breadcrumb pageName="Data Laporan" title="Data Laporan" />
+      <Breadcrumb
+        pageName={`Data Laporan Barang`}
+        title={`Data Laporan Barang ${filteredData[0]?.kabupaten || ""}`}
+      />
       <div className="flex justify-end mb-4">
         <button
           onClick={() => navigate(`/laporanbarang`)}

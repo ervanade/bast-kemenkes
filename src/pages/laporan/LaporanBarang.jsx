@@ -395,7 +395,7 @@ const LaporanBarang = () => {
 
   return (
     <div>
-      <Breadcrumb pageName="Data Laporan" title="Data Laporan" />
+      <Breadcrumb pageName="Data Laporan Barang" title="Data Laporan Barang" />
       <div className="flex flex-col items-center justify-center w-full tracking-tight mb-8">
         <div className="flex items-center lg:items-end mt-8 gap-4 flex-col lg:flex-row">
           <div className="flex items-center gap-4 flex-col sm:flex-row">
