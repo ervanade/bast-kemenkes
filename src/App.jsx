@@ -49,6 +49,8 @@ import DetailLaporanProvinsi from "./pages/laporan/DetailLaporanProvinsi";
 import Laporan from "./pages/laporan/Laporan";
 import DetailLaporanKabupaten from "./pages/laporan/DetailLaporanKabupaten";
 import DetailLaporanPuskesmas from "./pages/laporan/DetailLaporanPuskesmas";
+import LaporanBarang from "./pages/laporan/LaporanBarang";
+import LaporanDetailBarang from "./pages/laporan/LaporanDetailBarang";
 
 function App() {
   const { pathname } = useLocation();
@@ -93,9 +95,15 @@ function App() {
                 path="dokumen/preview-dokumen/:id"
                 element={<PreviewDokumen />}
               />
+              <Route path="laporanbarang" element={<LaporanBarang />} />
+              <Route
+                path="laporanbarang/detail/:idKabupaten"
+                element={<LaporanDetailBarang />}
+              />
+
               <Route path="laporan" element={<Laporan />} />
               <Route
-                path="laporan/detail/:idProvinsi/:idKabupaten/:idKecamatan"
+                path="laporan/detail/:idProvinsi/:idKabupaten/:idPuskesmas"
                 element={<DetailLaporanPuskesmas />}
               />
               <Route

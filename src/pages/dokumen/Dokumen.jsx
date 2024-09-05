@@ -411,39 +411,111 @@ const Dokumen = () => {
         cell: (row) =>
           user.role === "2" || user.role === "4" ? (
             row.status_tte === "1" ? (
-              <div className="p-2 bg-red-500 rounded-md text-white">
+              <div
+                className="p-2 bg-red-500 rounded-md text-white"
+                onClick={() => {
+                  navigate(
+                    `/dokumen/preview-dokumen/${encodeURIComponent(
+                      encryptId(row.id)
+                    )}`
+                  );
+                }}
+              >
                 Belum TTE
               </div>
             ) : row.status_tte === "2" ? (
-              <div className="p-2 bg-green-500 rounded-md text-white">
+              <div
+                className="p-2 bg-green-500 rounded-md text-white"
+                onClick={() => {
+                  navigate(
+                    `/dokumen/preview-dokumen/${encodeURIComponent(
+                      encryptId(row.id)
+                    )}`
+                  );
+                }}
+              >
                 Sudah TTE
               </div>
             ) : (
-              <div className="p-2 bg-yellow-500 rounded-md text-white">
+              <div
+                className="p-2 bg-yellow-500 rounded-md text-white"
+                onClick={() => {
+                  navigate(
+                    `/dokumen/preview-dokumen/${encodeURIComponent(
+                      encryptId(row.id)
+                    )}`
+                  );
+                }}
+              >
                 Daerah Belum TTE
               </div>
             )
           ) : user.role === "3" ? (
             row.status_tte === "0" ? (
-              <div className="p-2 bg-red-500 rounded-md text-white">
+              <div
+                className="p-2 bg-red-500 rounded-md text-white"
+                onClick={() => {
+                  navigate(
+                    `/dokumen/preview-dokumen/${encodeURIComponent(
+                      encryptId(row.id)
+                    )}`
+                  );
+                }}
+              >
                 Belum TTE
               </div>
             ) : (
-              <div className="p-2 bg-green-500 rounded-md text-white">
+              <div
+                className="p-2 bg-green-500 rounded-md text-white"
+                onClick={() => {
+                  navigate(
+                    `/dokumen/preview-dokumen/${encodeURIComponent(
+                      encryptId(row.id)
+                    )}`
+                  );
+                }}
+              >
                 Sudah TTE
               </div>
             )
           ) : user.role === "1" ? (
             row.status_tte === "2" ? (
-              <div className="p-2 bg-green-500 rounded-md text-white">
+              <div
+                className="p-2 bg-green-500 rounded-md text-white"
+                onClick={() => {
+                  navigate(
+                    `/dokumen/preview-dokumen/${encodeURIComponent(
+                      encryptId(row.id)
+                    )}`
+                  );
+                }}
+              >
                 Sudah TTE
               </div>
             ) : row.status_tte === "1" ? (
-              <div className="p-2 bg-yellow-500 rounded-md text-white">
+              <div
+                className="p-2 bg-yellow-500 rounded-md text-white"
+                onClick={() => {
+                  navigate(
+                    `/dokumen/preview-dokumen/${encodeURIComponent(
+                      encryptId(row.id)
+                    )}`
+                  );
+                }}
+              >
                 Direktur Belum TTE
               </div>
             ) : (
-              <div className="p-2 bg-red-500 rounded-md text-white">
+              <div
+                className="p-2 bg-red-500 rounded-md text-white"
+                onClick={() => {
+                  navigate(
+                    `/dokumen/preview-dokumen/${encodeURIComponent(
+                      encryptId(row.id)
+                    )}`
+                  );
+                }}
+              >
                 Belum TTE
               </div>
             )
@@ -506,7 +578,7 @@ const Dokumen = () => {
         name: "TTE",
         cell: (row) => (
           <div className="flex items-center space-x-2 font-semibold">
-            {user.role === "2" ? (
+            {user.role === "4" ? (
               row.status_tte === "1" ? (
                 <button
                   title="TTE"
@@ -607,7 +679,7 @@ const Dokumen = () => {
             ) : (
               ""
             )}
-            {user.role === "1" ? (
+            {user.role === "1" || user.role === "2" ? (
               <button
                 title="TTE"
                 className="text-white py-2 w-22 bg-teal-500 rounded-md"

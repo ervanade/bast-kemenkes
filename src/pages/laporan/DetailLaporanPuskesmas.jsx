@@ -30,7 +30,7 @@ const DetailLaporanPuskesmas = () => {
   const [loading, setLoading] = useState(true);
   const [getLoading, setGetLoading] = useState(false);
   const [error, setError] = useState(false);
-  const { idProvinsi, idKabupaten, idKecamatan } = useParams();
+  const { idProvinsi, idKabupaten, idPuskesmas } = useParams();
 
   const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();
@@ -61,7 +61,7 @@ const DetailLaporanPuskesmas = () => {
       },
     ];
     const exportData = filteredData?.map((item) => ({
-      Provinsi: item?.provinsi,
+      Puskesmas: item?.nama_puskesmas,
       "Nama Barang": item?.jenis_alkes,
       "Jumlah Barang Dikirim": item?.jumlah_dikirim,
       "Jumlah Barang Diterima": item?.jumlah_diterima,
@@ -95,7 +95,12 @@ const DetailLaporanPuskesmas = () => {
 
     // Export file excel
     const tanggal = moment().locale("id").format("DD MMMM YYYY HH:mm");
-    XLSX.writeFile(wb, `Data laporan Puskesmas ${tanggal}.xlsx`);
+    XLSX.writeFile(
+      wb,
+      `Data laporan Puskesmas ${
+        filteredData[0]?.nama_puskesmas || ""
+      } ${tanggal}.xlsx`
+    );
   };
 
   const fetchProvinsi = async () => {
@@ -110,9 +115,9 @@ const DetailLaporanPuskesmas = () => {
           Authorization: `Bearer ${user?.token}`,
         },
         data: JSON.stringify({
-          id_provinsi: encodeURIComponent(decryptId(idProvinsi)),
-          id_kabupaten: encodeURIComponent(decryptId(idKabupaten)),
-          id_kecamatan: encodeURIComponent(decryptId(idKecamatan)),
+          id_provinsi: encodeURIComponent(decryptId(idProvinsi)) || 0,
+          id_kabupaten: encodeURIComponent(decryptId(idKabupaten)) || 0,
+          id_puskesmas: encodeURIComponent(decryptId(idPuskesmas)) || 0,
         }),
       });
       setFilteredData(response.data.data);
@@ -139,6 +144,7 @@ const DetailLaporanPuskesmas = () => {
         data: JSON.stringify({
           id_provinsi: encodeURIComponent(decryptId(idProvinsi)),
           id_kabupaten: encodeURIComponent(decryptId(idKabupaten)),
+          id_puskesmas: encodeURIComponent(decryptId(idPuskesmas)) || 0,
         }),
       });
       setDataCard(response?.data?.data[0]);
@@ -193,18 +199,24 @@ const DetailLaporanPuskesmas = () => {
 
   const columns = useMemo(
     () => [
+      // {
+      //   name: "Kecamatan",
+      //   selector: (row) => row.kecamatan,
+      //   sortable: true,
+      //   width: "180px",
+      // },
+      // {
+      //   name: "Puskesmas",
+      //   selector: (row) => row.nama_puskesmas,
+      //   sortable: true,
+      //   width: "180px",
+      // },
       {
         name: "Nama Barang",
         selector: (row) => row.jenis_alkes,
         sortable: true,
         width: "180px",
       },
-      //   {
-      //     name: "Puskesmas",
-      //     selector: (row) => row.nama_puskesmas,
-      //     sortable: true,
-      //     width: "180px",
-      //   },
       //   {
       //     name: "Data Distribusi",
       //     selector: (row) => row.jumlah_distribusi,
@@ -245,8 +257,10 @@ const DetailLaporanPuskesmas = () => {
   return (
     <div>
       <Breadcrumb
-        pageName={"Data Laporan Puskesmas" + (filteredData[0]?.kecamatan || "")}
-        title={"Data Laporan Puskesmas" + (filteredData[0]?.kecamatan || "")}
+        pageName={
+          "Data Laporan Puskesmas " + (filteredData[0]?.kecamatan || "")
+        }
+        title={"Data Laporan Puskesmas " + (filteredData[0]?.kecamatan || "")}
       />
       <div className="flex justify-end mb-4">
         <button
@@ -335,7 +349,7 @@ const DetailLaporanPuskesmas = () => {
           </div>
           <div className="div flex gap-2 flex-row">
             <button
-              title="Export Data Kota"
+              title="Export Data Puskesmas"
               className="flex items-center gap-2 cursor-pointer text-base text-white px-4 py-2 bg-primary rounded-md tracking-tight"
               onClick={handleExport}
             >
