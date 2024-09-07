@@ -139,9 +139,9 @@ const TesUpload = () => {
     const imgHeight = 60;
 
     // Hitung posisi dengan skala PDF
-    const x = Number(ttePosition.x) / Number(pdfScale) - 70;
+    const x = Number(ttePosition.x) / Number(pdfScale) - 82;
     const y =
-      height - Number(ttePosition.y) / Number(pdfScale) - imgHeight + 50;
+      height - Number(ttePosition.y) / Number(pdfScale) - imgHeight + 115;
 
     // Debugging
     console.log("ttePosition.x:", ttePosition.x);
