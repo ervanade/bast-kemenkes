@@ -11,3 +11,21 @@ body {
 .webviewer {
   height: 80vh;
 }
+
+@keyframes moving-border {
+  0% {
+    border-color: rgba(0, 0, 0, 0.1);
+  }
+
+  50% {
+    border-color: rgba(0, 0, 0, 0.5);
+  }
+
+  100% {
+    border-color: rgba(0, 0, 0, 0.1);
+  }
+}
+
+.moving-border {
+  animation: moving-border 1s infinite;
+}

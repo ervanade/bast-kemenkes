@@ -233,13 +233,15 @@ const TesUpload = () => {
           </Document>
           {tteUrl && currentPage === ttePage && (
             <div
-              className="tte"
+              className="tte moving-border"
               style={{
                 position: "absolute",
                 left: ttePosition.x,
                 top: ttePosition.y,
                 cursor: dragging ? "grabbing" : "grab",
                 pointerEvents: dragging ? "none" : "auto",
+                border: "2px dashed rgba(0, 0, 0, 0.5)", // Optional, to show the border
+                borderRadius: "4px", // Optional, to round the corners
               }}
               onMouseDown={handleDragStart}
               onMouseMove={handleDrag}
