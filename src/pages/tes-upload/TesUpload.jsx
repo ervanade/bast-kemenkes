@@ -130,7 +130,19 @@ const TesUpload = () => {
 
     // Load TTE image
     const tteImageBytes = await fetch(tteUrl).then((res) => res.arrayBuffer());
-    const tteImage = await pdfDoc.embedPng(tteImageBytes);
+
+    // Determine if the image is PNG or JPEG
+    let tteImage;
+    const imgType = tteUrl.split(";")[0].split("/")[1]; // Get image type from dataURL
+
+    if (imgType === "png") {
+      tteImage = await pdfDoc.embedPng(tteImageBytes);
+    } else if (imgType === "jpeg" || imgType === "jpg") {
+      tteImage = await pdfDoc.embedJpg(tteImageBytes);
+    } else {
+      alert("Unsupported image format.");
+      return;
+    }
 
     // Add TTE image to the specific page
     const page = pdfDoc.getPage(ttePage - 1);
