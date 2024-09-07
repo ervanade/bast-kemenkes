@@ -51,6 +51,7 @@ import DetailLaporanKabupaten from "./pages/laporan/DetailLaporanKabupaten";
 import DetailLaporanPuskesmas from "./pages/laporan/DetailLaporanPuskesmas";
 import LaporanBarang from "./pages/laporan/LaporanBarang";
 import LaporanDetailBarang from "./pages/laporan/LaporanDetailBarang";
+import TesUpload from "./pages/tes-upload/TesUpload";
 
 function App() {
   const { pathname } = useLocation();
@@ -82,6 +83,7 @@ function App() {
                 element={<DetailDistribusi />}
               />
               <Route path="dokumen" element={<Dokumen />} />
+              <Route path="tes-upload" element={<TesUpload />} />
               <Route path="dokumen/add" element={<TambahDokumen />} />
               <Route path="dokumen/edit/:id" element={<EditDokumen />} />
 
