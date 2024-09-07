@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import { useDropzone } from "react-dropzone";
+import { PDFDocument } from "pdf-lib";
+
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 
@@ -11,12 +13,14 @@ const TesUpload = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [tteUrl, setTteUrl] = useState("");
-  const [ttePosition, setTtePosition] = useState({ x: 20, y: 100 });
+  const [ttePosition, setTtePosition] = useState({ x: 200, y: 100 });
   const [dragging, setDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [pdfScale, setPdfScale] = useState(1); // Track the scale of the PDF
   const [ttePage, setTtePage] = useState(1); // Track which page the TTE is on
   const containerRef = useRef(null);
+  const canvasRef = useRef(null); // Canvas reference for scale calculation
 
   useEffect(() => {
     const tte = localStorage.getItem("tteImage");
@@ -35,7 +39,7 @@ const TesUpload = () => {
       setCurrentPage(pageNumber);
       if (pageNumber !== ttePage) {
         // Reset TTE position if switching pages
-        setTtePosition({ x: 20, y: 100 });
+        setTtePosition({ x: 200, y: 100 });
         setTtePage(pageNumber);
       }
     }
@@ -87,7 +91,14 @@ const TesUpload = () => {
     if (dragging) {
       const x = event.clientX - dragStart.x + dragOffset.x;
       const y = event.clientY - dragStart.y + dragOffset.y;
-      setTtePosition({ x, y });
+
+      // Batasi posisi TTE agar tetap di dalam batas PDF
+      const imgWidth = 80;
+      const imgHeight = 80;
+      setTtePosition({
+        x: Math.max(0, Math.min(x, canvasRef.current.clientWidth - imgWidth)),
+        y: Math.max(0, Math.min(y, canvasRef.current.clientHeight - imgHeight)),
+      });
     }
   };
 
@@ -110,9 +121,51 @@ const TesUpload = () => {
     }
   }, [dragging]);
 
-  const handleSave = () => {
-    // Implement logic to save PDF with TTE
-    alert("Document saved!");
+  const handleSave = async () => {
+    if (!pdfDocument || !tteUrl) return;
+
+    // Load PDF
+    const pdfBytes = await fetch(pdfDocument).then((res) => res.arrayBuffer());
+    const pdfDoc = await PDFDocument.load(pdfBytes);
+
+    // Load TTE image
+    const tteImageBytes = await fetch(tteUrl).then((res) => res.arrayBuffer());
+    const tteImage = await pdfDoc.embedPng(tteImageBytes);
+
+    // Add TTE image to the specific page
+    const page = pdfDoc.getPage(ttePage - 1);
+    const { width, height } = page.getSize();
+    const imgWidth = 60;
+    const imgHeight = 60;
+
+    // Hitung posisi dengan skala PDF
+    const x = Number(ttePosition.x) / Number(pdfScale) - 70;
+    const y =
+      height - Number(ttePosition.y) / Number(pdfScale) - imgHeight + 50;
+
+    // Debugging
+    console.log("ttePosition.x:", ttePosition.x);
+    console.log("pdfScale:", pdfScale);
+    console.log("Calculated x:", x);
+    console.log("Calculated y:", y);
+
+    // Pastikan nilai x dan y bukan NaN
+    if (!isNaN(x) && !isNaN(y) && x >= 0 && y >= 0) {
+      page.drawImage(tteImage, {
+        x,
+        y,
+        width: imgWidth,
+        height: imgHeight,
+      });
+    }
+
+    // Save the PDF with TTE image
+    const pdfBytesWithTTE = await pdfDoc.save();
+    const pdfBlob = new Blob([pdfBytesWithTTE], { type: "application/pdf" });
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+
+    // Open or download the PDF
+    window.open(pdfUrl, "_blank");
   };
 
   return (
@@ -128,21 +181,18 @@ const TesUpload = () => {
         <input {...getInputProps()} />
         <p>Drag & drop your PDF document here</p>
       </div>
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleTteUpload}
-        style={{ marginBottom: "20px" }}
-      />
+      <div>
+        <label htmlFor="">Pilih TTE : </label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleTteUpload}
+          style={{ marginBottom: "20px" }}
+        />
+      </div>
       {pdfDocument && (
         <div ref={containerRef} style={{ position: "relative" }}>
           <div style={{ marginTop: "10px" }}>
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage <= 1}
-            >
-              Previous
-            </button>
             <div style={{ marginTop: "10px" }}>
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
@@ -167,7 +217,10 @@ const TesUpload = () => {
           </div>
           <Document
             file={pdfDocument}
-            onLoadSuccess={({ numPages }) => setTotalPages(numPages)}
+            onLoadSuccess={({ numPages, originalWidth }) => {
+              setTotalPages(numPages);
+              setPdfScale(1);
+            }}
           >
             <Page
               key={`page_${currentPage}`}
@@ -175,6 +228,7 @@ const TesUpload = () => {
               scale={1.5}
               renderTextLayer={false}
               renderAnnotationLayer={false}
+              canvasRef={canvasRef}
             />
           </Document>
           {tteUrl && currentPage === ttePage && (
@@ -195,8 +249,8 @@ const TesUpload = () => {
                 src={tteUrl}
                 alt="TTE"
                 style={{
-                  width: "100px",
-                  height: "auto",
+                  width: "80px",
+                  height: "80px",
                   pointerEvents: "none",
                 }}
               />
