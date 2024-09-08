@@ -32,4 +32,6 @@ body {
 
 canvas.react-pdf__Page__canvas {
   margin-bottom: 50px;
+  margin-left: auto;
+  margin-right: auto;
 }
