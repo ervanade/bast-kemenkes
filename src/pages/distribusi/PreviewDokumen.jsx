@@ -184,7 +184,7 @@ const PreviewDokumen = () => {
           total_harga: data.total_harga || "",
         });
         if (data?.file_dokumen) {
-          setPdfUrl(data?.file_dokumen + "?not-from-cache-please");
+          setPdfUrl(data?.file_dokumen);
         }
         setGetLoading(false);
       });
