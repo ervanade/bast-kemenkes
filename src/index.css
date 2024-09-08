@@ -29,3 +29,7 @@ body {
 .moving-border {
   animation: moving-border 1s infinite;
 }
+
+canvas.react-pdf__Page__canvas {
+  margin-bottom: 50px;
+}

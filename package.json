@@ -15,6 +15,7 @@
     "@react-pdf/renderer": "^3.4.4",
     "@reduxjs/toolkit": "^2.2.6",
     "@tailwindcss/line-clamp": "^0.4.4",
+    "@wojtekmaj/react-hooks": "^1.21.0",
     "axios": "^1.7.2",
     "crypto-js": "^4.2.0",
     "docxtemplater": "^3.48.0",

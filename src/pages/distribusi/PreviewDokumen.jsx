@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import {
   Page,
   Document,
@@ -45,8 +45,13 @@ import { PDFDocument } from "pdf-lib";
 
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
+import { useResizeObserver } from "@wojtekmaj/react-hooks";
 
 pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.mjs";
+
+const resizeObserverOptions = {};
+
+const maxWidth = 800;
 
 const PreviewDokumen = () => {
   const { id } = useParams();
@@ -72,13 +77,19 @@ const PreviewDokumen = () => {
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [scale, setScale] = useState(1);
-  const containerRef = useRef(null);
 
-  useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollTop = 0; // Scroll to top on page change
+  const [containerRef, setContainerRef] = useState(null);
+  const [containerWidth, setContainerWidth] = useState();
+
+  const onResize = useCallback((entries) => {
+    const [entry] = entries;
+
+    if (entry) {
+      setContainerWidth(entry.contentRect.width);
     }
-  }, [pageNumber]);
+  }, []);
+
+  useResizeObserver(containerRef, resizeObserverOptions, onResize);
 
   const onLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
@@ -1912,7 +1923,7 @@ const PreviewDokumen = () => {
       ) : null}
       {jsonData && jsonData.file_dokumen ? (
         <div className="flex flex-col items-center min-h-screen bg-gray-100 p-4">
-          <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-4xl">
+          <div className="bg-gray-300 p-4 rounded-lg shadow-lg w-full max-w-4xl">
             <div className="mb-4 flex justify-between items-center">
               <button
                 onClick={zoomOut}
@@ -1946,7 +1957,6 @@ const PreviewDokumen = () => {
                     scale={scale}
                     renderTextLayer={false}
                     renderAnnotationLayer={false}
-                    style={{ marginBottom: "20px" }}
                   />
                 ))}
               </DocumentPreview>
