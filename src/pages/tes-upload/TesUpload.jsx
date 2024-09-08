@@ -5,6 +5,7 @@ import { PDFDocument } from "pdf-lib";
 
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
+import { useSelector } from "react-redux";
 
 pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.mjs";
 
@@ -12,36 +13,36 @@ const TesUpload = () => {
   const [pdfDocument, setPdfDocument] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [tteUrl, setTteUrl] = useState("");
-  const [ttePosition, setTtePosition] = useState({ x: 200, y: 100 });
-  const [dragging, setDragging] = useState(false);
+  const user = useSelector((a) => a.auth.user);
+  const [tteImages, setTteImages] = useState([]);
+  const [draggingIndex, setDraggingIndex] = useState(null);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [pdfScale, setPdfScale] = useState(1); // Track the scale of the PDF
-  const [ttePage, setTtePage] = useState(1); // Track which page the TTE is on
   const containerRef = useRef(null);
   const canvasRef = useRef(null); // Canvas reference for scale calculation
 
   useEffect(() => {
-    const tte = localStorage.getItem("tteImage");
+    const tte = user?.ttd;
     if (tte) {
-      setTteUrl(tte);
+      setTteImages([{ url: tte, x: 200, y: 100 }]);
     }
   }, []);
 
   useEffect(() => {
     // Reset TTE position when page changes
-    setTtePosition({ x: 200, y: 100 });
+    setTteImages((images) =>
+      images.map((image) => ({
+        ...image,
+        x: 200,
+        y: 100,
+      }))
+    );
   }, [currentPage]);
 
   const handlePageChange = (pageNumber) => {
     if (pageNumber >= 1 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
-      if (pageNumber !== ttePage) {
-        // Reset TTE position if switching pages
-        setTtePosition({ x: 200, y: 100 });
-        setTtePage(pageNumber);
-      }
     }
   };
 
@@ -64,50 +65,44 @@ const TesUpload = () => {
     accept: ".pdf",
   });
 
-  const handleTteUpload = (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      const dataURL = reader.result;
-      setTteUrl(dataURL);
-      localStorage.setItem("tteImage", dataURL);
-    };
-
-    reader.readAsDataURL(file);
+  const handleAddTte = () => {
+    const tte = user?.ttd;
+    if (tte) {
+      setTteImages((images) => [...images, { url: tte, x: 200, y: 100 }]);
+    } else {
+      alert("TTE belum diupload.");
+    }
   };
 
-  const handleDragStart = (event) => {
+  const handleDragStart = (event, index) => {
     event.preventDefault();
-    setDragging(true);
+    setDraggingIndex(index);
     setDragStart({ x: event.clientX, y: event.clientY });
     setDragOffset({
-      x: ttePosition.x,
-      y: ttePosition.y,
+      x: tteImages[index].x,
+      y: tteImages[index].y,
     });
   };
 
   const handleDrag = (event) => {
-    if (dragging) {
+    if (draggingIndex !== null) {
       const x = event.clientX - dragStart.x + dragOffset.x;
       const y = event.clientY - dragStart.y + dragOffset.y;
 
-      // Batasi posisi TTE agar tetap di dalam batas PDF
-      const imgWidth = 80;
-      const imgHeight = 80;
-      setTtePosition({
-        x: Math.max(0, Math.min(x, canvasRef.current.clientWidth - imgWidth)),
-        y: Math.max(0, Math.min(y, canvasRef.current.clientHeight - imgHeight)),
-      });
+      setTteImages((images) =>
+        images.map((image, index) =>
+          index === draggingIndex ? { ...image, x: x, y: y } : image
+        )
+      );
     }
   };
 
   const handleDragEnd = () => {
-    setDragging(false);
+    setDraggingIndex(null);
   };
 
   useEffect(() => {
-    if (dragging) {
+    if (draggingIndex !== null) {
       const handleMouseMove = (event) => handleDrag(event);
       const handleMouseUp = () => handleDragEnd();
 
@@ -119,96 +114,83 @@ const TesUpload = () => {
         window.removeEventListener("mouseup", handleMouseUp);
       };
     }
-  }, [dragging]);
+  }, [draggingIndex]);
 
   const handleSave = async () => {
-    if (!pdfDocument || !tteUrl) return;
+    if (!pdfDocument || tteImages.length === 0) return;
 
     // Load PDF
     const pdfBytes = await fetch(pdfDocument).then((res) => res.arrayBuffer());
     const pdfDoc = await PDFDocument.load(pdfBytes);
 
-    // Load TTE image
-    const tteImageBytes = await fetch(tteUrl).then((res) => res.arrayBuffer());
+    for (const image of tteImages) {
+      const tteImageBytes = await fetch(image.url).then((res) =>
+        res.arrayBuffer()
+      );
+      let tteImage;
 
-    // Determine if the image is PNG or JPEG
-    let tteImage;
-    const imgType = tteUrl.split(";")[0].split("/")[1]; // Get image type from dataURL
+      const imgType = image.url.split(";")[0].split("/")[1];
+      if (imgType === "png") {
+        tteImage = await pdfDoc.embedPng(tteImageBytes);
+      } else if (imgType === "jpeg" || imgType === "jpg") {
+        tteImage = await pdfDoc.embedJpg(tteImageBytes);
+      } else {
+        alert("Unsupported image format.");
+        return;
+      }
 
-    if (imgType === "png") {
-      tteImage = await pdfDoc.embedPng(tteImageBytes);
-    } else if (imgType === "jpeg" || imgType === "jpg") {
-      tteImage = await pdfDoc.embedJpg(tteImageBytes);
-    } else {
-      alert("Unsupported image format.");
-      return;
+      const page = pdfDoc.getPage(currentPage - 1);
+      const { width, height } = page.getSize();
+      const imgWidth = 60;
+      const imgHeight = 60;
+
+      const x = Number(image.x) / Number(pdfScale) - 82;
+      const y = height - Number(image.y) / Number(pdfScale) - imgHeight + 115;
+
+      if (!isNaN(x) && !isNaN(y) && x >= 0 && y >= 0) {
+        page.drawImage(tteImage, {
+          x,
+          y,
+          width: imgWidth,
+          height: imgHeight,
+        });
+      }
     }
 
-    // Add TTE image to the specific page
-    const page = pdfDoc.getPage(ttePage - 1);
-    const { width, height } = page.getSize();
-    const imgWidth = 60;
-    const imgHeight = 60;
-
-    // Hitung posisi dengan skala PDF
-    const x = Number(ttePosition.x) / Number(pdfScale) - 82;
-    const y =
-      height - Number(ttePosition.y) / Number(pdfScale) - imgHeight + 115;
-
-    // Debugging
-    console.log("ttePosition.x:", ttePosition.x);
-    console.log("pdfScale:", pdfScale);
-    console.log("Calculated x:", x);
-    console.log("Calculated y:", y);
-
-    // Pastikan nilai x dan y bukan NaN
-    if (!isNaN(x) && !isNaN(y) && x >= 0 && y >= 0) {
-      page.drawImage(tteImage, {
-        x,
-        y,
-        width: imgWidth,
-        height: imgHeight,
-      });
-    }
-
-    // Save the PDF with TTE image
     const pdfBytesWithTTE = await pdfDoc.save();
     const pdfBlob = new Blob([pdfBytesWithTTE], { type: "application/pdf" });
     const pdfUrl = URL.createObjectURL(pdfBlob);
 
-    // Open or download the PDF
     window.open(pdfUrl, "_blank");
   };
 
   return (
-    <div>
-      <div
-        {...getRootProps()}
-        style={{
-          border: "2px dashed #000",
-          padding: "20px",
-          marginBottom: "20px",
-        }}
-      >
-        <input {...getInputProps()} />
-        <p>Drag & drop your PDF document here</p>
-      </div>
-      <div>
-        <label htmlFor="">Pilih TTE : </label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleTteUpload}
-          style={{ marginBottom: "20px" }}
-        />
-      </div>
-      {pdfDocument && (
-        <div ref={containerRef} style={{ position: "relative" }}>
-          <div style={{ marginTop: "10px" }}>
-            <div style={{ marginTop: "10px" }}>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full">
+        <div
+          {...getRootProps()}
+          className="border-2 border-dashed border-gray-300 p-4 mb-4 text-center cursor-pointer"
+        >
+          <input {...getInputProps()} />
+          <p className="text-gray-700">Drag & drop your PDF document here</p>
+        </div>
+
+        <div className="mb-4 flex justify-between items-center">
+          <button
+            onClick={handleAddTte}
+            className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition"
+          >
+            Tambah TTE
+          </button>
+        </div>
+
+        {pdfDocument && (
+          <div className="relative">
+            <div className="mb-4 flex justify-between items-center">
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage <= 1}
+                className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition disabled:bg-gray-300"
               >
                 Previous
               </button>
@@ -218,63 +200,71 @@ const TesUpload = () => {
                 max={totalPages}
                 value={currentPage}
                 onChange={(e) => handlePageChange(Number(e.target.value))}
+                className="border border-gray-300 px-2 py-1 rounded text-center"
               />
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage >= totalPages}
+                className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition disabled:bg-gray-300"
               >
                 Next
               </button>
             </div>
-          </div>
-          <Document
-            file={pdfDocument}
-            onLoadSuccess={({ numPages, originalWidth }) => {
-              setTotalPages(numPages);
-              setPdfScale(1);
-            }}
-          >
-            <Page
-              key={`page_${currentPage}`}
-              pageNumber={currentPage}
-              scale={1.5}
-              renderTextLayer={false}
-              renderAnnotationLayer={false}
-              canvasRef={canvasRef}
-            />
-          </Document>
-          {tteUrl && currentPage === ttePage && (
-            <div
-              className="tte moving-border"
-              style={{
-                position: "absolute",
-                left: ttePosition.x,
-                top: ttePosition.y,
-                cursor: dragging ? "grabbing" : "grab",
-                pointerEvents: dragging ? "none" : "auto",
-                border: "2px dashed rgba(0, 0, 0, 0.5)", // Optional, to show the border
-                borderRadius: "4px", // Optional, to round the corners
-              }}
-              onMouseDown={handleDragStart}
-              onMouseMove={handleDrag}
-              onMouseUp={handleDragEnd}
-            >
-              <img
-                src={tteUrl}
-                alt="TTE"
-                style={{
-                  width: "80px",
-                  height: "80px",
-                  pointerEvents: "none",
+
+            <div className="bg-gray-200 p-4 rounded-lg overflow-auto">
+              <Document
+                file={pdfDocument}
+                onLoadSuccess={({ numPages, originalWidth }) => {
+                  setTotalPages(numPages);
+                  setPdfScale(1);
                 }}
-              />
+              >
+                <Page
+                  key={`page_${currentPage}`}
+                  pageNumber={currentPage}
+                  className="w-full h-auto"
+                  scale={1.5}
+                  renderTextLayer={false}
+                  renderAnnotationLayer={false}
+                  canvasRef={canvasRef}
+                />
+              </Document>
             </div>
-          )}
-          <button onClick={handleSave} style={{ marginTop: "20px" }}>
-            Save Document
-          </button>
-        </div>
-      )}
+
+            {tteImages.map((tte, index) => (
+              <div
+                key={index}
+                className="tte moving-border absolute"
+                style={{
+                  left: tte.x,
+                  top: tte.y,
+                  cursor: draggingIndex === index ? "grabbing" : "grab",
+                  pointerEvents: draggingIndex === index ? "none" : "auto",
+                  border: "2px dashed rgba(0, 0, 0, 0.5)",
+                  borderRadius: "4px",
+                }}
+                onMouseDown={(event) => handleDragStart(event, index)}
+                onMouseMove={handleDrag}
+                onMouseUp={handleDragEnd}
+              >
+                <img
+                  src={tte.url}
+                  alt="TTE"
+                  className="w-20 h-20"
+                  style={{ pointerEvents: "none" }}
+                />
+              </div>
+            ))}
+
+            <button
+              onClick={handleSave}
+              className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition mt-4"
+            >
+              Save Document
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

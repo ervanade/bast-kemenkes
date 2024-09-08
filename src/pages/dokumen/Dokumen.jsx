@@ -17,6 +17,7 @@ import {
   FaSearch,
   FaTrash,
 } from "react-icons/fa";
+import { saveAs } from "file-saver"; // Pastikan Anda menginstal file-saver
 import { BiExport, BiSolidFileExport } from "react-icons/bi";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -24,6 +25,8 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { CgSpinner } from "react-icons/cg";
 import ModalTTE from "../../components/Modal/ModalTTE";
+import GenerateDokumen from "../../components/Dokumen/GenerateDokumen";
+import ModalUploadDokumen from "../../components/Modal/ModalUploadDokumen";
 
 const Dokumen = () => {
   const user = useSelector((a) => a.auth.user);
@@ -47,6 +50,7 @@ const Dokumen = () => {
   const [selectedKecamatan, setSelectedKecamatan] = useState(null);
 
   const [showModal, setShowModal] = useState(false);
+  const [showModalUpload, setShowModalUpload] = useState(false);
   const [jsonData, setJsonData] = useState({
     id: "",
     nama_dokumen: "",
@@ -54,6 +58,15 @@ const Dokumen = () => {
   const handleTTE = async (e, id, nama_dokumen) => {
     e.preventDefault();
     setShowModal(true);
+    setJsonData({
+      id: id,
+      nama_dokumen: nama_dokumen,
+    });
+  };
+
+  const handleModalDokumen = async (e, id, nama_dokumen) => {
+    e.preventDefault();
+    setShowModalUpload(true);
     setJsonData({
       id: id,
       nama_dokumen: nama_dokumen,
@@ -356,6 +369,89 @@ const Dokumen = () => {
     }
   }, [user.role, user.provinsi, user.kabupaten, dataProvinsi, dataKota]);
 
+  const handleDownload = async (id) => {
+    try {
+      Swal.fire({
+        title: "Generate dokumen...",
+        text: "Tunggu Sebentar Dokumen Disiapkan...",
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        willOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
+      const response = await axios({
+        method: "get",
+        url: `${
+          import.meta.env.VITE_APP_API_URL
+        }/api/dokumen/${encodeURIComponent(id)}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+
+      const data = response.data.data;
+      // Lakukan proses generate dokumen berdasarkan data JSON yang diterima
+      const dataJson = {
+        nama_dokumen: data.nama_dokumen || "",
+        id: data.id,
+        nomorSurat: data.nomor_bast || "",
+        tanggal: data.tanggal_bast || defaultDate,
+        tanggal_tte_ppk: data.tanggal_tte_ppk || defaultDate,
+        tanggal_tte_daerah: data.tanggal_tte_daerah || defaultDate,
+        kecamatan: data.kecamatan,
+        puskesmas: data.Puskesmas,
+        namaKapus: data.nama_kapus,
+        provinsi: data.provinsi || "",
+        kabupaten: data.kabupaten || "",
+        penerima_hibah: data.penerima_hibah || "",
+        kepala_unit_pemberi: data.kepala_unit_pemberi || "",
+        distribusi: data.distribusi || [],
+        nipKapus: "nip.121212",
+        namaBarang: data.nama_barang,
+        status_tte: data.status_tte || "",
+        jumlahDikirim: "24",
+        jumlahDiterima: "24",
+        tte: "",
+        tteDaerah: {
+          image_url:
+            "https://www.shutterstock.com/image-vector/fake-autograph-samples-handdrawn-signatures-260nw-2332469589.jpg",
+          width: 50,
+          height: 50,
+        },
+        ket_daerah: "",
+        ket_ppk: data.keterangan_ppk,
+        tte_daerah: data.tte_daerah || defaultImage,
+        nama_daerah: data.nama_daerah || "",
+        nip_daerah: data.nip_daerah || "",
+        tte_ppk: data.tte_ppk || defaultImage,
+        nama_ppk: data.nama_ppk || "",
+        nip_ppk: data.nip_ppk || "",
+        total_barang_dikirim: data.total_barang_dikirim || "",
+        total_harga: data.total_harga || "",
+      };
+      const pdfBlob = await GenerateDokumen(dataJson); // GenerateDokumen harus mengembalikan Blob PDF
+
+      saveAs(pdfBlob, `Dokumen_${dataJson.nomorSurat}.pdf`);
+
+      Swal.fire({
+        icon: "success",
+        title: "Download Complete",
+        text: "Dokumen Sukses Di Download",
+        confirmButtonText: "OK",
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Gagal Download Dokumen",
+      });
+      console.log(error);
+    }
+  };
+
   const columns = useMemo(
     () => [
       // { name: "No", selector: (row) => row.id, sortable: true },
@@ -525,7 +621,7 @@ const Dokumen = () => {
         sortable: true,
         selector: (row) => row.status_tte,
 
-        // width: "110px",
+        width: "180px",
       },
       // {
       //   name: "Keterangan PPK Kemenkes",
@@ -553,26 +649,33 @@ const Dokumen = () => {
                   encryptId(row.id)
                 )}`}
               >
-                <FaEye size={16} />
+                <FaEye size={20} />
               </Link>
             </button>
             <button
               title="Download"
               className="text-green-400 hover:text-green-500"
+              onClick={() => handleDownload(row.id)} // Tambahkan handler download di sini
             >
-              <Link
-                to={`/dokumen/preview-dokumen/${encodeURIComponent(
-                  encryptId(row.id)
-                )}`}
-              >
-                <FaDownload size={16} />
-              </Link>
+              <FaDownload size={20} />
             </button>
+            {user.role === "2" || user.role === "3" || user.role === "4" ? (
+              <button
+                title="Upload Dokumen"
+                className="text-white py-2 w-20 bg-teal-500 rounded-md"
+                onClick={(e) => handleModalDokumen(e, row.id, row.nama_dokumen)}
+              >
+                Upload Dokumen
+              </button>
+            ) : (
+              ""
+            )}
           </div>
         ),
         ignoreRowClick: true,
         allowOverflow: true,
         button: true,
+        width: "200px",
       },
       {
         name: "TTE",
@@ -891,6 +994,12 @@ const Dokumen = () => {
       <ModalTTE
         show={showModal}
         onClose={() => setShowModal(false)}
+        jsonData={jsonData}
+        user={user}
+      />
+      <ModalUploadDokumen
+        show={showModalUpload}
+        onClose={() => setShowModalUpload(false)}
         jsonData={jsonData}
         user={user}
       />

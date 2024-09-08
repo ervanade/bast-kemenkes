@@ -9,13 +9,8 @@ import {
   PDFViewer,
   Font,
   PDFDownloadLink,
+  pdf,
 } from "@react-pdf/renderer";
-import {
-  Document as DocumentPreview,
-  Page as PagePreview,
-  pdfjs,
-} from "react-pdf";
-
 import ReactDOMServer from "react-dom/server";
 import moment from "moment";
 import "moment/locale/id";
@@ -37,402 +32,219 @@ import { decryptId } from "../../data/utils";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { CgSpinner } from "react-icons/cg";
-import HeaderDokumen from "../../components/Title/HeaderDokumen";
-import { RenderBarangPages } from "../../components/Table/TableLampiran";
-import { RenderHibahPages } from "../../components/Table/TableHibah";
 import { FaDownload } from "react-icons/fa";
-import { PDFDocument } from "pdf-lib";
+import { RenderHibahPages } from "../Table/TableHibah";
+import { RenderBarangPages } from "../Table/TableLampiran";
 
-import "react-pdf/dist/esm/Page/AnnotationLayer.css";
-import "react-pdf/dist/esm/Page/TextLayer.css";
+const defaultImage =
+  "https://media.istockphoto.com/id/1472819341/photo/background-white-light-grey-total-grunge-abstract-concrete-cement-wall-paper-texture-platinum.webp?b=1&s=170667a&w=0&k=20&c=yoY1jUAKlKVdakeUsRRsNEZdCx2RPIEgaIxSwQ0lS1k=";
+var today = new Date();
+const defaultDate = today.toISOString().substring(0, 10);
+Font.register({
+  family: "Arial",
+  fonts: [
+    {
+      src: "/fonts/ARIAL.TTF",
+      fontWeight: 400,
+    },
+    {
+      src: "/fonts/ARIALBD.TTF",
+      fontWeight: 700,
+    },
+  ],
+});
 
-pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.mjs";
+const BORDER_COLOR = "#000";
+const BORDER_STYLE = "solid";
+const COL1_WIDTH = 5;
+const COLN_WIDTH = (100 - COL1_WIDTH) / 8;
 
-const PreviewDokumen = () => {
-  const { id } = useParams();
-  const user = useSelector((a) => a.auth.user);
-  const [jsonData, setJsonData] = useState(null);
-  const [getLoading, setGetLoading] = useState(false);
-  var today = new Date();
-  const defaultDate = today.toISOString().substring(0, 10);
-  const [formData, setFormData] = useState({
-    nama_dokumen: "",
-    nomor_bast: "",
-    tanggal_bast: defaultDate,
-    tahun_lokus: "",
-    penerima_hibah: "",
-    kepala_unit_pemberi: "",
-    id_user_pemberi: "",
-    id_provinsi: "",
-    id_kabupaten: "",
-  });
-  const [showModal, setShowModal] = useState(false);
-  const isMobile = useMediaQuery({ maxWidth: 500 }); // adjust the max width to your desired breakpoint
-  const [pdfUrl, setPdfUrl] = useState(null); // Replace with your API link
-  const [numPages, setNumPages] = useState(null);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [scale, setScale] = useState(1);
-  const containerRef = useRef(null);
+const styles = StyleSheet.create({
+  viewer: {
+    width: "100%", //the pdf viewer will take up all of the width and height
+    height: (window.innerHeight * 4) / 5,
+  },
+  page: {
+    fontSize: 11,
+    paddingTop: 30,
+    paddingLeft: 60,
+    paddingRight: 60,
+    lineHeight: 1.5,
+    flexDirection: "column",
+  },
+  logo: {
+    width: 74,
+    height: 66,
+    marginLeft: "auto",
+    marginRight: "auto",
+  },
+  titleContainer: {
+    flexDirection: "row",
+    marginTop: 24,
+    display: "flex",
+    width: "100%",
+    fontFamily: "Arial",
+    justifyContent: "space-between",
+  },
+  reportTitle: {
+    fontFamily: "Arial",
+    color: "#000",
+    fontSize: 11,
+    fontWeight: "normal",
+    width: "50%",
+    letterSpacing: 0.3,
+    lineHeight: 1.7,
+    textAlign: "left",
+  },
+  docContainer: {
+    marginTop: 24,
+    width: "100%",
+  },
+  docContainerBorder: {
+    flexDirection: "column",
+    marginTop: 16,
+    border: 1,
+    borderWidth: 1.5,
+    display: "flex",
+    width: "100%",
+    height: 800,
+    paddingVertical: "24px",
+    paddingLeft: "10px",
+    paddingRight: "16px",
+  },
+  ttdContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    //   alignItems: "flex-start",
+    marginTop: 24,
+    display: "flex",
+    width: "100%",
+  },
+  text: {
+    color: "#000",
+    fontSize: 10,
+    lineHeight: 1.5,
+    fontWeight: "normal",
+    textAlign: "left",
+    fontFamily: "Arial",
+    textOverflow: "clip",
+  },
+  textBold: {
+    color: "#000",
+    fontSize: 10,
+    lineHeight: 1.5,
+    fontWeight: "bold",
+    textAlign: "left",
+    fontFamily: "Arial",
+  },
+  textBoldTitle: {
+    color: "#000",
+    fontSize: 10,
+    lineHeight: 1.5,
+    fontWeight: "bold",
+    textAlign: "center",
+    fontFamily: "Arial",
+    marginBottom: 24,
+  },
+  imageTtd: {
+    width: 50,
+    height: 50,
+    marginLeft: 90,
+  },
+  TableHeader: {
+    color: "#000",
+    fontSize: 10,
+    lineHeight: 1.5,
+    textAlign: "center",
+    fontFamily: "Arial",
+    verticalAlign: "middle",
+    paddingVertical: 5,
+  },
+  TableRow: {
+    color: "#000",
+    fontSize: 10,
+    lineHeight: 1,
+    textAlign: "center",
+    fontFamily: "Arial",
+    verticalAlign: "middle",
+    paddingVertical: 5,
+  },
+  table: {
+    display: "table",
+    width: "auto",
+    borderStyle: BORDER_STYLE,
+    borderColor: BORDER_COLOR,
+    borderWidth: 1,
+    borderRightWidth: 0,
+    borderBottomWidth: 0,
+  },
+  tableRow: {
+    margin: "auto",
+    flexDirection: "row",
+    textAlign: "center",
+    verticalAlign: "middle",
+  },
+  tableCol1Header: {
+    width: COL1_WIDTH + "%",
+    borderStyle: BORDER_STYLE,
+    borderColor: BORDER_COLOR,
+    borderBottomColor: "#000",
+    borderWidth: 1,
+    borderLeftWidth: 0,
+    borderTopWidth: 0,
+    textAlign: "center",
+    verticalAlign: "middle",
+  },
+  tableColHeader: {
+    width: COLN_WIDTH + "%",
+    borderStyle: BORDER_STYLE,
+    borderColor: BORDER_COLOR,
+    borderBottomColor: "#000",
+    borderWidth: 1,
+    borderLeftWidth: 0,
+    borderTopWidth: 0,
+    textAlign: "center",
+    verticalAlign: "middle",
+  },
+  tableCol1: {
+    width: COL1_WIDTH + "%",
+    borderStyle: BORDER_STYLE,
+    borderColor: BORDER_COLOR,
+    borderWidth: 1,
+    borderLeftWidth: 0,
+    borderTopWidth: 0,
+    textAlign: "center",
+    verticalAlign: "middle",
+  },
+  tableCol: {
+    width: COLN_WIDTH + "%",
+    borderStyle: BORDER_STYLE,
+    borderColor: BORDER_COLOR,
+    borderWidth: 1,
+    borderLeftWidth: 0,
+    borderTopWidth: 0,
+    textAlign: "center",
+    verticalAlign: "middle",
+  },
+  tableCellHeader: {
+    margin: 5,
+    fontSize: 10,
+    lineHeight: 1.2,
+    fontWeight: 500,
+    textAlign: "center",
+    verticalAlign: "middle",
+  },
+  tableCell: {
+    margin: 5,
+    fontSize: 10,
+    lineHeight: 1,
+    textAlign: "center",
+    verticalAlign: "middle",
+  },
+});
 
-  useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollTop = 0; // Scroll to top on page change
-    }
-  }, [pageNumber]);
-
-  const onLoadSuccess = ({ numPages }) => {
-    setNumPages(numPages);
-  };
-  const onLoadError = () => {
-    setJsonData((prev) => ({ ...prev, file_dokumen: null }));
-  };
-
-  const zoomIn = () => setScale((prevScale) => Math.min(prevScale + 0.1, 3));
-  const zoomOut = () => setScale((prevScale) => Math.max(prevScale - 0.1, 0.5));
-
-  const handleTTE = async (e) => {
-    e.preventDefault();
-    setShowModal(true);
-  };
-
-  const iframeRef = useRef(null);
-  const [isIFrameLoaded, setIsIFrameLoaded] = useState(false);
-
-  const defaultImage =
-    "https://media.istockphoto.com/id/1472819341/photo/background-white-light-grey-total-grunge-abstract-concrete-cement-wall-paper-texture-platinum.webp?b=1&s=170667a&w=0&k=20&c=yoY1jUAKlKVdakeUsRRsNEZdCx2RPIEgaIxSwQ0lS1k=";
-
-  const fetchDokumenData = async () => {
-    setGetLoading(true);
-    try {
-      // eslint-disable-next-line
-      const responseUser = await axios({
-        method: "get",
-        url: `${
-          import.meta.env.VITE_APP_API_URL
-        }/api/dokumen/${encodeURIComponent(decryptId(id))}`,
-        headers: {
-          "Content-Type": "application/json",
-          //eslint-disable-next-line
-          Authorization: `Bearer ${user?.token}`,
-        },
-      }).then(function (response) {
-        // handle success
-        // console.log(response)
-        const data = response.data.data;
-        setFormData({
-          nama_dokumen: data.nama_dokumen || "",
-          nomor_bast: data.nomor_bast || "",
-          tanggal_bast: data.tanggal_bast || defaultDate,
-          tahun_lokus: data.tahun_lokus || "",
-          penerima_hibah: data.penerima_hibah || "",
-          kepala_unit_pemberi: data.kepala_unit_pemberi || "",
-          nama_kontrak_pengadaan: data.nama_kontrak_pengadaan || "",
-          tanggal_kontrak_pengadaan: data.tanggal_kontrak_pengadaan || "",
-          id_user_pemberi: data.id_user_pemberi || "",
-          id_provinsi: data.id_provinsi || "",
-          id_kabupaten: data.id_kabupaten || "",
-          status_tte: data.status_tte || "",
-        });
-        setJsonData({
-          nama_dokumen: data.nama_dokumen || "",
-          id: data.id,
-          nomorSurat: data.nomor_bast || "",
-          tanggal: data.tanggal_bast || defaultDate,
-          tanggal_tte_ppk: data.tanggal_tte_ppk || defaultDate,
-          tanggal_tte_daerah: data.tanggal_tte_daerah || defaultDate,
-          kecamatan: data.kecamatan,
-          puskesmas: data.Puskesmas,
-          file_dokumen: data.file_dokumen || null,
-          namaKapus: data.nama_kapus,
-          provinsi: data.provinsi || "",
-          kabupaten: data.kabupaten || "",
-          penerima_hibah: data.penerima_hibah || "",
-          kepala_unit_pemberi: data.kepala_unit_pemberi || "",
-          distribusi: data.distribusi || [],
-          nipKapus: "nip.121212",
-          namaBarang: data.nama_barang,
-          status_tte: data.status_tte || "",
-          jumlahDikirim: "24",
-          jumlahDiterima: "24",
-          tte: "",
-          tteDaerah: {
-            image_url:
-              "https://www.shutterstock.com/image-vector/fake-autograph-samples-handdrawn-signatures-260nw-2332469589.jpg",
-            width: 50,
-            height: 50,
-          },
-          ket_daerah: "",
-          ket_ppk: data.keterangan_ppk,
-          tte_daerah: data.tte_daerah || defaultImage,
-          nama_daerah: data.nama_daerah || "",
-          nip_daerah: data.nip_daerah || "",
-          tte_ppk: data.tte_ppk || defaultImage,
-          nama_ppk: data.nama_ppk || "",
-          nip_ppk: data.nip_ppk || "",
-          total_barang_dikirim: data.total_barang_dikirim || "",
-          total_harga: data.total_harga || "",
-        });
-        if (data?.file_dokumen) {
-          setPdfUrl(data?.file_dokumen);
-        }
-        setGetLoading(false);
-      });
-    } catch (error) {
-      // if (error.response.status == 404) {
-      //   navigate("/not-found");
-      // }
-      console.log(error);
-    }
-  };
-  useEffect(() => {
-    fetchDokumenData();
-    moment.locale("id");
-  }, []);
-
-  useEffect(() => {
-    jsonData ? setIsIFrameLoaded(true) : "";
-    // const iframeCurrent = iframeRef.current;
-
-    // const handleLoad = () => setIsIFrameLoaded(true);
-
-    // if (iframeCurrent) {
-    //   iframeCurrent.addEventListener("load", handleLoad);
-    // }
-
-    // return () => {
-    //   if (iframeCurrent) {
-    //     iframeCurrent.removeEventListener("load", handleLoad);
-    //   }
-    // };
-  }, [jsonData]);
-
-  Font.register({
-    family: "Arial",
-    fonts: [
-      {
-        src: "/fonts/ARIAL.TTF",
-        fontWeight: 400,
-      },
-      {
-        src: "/fonts/ARIALBD.TTF",
-        fontWeight: 700,
-      },
-    ],
-  });
-
-  const BORDER_COLOR = "#000";
-  const BORDER_STYLE = "solid";
-  const COL1_WIDTH = 5;
-  const COLN_WIDTH = (100 - COL1_WIDTH) / 8;
-
-  const styles = StyleSheet.create({
-    viewer: {
-      width: "100%", //the pdf viewer will take up all of the width and height
-      height: (window.innerHeight * 4) / 5,
-    },
-    page: {
-      fontSize: 11,
-      paddingTop: 30,
-      paddingLeft: 60,
-      paddingRight: 60,
-      lineHeight: 1.5,
-      flexDirection: "column",
-    },
-    logo: {
-      width: 74,
-      height: 66,
-      marginLeft: "auto",
-      marginRight: "auto",
-    },
-    titleContainer: {
-      flexDirection: "row",
-      marginTop: 24,
-      display: "flex",
-      width: "100%",
-      fontFamily: "Arial",
-      justifyContent: "space-between",
-    },
-    reportTitle: {
-      fontFamily: "Arial",
-      color: "#000",
-      fontSize: 11,
-      fontWeight: "normal",
-      width: "50%",
-      letterSpacing: 0.3,
-      lineHeight: 1.7,
-      textAlign: "left",
-    },
-    docContainer: {
-      marginTop: 24,
-      width: "100%",
-    },
-    docContainerBorder: {
-      flexDirection: "column",
-      marginTop: 16,
-      border: 1,
-      borderWidth: 1.5,
-      display: "flex",
-      width: "100%",
-      height: 800,
-      paddingVertical: "24px",
-      paddingLeft: "10px",
-      paddingRight: "16px",
-    },
-    ttdContainer: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      //   alignItems: "flex-start",
-      marginTop: 24,
-      display: "flex",
-      width: "100%",
-    },
-    text: {
-      color: "#000",
-      fontSize: 10,
-      lineHeight: 1.5,
-      fontWeight: "normal",
-      textAlign: "left",
-      fontFamily: "Arial",
-      textOverflow: "clip",
-    },
-    textBold: {
-      color: "#000",
-      fontSize: 10,
-      lineHeight: 1.5,
-      fontWeight: "bold",
-      textAlign: "left",
-      fontFamily: "Arial",
-    },
-    textBoldTitle: {
-      color: "#000",
-      fontSize: 10,
-      lineHeight: 1.5,
-      fontWeight: "bold",
-      textAlign: "center",
-      fontFamily: "Arial",
-      marginBottom: 24,
-    },
-    imageTtd: {
-      width: 50,
-      height: 50,
-      marginLeft: 90,
-    },
-    TableHeader: {
-      color: "#000",
-      fontSize: 10,
-      lineHeight: 1.5,
-      textAlign: "center",
-      fontFamily: "Arial",
-      verticalAlign: "middle",
-      paddingVertical: 5,
-    },
-    TableRow: {
-      color: "#000",
-      fontSize: 10,
-      lineHeight: 1,
-      textAlign: "center",
-      fontFamily: "Arial",
-      verticalAlign: "middle",
-      paddingVertical: 5,
-    },
-    table: {
-      display: "table",
-      width: "auto",
-      borderStyle: BORDER_STYLE,
-      borderColor: BORDER_COLOR,
-      borderWidth: 1,
-      borderRightWidth: 0,
-      borderBottomWidth: 0,
-    },
-    tableRow: {
-      margin: "auto",
-      flexDirection: "row",
-      textAlign: "center",
-      verticalAlign: "middle",
-    },
-    tableCol1Header: {
-      width: COL1_WIDTH + "%",
-      borderStyle: BORDER_STYLE,
-      borderColor: BORDER_COLOR,
-      borderBottomColor: "#000",
-      borderWidth: 1,
-      borderLeftWidth: 0,
-      borderTopWidth: 0,
-      textAlign: "center",
-      verticalAlign: "middle",
-    },
-    tableColHeader: {
-      width: COLN_WIDTH + "%",
-      borderStyle: BORDER_STYLE,
-      borderColor: BORDER_COLOR,
-      borderBottomColor: "#000",
-      borderWidth: 1,
-      borderLeftWidth: 0,
-      borderTopWidth: 0,
-      textAlign: "center",
-      verticalAlign: "middle",
-    },
-    tableCol1: {
-      width: COL1_WIDTH + "%",
-      borderStyle: BORDER_STYLE,
-      borderColor: BORDER_COLOR,
-      borderWidth: 1,
-      borderLeftWidth: 0,
-      borderTopWidth: 0,
-      textAlign: "center",
-      verticalAlign: "middle",
-    },
-    tableCol: {
-      width: COLN_WIDTH + "%",
-      borderStyle: BORDER_STYLE,
-      borderColor: BORDER_COLOR,
-      borderWidth: 1,
-      borderLeftWidth: 0,
-      borderTopWidth: 0,
-      textAlign: "center",
-      verticalAlign: "middle",
-    },
-    tableCellHeader: {
-      margin: 5,
-      fontSize: 10,
-      lineHeight: 1.2,
-      fontWeight: 500,
-      textAlign: "center",
-      verticalAlign: "middle",
-    },
-    tableCell: {
-      margin: 5,
-      fontSize: 10,
-      lineHeight: 1,
-      textAlign: "center",
-      verticalAlign: "middle",
-    },
-  });
-
-  if (getLoading) {
-    return (
-      <div className="flex justify-center items-center">
-        <CgSpinner className="animate-spin inline-block w-8 h-8 text-teal-400" />
-        <span className="ml-2">Loading...</span>
-      </div>
-    );
-  }
-
-  const dataBarang =
-    jsonData?.distribusi?.detail_distribusi?.map((distribusi, index) => ({
-      no: index + 1 || "",
-      namaBarang: distribusi.jenis_alkes || "",
-      merk: distribusi.merk || "",
-      nomorBukti: distribusi.nomor_bukti || "",
-      jumlah: distribusi.jumlah_total || "",
-      jumlah_dikirim: distribusi.jumlah_dikirim || "",
-      jumlah_diterima: distribusi.jumlah_diterima || "",
-      hargaSatuan: distribusi.harga_satuan || "",
-      jumlahNilai: `Rp. ${distribusi.jumlah_total || ""}` || "",
-      keterangan: distribusi.keterangan || "",
-    })) || [];
-
-  const Dokumen = () => (
+const GenerateDokumen = async (jsonData) => {
+  const MyDocument = () => (
     <Document title={`Dokumen ${jsonData?.nomorSurat}`}>
       <Page size="FOLIO" style={styles.page}>
         {/* <View style={styles.titleContainer}>
@@ -1422,320 +1234,6 @@ const PreviewDokumen = () => {
       </Page>
       {RenderBarangPages(jsonData)}
 
-      {/* <Page
-        size="FOLIO"
-        style={{ paddingTop: 0, ...styles.page }}
-        orientation="landscape"
-      >
-        <View
-          style={{
-            paddingVertical: 0,
-            marginTop: 0,
-            ...styles.docContainerBorder,
-            height: 520,
-          }}
-        >
-          <View
-            style={{ ...styles.titleContainer, marginBottom: 0, marginTop: 0 }}
-          >
-            <Text
-              style={{
-                ...styles.reportTitle,
-                width: "40%",
-                letterSpacing: 1,
-              }}
-            ></Text>
-            <Text
-              style={{
-                ...styles.reportTitle,
-                letterSpacing: 0.7,
-                width: "60%",
-                lineHeight: 1.5,
-              }}
-            >
-              LAMPIRAN{"\n"}BERITA ACARA SERAH TERIMA OPERASIONAL BARANG MILIK
-              NEGARA{"\n"}NOMOR: {jsonData?.nomorSurat}
-              {"\n"}TANGGAL: {jsonData?.tanggal}
-            </Text>
-          </View>
-
-          <View
-            style={{
-              ...styles.titleContainer,
-              width: "100%",
-              marginBottom: 8,
-              marginTop: 16,
-            }}
-          >
-            <Text
-              style={{
-                ...styles.reportTitle,
-                width: "100%",
-                textAlign: "center",
-                letterSpacing: 1,
-                marginTop: 8,
-              }}
-            >
-              DAFTAR BARANG MILIK NEGARA YANG DARI SEJAK AWAL DISERAHKAN KEPADA
-              MASYARAKAT/PEMERINTAH DAERAH DINAS KESEHATAN KOTA / KABUPATEN{" "}
-              {jsonData?.kabupaten}
-            </Text>
-          </View>
-          <View style={styles.table}>
-            <View style={styles.tableRow}>
-              <View style={styles.tableCol1Header}>
-                <Text style={styles.tableCellHeader}>No</Text>
-              </View>
-              <View style={styles.tableColHeader}>
-                <Text style={styles.tableCellHeader}>Nama Barang</Text>
-              </View>
-              <View style={styles.tableColHeader}>
-                <Text style={styles.tableCellHeader}>Merk/Tipe</Text>
-              </View>
-              <View style={styles.tableColHeader}>
-                <Text style={styles.tableCellHeader}>
-                  Nomor Bukti Kepemilikan
-                </Text>
-              </View>
-              <View style={styles.tableColHeader}>
-                <Text style={styles.tableCellHeader}>Satuan</Text>
-              </View>
-              <View style={styles.tableColHeader}>
-                <Text style={styles.tableCellHeader}>Jumlah</Text>
-              </View>
-              <View style={styles.tableColHeader}>
-                <Text style={styles.tableCellHeader}>Harga Satuan</Text>
-              </View>
-              <View style={styles.tableColHeader}>
-                <Text style={styles.tableCellHeader}>
-                  Jumlah Total Nilai Perolehan (Rp)
-                </Text>
-              </View>
-              <View style={styles.tableColHeader}>
-                <Text style={styles.tableCellHeader}>Keterangan</Text>
-              </View>
-            </View>
-            {dataBarang?.map((items, index) => (
-              <View style={styles.tableRow} key={index}>
-                <View style={styles.tableCol1}>
-                  <Text style={styles.tableCell}>{index + 1}</Text>
-                </View>
-                <View style={styles.tableCol}>
-                  <Text style={styles.tableCell}>{items.namaBarang || ""}</Text>
-                </View>
-                <View style={styles.tableCol}>
-                  <Text style={styles.tableCell}>{items.merk || ""}</Text>
-                </View>
-                <View style={styles.tableCol}>
-                  <Text style={styles.tableCell}>{items.nomorBukti || ""}</Text>
-                </View>
-                <View style={styles.tableCol}>
-                  <Text style={styles.tableCell}>{items.satuan || ""}</Text>
-                </View>
-                <View style={styles.tableCol}>
-                  <Text style={styles.tableCell}>
-                    {items.jumlah_dikirim || ""}
-                  </Text>
-                </View>
-                <View style={styles.tableCol}>
-                  <Text style={styles.tableCell}>
-                    {items.hargaSatuan || ""}
-                  </Text>
-                </View>
-                <View style={styles.tableCol}>
-                  <Text style={styles.tableCell}>
-                    {items.jumlahNilai || ""}
-                  </Text>
-                </View>
-                <View style={styles.tableCol}>
-                  <Text style={styles.tableCell}>{items.keterangan || ""}</Text>
-                </View>
-              </View>
-            ))}
-          </View>
-          <View style={{ marginTop: 16 }}>
-            <View style={styles.table}>
-              <View style={styles.tableRow}>
-                <View
-                  style={{
-                    ...styles.tableCol1Header,
-                    width: "70%",
-                    fontWeight: "bold",
-                  }}
-                >
-                  <Text
-                    style={{
-                      ...styles.tableCellHeader,
-                      color: "#000",
-                      fontSize: 11,
-                      lineHeight: 1.5,
-                      fontWeight: "bold",
-                      textAlign: "left",
-                      fontFamily: "Arial",
-                    }}
-                  >
-                    PIHAK KESATU
-                  </Text>
-                </View>
-                <View style={{ ...styles.tableColHeader, width: "30%" }}>
-                  <Text
-                    style={{
-                      ...styles.tableCellHeader,
-                      color: "#000",
-                      fontSize: 11,
-                      lineHeight: 1.5,
-                      fontWeight: "bold",
-                      textAlign: "left",
-                      fontFamily: "Arial",
-                    }}
-                  >
-                    PIHAK KEDUA
-                  </Text>
-                </View>
-              </View>
-
-              <View style={styles.tableRow}>
-                <View style={{ ...styles.tableCol, width: "70%" }}>
-                  <Text style={{ ...styles.tableCell, ...styles.text }}>
-                    Kementerian Kesehatan {jsonData?.kepala_unit_pemberi || ""}
-                  </Text>
-                </View>
-                <View style={{ ...styles.tableCol, width: "30%" }}>
-                  <Text style={{ ...styles.tableCell, ...styles.text }}>
-                    Kepala Dinas Kesehatan Kota/ Kabupaten{" "}
-                    {jsonData?.penerima_hibah || ""}
-                  </Text>
-                </View>
-              </View>
-
-              <View style={styles.tableRow}>
-                <View style={{ ...styles.tableCol, width: "70%" }}>
-                  <Text
-                    style={{
-                      ...styles.tableCell,
-                      ...styles.text,
-                      marginBottom: 0,
-                    }}
-                  >
-                    Nama {jsonData?.nama_ppk || ""}
-                  </Text>
-                  <Text
-                    style={{
-                      ...styles.tableCell,
-                      ...styles.text,
-                      marginBottom: 0,
-                    }}
-                  >
-                    NIP {jsonData?.nip_ppk || ""}
-                  </Text>
-                </View>
-                <View style={{ ...styles.tableCol, width: "30%" }}>
-                  <Text
-                    style={{
-                      ...styles.tableCell,
-                      ...styles.text,
-                      marginBottom: 0,
-                    }}
-                  >
-                    Nama {jsonData?.nama_daerah || ""}
-                  </Text>
-                  <Text
-                    style={{
-                      ...styles.tableCell,
-                      ...styles.text,
-                      marginBottom: 0,
-                    }}
-                  >
-                    NIP {jsonData?.nip_daerah || ""}
-                  </Text>
-                </View>
-              </View>
-            </View>
-          </View>
-        </View>
-      </Page> */}
-
-      {/* <Page size="FOLIO" style={styles.page}>
-        <View style={styles.docContainer}>
-          <Text style={styles.text}>
-            B. Format II, Naskah Hibah dan Berita Acara Serah Terima BMN
-          </Text>
-        </View>
-        <View
-          style={{
-            ...styles.docContainerBorder,
-            paddingHorizontal: 24,
-            paddingVertical: 16,
-            height: 700,
-          }}
-        >
-          <Text
-            style={{ ...styles.text, textAlign: "center", marginBottom: 24 }}
-          >
-            --------------------------------------------Kop----------------------------------------
-          </Text>
-          <Text
-            style={{
-              ...styles.textBoldTitle,
-              marginBottom: 32,
-              lineHeight: 1.8,
-            }}
-          >
-            NASKAH HIBAH {"\n"} DAN {"\n"} BERITA ACARA SERAH TERIMA {"\n"}{" "}
-            BARANG MILIK NEGARA {"\n"} ANTARA {"\n"}
-            KEMENTERIAN KESEHATAN {"\n"} DENGAN {"\n"} DINAS KESEHATAN
-            {jsonData?.kabupaten} {"\n"} NOMOR {jsonData?.nomorSurat} {"\n"}
-            TENTANG {"\n"} HIBAH BARANG MILIK NEGARA YANG DARI SEJAK AWAL
-            DISERAHKAN KEPADA {"\n"}
-            MASYARAKAT/PEMERINTAH {"\n"} DAERAH DINAS KESEHATAN{" "}
-            {jsonData?.kabupaten}{" "}
-          </Text>
-          <Text style={styles.text}>
-            Berdasarkan Peraturan Menteri Keuangan Nomor 111/PMK.06/2016 tentang
-            Tata Cara Pelaksanaan Pemindahtanganan Barang Milik Negara (Berita
-            Negara Republik Indonesia Tahun 2016 Nomor 1018) sebagaimana telah
-            diubah dengan Peraturan Menteri Keuangan Nomor 165/PMK.06/2021
-            tentang Perubahan atas Peraturan Menteri Keuangan Nomor
-            111/PMK.06/2016 tentang Tata Cara Pelaksanaan Pemindahtanganan
-            Barang Milik Negara (Berita Negara Republik Indonesia Tahun 2021
-            Nomor 1292), dengan ini kami sampaikan bahwa telah dilaksanakan
-            pemindahtanganan BMN berupa Hibah antara PIHAK KESATU dalam hal ini
-            {jsonData?.kepala_unit_pemberi} yang diwakili {jsonData?.nama_ppk}{" "}
-            oleh dan PIHAK KEDUA dalam hal ini Masyarakat/Pemerintah Daerah yang
-            diwakili oleh Kepala Dinas Kesehatan {jsonData?.kabupaten} berupa
-            BMN dengan rincian terlampir , sejumlah{" "}
-            {jsonData?.total_barang_dikirim} dengan total nilai perolehan
-            sebesar Rp{jsonData?.total_harga}, sesuai dengan Berita Acara Serah
-            Terima Operasional (BASTO) nomor {jsonData?.nomorSurat} tanggal{" "}
-            {jsonData?.tanggal} (terlampir). Demikian Naskah Hibah dan BAST ini
-            kami buat, selanjutnya agar digunakan sebagaimana mestinya.
-          </Text>
-
-          <View style={styles.ttdContainer}>
-            <View style={{ flex: 1 }}></View>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.textBold}>
-                JAKARTA, {jsonData?.tanggal || ""}
-              </Text>
-              <Text style={styles.text}>
-                Kepala Dinas Kesehatan {jsonData?.kabupaten || ""}
-              </Text>
-              <Image
-                style={{
-                  ...styles.imageTtd,
-                  marginVertical: 8,
-                  marginLeft: 16,
-                }}
-                src={jsonData?.tte_ppk}
-              />
-              <Text style={{ marginTop: 8 }}>
-                Nama : {jsonData?.nama_ppk || ""} {"\n"}
-                NIP : {jsonData?.nip_ppk || ""}
-              </Text>
-            </View>
-          </View>
-        </View>
-      </Page> */}
       <Page size="FOLIO" style={styles.page}>
         {/* <View style={styles.docContainer}>
               <Text style={styles.text}>
@@ -1841,139 +1339,8 @@ const PreviewDokumen = () => {
       {RenderHibahPages(jsonData)}
     </Document>
   );
-  return (
-    <div>
-      <Breadcrumb
-        pageName={`Dokumen ${formData?.nama_dokumen}`}
-        back={true}
-        linkBack="/dokumen"
-        jsonData={jsonData}
-      />
-      <HeaderDokumen formData={formData} jsonData={jsonData} user={user} />
-      {jsonData && jsonData?.file_dokumen ? (
-        <div className="flex justify-end items-center">
-          <a
-            href={pdfUrl}
-            download
-            className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition"
-          >
-            Download Dokumen
-          </a>
-        </div>
-      ) : jsonData && !jsonData?.file_dokumen ? (
-        <div className="flex justify-end items-center">
-          <PDFDownloadLink
-            document={<Dokumen />}
-            fileName={`Dokumen ${formData?.nama_dokumen}`}
-            className="flex justify-center items-center bg-teal-500 text-white px-4 py-2 rounded-md"
-          >
-            {({ blob, url, loading, error }) =>
-              loading ? (
-                "Loading dokumen..."
-              ) : (
-                <>
-                  <FaDownload size={16} className="mr-2" />
-                  <span>Download Dokumen</span>
-                </>
-              )
-            }
-          </PDFDownloadLink>
-        </div>
-      ) : (
-        ""
-      )}
-
-      {!jsonData?.file_dokumen && isIFrameLoaded === false ? (
-        <div className="flex h-[81vh]">
-          <div className="m-auto">
-            <div role="status">
-              <svg
-                aria-hidden="true"
-                className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-primary"
-                viewBox="0 0 100 101"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                  fill="currentColor"
-                />
-                <path
-                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                  fill="currentFill"
-                />
-              </svg>
-              <p className="sr-only text-bodydark1">
-                Loading Generate Dokumen...
-              </p>
-            </div>
-          </div>
-        </div>
-      ) : null}
-      {jsonData && jsonData.file_dokumen ? (
-        <div className="flex flex-col items-center min-h-screen bg-gray-100 p-4">
-          <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-4xl">
-            <div className="mb-4 flex justify-between items-center">
-              <button
-                onClick={zoomOut}
-                className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition"
-              >
-                - <span className="hidden sm:inline-block">Zoom Out</span>
-              </button>
-              <span className="text-gray-700">{Math.round(scale * 100)}%</span>
-              <button
-                onClick={zoomIn}
-                className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition"
-              >
-                + <span className="hidden sm:inline-block">Zoom In</span>
-              </button>
-            </div>
-            <div
-              ref={containerRef}
-              className="relative bg-gray-200 p-4 rounded-lg overflow-auto"
-              style={{ height: "1200px", width: "100%" }}
-            >
-              <DocumentPreview
-                file={pdfUrl}
-                onLoadSuccess={onLoadSuccess}
-                onLoadError={onLoadError}
-                className="pdf-document"
-              >
-                {[...Array(numPages).keys()].map((_, index) => (
-                  <PagePreview
-                    key={index}
-                    pageNumber={index + 1}
-                    scale={scale}
-                    renderTextLayer={false}
-                    renderAnnotationLayer={false}
-                    style={{ marginBottom: "20px" }}
-                  />
-                ))}
-              </DocumentPreview>
-            </div>
-          </div>
-        </div>
-      ) : jsonData && !jsonData.file_dokumen ? (
-        <div
-          className={`mt-4 flex [&>*]:w-full ${
-            isIFrameLoaded ? "h-[81vh]" : "h-0"
-          }`}
-        >
-          <PDFViewer
-            height="100%"
-            width="100%"
-            showToolbar={true}
-            className="rounded-md"
-            innerRef={iframeRef}
-          >
-            <Dokumen />
-          </PDFViewer>
-        </div>
-      ) : (
-        ""
-      )}
-    </div>
-  );
+  const blob = await pdf(<MyDocument />).toBlob();
+  return blob;
 };
 
-export default PreviewDokumen;
+export default GenerateDokumen;

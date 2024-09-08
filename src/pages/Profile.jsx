@@ -284,7 +284,6 @@ const Profile = () => {
     reader.readAsDataURL(file);
     setFormData((prev) => ({ ...prev, profile: file }));
   };
-  console.log(formData);
 
   if (getLoading) {
     return (
