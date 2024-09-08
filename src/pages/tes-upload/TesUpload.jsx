@@ -129,7 +129,7 @@ const TesUpload = () => {
       );
       let tteImage;
 
-      const imgType = image.url.split(";")[0].split("/")[1];
+      const imgType = image.url.split(".").pop().toLowerCase(); // Detect based on extension
       if (imgType === "png") {
         tteImage = await pdfDoc.embedPng(tteImageBytes);
       } else if (imgType === "jpeg" || imgType === "jpg") {
