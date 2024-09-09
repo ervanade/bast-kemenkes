@@ -34,7 +34,7 @@ const DetailLogActivity = () => {
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
 
-  const fetchProvinsiData = async () => {
+  const fetchLogData = async () => {
     setGetLoading(true);
     try {
       // eslint-disable-next-line
@@ -97,7 +97,7 @@ const DetailLogActivity = () => {
     updateProvinsi();
   };
   useEffect(() => {
-    fetchProvinsiData();
+    fetchLogData();
   }, []);
 
   if (getLoading) {
