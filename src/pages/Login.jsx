@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { loginUser } from "../store/authSlice";
 import axios from "axios";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
-import { FaEye } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -173,7 +173,7 @@ const Login = () => {
       {showPassword ? (
         <FaEye size={16} className="text-bodydark2"/>
       ) : (
-        <FaEye size={16} className="text-bodydark2"/>
+        <FaEyeSlash size={16} className="text-bodydark2"/>
       )}
     </button>
   </div>

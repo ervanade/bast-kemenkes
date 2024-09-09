@@ -75,7 +75,7 @@ const LogActivity = () => {
     XLSX.writeFile(wb, `Aktivitas Log ${tanggal}.xlsx`);
   };
 
-  const fetchProvinsiData = async () => {
+  const fetchLogData = async () => {
     setLoading(true);
     setError(false);
     try {
@@ -98,20 +98,20 @@ const LogActivity = () => {
   };
 
   useEffect(() => {
-    fetchProvinsiData();
+    fetchLogData();
   }, []);
 
   const deleteProvinsi = async (id) => {
     await axios({
       method: "delete",
-      url: `${import.meta.env.VITE_APP_API_URL}/api/provinsi/${id}`,
+      url: `${import.meta.env.VITE_APP_API_URL}/api/logactivity/${id}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${user?.token}`,
       },
     })
       .then(() => {
-        fetchProvinsiData();
+        fetchLogData();
       })
       .catch((error) => {
         console.log(error);
