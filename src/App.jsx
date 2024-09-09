@@ -52,6 +52,8 @@ import DetailLaporanPuskesmas from "./pages/laporan/DetailLaporanPuskesmas";
 import LaporanBarang from "./pages/laporan/LaporanBarang";
 import LaporanDetailBarang from "./pages/laporan/LaporanDetailBarang";
 import TesUpload from "./pages/tes-upload/TesUpload";
+import LogActivity from "./pages/log/LogActivity";
+import DetailLogActivity from "./pages/log/DetailLogActivity";
 
 function App() {
   const { pathname } = useLocation();
@@ -123,6 +125,8 @@ function App() {
               />
               <Route path="/not-found" element={<NotFound />} />
               <Route path="/" element={<ProtectedRoutesAdmin />}>
+                <Route path="/logactivity" element={<LogActivity />} />
+                <Route path="/logactivity/detail/:id" element={<DetailLogActivity />} />
                 <Route path="/user-management" element={<UserManagement />} />
                 <Route path="/user-management/add" element={<TambahUser />} />
                 <Route

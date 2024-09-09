@@ -4,7 +4,7 @@ import SidebarLinkGroup from "./SidebarLinkGroup";
 import { HiOutlineHome } from "react-icons/hi";
 import { AiOutlineDatabase } from "react-icons/ai";
 import { MdOutlineDomainVerification, MdReport } from "react-icons/md";
-import { FaUsers } from "react-icons/fa";
+import { FaTasks, FaUsers } from "react-icons/fa";
 import { TbReport } from "react-icons/tb";
 import { useSelector } from "react-redux";
 
@@ -696,6 +696,18 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                   >
                     <FaUsers size={20} />
                     User Management
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/logactivity"
+                    className={`group relative flex items-center gap-2.5 rounded-md py-3 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                      pathname.includes("logactivity") &&
+                      "bg-graydark dark:bg-meta-4 text-primary"
+                    }`}
+                  >
+                    <FaTasks size={20} />
+                    Aktivitas Log
                   </NavLink>
                 </li>
               </ul>

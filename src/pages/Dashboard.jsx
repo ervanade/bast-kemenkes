@@ -130,23 +130,26 @@ const Dashboard = () => {
         <div className="article-wrapper mt-12 flex flex-col lg:flex-row gap-8 w-full">
           {[
             {
-              title: "Peninjauan Fasilitas Kesehatan di Sumatera Selatan",
+              title: "Berita Kesehatan Masyarakat Kemenkes",
               img: Article1,
+              link: "https://kesmas.kemkes.go.id/"
             },
             {
               title: "Belajar Bareng di Plataran Sehat",
               img: Article2,
+              link: "https://lms.kemkes.go.id/courses?search="
             },
             {
-              title: "Ini Puskesmas Terbaik dalam Imunisasi Rutin",
+              title: "Panduan SIMBAH BMN User Daerah",
               img: Article3,
+              link: "https://docs.google.com/document/d/1zNGuUaaQ4WP_dHdDIP6tkSEeeJB-Z7IqhmPlehhAQsc/edit?usp=sharing"
             },
           ].map((item, index) => (
             <div
               key={index}
               className="w-full bg-transpatent border border-[#cacaca] rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
             >
-              <a href="#">
+              <a href={item.link || "https://kesmas.kemkes.go.id/"} target="_blank" rel="noopener noreferrer">
                 <img
                   className="rounded-t-lg max-h-64 w-full object-cover"
                   src={item.img}
@@ -160,7 +163,7 @@ const Dashboard = () => {
                 </p>
                 {/* </a> */}
                 <a
-                  href="#"
+                  href={item.link || "https://kesmas.kemkes.go.id/"} target="_blank" rel="noopener noreferrer"
                   className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-primary focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-primary dark:hover:bg-primary dark:focus:ring-primary"
                 >
                   Read more
