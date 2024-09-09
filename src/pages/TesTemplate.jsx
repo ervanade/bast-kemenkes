@@ -1,8 +1,21 @@
 import React, { useRef, useEffect } from "react";
 import WebViewer from "@pdftron/webviewer";
+import { Viewer, TextLayer } from '@react-pdf-viewer/core';
+import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
+import { pdfjs } from 'pdfjs-dist';
+
+// Import the styles
+import { Worker } from '@react-pdf-viewer/core';
+
+import '@react-pdf-viewer/core/lib/styles/index.css';
+import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 
 const TesTemplate = () => {
+  console.log(pdfjs?.version); // Output: "3.4.120"
+  console.log(Viewer?.version); // Output: "3.12.0"
+
   const viewer = useRef(null);
+  const newPlugin = defaultLayoutPlugin()
   const jsonData = {
     nomorSurat: "Tes Mbah BMN",
   };
@@ -13,7 +26,7 @@ const TesTemplate = () => {
     WebViewer.WebComponent(
       {
         path: "/lib",
-        initialDoc: "/DokumenBMN.docx",
+        initialDoc: "/contoh_laporan.pdf",
         licenseKey:
           "demo:1720496789493:7f83802803000000004e54129f2f3719a3c9f13bf36126a9140bf4c7e0", // sign up to get a free trial key at https://dev.apryse.com
       },
@@ -21,12 +34,13 @@ const TesTemplate = () => {
     ).then((instance) => {
       //   instance.UI.loadDocument("/DokumenBMN.docx");
 
-      const { documentViewer } = instance.Core;
+      const { documentViewer, annotationManager } = instance.Core;
+      annotationManager.enableReadOnlyMode();
 
       documentViewer.addEventListener("documentLoaded", async () => {
         const doc = documentViewer.getDocument();
         documentViewer.updateView();
-        await doc.applyTemplateValues(jsonData);
+        // await doc.applyTemplateValues(jsonData);
       });
     });
   }, []);
@@ -34,6 +48,23 @@ const TesTemplate = () => {
   return (
     <div className="App">
       <div className="webviewer" ref={viewer}></div>
+      <Worker
+        workerUrl={
+          "/pdf.worker.min.js"
+        }
+      >  <div className="w-full h-[80vh]">
+    <Viewer fileUrl={"/contoh_laporan.pdf"} plugins={[newPlugin]}>
+      {(viewer) => {
+        try {
+          return <TextLayer />;
+        } catch (error) {
+          console.error(error);
+          return null;
+        }
+      }}
+    </Viewer>
+  </div>
+</Worker>
     </div>
   );
 };

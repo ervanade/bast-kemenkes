@@ -15,7 +15,7 @@ import {
   Page as PagePreview,
   pdfjs,
 } from "react-pdf";
-
+import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import ReactDOMServer from "react-dom/server";
 import moment from "moment";
 import "moment/locale/id";
@@ -42,12 +42,20 @@ import { RenderBarangPages } from "../../components/Table/TableLampiran";
 import { RenderHibahPages } from "../../components/Table/TableHibah";
 import { FaDownload } from "react-icons/fa";
 import { PDFDocument } from "pdf-lib";
-
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
+// Import the main component
+import { Viewer, TextLayer, Worker, LoadError } from '@react-pdf-viewer/core';
+import { pdfjs as PdfJs} from 'pdfjs-dist';
+// Import the styles
+import '@react-pdf-viewer/core/lib/styles/index.css';
+import '@react-pdf-viewer/default-layout/lib/styles/index.css';
+
+
 import { useResizeObserver } from "@wojtekmaj/react-hooks";
 
-pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.mjs";
+// pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
+// pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.mjs";
 
 const resizeObserverOptions = {};
 
@@ -71,6 +79,8 @@ const PreviewDokumen = () => {
     id_provinsi: "",
     id_kabupaten: "",
   });
+  console.log(PdfJs?.version); // Output: "3.4.120"
+  console.log(Viewer?.version); // O
   const [showModal, setShowModal] = useState(false);
   const isMobile = useMediaQuery({ maxWidth: 500 }); // adjust the max width to your desired breakpoint
   const [pdfUrl, setPdfUrl] = useState(null); // Replace with your API link
@@ -88,7 +98,7 @@ const PreviewDokumen = () => {
       setContainerWidth(entry.contentRect.width);
     }
   }, []);
-
+  const newPlugin = defaultLayoutPlugin()
   useResizeObserver(containerRef, resizeObserverOptions, onResize);
 
   const onLoadSuccess = ({ numPages }) => {
@@ -199,6 +209,25 @@ const PreviewDokumen = () => {
     fetchDokumenData();
     moment.locale("id");
   }, []);
+
+  const renderError = (error) => {
+    let message = '';
+    setJsonData((prev) => ({ ...prev, file_dokumen: null }));
+    switch (error.name) {
+        case 'InvalidPDFException':
+            message = 'The document is invalid or corrupted';
+            break;
+        case 'MissingPDFException':
+            message = 'The document is missing';
+            break;
+        case 'UnexpectedResponseException':
+            message = 'Unexpected server response';
+            break;
+        default:
+            message = 'Cannot load the document';
+            break;
+    }
+  }
 
   useEffect(() => {
     jsonData ? setIsIFrameLoaded(true) : "";
@@ -1923,47 +1952,64 @@ const PreviewDokumen = () => {
         </div>
       ) : null}
       {jsonData && jsonData.file_dokumen ? (
-        <div className="flex flex-col items-center min-h-screen bg-gray-100 p-4">
-          <div className="bg-gray-300 p-4 rounded-lg shadow-lg w-full max-w-4xl">
-            <div className="mb-4 flex justify-between items-center">
-              <button
-                onClick={zoomOut}
-                className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition"
-              >
-                - <span className="hidden sm:inline-block">Zoom Out</span>
-              </button>
-              <span className="text-gray-700">{Math.round(scale * 100)}%</span>
-              <button
-                onClick={zoomIn}
-                className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition"
-              >
-                + <span className="hidden sm:inline-block">Zoom In</span>
-              </button>
-            </div>
-            <div
-              ref={containerRef}
-              className="relative bg-gray-200 p-4 rounded-lg overflow-auto"
-              style={{ height: "1200px", width: "100%" }}
-            >
-              <DocumentPreview
-                file={pdfUrl}
-                onLoadSuccess={onLoadSuccess}
-                onLoadError={onLoadError}
-                className="pdf-document"
-              >
-                {[...Array(numPages).keys()].map((_, index) => (
-                  <PagePreview
-                    key={index}
-                    pageNumber={index + 1}
-                    scale={scale}
-                    renderTextLayer={false}
-                    renderAnnotationLayer={false}
-                  />
-                ))}
-              </DocumentPreview>
-            </div>
-          </div>
-        </div>
+        <Worker
+        workerUrl={
+          "/pdf.worker.min.js"
+        }
+      >  <div className="w-full h-[80vh] mt-4">
+    <Viewer fileUrl={pdfUrl || "/contoh_laporan.pdf"} plugins={[newPlugin]} renderError={renderError}>
+      {(viewer) => {
+        try {
+          return <TextLayer />;
+        } catch (error) {
+          console.error(error);
+          return null;
+        }
+      }}
+    </Viewer>
+  </div>
+</Worker>
+        // <div className="flex flex-col items-center min-h-screen bg-gray-100 p-4">
+        //   <div className="bg-gray-300 p-4 rounded-lg shadow-lg w-full max-w-4xl">
+        //     <div className="mb-4 flex justify-between items-center">
+        //       <button
+        //         onClick={zoomOut}
+        //         className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition"
+        //       >
+        //         - <span className="hidden sm:inline-block">Zoom Out</span>
+        //       </button>
+        //       <span className="text-gray-700">{Math.round(scale * 100)}%</span>
+        //       <button
+        //         onClick={zoomIn}
+        //         className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition"
+        //       >
+        //         + <span className="hidden sm:inline-block">Zoom In</span>
+        //       </button>
+        //     </div>
+        //     <div
+        //       ref={containerRef}
+        //       className="relative bg-gray-200 p-4 rounded-lg overflow-auto"
+        //       style={{ height: "1200px", width: "100%" }}
+        //     >
+        //       <DocumentPreview
+        //         file={pdfUrl}
+        //         onLoadSuccess={onLoadSuccess}
+        //         onLoadError={onLoadError}
+        //         className="pdf-document"
+        //       >
+        //         {[...Array(numPages).keys()].map((_, index) => (
+        //           <PagePreview
+        //             key={index}
+        //             pageNumber={index + 1}
+        //             scale={scale}
+        //             renderTextLayer={false}
+        //             renderAnnotationLayer={false}
+        //           />
+        //         ))}
+        //       </DocumentPreview>
+        //     </div>
+        //   </div>
+        // </div>
       ) : jsonData && !jsonData.file_dokumen ? (
         <div
           className={`mt-4 flex [&>*]:w-full ${
