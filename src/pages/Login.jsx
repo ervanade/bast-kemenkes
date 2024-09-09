@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { loginUser } from "../store/authSlice";
 import axios from "axios";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { FaEye } from "react-icons/fa";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -21,6 +22,7 @@ const Login = () => {
 
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { executeRecaptcha } = useGoogleReCaptcha();
 
   const postApiLogin = async () => {
@@ -62,6 +64,10 @@ const Login = () => {
         return setError("Invalid email or password");
       });
   };
+  const handleShowPassword = (e) => {
+    e.preventDefault()
+    setShowPassword(prev => (!prev))
+  }
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!executeRecaptcha) {
@@ -144,21 +150,43 @@ const Login = () => {
               >
                 Password
               </label>
-              <input
-                className={`bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                    "border-red-500" 
-                 rounded w-full py-3 px-3 text-[#728294] mb-3 leading-tight focus:outline-none focus:shadow-outline`}
-                id="password"
-                type="password"
-                value={formData.password}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    password: e.target.value,
-                  }))
-                }
-                placeholder="*******"
-              />
+              <div className="relative">
+    <input
+      className={`bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+        "border-red-500" 
+        rounded w-full py-3 px-3 text-[#728294] mb-3 leading-tight focus:outline-none focus:shadow-outline`}
+      id="password"
+      type={showPassword ? "text" : "password"}
+      value={formData.password}
+      onChange={(e) =>
+        setFormData((prev) => ({
+          ...prev,
+          password: e.target.value,
+        }))
+      }
+      placeholder="*******"
+    />
+    <button
+      className="absolute right-4 top-3.5"
+      onClick={handleShowPassword}
+    >
+      {showPassword ? (
+        <FaEye size={16} className="text-bodydark2"/>
+      ) : (
+        <FaEye size={16} className="text-bodydark2"/>
+      )}
+    </button>
+  </div>
+                <button
+      className="absolute right-3 top-3"
+      onClick={() => setShowPassword(!showPassword)}
+    >
+      {showPassword ? (
+        <i className="fas fa-eye-slash"></i>
+      ) : (
+        <i className="fas fa-eye"></i>
+      )}
+    </button>
             </div>
             {/* <div className="mb-3 flex items-center gap-3">
               <div className="col flex-[3_3_0%]">
