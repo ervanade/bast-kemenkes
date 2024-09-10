@@ -31,7 +31,10 @@ import ModalUploadDokumen from "../../components/Modal/ModalUploadDokumen";
 const Dokumen = () => {
   const user = useSelector((a) => a.auth.user);
   const navigate = useNavigate();
-
+  var today = new Date();
+  const defaultDate = today.toISOString().substring(0, 10);
+  const defaultImage =
+    "https://media.istockphoto.com/id/1472819341/photo/background-white-light-grey-total-grunge-abstract-concrete-cement-wall-paper-texture-platinum.webp?b=1&s=170667a&w=0&k=20&c=yoY1jUAKlKVdakeUsRRsNEZdCx2RPIEgaIxSwQ0lS1k=";
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [search, setSearch] = useState("");

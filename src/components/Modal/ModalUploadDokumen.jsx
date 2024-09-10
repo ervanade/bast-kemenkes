@@ -28,6 +28,9 @@ const ModalUploadDokumen = ({
     fileDokumenName: "",
   });
   const navigate = useNavigate();
+  var today = new Date();
+
+  const defaultDate = today.toISOString().substring(0, 10);
   const uploadDokumen = async () => {
     if (!formData.email && !formData.password && !formData.fileDokumen) {
       Swal.fire("Error", "Form Belum Lengkap Diisi", "error");
