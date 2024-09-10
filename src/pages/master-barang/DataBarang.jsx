@@ -125,16 +125,16 @@ const DataBarang = () => {
         sortable: true,
         width: "200px",
       },
-      {
-        name: "Standar Rawat Inap",
-        selector: (row) => row.standar_rawat_inap,
-        sortable: true,
-      },
-      {
-        name: "Standar Non Rawat Inap",
-        selector: (row) => row.standar_nonrawat_inap,
-        sortable: true,
-      },
+      // {
+      //   name: "Standar Rawat Inap",
+      //   selector: (row) => row.standar_rawat_inap,
+      //   sortable: true,
+      // },
+      // {
+      //   name: "Standar Non Rawat Inap",
+      //   selector: (row) => row.standar_nonrawat_inap,
+      //   sortable: true,
+      // },
       {
         name: "Merk",
         selector: (row) => row.merk || "",

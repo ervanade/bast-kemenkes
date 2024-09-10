@@ -18,10 +18,10 @@ import axios from "axios";
 const TambahBarang = () => {
   const [formData, setFormData] = useState({
     nama_alkes: "",
-    standar_rawat_inap: "",
-    standar_nonrawat_inap: "",
+    // standar_rawat_inap: "",
+    // standar_nonrawat_inap: "",
     merk: "",
-    tipe: "",
+    // tipe: "",
     satuan: "",
     harga_satuan: "",
     keterangan: "",
@@ -131,7 +131,7 @@ const TambahBarang = () => {
               </div>
             </div>
 
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+            {/* <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
                 <label
                   className="block text-[#728294] text-base font-normal mb-2"
@@ -173,7 +173,7 @@ const TambahBarang = () => {
                   theme={selectThemeColors}
                 />
               </div>
-            </div>
+            </div> */}
 
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">

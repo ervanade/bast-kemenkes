@@ -19,10 +19,10 @@ import { CgSpinner } from "react-icons/cg";
 const EditBarang = () => {
   const [formData, setFormData] = useState({
     nama_alkes: "",
-    standar_rawat_inap: "",
-    standar_nonrawat_inap: "",
+    // standar_rawat_inap: "",
+    // standar_nonrawat_inap: "",
     merk: "",
-    tipe: "",
+    // tipe: "",
     satuan: "",
     harga_satuan: "",
     keterangan: "",
@@ -215,7 +215,7 @@ const EditBarang = () => {
               </div>
             </div>
 
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+            {/* <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
                 <label
                   className="block text-[#728294] text-base font-normal mb-2"
@@ -257,7 +257,7 @@ const EditBarang = () => {
                   theme={selectThemeColors}
                 />
               </div>
-            </div>
+            </div> */}
 
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
