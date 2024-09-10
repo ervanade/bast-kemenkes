@@ -43,11 +43,11 @@ const LogActivity = () => {
     // Implementasi untuk mengekspor data (misalnya ke CSV)
 
     const exportData = filteredData?.map((item) => ({
-      User: item?.user_id,
+      User: item?.name,
       Aksi: item?.action,
-      "Model": item?.model,
-      "Desc": item?.desc,
-      "Url": item?.uri,
+      // "Model": item?.model,
+      Desc: item?.desc,
+      Url: item?.uri,
     }));
     const wb = XLSX.utils.book_new();
 
@@ -143,10 +143,10 @@ const LogActivity = () => {
     () => [
       // { name: "No", selector: (row) => row.id, sortable: true },
       {
-        name: "User",
-        selector: (row, index) => row.user_id,
+        name: "Nama User",
+        selector: (row, index) => row.name,
         sortable: true,
-        width: "100px",
+        width: "180px",
       },
       {
         name: "Aksi",
@@ -154,18 +154,18 @@ const LogActivity = () => {
         sortable: true,
         width: "100px",
       },
-      {
-        name: "Model",
-        selector: (row, index) => row.model,
-        sortable: true,
-        width: "180px",
-      },
-    //   {
-    //     name: "Changes",
-    //     selector: (row) => row.changes,
-    //     sortable: true,
-    //     // width: "100px",
-    //   },
+      // {
+      //   name: "Model",
+      //   selector: (row, index) => row.model,
+      //   sortable: true,
+      //   width: "180px",
+      // },
+      //   {
+      //     name: "Changes",
+      //     selector: (row) => row.changes,
+      //     sortable: true,
+      //     // width: "100px",
+      //   },
       {
         name: "Desc",
         selector: (row) => row.desc,

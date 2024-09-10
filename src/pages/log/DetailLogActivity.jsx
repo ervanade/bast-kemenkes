@@ -15,11 +15,15 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { CgSpinner } from "react-icons/cg";
 import * as XLSX from "xlsx";
-
+import FormInput from "../../components/Form/FormInput";
 
 const DetailLogActivity = () => {
   const [formData, setFormData] = useState({
-    name: "",
+    user: "",
+    aksi: "",
+    url: "",
+    desc: "",
+    model: "",
   });
 
   const navigate = useNavigate();
@@ -40,9 +44,9 @@ const DetailLogActivity = () => {
       // eslint-disable-next-line
       const responseUser = await axios({
         method: "get",
-        url: `${
-          import.meta.env.VITE_APP_API_URL
-        }/api/log/${encodeURIComponent(decryptId(id))}`,
+        url: `${import.meta.env.VITE_APP_API_URL}/api/log/${encodeURIComponent(
+          decryptId(id)
+        )}`,
         headers: {
           "Content-Type": "application/json",
           //eslint-disable-next-line
@@ -119,7 +123,7 @@ const DetailLogActivity = () => {
           </h1>
           <div>
             <Link
-              to="/master-data-provinsi"
+              to="/logactivity"
               className="flex items-center px-4 py-2 bg-primary text-white rounded-md font-semibold"
             >
               Back
@@ -134,7 +138,7 @@ const DetailLogActivity = () => {
                   className="block text-[#728294] text-base font-normal mb-2"
                   htmlFor="name"
                 >
-                  Nama Provinsi :
+                  Nama User :
                 </label>
               </div>
               <div className="sm:flex-[5_5_0%]">
@@ -143,16 +147,57 @@ const DetailLogActivity = () => {
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
                   id="name"
-                  value={formData.name}
+                  value={formData.user}
                   onChange={handleChange}
                   type="text"
+                  disabled
                   required
-                  placeholder="Nama Provinsi"
+                  placeholder="Nama User"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-center mt-6 sm:mt-12 sm:gap-8">
+            <FormInput
+              id="aksi"
+              value={formData.aksi}
+              onChange={handleChange}
+              type="text"
+              required
+              disabled
+              placeholder="Aksi"
+              label="Aksi :"
+            />
+            <FormInput
+              id="model"
+              value={formData.model}
+              onChange={handleChange}
+              type="text"
+              required
+              disabled
+              placeholder="Model"
+              label="Model :"
+            />
+            <FormInput
+              id="url"
+              value={formData.url}
+              onChange={handleChange}
+              type="text"
+              required
+              disabled
+              placeholder="URL"
+              label="URL :"
+            />
+            <FormInput
+              id="desc"
+              value={formData.desc}
+              onChange={handleChange}
+              type="text"
+              required
+              disabled
+              placeholder="Deskripsi"
+              label="Deskripsi :"
+            />
+            {/* <div className="flex items-center justify-center mt-6 sm:mt-12 sm:gap-8">
               <div className="div sm:flex-[2_2_0%]"></div>
               <div className="div sm:flex-[5_5_0%] ">
                 <div className="w-4/5 flex items-center gap-4">
@@ -173,7 +218,7 @@ const DetailLogActivity = () => {
                   </button>
                 </div>
               </div>
-            </div>
+            </div> */}
           </form>
         </div>
       </Card>
