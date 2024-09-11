@@ -31,6 +31,8 @@ const ModalUploadDokumen = ({
   var today = new Date();
 
   const defaultDate = today.toISOString().substring(0, 10);
+  const defaultImage =
+    "https://media.istockphoto.com/id/1472819341/photo/background-white-light-grey-total-grunge-abstract-concrete-cement-wall-paper-texture-platinum.webp?b=1&s=170667a&w=0&k=20&c=yoY1jUAKlKVdakeUsRRsNEZdCx2RPIEgaIxSwQ0lS1k=";
   const uploadDokumen = async () => {
     if (!formData.email && !formData.password && !formData.fileDokumen) {
       Swal.fire("Error", "Form Belum Lengkap Diisi", "error");
@@ -178,10 +180,29 @@ const ModalUploadDokumen = ({
         nip_ppk: data.nip_ppk || "",
         total_barang_dikirim: data.total_barang_dikirim || "",
         total_harga: data.total_harga || "",
+        file_dokumen: data.file_dokumen || null,
       };
-      const pdfBlob = await GenerateDokumen(dataJson); // GenerateDokumen harus mengembalikan Blob PDF
+      if (dataJson?.file_dokumen) {
+        try {
+          const response = await fetch(dataJson?.file_dokumen);
+          if (!response.ok) {
+            throw new Error("Network response was not ok.");
+          }
+          const blob = await response.blob();
+          saveAs(blob, dataJson?.nama_dokumen || "dokumen.pdf"); // Use FileSaver to save the file with the specified name
+        } catch (error) {
+          console.error("Failed to download file:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Gagal Download Dokumen",
+          });
+        }
+      } else {
+        const pdfBlob = await GenerateDokumen(dataJson); // GenerateDokumen harus mengembalikan Blob PDF
 
-      saveAs(pdfBlob, `Dokumen_${dataJson.nomorSurat}.pdf`);
+        saveAs(pdfBlob, `${dataJson.nama_dokumen}.pdf`);
+      }
 
       Swal.fire({
         icon: "success",

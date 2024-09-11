@@ -20,6 +20,7 @@ const DropdownNotification = () => {
 
   const handleMarkAsRead = (id) => {
     dispatch(markAsRead(id));
+    dispatch(fetchNotifs());
   };
 
   return (
@@ -57,7 +58,7 @@ const DropdownNotification = () => {
                     key={notif.id}
                     onClick={() => handleMarkAsRead(notif.id)}
                     className={`flex flex-col gap-2.5 border-t px-4.5 py-3 hover:bg-gray-2 cursor-pointer ${
-                      notif.is_read === "0" ? "bg-gray-100" : ""
+                      notif.is_read === "0" ? "bg-gray-100" : "bg-gray-2"
                     }`}
                   >
                     {notif?.message && parse(decode(notif?.message))}

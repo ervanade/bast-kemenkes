@@ -286,6 +286,8 @@ const Dokumen = () => {
         (item?.nama_dokumen &&
           item.nama_dokumen.toLowerCase().includes(value)) ||
         (item?.nomor_bast && item.nomor_bast.toLowerCase().includes(value)) ||
+        (item?.provinsi && item.provinsi.toLowerCase().includes(value)) ||
+        (item?.kabupaten && item.kabupaten.toLowerCase().includes(value)) ||
         (item?.tanggal_bast &&
           item.tanggal_bast.toLowerCase().includes(value)) ||
         (item?.tahun_lokus && item.tahun_lokus.toLowerCase().includes(value)) ||
@@ -434,10 +436,32 @@ const Dokumen = () => {
         nip_ppk: data.nip_ppk || "",
         total_barang_dikirim: data.total_barang_dikirim || "",
         total_harga: data.total_harga || "",
+        file_dokumen: data.file_dokumen || null,
       };
-      const pdfBlob = await GenerateDokumen(dataJson); // GenerateDokumen harus mengembalikan Blob PDF
+      if (dataJson?.file_dokumen) {
+        try {
+          const response = await fetch(dataJson?.file_dokumen);
+          if (!response.ok) {
+            throw new Error("Network response was not ok.");
+          }
+          const blob = await response.blob();
+          const fileName = dataJson?.nama_dokumen
+            ? `${dataJson.nama_dokumen}.pdf`
+            : "dokumen.pdf";
+          saveAs(blob, fileName);
+        } catch (error) {
+          console.error("Failed to download file:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Gagal Download Dokumen",
+          });
+        }
+      } else {
+        const pdfBlob = await GenerateDokumen(dataJson); // GenerateDokumen harus mengembalikan Blob PDF
 
-      saveAs(pdfBlob, `Dokumen_${dataJson.nomorSurat}.pdf`);
+        saveAs(pdfBlob, `${dataJson.nama_dokumen}.pdf`);
+      }
 
       Swal.fire({
         icon: "success",
