@@ -58,6 +58,11 @@ const DetailLogActivity = () => {
         const data = response.data.data;
         setFormData({
           name: data.name || "",
+          aksi: data.action || "",
+          desc: data.desc || "",
+          url: data.url || "",
+          model: data.model || "",
+          tanggal: data.created_at || "",
         });
       });
       setGetLoading(false);
@@ -168,14 +173,14 @@ const DetailLogActivity = () => {
               label="Aksi :"
             />
             <FormInput
-              id="model"
-              value={formData.model}
+              id="tanggal"
+              value={formData.tanggal}
               onChange={handleChange}
               type="text"
               required
               disabled
-              placeholder="Model"
-              label="Model :"
+              placeholder="Tanggal"
+              label="Tanggal :"
             />
             <FormInput
               id="url"

@@ -48,6 +48,7 @@ const LogActivity = () => {
       // "Model": item?.model,
       Desc: item?.desc,
       Url: item?.uri,
+      Tanggal: item?.created_at,
     }));
     const wb = XLSX.utils.book_new();
 
@@ -175,6 +176,12 @@ const LogActivity = () => {
       {
         name: "URL",
         selector: (row) => row.uri,
+        sortable: true,
+        // width: "100px",
+      },
+      {
+        name: "Tanggal",
+        selector: (row) => row.created_at,
         sortable: true,
         // width: "100px",
       },
