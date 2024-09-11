@@ -4,27 +4,28 @@ import { MdOutlineDomainVerification } from "react-icons/md";
 import { AiOutlineDatabase } from "react-icons/ai";
 import { PiShieldWarningBold } from "react-icons/pi";
 import { RiHospitalLine } from "react-icons/ri";
-import Article1 from "../assets/article/article-1.jpg";
+import Article1 from "../assets/article/article-3.png";
 import Article2 from "../assets/article/article-2.jpg";
-import Article3 from "../assets/article/article-3.jpg";
+import Article3 from "../assets/article/article-1.png";
 import { useSelector } from "react-redux";
 import { returnRole } from "../data/utils";
 import axios from "axios";
 import { CgSpinner } from "react-icons/cg";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const user = useSelector((a) => a.auth.user);
   const [formData, setFormData] = useState({});
   const [getLoading, setGetLoading] = useState(false);
+  const navigate = useNavigate();
+
   const fetchDashboardData = async () => {
     setGetLoading(true);
     try {
       // eslint-disable-next-line
       const responseUser = await axios({
         method: "get",
-        url: `${
-          import.meta.env.VITE_APP_API_URL
-        }/api/dashboard`,
+        url: `${import.meta.env.VITE_APP_API_URL}/api/dashboard`,
         headers: {
           "Content-Type": "application/json",
           //eslint-disable-next-line
@@ -34,17 +35,19 @@ const Dashboard = () => {
         // handle success
         // console.log(response)
         const data = response.data.data;
-        setFormData(data)
+        setFormData(data);
         setGetLoading(false);
       });
     } catch (error) {
       if (error.response.status == 404) {
         navigate("/not-found");
       }
+      setGetLoading(false);
+
       console.log(error);
     }
   };
- 
+
   useEffect(() => {
     fetchDashboardData();
   }, []);
@@ -132,24 +135,28 @@ const Dashboard = () => {
             {
               title: "Berita Kesehatan Masyarakat Kemenkes",
               img: Article1,
-              link: "https://kesmas.kemkes.go.id/"
+              link: "https://kesmas.kemkes.go.id/",
             },
             {
               title: "Belajar Bareng di Plataran Sehat",
               img: Article2,
-              link: "https://lms.kemkes.go.id/courses?search="
+              link: "https://lms.kemkes.go.id/courses?search=",
             },
             {
               title: "Panduan SIMBAH BMN User Daerah",
               img: Article3,
-              link: "https://docs.google.com/document/d/1zNGuUaaQ4WP_dHdDIP6tkSEeeJB-Z7IqhmPlehhAQsc/edit?usp=sharing"
+              link: "https://docs.google.com/document/d/1zNGuUaaQ4WP_dHdDIP6tkSEeeJB-Z7IqhmPlehhAQsc/edit?usp=sharing",
             },
           ].map((item, index) => (
             <div
               key={index}
               className="w-full bg-transpatent border border-[#cacaca] rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
             >
-              <a href={item.link || "https://kesmas.kemkes.go.id/"} target="_blank" rel="noopener noreferrer">
+              <a
+                href={item.link || "https://kesmas.kemkes.go.id/"}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <img
                   className="rounded-t-lg max-h-64 w-full object-cover"
                   src={item.img}
@@ -163,7 +170,9 @@ const Dashboard = () => {
                 </p>
                 {/* </a> */}
                 <a
-                  href={item.link || "https://kesmas.kemkes.go.id/"} target="_blank" rel="noopener noreferrer"
+                  href={item.link || "https://kesmas.kemkes.go.id/"}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-primary focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-primary dark:hover:bg-primary dark:focus:ring-primary"
                 >
                   Read more
