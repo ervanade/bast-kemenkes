@@ -3,7 +3,7 @@ import ModalTTE from "../Modal/ModalTTE";
 import { Link } from "react-router-dom";
 import { encryptId } from "../../data/utils";
 
-const HeaderDokumen = ({ formData, jsonData, user }) => {
+const HeaderDokumen = ({ jsonData, user }) => {
   const [showModal, setShowModal] = useState(false);
   const handleTTE = async (e) => {
     e.preventDefault();
@@ -12,7 +12,7 @@ const HeaderDokumen = ({ formData, jsonData, user }) => {
   return (
     <div className="my-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <h1 className="font-semibold mb-3 text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
-        Dokumen {formData?.nama_dokumen || ""}
+        Dokumen {jsonData?.nama_dokumen || ""}
       </h1>
 
       <ModalTTE

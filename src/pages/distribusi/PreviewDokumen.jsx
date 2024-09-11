@@ -15,7 +15,7 @@ import {
   Page as PagePreview,
   pdfjs,
 } from "react-pdf";
-import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
+import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 import ReactDOMServer from "react-dom/server";
 import moment from "moment";
 import "moment/locale/id";
@@ -45,14 +45,14 @@ import { PDFDocument } from "pdf-lib";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 // Import the main component
-import { Viewer, TextLayer, Worker, LoadError } from '@react-pdf-viewer/core';
-import { pdfjs as PdfJs} from 'pdfjs-dist';
+import { Viewer, TextLayer, Worker, LoadError } from "@react-pdf-viewer/core";
+import { pdfjs as PdfJs } from "pdfjs-dist";
 // Import the styles
-import '@react-pdf-viewer/core/lib/styles/index.css';
-import '@react-pdf-viewer/default-layout/lib/styles/index.css';
-
+import "@react-pdf-viewer/core/lib/styles/index.css";
+import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 
 import { useResizeObserver } from "@wojtekmaj/react-hooks";
+import Swal from "sweetalert2";
 
 // pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
 // pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.mjs";
@@ -63,24 +63,12 @@ const maxWidth = 800;
 
 const PreviewDokumen = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const user = useSelector((a) => a.auth.user);
   const [jsonData, setJsonData] = useState(null);
   const [getLoading, setGetLoading] = useState(false);
   var today = new Date();
   const defaultDate = today.toISOString().substring(0, 10);
-  const [formData, setFormData] = useState({
-    nama_dokumen: "",
-    nomor_bast: "",
-    tanggal_bast: defaultDate,
-    tahun_lokus: "",
-    penerima_hibah: "",
-    kepala_unit_pemberi: "",
-    id_user_pemberi: "",
-    id_provinsi: "",
-    id_kabupaten: "",
-  });
-  console.log(PdfJs?.version); // Output: "3.4.120"
-  console.log(Viewer?.version); // O
   const [showModal, setShowModal] = useState(false);
   const isMobile = useMediaQuery({ maxWidth: 500 }); // adjust the max width to your desired breakpoint
   const [pdfUrl, setPdfUrl] = useState(null); // Replace with your API link
@@ -98,7 +86,7 @@ const PreviewDokumen = () => {
       setContainerWidth(entry.contentRect.width);
     }
   }, []);
-  const newPlugin = defaultLayoutPlugin()
+  const newPlugin = defaultLayoutPlugin();
   useResizeObserver(containerRef, resizeObserverOptions, onResize);
 
   const onLoadSuccess = ({ numPages }) => {
@@ -124,6 +112,15 @@ const PreviewDokumen = () => {
 
   const fetchDokumenData = async () => {
     setGetLoading(true);
+    Swal.fire({
+      title: "Generate dokumen...",
+      text: "Tunggu Sebentar Dokumen Disiapkan...",
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      willOpen: () => {
+        Swal.showLoading();
+      },
+    });
     try {
       // eslint-disable-next-line
       const responseUser = await axios({
@@ -140,20 +137,6 @@ const PreviewDokumen = () => {
         // handle success
         // console.log(response)
         const data = response.data.data;
-        setFormData({
-          nama_dokumen: data.nama_dokumen || "",
-          nomor_bast: data.nomor_bast || "",
-          tanggal_bast: data.tanggal_bast || defaultDate,
-          tahun_lokus: data.tahun_lokus || "",
-          penerima_hibah: data.penerima_hibah || "",
-          kepala_unit_pemberi: data.kepala_unit_pemberi || "",
-          nama_kontrak_pengadaan: data.nama_kontrak_pengadaan || "",
-          tanggal_kontrak_pengadaan: data.tanggal_kontrak_pengadaan || "",
-          id_user_pemberi: data.id_user_pemberi || "",
-          id_provinsi: data.id_provinsi || "",
-          id_kabupaten: data.id_kabupaten || "",
-          status_tte: data.status_tte || "",
-        });
         setJsonData({
           nama_dokumen: data.nama_dokumen || "",
           id: data.id,
@@ -195,13 +178,17 @@ const PreviewDokumen = () => {
         });
         if (data?.file_dokumen) {
           setPdfUrl(data?.file_dokumen);
+          Swal.close();
         }
         setGetLoading(false);
+        Swal.close();
       });
     } catch (error) {
-      // if (error.response.status == 404) {
-      //   navigate("/not-found");
-      // }
+      Swal.close();
+      if (!jsonData) {
+        navigate("/not-found");
+      }
+
       console.log(error);
     }
   };
@@ -211,23 +198,23 @@ const PreviewDokumen = () => {
   }, []);
 
   const renderError = (error) => {
-    let message = '';
+    let message = "";
     setJsonData((prev) => ({ ...prev, file_dokumen: null }));
     switch (error.name) {
-        case 'InvalidPDFException':
-            message = 'The document is invalid or corrupted';
-            break;
-        case 'MissingPDFException':
-            message = 'The document is missing';
-            break;
-        case 'UnexpectedResponseException':
-            message = 'Unexpected server response';
-            break;
-        default:
-            message = 'Cannot load the document';
-            break;
+      case "InvalidPDFException":
+        message = "The document is invalid or corrupted";
+        break;
+      case "MissingPDFException":
+        message = "The document is missing";
+        break;
+      case "UnexpectedResponseException":
+        message = "Unexpected server response";
+        break;
+      default:
+        message = "Cannot load the document";
+        break;
     }
-  }
+  };
 
   useEffect(() => {
     jsonData ? setIsIFrameLoaded(true) : "";
@@ -1884,12 +1871,12 @@ const PreviewDokumen = () => {
   return (
     <div>
       <Breadcrumb
-        pageName={`Dokumen ${formData?.nama_dokumen}`}
+        pageName={`Dokumen ${jsonData?.nama_dokumen}`}
         back={true}
         linkBack="/dokumen"
         jsonData={jsonData}
       />
-      <HeaderDokumen formData={formData} jsonData={jsonData} user={user} />
+      <HeaderDokumen jsonData={jsonData} user={user} />
       {jsonData && jsonData?.file_dokumen ? (
         <div className="flex justify-end items-center">
           <a
@@ -1905,7 +1892,7 @@ const PreviewDokumen = () => {
         <div className="flex justify-end items-center">
           <PDFDownloadLink
             document={<Dokumen />}
-            fileName={`Dokumen ${formData?.nama_dokumen}`}
+            fileName={`Dokumen ${jsonData?.nama_dokumen}`}
             className="flex justify-center items-center bg-teal-500 text-white px-4 py-2 rounded-md"
           >
             {({ blob, url, loading, error }) =>
@@ -1952,65 +1939,67 @@ const PreviewDokumen = () => {
         </div>
       ) : null}
       {jsonData && jsonData.file_dokumen ? (
-        <Worker
-        workerUrl={
-          "/pdf.worker.min.js"
-        }
-      >  <div className="w-full h-[80vh] mt-4">
-    <Viewer fileUrl={pdfUrl || "/contoh_laporan.pdf"} plugins={[newPlugin]} renderError={renderError}>
-      {(viewer) => {
-        try {
-          return <TextLayer />;
-        } catch (error) {
-          console.error(error);
-          return null;
-        }
-      }}
-    </Viewer>
-  </div>
-</Worker>
-        // <div className="flex flex-col items-center min-h-screen bg-gray-100 p-4">
-        //   <div className="bg-gray-300 p-4 rounded-lg shadow-lg w-full max-w-4xl">
-        //     <div className="mb-4 flex justify-between items-center">
-        //       <button
-        //         onClick={zoomOut}
-        //         className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition"
-        //       >
-        //         - <span className="hidden sm:inline-block">Zoom Out</span>
-        //       </button>
-        //       <span className="text-gray-700">{Math.round(scale * 100)}%</span>
-        //       <button
-        //         onClick={zoomIn}
-        //         className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition"
-        //       >
-        //         + <span className="hidden sm:inline-block">Zoom In</span>
-        //       </button>
-        //     </div>
-        //     <div
-        //       ref={containerRef}
-        //       className="relative bg-gray-200 p-4 rounded-lg overflow-auto"
-        //       style={{ height: "1200px", width: "100%" }}
-        //     >
-        //       <DocumentPreview
-        //         file={pdfUrl}
-        //         onLoadSuccess={onLoadSuccess}
-        //         onLoadError={onLoadError}
-        //         className="pdf-document"
-        //       >
-        //         {[...Array(numPages).keys()].map((_, index) => (
-        //           <PagePreview
-        //             key={index}
-        //             pageNumber={index + 1}
-        //             scale={scale}
-        //             renderTextLayer={false}
-        //             renderAnnotationLayer={false}
-        //           />
-        //         ))}
-        //       </DocumentPreview>
-        //     </div>
-        //   </div>
-        // </div>
-      ) : jsonData && !jsonData.file_dokumen ? (
+        <Worker workerUrl={"/pdf.worker.min.js"}>
+          {" "}
+          <div className="w-full h-[80vh] mt-4">
+            <Viewer
+              fileUrl={pdfUrl || "/contoh_laporan.pdf"}
+              plugins={[newPlugin]}
+              renderError={renderError}
+            >
+              {(viewer) => {
+                try {
+                  return <TextLayer />;
+                } catch (error) {
+                  console.error(error);
+                  return null;
+                }
+              }}
+            </Viewer>
+          </div>
+        </Worker>
+      ) : // <div className="flex flex-col items-center min-h-screen bg-gray-100 p-4">
+      //   <div className="bg-gray-300 p-4 rounded-lg shadow-lg w-full max-w-4xl">
+      //     <div className="mb-4 flex justify-between items-center">
+      //       <button
+      //         onClick={zoomOut}
+      //         className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition"
+      //       >
+      //         - <span className="hidden sm:inline-block">Zoom Out</span>
+      //       </button>
+      //       <span className="text-gray-700">{Math.round(scale * 100)}%</span>
+      //       <button
+      //         onClick={zoomIn}
+      //         className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition"
+      //       >
+      //         + <span className="hidden sm:inline-block">Zoom In</span>
+      //       </button>
+      //     </div>
+      //     <div
+      //       ref={containerRef}
+      //       className="relative bg-gray-200 p-4 rounded-lg overflow-auto"
+      //       style={{ height: "1200px", width: "100%" }}
+      //     >
+      //       <DocumentPreview
+      //         file={pdfUrl}
+      //         onLoadSuccess={onLoadSuccess}
+      //         onLoadError={onLoadError}
+      //         className="pdf-document"
+      //       >
+      //         {[...Array(numPages).keys()].map((_, index) => (
+      //           <PagePreview
+      //             key={index}
+      //             pageNumber={index + 1}
+      //             scale={scale}
+      //             renderTextLayer={false}
+      //             renderAnnotationLayer={false}
+      //           />
+      //         ))}
+      //       </DocumentPreview>
+      //     </div>
+      //   </div>
+      // </div>
+      jsonData && !jsonData.file_dokumen ? (
         <div
           className={`mt-4 flex [&>*]:w-full ${
             isIFrameLoaded ? "h-[81vh]" : "h-0"
