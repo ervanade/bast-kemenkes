@@ -399,7 +399,7 @@ const Dokumen = () => {
 
       const data = response.data.data;
       // Lakukan proses generate dokumen berdasarkan data JSON yang diterima
-      const dataJson = {
+      let dataJson = {
         nama_dokumen: data.nama_dokumen || "",
         id: data.id,
         nomorSurat: data.nomor_bast || "",
@@ -438,6 +438,7 @@ const Dokumen = () => {
         total_harga: data.total_harga || "",
         file_dokumen: data.file_dokumen || null,
       };
+
       if (dataJson?.file_dokumen) {
         try {
           const response = await fetch(dataJson?.file_dokumen);
@@ -458,6 +459,16 @@ const Dokumen = () => {
           });
         }
       } else {
+        if (user.role === "3") {
+          if (!user.name || !user.nip) {
+            Swal.fire("Error", "Anda Belum Input Nama / NIP", "error");
+            navigate("/profile");
+            setLoading(false);
+            return;
+          }
+          dataJson.nama_daerah = user.name;
+          dataJson.nip_daerah = user.nip;
+        }
         const pdfBlob = await GenerateDokumen(dataJson); // GenerateDokumen harus mengembalikan Blob PDF
 
         saveAs(pdfBlob, `${dataJson.nama_dokumen}.pdf`);
