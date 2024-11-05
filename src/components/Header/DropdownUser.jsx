@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../store/authSlice";
 import { returnRole } from "../../data/utils";
 import axios from "axios";
+import { clearNotifs } from "../../store/notifSlice";
 
 const DropdownUser = () => {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ const DropdownUser = () => {
         },
       });
       dispatch(logoutUser());
+      dispatch(clearNotifs());
       navigate("/login");
     } catch (error) {
       console.log(error);

@@ -41,7 +41,11 @@ const notifSlice = createSlice({
         status: 'idle',
         error: null,
     },
-    reducers: {},
+    reducers: {
+        clearNotifs: (state) => {
+            state.notifs = [];
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchNotifs.fulfilled, (state, action) => {
@@ -55,5 +59,5 @@ const notifSlice = createSlice({
             });
     },
 });
-
+export const { clearNotifs } = notifSlice.actions;
 export default notifSlice.reducer;
