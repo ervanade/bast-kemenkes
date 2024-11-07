@@ -75,6 +75,37 @@ const AksiDistribusi = () => {
   const [selectedKecamatan, setSelectedKecamatan] = useState(null);
   const [selectedPuskesmas, setSelectedPuskesmas] = useState(null);
 
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
+
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedItems([]);
+    } else {
+      setSelectedItems(formData.dataBarang.map((barang, index) => index));
+    }
+    setSelectAll(!selectAll);
+  };
+
+  const handleSelectItem = (index) => {
+    setSelectedItems((prevSelected) =>
+      prevSelected.includes(index)
+        ? prevSelected.filter((item) => item !== index)
+        : [...prevSelected, index]
+    );
+  };
+
+  const handleDeleteSelected = () => {
+    // Add your delete logic here
+    console.log("Delete selected items:", selectedItems);
+  };
+
+  const handleConfirmAll = (e) => {
+    e.preventDefault();
+    // Add your confirm logic here
+    confirm("Confirm all selected items:", selectedItems);
+  };
+
   const handleKotaChange = (selectedOption) => {
     setSelectedKota(selectedOption);
     setSelectedKecamatan(null);
@@ -533,7 +564,6 @@ const AksiDistribusi = () => {
                 />
               </div>
             </div>
-
             {/* <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
                 <label
@@ -555,7 +585,6 @@ const AksiDistribusi = () => {
                 />
               </div>
             </div> */}
-
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
                 <label
@@ -583,7 +612,6 @@ const AksiDistribusi = () => {
                 />
               </div>
             </div>
-
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
                 <label
@@ -611,7 +639,6 @@ const AksiDistribusi = () => {
                 />
               </div>
             </div>
-
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
                 <label
@@ -636,7 +663,6 @@ const AksiDistribusi = () => {
                 />
               </div>
             </div>
-
             <div className="my-12">
               <div className="card-header flex flex-col ">
                 <h1 className="mb-8 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-center text-bodydark1">
@@ -653,7 +679,6 @@ const AksiDistribusi = () => {
                     <button
                       title="Tambah Data Distribusi"
                       className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
-                      // onClick={handleExport}
                     >
                       <button
                         onClick={(e) => tambahBarangClick(e)}
@@ -671,11 +696,45 @@ const AksiDistribusi = () => {
                   ""
                 )}
               </div>
+
+              {/* Display Selected Items Count and Action Buttons */}
+              {selectedItems.length > 0 && user.role === "3" && (
+                <div className="mb-4 flex items-center gap-4">
+                  <span>{selectedItems.length} item selected</span>
+                  <button
+                    onClick={handleConfirmAll}
+                    className="bg-green-500 text-white py-2 px-4 rounded-md"
+                  >
+                    Konfirmasi Semua Barang
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSelectedItems([]); // Reset selected items
+                      setSelectAll(false); // Set selectAll to false
+                    }}
+                    className="bg-red-500 text-white py-2 px-4 rounded-md"
+                  >
+                    Reset Select
+                  </button>
+                </div>
+              )}
+
               <div className="w-full">
                 <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
                   <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-bodydark2 uppercase bg-[#EBFBFA] dark:bg-gray-700 dark:text-gray-400">
                       <tr>
+                        {user.role === "3" && (
+                          <th scope="col" className="px-4 py-3 text-center">
+                            <input
+                              type="checkbox"
+                              className="cursor-pointer"
+                              checked={selectAll}
+                              onChange={handleSelectAll}
+                            />
+                          </th>
+                        )}
+
                         <th scope="col" className="px-4 py-3 text-center">
                           Nama Barang
                         </th>
@@ -694,6 +753,9 @@ const AksiDistribusi = () => {
                         <th scope="col" className="px-4 py-3 text-center">
                           Harga Satuan
                         </th>
+                        <th scope="col" className="px-4 py-3 text-center">
+                          Uji Fungsi
+                        </th>
                         {user.role !== "2" ? (
                           <th scope="col" className="px-4 py-3 text-center">
                             Aksi
@@ -709,6 +771,16 @@ const AksiDistribusi = () => {
                           key={index}
                           className="bg-white text-[13px] dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                         >
+                          {user.role === "3" && (
+                            <td className="px-4 py-2 text-center">
+                              <input
+                                type="checkbox"
+                                className="cursor-pointer"
+                                checked={selectedItems.includes(index)}
+                                onChange={() => handleSelectItem(index)}
+                              />
+                            </td>
+                          )}
                           <th
                             scope="row"
                             className="px-2 py-2 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white"
@@ -730,11 +802,18 @@ const AksiDistribusi = () => {
                           <td className="px-2 py-2 text-center">
                             {barang.harga_satuan}
                           </td>
+                          <td className="px-2 py-2 text-center">
+                            <button
+                              className={`text-white py-2 font-medium text-xs px-2 rounded-md bg-green-500`}
+                              onClick={(e) => e.preventDefault()}
+                            >
+                              Sudah Uji Fungsi
+                            </button>
+                          </td>
                           {user.role !== "2" ? (
                             <td className="px-2 py-2 text-center flex items-center gap-2">
                               {user.role === "1" ? (
                                 <>
-                                  {" "}
                                   <button
                                     title="Edit"
                                     onClick={(e) => handleEditBarang(e, index)}
@@ -755,24 +834,21 @@ const AksiDistribusi = () => {
                               ) : user.role === "2" ? (
                                 ""
                               ) : user.role === "3" ? (
-                                <>
-                                  {" "}
-                                  <button
-                                    title="Konfirmasi"
-                                    onClick={(e) => handleEditBarang(e, index)}
-                                    className={`text-white py-2 font-semibold w-22 rounded-md ${
-                                      barang.jumlah_dikirim ==
-                                      barang.jumlah_diterima
-                                        ? "bg-green-500"
-                                        : "bg-yellow-500"
-                                    }`}
-                                  >
-                                    {barang.jumlah_dikirim ==
+                                <button
+                                  title="Konfirmasi"
+                                  onClick={(e) => handleEditBarang(e, index)}
+                                  className={`text-white py-2 font-semibold w-22 rounded-md ${
+                                    barang.jumlah_dikirim ===
                                     barang.jumlah_diterima
-                                      ? "Sudah Konfirmasi"
-                                      : "Konfirmasi"}
-                                  </button>
-                                </>
+                                      ? "bg-green-500"
+                                      : "bg-yellow-500"
+                                  }`}
+                                >
+                                  {barang.jumlah_dikirim ===
+                                  barang.jumlah_diterima
+                                    ? "Sudah Konfirmasi"
+                                    : "Konfirmasi"}
+                                </button>
                               ) : (
                                 ""
                               )}
@@ -878,7 +954,6 @@ const AksiDistribusi = () => {
             ) : (
               ""
             )}
-
             <div className="flex items-center justify-center mt-6 sm:mt-12 sm:gap-8">
               <div className="div sm:flex-[2_2_0%]"></div>
               <div className="div sm:flex-[5_5_0%] ">
@@ -900,7 +975,6 @@ const AksiDistribusi = () => {
                 </div>
               </div>
             </div>
-
             <ModalAddBarang
               show={showModal}
               onClose={() => setShowModal(false)}

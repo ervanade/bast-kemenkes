@@ -14,6 +14,7 @@ import Select from "react-select";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import FormInput from "../../components/Form/FormInput";
 
 const TambahBarang = () => {
   const [formData, setFormData] = useState({
@@ -25,6 +26,9 @@ const TambahBarang = () => {
     satuan: "",
     harga_satuan: "",
     keterangan: "",
+    contractFile: null,
+    contractFileName: "",
+    penyedia_barang: "",
   });
 
   const navigate = useNavigate();
@@ -60,7 +64,24 @@ const TambahBarang = () => {
 
   const handleChange = (event) => {
     const { id, value, files } = event.target;
-    setFormData((prev) => ({ ...prev, [id]: value }));
+    if (files) {
+      const file = files[0];
+      if (file.type !== "application/pdf") {
+        Swal.fire("Error", "File type harus PDF", "error");
+        return;
+      }
+      if (file.size > 15 * 1024 * 1024) {
+        Swal.fire("Error", "File size harus dibawah 15 MB", "error");
+        return;
+      }
+      setFormData((prev) => ({
+        ...prev,
+        [id]: file,
+        contractFileName: file.name,
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [id]: value }));
+    }
   };
 
   const tambahBarang = async () => {
@@ -291,6 +312,49 @@ const TambahBarang = () => {
                  rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
                   placeholder="Keterangan Barang"
                 ></textarea>
+              </div>
+            </div>
+
+            <FormInput
+              id="penyedia_barang"
+              value={formData.penyedia_barang}
+              onChange={handleChange}
+              type="text"
+              placeholder={"Nama Penyedia Barang"}
+              label="Nama Penyedia Barang :"
+              required
+            />
+
+            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+              <div className="sm:flex-[2_2_0%]">
+                <label
+                  className="block text-[#728294] text-base font-normal mb-2"
+                  htmlFor="contractFile"
+                >
+                  Upload Bukti Kontrak Pengadaan:
+                </label>
+              </div>
+              <div className="sm:flex-[5_5_0%] flex flex-col items-start gap-1">
+                <div className="flex items-center">
+                  <label className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded cursor-pointer inline-flex items-center">
+                    <input
+                      className="hidden"
+                      id="contractFile"
+                      onChange={handleChange}
+                      type="file"
+                      accept="application/pdf"
+                    />
+                    Upload File
+                  </label>
+                  {formData.contractFileName && (
+                    <p className="text-gray-500 text-xs ml-4">
+                      File: {formData.contractFileName}
+                    </p>
+                  )}
+                </div>
+                <p className="text-gray-500 text-xs mt-1">
+                  Max file size: 15MB, Type: PDF
+                </p>
               </div>
             </div>
 

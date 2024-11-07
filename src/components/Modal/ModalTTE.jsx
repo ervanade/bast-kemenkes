@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 const ModalTTE = ({ show, onClose, onSave, editIndex, jsonData, user }) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [setuju, setSetuju] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -163,6 +164,23 @@ const ModalTTE = ({ show, onClose, onSave, editIndex, jsonData, user }) => {
                   />
                 </div>
               </div>
+              <div className="w-full flex items-center py-4 mb-5 justify-self-center place-items-center">
+                <input
+                  id="default-checkbox"
+                  type="checkbox"
+                  checked={setuju}
+                  onChange={() => setSetuju(!setuju)}
+                  className="cursor-pointer w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <label
+                  htmlFor="default-checkbox"
+                  className="ms-2 text-sm md:text-lg font-medium text-[#728294] dark:text-gray-300 cursor-pointer"
+                >
+                  Dengan ini Saya Menyetujui Bast Naskah Hibah Milik
+                  Negara Untuk di Tanda Tangani
+                </label>
+              </div>
+
               <p className="text-center text-bodydark2 font-bold">
                 TTE Dokumen Ini Sebagai{" "}
                 {user?.role === "3" ? "User Daerah" : "Direktur"}
@@ -177,11 +195,12 @@ const ModalTTE = ({ show, onClose, onSave, editIndex, jsonData, user }) => {
                 Close
               </button>
               <button
-                className="bg-[#0ACBC2]  text-white font-bold py-2 px-6 rounded-md focus:outline-none focus:shadow-outline dark:bg-transparent mr-1 mb-1"
+                className="bg-[#0ACBC2] disabled:bg-slate-500 cursor-not-allowed  text-white font-bold py-2 px-6 rounded-md focus:outline-none focus:shadow-outline dark:bg-transparent mr-1 mb-1"
                 type="submit"
+                disabled={!setuju}
                 onClick={handleSave}
               >
-                {"TTE Dokumen Ini"}
+                {setuju ? "TTE Dokumen Ini" : "Anda Belum Menyetujui"}
               </button>
             </div>
           </div>

@@ -27,6 +27,7 @@ import { CgSpinner } from "react-icons/cg";
 import ModalTTE from "../../components/Modal/ModalTTE";
 import GenerateDokumen from "../../components/Dokumen/GenerateDokumen";
 import ModalUploadDokumen from "../../components/Modal/ModalUploadDokumen";
+import { differenceBy } from "lodash";
 
 const Dokumen = () => {
   const user = useSelector((a) => a.auth.user);
@@ -51,6 +52,7 @@ const Dokumen = () => {
   const [selectedProvinsi, setSelectedProvinsi] = useState(null);
   const [selectedKota, setSelectedKota] = useState(null);
   const [selectedKecamatan, setSelectedKecamatan] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState(null);
 
   const [showModal, setShowModal] = useState(false);
   const [showModalUpload, setShowModalUpload] = useState(false);
@@ -58,6 +60,55 @@ const Dokumen = () => {
     id: "",
     nama_dokumen: "",
   });
+
+  const [selectedRows, setSelectedRows] = React.useState([]);
+  const [toggleCleared, setToggleCleared] = React.useState(false);
+
+  const handleRowSelected = React.useCallback((state) => {
+    setSelectedRows(state.selectedRows);
+  }, []);
+
+  const contextActions = React.useMemo(() => {
+    const handleDelete = () => {
+      if (
+        window.confirm(
+          `Apakah Anda Mau TTE Dokumen:\r ${selectedRows.map(
+            (r) => r.nama_dokumen
+          )}?`
+        )
+      ) {
+        setToggleCleared(!toggleCleared);
+        setData(differenceBy(filteredData, selectedRows, "nama_dokumen"));
+      }
+    };
+
+    const handleReset = () => {
+      setToggleCleared(!toggleCleared);
+      setSelectedRows([]);
+    };
+
+    return (
+      <div className="flex items-center gap-2">
+        <button
+          key="delete"
+          onClick={() => handleReset()}
+          className="p-2 bg-red-500 rounded-md text-white text-base"
+          icon
+        >
+          Reset
+        </button>
+        <button
+          key="delete"
+          onClick={handleDelete}
+          className="p-2 bg-teal-500 rounded-md text-white text-base"
+          icon
+        >
+          TTE Dokumen
+        </button>
+      </div>
+    );
+  }, [filteredData, selectedRows, toggleCleared]);
+
   const handleTTE = async (e, id, nama_dokumen) => {
     e.preventDefault();
     setShowModal(true);
@@ -298,7 +349,6 @@ const Dokumen = () => {
 
     setFilteredData(filtered);
   };
-
   const handleSearchClick = async () => {
     setLoading(true);
     setError(false);
@@ -317,8 +367,18 @@ const Dokumen = () => {
           id_kecamatan: selectedKecamatan?.value.toString() || "",
         },
       });
+      let dataResponse = response.data.data;
 
-      setFilteredData(response.data.data);
+      if (selectedStatus) {
+        dataResponse =
+          selectedStatus.value === 0
+            ? dataResponse.filter((a) => a.status_tte == "0")
+            : dataResponse.filter(
+                (a) => a.status_tte == "1" || a.status_tte == "2"
+              );
+      }
+
+      setFilteredData(dataResponse);
     } catch (error) {
       setError(true);
       setFilteredData([]);
@@ -989,6 +1049,34 @@ const Dokumen = () => {
                 }
               />
             </div>
+            <div>
+              <label
+                className="block text-[#728294] text-base font-normal mb-2"
+                htmlFor="kota"
+              >
+                Status TTE
+              </label>
+              <Select
+                options={[
+                  { label: "Sudah TTE", value: 1 },
+                  { label: "Belum TTE", value: 0 },
+                ]}
+                value={selectedStatus}
+                onChange={(status) => {
+                  setSelectedStatus(status);
+                }}
+                className="w-64 sm:w-32 xl:w-60"
+                theme={(theme) => ({
+                  ...theme,
+                  colors: {
+                    ...theme.colors,
+                    primary25: "lightgrey",
+                    primary: "grey",
+                  },
+                })}
+                placeholder={"Pilih Status TTE"}
+              />
+            </div>
             {/* <div>
               <label
                 className="block text-[#728294] text-base font-normal mb-2"
@@ -1114,11 +1202,16 @@ const Dokumen = () => {
             <div className="text-center">Data Tidak Tersedia.</div>
           ) : (
             <DataTable
+              title={selectedRows.length > 0 ? "Data Dokumen" : ""}
               columns={columns}
               data={filteredData}
               pagination
               persistTableHead
               highlightOnHover
+              selectableRows
+              contextActions={contextActions}
+              onSelectedRowsChange={handleRowSelected}
+              clearSelectedRows={toggleCleared}
               pointerOnHover
               customStyles={{
                 headCells: {
