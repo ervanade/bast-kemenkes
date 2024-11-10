@@ -28,9 +28,12 @@ import ModalTTE from "../../components/Modal/ModalTTE";
 import GenerateDokumen from "../../components/Dokumen/GenerateDokumen";
 import ModalUploadDokumen from "../../components/Modal/ModalUploadDokumen";
 import { differenceBy } from "lodash";
+import ModalTTENew from "../../components/Modal/ModalTTENew";
 
 const Dokumen = () => {
   const user = useSelector((a) => a.auth.user);
+  const [showPopup, setShowPopup] = useState(false);
+
   const navigate = useNavigate();
   var today = new Date();
   const defaultDate = today.toISOString().substring(0, 10);
@@ -79,6 +82,7 @@ const Dokumen = () => {
       ) {
         setToggleCleared(!toggleCleared);
         setData(differenceBy(filteredData, selectedRows, "nama_dokumen"));
+        handleTTE();
       }
     };
 
@@ -110,8 +114,9 @@ const Dokumen = () => {
   }, [filteredData, selectedRows, toggleCleared]);
 
   const handleTTE = async (e, id, nama_dokumen) => {
-    e.preventDefault();
-    setShowModal(true);
+    // e.preventDefault();
+    // setShowModal(true);
+    setShowPopup(true);
     setJsonData({
       id: id,
       nama_dokumen: nama_dokumen,
@@ -784,12 +789,13 @@ const Dokumen = () => {
                 <button
                   title="TTE"
                   className="text-white py-2 w-22 bg-teal-500 rounded-md"
-                  onClick={() => {
-                    navigate(
-                      `/dokumen/preview-dokumen/${encodeURIComponent(
-                        encryptId(row.id)
-                      )}`
-                    );
+                  onClick={(e) => {
+                    // navigate(
+                    //   `/dokumen/preview-dokumen/${encodeURIComponent(
+                    //     encryptId(row.id)
+                    //   )}`
+                    // );
+                    handleTTE(e, row.id, row.nama_dokumen);
                   }}
                 >
                   <Link
@@ -833,12 +839,13 @@ const Dokumen = () => {
                 <button
                   title="TTE"
                   className="text-white py-2 w-22 bg-teal-500 rounded-md"
-                  onClick={() => {
-                    navigate(
-                      `/dokumen/preview-dokumen/${encodeURIComponent(
-                        encryptId(row.id)
-                      )}`
-                    );
+                  onClick={(e) => {
+                    // navigate(
+                    //   `/dokumen/preview-dokumen/${encodeURIComponent(
+                    //     encryptId(row.id)
+                    //   )}`
+                    // );
+                    handleTTE(e, row.id, row.nama_dokumen);
                   }}
                 >
                   <Link
@@ -1117,6 +1124,12 @@ const Dokumen = () => {
           </button>
         </div>
       </div>
+      <ModalTTENew
+        isVisible={showPopup}
+        onClose={() => setShowPopup(false)}
+        setShowPopup={setShowPopup}
+        jsonData={jsonData}
+      />
       <ModalTTE
         show={showModal}
         onClose={() => setShowModal(false)}
