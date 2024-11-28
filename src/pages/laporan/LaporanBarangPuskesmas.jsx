@@ -412,7 +412,7 @@ const LaporanBarangPuskesmas = () => {
         pageName={`Data Laporan Barang Puskesmas`}
         title={`Data Laporan Barang ${
           filteredData[0]?.nama_alkes || ""
-        } Kabupaten  ${filteredData[0]?.kabupaten || ""} `}
+        } Per Puskesmas  ${filteredData[0]?.kabupaten || ""} `}
       />
       <div className="flex justify-end mb-4">
         <button

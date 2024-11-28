@@ -411,13 +411,13 @@ const DataDistribusi = () => {
       },
       {
         name: "Jumlah Dikirim",
-        selector: (row) => row.jumlah_barang_dikirim || 0,
+        selector: (row) => Number(row.jumlah_barang_dikirim) || 0,
         sortable: true,
         width: "140px",
       },
       {
         name: "Jumlah Diterima",
-        selector: (row) => row.jumlah_barang_diterima || 0,
+        selector: (row) => Number(row.jumlah_barang_diterima) || 0,
         sortable: true,
         width: "140px",
       },
