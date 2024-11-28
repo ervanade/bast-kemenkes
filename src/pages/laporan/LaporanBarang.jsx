@@ -305,19 +305,19 @@ const LaporanBarang = () => {
       },
       {
         name: "Jumlah Dikirim",
-        selector: (row) => row.jumlah_dikirim,
+        selector: (row) => Number(row.jumlah_dikirim),
         sortable: true,
         // width: "100px",
       },
       {
         name: "Jumlah Diterima",
-        selector: (row) => row.jumlah_diterima,
+        selector: (row) => Number(row.jumlah_diterima),
         sortable: true,
         // width: "100px",
       },
       {
         name: "Total Harga (Rp)",
-        selector: (row) => row.jumlah_total,
+        selector: (row) => Number(row.jumlah_total),
         sortable: true,
         width: "200px",
       },
@@ -393,7 +393,10 @@ const LaporanBarang = () => {
 
   return (
     <div>
-      <Breadcrumb pageName="Data Laporan Barang" title="Data Laporan Barang" />
+      <Breadcrumb
+        pageName="Data Laporan Barang"
+        title="Data Laporan Per Barang"
+      />
       <div className="flex flex-col items-center justify-center w-full tracking-tight mb-8">
         <div className="flex items-center lg:items-end mt-8 gap-4 flex-col lg:flex-row">
           <div className="flex items-center gap-4 flex-col sm:flex-row">

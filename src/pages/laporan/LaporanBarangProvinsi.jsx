@@ -321,19 +321,19 @@ const LaporanBarangProvinsi = () => {
       },
       {
         name: "Jumlah Dikirim",
-        selector: (row) => row.jumlah_dikirim,
+        selector: (row) => Number(row.jumlah_dikirim),
         sortable: true,
         // width: "100px",
       },
       {
         name: "Jumlah Diterima",
-        selector: (row) => row.jumlah_diterima,
+        selector: (row) => Number(row.jumlah_diterima),
         sortable: true,
         // width: "100px",
       },
       {
         name: "Total Harga (Rp)",
-        selector: (row) => row.jumlah_total,
+        selector: (row) => Number(row.jumlah_total),
         sortable: true,
         width: "200px",
       },
@@ -362,7 +362,6 @@ const LaporanBarangProvinsi = () => {
     ],
     []
   );
-
   const handleExport = () => {
     // Implementasi untuk mengekspor data (misalnya ke CSV)
 
