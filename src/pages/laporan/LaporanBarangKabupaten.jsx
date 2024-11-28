@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import Select from "react-select";
 import DataTable from "react-data-table-component";
-import { encryptId, selectThemeColors } from "../../data/utils";
+import { decryptId, encryptId, selectThemeColors } from "../../data/utils";
 import {
   FaDownload,
   FaEdit,
@@ -13,7 +13,7 @@ import {
 } from "react-icons/fa";
 import * as XLSX from "xlsx";
 import { BiExport, BiSolidFileExport } from "react-icons/bi";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -26,9 +26,10 @@ import LaporanCard from "../../components/Card/LaporanCard";
 import { data } from "autoprefixer";
 import moment from "moment/moment";
 
-const LaporanBarang = () => {
+const LaporanBarangKabupaten = () => {
   const user = useSelector((a) => a.auth.user);
   const navigate = useNavigate();
+  const { idBarang, idProvinsi } = useParams();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -46,11 +47,13 @@ const LaporanBarang = () => {
   const [dataKota, setDataKota] = useState([]);
   const [dataKecamatan, setDataKecamatan] = useState([]);
   const [dataBarang, setDataBarang] = useState([]);
+  const [dataPuskesmas, setDataPuskesmas] = useState([]);
 
   const [selectedProvinsi, setSelectedProvinsi] = useState(null);
   const [selectedKota, setSelectedKota] = useState(null);
   const [selectedBarang, setSelectedBarang] = useState(null);
   const [selectedKecamatan, setSelectedKecamatan] = useState(null);
+  const [selectedPuskesmas, setSelectedPuskesmas] = useState(null);
 
   const [formData, setFormData] = useState({});
 
@@ -59,8 +62,12 @@ const LaporanBarang = () => {
     setError(false);
     try {
       const response = await axios({
-        method: "post",
-        url: `${import.meta.env.VITE_APP_API_URL}/api/laporan`,
+        method: "get",
+        url: `${
+          import.meta.env.VITE_APP_API_URL
+        }/api/laporan/${encodeURIComponent(
+          decryptId(idBarang)
+        )}/${encodeURIComponent(decryptId(idProvinsi))}`,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user?.token}`,
@@ -150,35 +157,36 @@ const LaporanBarang = () => {
   }, [dataBarang.length, user?.token]);
 
   // Fetch cities based on the selected province
-  const fetchKota = useCallback(
-    async (idProvinsi) => {
-      if (dataKota.length > 0 && selectedProvinsi?.value === idProvinsi) return;
+  const fetchPuskesmas = useCallback(
+    async (idKecamatan) => {
+      if (dataPuskesmas.length > 0 && selectedKecamatan?.value === idKecamatan)
+        return;
 
       try {
         const response = await axios({
           method: "get",
           url: `${
             import.meta.env.VITE_APP_API_URL
-          }/api/getkabupaten/${idProvinsi}`,
+          }/api/getpuskesmas/${idKecamatan}`,
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${user?.token}`,
           },
         });
 
-        setDataKota([
-          { label: "Semua Kabupaten/Kota", value: "" },
+        setDataPuskesmas([
+          { label: "Semua Puskesmas", value: "" },
           ...response.data.data.map((item) => ({
-            label: item.name,
+            label: item.nama_puskesmas,
             value: item.id,
           })),
         ]);
       } catch (error) {
         setError(true);
-        setDataKota([]);
+        setDataPuskesmas([]);
       }
     },
-    [dataKota.length, selectedProvinsi?.value, user?.token]
+    [dataPuskesmas.length, selectedKecamatan?.value, user?.token]
   );
 
   // Fetch subdistricts based on the selected city
@@ -218,15 +226,17 @@ const LaporanBarang = () => {
     try {
       const response = await axios({
         method: "post",
-        url: `${import.meta.env.VITE_APP_API_URL}/api/laporan`,
+        url: `${import.meta.env.VITE_APP_API_URL}/api/laporan/detail`,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user?.token}`,
         },
         data: {
-          id_provinsi: selectedProvinsi?.value?.toString() || "0",
-          id_kabupaten: selectedKota?.value?.toString() || "0",
-          id_barang: selectedBarang?.value?.toString() || "0",
+          id_kabupaten:
+            encodeURIComponent(decryptId(idBarang) || "0").toString() || "0",
+          id_kecamatan: selectedKecamatan?.value.toString() || "0",
+          id_puskesmas: selectedPuskesmas?.value.toString() || "0",
+          id_barang: selectedBarang?.value.toString() || "0",
         },
       });
       setFilteredData(response.data.data);
@@ -238,10 +248,10 @@ const LaporanBarang = () => {
     }
   };
   useEffect(() => {
-    fetchProvinsi();
-    fetchUserData();
+    // fetchKecamatan(encodeURIComponent(decryptId(idBarang) || "0"));
+    // fetchUserData();
     fetchDataLaporan();
-    fetchBarang();
+    // fetchBarang();
   }, []);
 
   const handleProvinsiChange = (selectedOption) => {
@@ -266,6 +276,14 @@ const LaporanBarang = () => {
 
   const handleKecamatanChange = (selectedOption) => {
     setSelectedKecamatan(selectedOption);
+    setSelectedPuskesmas(null);
+    setDataPuskesmas([]);
+    if (selectedOption && selectedOption.value !== "") {
+      fetchPuskesmas(selectedOption.value);
+    }
+  };
+  const handlePuskesmasChange = (selectedOption) => {
+    setSelectedPuskesmas(selectedOption);
   };
   const handleBarangChange = (selectedOption) => {
     setSelectedBarang(selectedOption);
@@ -276,7 +294,7 @@ const LaporanBarang = () => {
     setSearch(value);
 
     const filtered = data.filter((item) => {
-      return item?.nama_alkes && item.nama_alkes.toLowerCase().includes(value);
+      return item?.kabupaten && item.kabupaten.toLowerCase().includes(value);
     });
 
     setFilteredData(filtered);
@@ -285,23 +303,23 @@ const LaporanBarang = () => {
   const columns = useMemo(
     () => [
       // { name: "No", selector: (row) => row.id, sortable: true },
-      // {
-      //   name: "Provinsi",
-      //   selector: (row) => row.provinsi,
-      //   sortable: true,
-      //   width: "180px",
-      // },
-      // {
-      //   name: "Kabupaten",
-      //   selector: (row) => row.kabupaten,
-      //   sortable: true,
-      //   width: "180px",
-      // },
+      //   {
+      //     name: "Provinsi",
+      //     selector: (row) => row.provinsi,
+      //     sortable: true,
+      //     width: "180px",
+      //   },
+      {
+        name: "Kabupaten",
+        selector: (row) => row.kabupaten,
+        sortable: true,
+        // width: "180px",
+      },
       {
         name: "Nama Barang",
         selector: (row) => row.nama_alkes,
         sortable: true,
-        // width: "180px",
+        width: "180px",
       },
       {
         name: "Jumlah Dikirim",
@@ -331,7 +349,9 @@ const LaporanBarang = () => {
             >
               <Link
                 to={`/laporanbarang/detail/${encodeURIComponent(
-                  encryptId(row?.id_barang)
+                  idBarang
+                )}/${encodeURIComponent(idProvinsi)}/${encodeURIComponent(
+                  encryptId(row?.id_kabupaten)
                 )}`}
               >
                 <FaEye size={16} />
@@ -351,6 +371,7 @@ const LaporanBarang = () => {
     // Implementasi untuk mengekspor data (misalnya ke CSV)
 
     const exportData = filteredData?.map((item) => ({
+      Kabupaten: item?.kabupaten,
       "Nama Barang": item?.nama_alkes,
       "Jumlah Barang Dikirim": item?.jumlah_dikirim,
       "Jumlah Barang Diterima": item?.jumlah_diterima,
@@ -375,11 +396,16 @@ const LaporanBarang = () => {
     wsFilteredData["!cols"] = cols;
 
     // Menambahkan sheet ke workbook
-    XLSX.utils.book_append_sheet(wb, wsFilteredData, "Data Laporan Barang");
+    XLSX.utils.book_append_sheet(wb, wsFilteredData, "Data Distribusi");
 
     // Export file excel
     const tanggal = moment().locale("id").format("DD MMMM YYYY HH:mm");
-    XLSX.writeFile(wb, `Data laporan Per Barang ${tanggal}.xlsx`);
+    XLSX.writeFile(
+      wb,
+      `Data laporan Per Barang ${
+        filteredData[0]?.nama_alkes || ""
+      } ${tanggal}.xlsx`
+    );
   };
 
   if (getLoading) {
@@ -393,73 +419,23 @@ const LaporanBarang = () => {
 
   return (
     <div>
-      <Breadcrumb pageName="Data Laporan Barang" title="Data Laporan Barang" />
-      <div className="flex flex-col items-center justify-center w-full tracking-tight mb-8">
-        <div className="flex items-center lg:items-end mt-8 gap-4 flex-col lg:flex-row">
-          <div className="flex items-center gap-4 flex-col sm:flex-row">
-            {/* <div>
-              <label
-                className="block text-[#728294] text-base font-normal mb-2"
-                htmlFor="kecamatan"
-              >
-                Kecamatan
-              </label>
-              <Select
-                options={dataKecamatan}
-                value={selectedKecamatan}
-                onChange={handleKecamatanChange}
-                className="w-64 sm:w-32 xl:w-60"
-                theme={(theme) => ({
-                  ...theme,
-                  colors: {
-                    ...theme.colors,
-                    primary25: "lightgrey",
-                    primary: "grey",
-                  },
-                })}
-                isDisabled={!selectedKota}
-                placeholder={
-                  selectedKota ? "Pilih Kecamatan" : "Pilih Kab / Kota Dahulu"
-                }
-              />
-            </div> */}
-            <div>
-              <label
-                className="block text-[#728294] text-base font-normal mb-2"
-                htmlFor="barang"
-              >
-                Barang
-              </label>
-              <Select
-                options={dataBarang}
-                value={selectedBarang}
-                onChange={handleBarangChange}
-                className="w-64 sm:w-32 xl:w-60"
-                theme={(theme) => ({
-                  ...theme,
-                  colors: {
-                    ...theme.colors,
-                    primary25: "lightgrey",
-                    primary: "grey",
-                  },
-                })}
-                placeholder={"Pilih Barang"}
-              />
-            </div>
-          </div>
-          <button
-            onClick={handleSearchClick}
-            disabled={loading}
-            className="mt-2 flex items-center gap-2 cursor-pointer text-base font-semibold text-white px-5 py-2 bg-primary rounded-md tracking-tight"
-          >
-            <FaSearch />
-            <span className="lg:hidden xl:flex">
-              {" "}
-              {loading ? "Loading" : "Cari Data"}
-            </span>
-          </button>
-        </div>
+      <Breadcrumb
+        pageName={`Data Laporan Barang Kabupaten`}
+        title={`Data Laporan Barang ${
+          filteredData[0]?.nama_alkes || ""
+        } Provinsi  ${filteredData[0]?.kabupaten || ""} `}
+      />
+      <div className="flex justify-end mb-4">
+        <button
+          onClick={() =>
+            navigate(`/laporanbarang/detail/${encodeURIComponent(idBarang)}`)
+          }
+          className="flex items-center px-4 py-2 bg-primary text-white rounded-md font-semibold"
+        >
+          Back
+        </button>
       </div>
+      <div className="flex flex-col items-center justify-center w-full tracking-tight mb-8"></div>
       <div className="rounded-md flex flex-col gap-4 overflow-hidden overflow-x-auto  border border-stroke bg-white py-4 md:py-8 px-4 md:px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex justify-between mb-4 items-center">
           <div className="relative">
@@ -555,4 +531,4 @@ const LaporanBarang = () => {
   );
 };
 
-export default LaporanBarang;
+export default LaporanBarangKabupaten;
