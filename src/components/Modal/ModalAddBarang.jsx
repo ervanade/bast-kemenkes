@@ -5,6 +5,8 @@ import Select from "react-select";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import FormInput from "../Form/FormInput";
+import { ujiFungsiOptions } from "../../data/data";
 
 const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
   const user = useSelector((a) => a.auth.user);
@@ -19,7 +21,16 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
     harga_satuan: "",
     status_barang: "",
     keterangan: "",
+    uji_fungsi: "",
   });
+  const [selectedProgram, setSelectedProgram] = useState(ujiFungsiOptions[0]);
+  const handleProgramChange = (selectedOption) => {
+    setSelectedProgram(selectedOption);
+    setBarang((prev) => ({
+      ...prev,
+      uji_fungsi: selectedOption ? selectedOption.value.toString() : "",
+    }));
+  };
   const [listBarang, setListBarang] = useState([]);
   const [selectedBarang, setSelectedBarang] = useState(null);
 
@@ -224,34 +235,57 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                   </div>
                 </div>
               ) : user.role === "3" ? (
-                <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
-                  <div className="">
-                    <label
-                      className=" block text-[#728294] text-base font-semibold mb-2"
-                      htmlFor="email"
-                    >
-                      Jumlah Barang yang Diterima :
-                    </label>
-                  </div>
-                  <div className="">
-                    <input
-                      className={` bg-white disabled:bg-[#F2F2F2] appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                <>
+                  <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
+                    <div className="">
+                      <label
+                        className=" block text-[#728294] text-base font-semibold mb-2"
+                        htmlFor="email"
+                      >
+                        Jumlah Barang yang Diterima :
+                      </label>
+                    </div>
+                    <div className="">
+                      <input
+                        className={` bg-white disabled:bg-[#F2F2F2] appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                     "border-red-500" 
                  rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                      id="jumlah_diterima"
-                      type="number"
-                      required
-                      value={barang.jumlah_diterima}
-                      onChange={(e) =>
-                        setBarang((prev) => ({
-                          ...prev,
-                          jumlah_diterima: e.target.value,
-                        }))
-                      }
-                      placeholder="Jumlah Barang yang Diterima"
-                    />
+                        id="jumlah_diterima"
+                        type="number"
+                        required
+                        value={barang.jumlah_diterima}
+                        onChange={(e) =>
+                          setBarang((prev) => ({
+                            ...prev,
+                            jumlah_diterima: e.target.value,
+                          }))
+                        }
+                        placeholder="Jumlah Barang yang Diterima"
+                      />
+                    </div>
                   </div>
-                </div>
+
+                  <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
+                    <div className="">
+                      <label
+                        className=" block text-[#728294] text-base font-semibold mb-2"
+                        htmlFor="email"
+                      >
+                        Uji Fungsi :
+                      </label>
+                    </div>
+                    <div className="">
+                      <Select
+                        options={ujiFungsiOptions}
+                        onChange={handleProgramChange}
+                        value={selectedProgram}
+                        placeholder="Uji Fungsi"
+                        className="w-full cursor-pointer"
+                        theme={selectThemeColors}
+                      />
+                    </div>
+                  </div>
+                </>
               ) : (
                 ""
               )}

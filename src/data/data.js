@@ -245,6 +245,18 @@ export const konfirmasiOptions = [
     }
 
 ]
+
+export const ujiFungsiOptions = [
+    {
+        "label": "Data Belum Uji Fungsi",
+        "value": "0"
+    },
+    {
+        "label": "Data Sudah Uji Fungsi",
+        "value": "1"
+    }
+
+]
 export const SelectOptions = [
     {
         "label": "Ya",

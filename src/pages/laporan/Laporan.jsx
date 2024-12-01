@@ -25,8 +25,69 @@ import { AiOutlineDatabase } from "react-icons/ai";
 import LaporanCard from "../../components/Card/LaporanCard";
 import { data } from "autoprefixer";
 import moment from "moment/moment";
+import {
+  ComposableMap,
+  Geographies,
+  Geography,
+  ZoomableGroup,
+  Marker,
+} from "react-simple-maps";
+import geoData from "../../assets/indonesia-province-simple.json";
 
 const Laporan = () => {
+  const [tooltip, setTooltip] = useState("");
+  const dataMap = {
+    "DI. ACEH": {
+      barang: 50,
+      penduduk: 2000000,
+      data_distribusi: 517,
+      jumlah_dikirim: 6590,
+      jumlah_diterima: 178,
+      total_harga: 0,
+    },
+    JAKARTA: {
+      barang: 120,
+      penduduk: 3000000,
+      data_distribusi: 517,
+      jumlah_dikirim: 6590,
+      jumlah_diterima: 178,
+      total_harga: 0,
+    },
+    "JAWA BARAT": {
+      barang: 200,
+      penduduk: 5000000,
+      data_distribusi: 517,
+      jumlah_dikirim: 6590,
+      jumlah_diterima: 178,
+      total_harga: 0,
+    },
+  };
+  const [tooltipContent, setTooltipContent] = useState("");
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+
+  const handleMouseEnter = (geo, event) => {
+    const { Propinsi } = geo.properties;
+    const data = dataMap[Propinsi];
+    if (data) {
+      setTooltipContent(
+        <div className="p-4">
+          <p className="text-center font-semibold mb-2">Provinsi {Propinsi}</p>
+          <p>Data Distribusi : {data.data_distribusi}</p>
+          <p>Jumlah Dikirim : {data.jumlah_dikirim}</p>
+          <p>Jumlah Diterima : {data.jumlah_diterima}</p>
+          <p>Total Harga : {data.total_harga}</p>
+        </div>
+      );
+    } else {
+      setTooltipContent(`${Propinsi}: Data tidak tersedia`);
+    }
+    setTooltipPosition({ x: event.clientX - 100, y: event.clientY - 100 });
+  };
+
+  const handleMouseLeave = () => {
+    setTooltipContent("");
+  };
+
   const user = useSelector((a) => a.auth.user);
   const navigate = useNavigate();
 
@@ -230,6 +291,66 @@ const Laporan = () => {
   return (
     <div>
       <Breadcrumb pageName="Data Laporan" title="Data Laporan" />
+      <div style={{ position: "relative" }}>
+        {tooltipContent && (
+          <div
+            style={{
+              position: "absolute",
+              top: tooltipPosition.y + 10, // 10px below the cursor
+              left: tooltipPosition.x + 10, // 10px to the right of the cursor
+              background: "#fff",
+              // color: "white",
+              padding: "5px 10px",
+              borderRadius: "4px",
+              pointerEvents: "none",
+              transform: "translate(-50%, -50%)",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {tooltipContent}
+          </div>
+        )}
+        <ComposableMap
+          projection="geoMercator"
+          projectionConfig={{
+            center: [118, -3], // Pusat koordinat Indonesia
+            scale: 1000, // Sesuaikan skala peta
+          }}
+          style={{
+            width: "100%",
+          }}
+          className="h-auto lg:max-h-[450px] mx-auto"
+        >
+          <Geographies geography={geoData}>
+            {({ geographies }) =>
+              geographies.map((geo) => (
+                <Geography
+                  key={geo.rsmKey}
+                  geography={geo}
+                  onMouseEnter={(e) => handleMouseEnter(geo, e)}
+                  onMouseLeave={handleMouseLeave}
+                  style={{
+                    default: {
+                      fill: "#D6D6DA",
+                      outline: "none",
+                    },
+                    hover: {
+                      fill: "#16B3AC",
+                      outline: "none",
+                      cursor: "pointer",
+                    },
+                    pressed: {
+                      fill: "#E42",
+                      outline: "none",
+                    },
+                  }}
+                />
+              ))
+            }
+          </Geographies>
+        </ComposableMap>
+      </div>
+      <div className="tooltip">{tooltip}</div>
       <div className="flex flex-col items-center justify-center w-full tracking-tight mb-8">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-4 xl:grid-cols-4 2xl:gap-7.5">
           <LaporanCard

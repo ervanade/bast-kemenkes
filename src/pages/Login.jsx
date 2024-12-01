@@ -65,9 +65,9 @@ const Login = () => {
       });
   };
   const handleShowPassword = (e) => {
-    e.preventDefault()
-    setShowPassword(prev => (!prev))
-  }
+    e.preventDefault();
+    setShowPassword((prev) => !prev);
+  };
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!executeRecaptcha) {
@@ -93,6 +93,11 @@ const Login = () => {
     // setLoading(false);
     // navigate("/");
   };
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleLogin(e);
+    }
+  };
 
   const handleCheckboxChange = (event) => {
     setFormData((prev) => ({ ...prev, tanggal: event.target.value }));
@@ -112,7 +117,11 @@ const Login = () => {
               Hanya di Youtube Oriflame Indonesia
             </p> */}
           </div>
-          <form className="mt-5" onSubmit={handleLogin}>
+          <form
+            className="mt-5"
+            onSubmit={handleLogin}
+            onKeyDown={handleKeyDown}
+          >
             {error && (
               <div className="mb-3 bg-red-100 p-2 rounded-md">
                 <p className="text-center text-red-500">{error}</p>
@@ -151,42 +160,42 @@ const Login = () => {
                 Password
               </label>
               <div className="relative">
-    <input
-      className={`bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                <input
+                  className={`bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
         "border-red-500" 
         rounded w-full py-3 px-3 text-[#728294] mb-3 leading-tight focus:outline-none focus:shadow-outline`}
-      id="password"
-      type={showPassword ? "text" : "password"}
-      value={formData.password}
-      onChange={(e) =>
-        setFormData((prev) => ({
-          ...prev,
-          password: e.target.value,
-        }))
-      }
-      placeholder="*******"
-    />
-    <button
-      className="absolute right-4 top-3.5"
-      onClick={handleShowPassword}
-    >
-      {showPassword ? (
-        <FaEye size={16} className="text-bodydark2"/>
-      ) : (
-        <FaEyeSlash size={16} className="text-bodydark2"/>
-      )}
-    </button>
-  </div>
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      password: e.target.value,
+                    }))
+                  }
+                  placeholder="*******"
+                />
                 <button
-      className="absolute right-3 top-3"
-      onClick={() => setShowPassword(!showPassword)}
-    >
-      {showPassword ? (
-        <i className="fas fa-eye-slash"></i>
-      ) : (
-        <i className="fas fa-eye"></i>
-      )}
-    </button>
+                  className="absolute right-4 top-3.5"
+                  onClick={handleShowPassword}
+                >
+                  {showPassword ? (
+                    <FaEye size={16} className="text-bodydark2" />
+                  ) : (
+                    <FaEyeSlash size={16} className="text-bodydark2" />
+                  )}
+                </button>
+              </div>
+              <button
+                className="absolute right-3 top-3"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <i className="fas fa-eye-slash"></i>
+                ) : (
+                  <i className="fas fa-eye"></i>
+                )}
+              </button>
             </div>
             {/* <div className="mb-3 flex items-center gap-3">
               <div className="col flex-[3_3_0%]">
