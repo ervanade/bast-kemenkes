@@ -159,6 +159,12 @@ const DataBarang = () => {
         width: "100px",
       },
       {
+        name: "Penyedia Barang",
+        selector: (row) => row.penyedia || "",
+        sortable: true,
+        width: "100px",
+      },
+      {
         name: "Keterangan",
         selector: (row) => row.keterangan || "",
         sortable: true,

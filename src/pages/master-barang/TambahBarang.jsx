@@ -28,7 +28,7 @@ const TambahBarang = () => {
     keterangan: "",
     contractFile: null,
     contractFileName: "",
-    penyedia_barang: "",
+    penyedia: "",
   });
 
   const navigate = useNavigate();
@@ -85,6 +85,21 @@ const TambahBarang = () => {
   };
 
   const tambahBarang = async () => {
+    if (!formData.contractFile) {
+      Swal.fire("Error", "File Kontrak Masih Kosong", "error");
+      setLoading(false);
+      return;
+    }
+    const formDataToSend = new FormData();
+    formDataToSend.append("nama_alkes", formData.nama_alkes);
+    formDataToSend.append("merk", formData.merk);
+    formDataToSend.append("satuan", formData.satuan);
+    formDataToSend.append("harga_satuan", formData.harga_satuan);
+    formDataToSend.append("keterangan", formData.keterangan);
+    formDataToSend.append("penyedia", formData.penyedia);
+    if (formData.contractFile) {
+      formDataToSend.append("file_kontrak", formData.contractFile);
+    }
     await axios({
       method: "post",
       url: `${import.meta.env.VITE_APP_API_URL}/api/barang`,
@@ -316,8 +331,8 @@ const TambahBarang = () => {
             </div>
 
             <FormInput
-              id="penyedia_barang"
-              value={formData.penyedia_barang}
+              id="penyedia"
+              value={formData.penyedia}
               onChange={handleChange}
               type="text"
               placeholder={"Nama Penyedia Barang"}
