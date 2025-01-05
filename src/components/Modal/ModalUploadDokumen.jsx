@@ -173,11 +173,23 @@ const ModalUploadDokumen = ({
         ket_daerah: "",
         ket_ppk: data.keterangan_ppk,
         tte_daerah: data.tte_daerah || defaultImage,
-        nama_daerah: data.nama_daerah || "",
-        nip_daerah: data.nip_daerah || "",
+        nama_daerah:
+          user?.role == "3"
+            ? data.nama_daerah || user?.name || ""
+            : data.nama_daerah || "",
+        nip_daerah:
+          user?.role == "3"
+            ? data.nip_daerah || user?.nip || ""
+            : data.nip_daerah || "",
         tte_ppk: data.tte_ppk || defaultImage,
-        nama_ppk: data.nama_ppk || "",
-        nip_ppk: data.nip_ppk || "",
+        nama_ppk:
+          user?.role == "4"
+            ? data.nama_ppk || user?.name || ""
+            : data.nama_ppk || "",
+        nip_ppk:
+          user?.role == "4"
+            ? data.nip_ppk || user?.nip || ""
+            : data.nip_ppk || "",
         total_barang_dikirim: data.total_barang_dikirim || "",
         total_harga: data.total_harga || "",
         file_dokumen: data.file_dokumen || null,

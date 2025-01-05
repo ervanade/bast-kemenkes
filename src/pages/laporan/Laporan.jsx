@@ -296,8 +296,8 @@ const Laporan = () => {
           <div
             style={{
               position: "absolute",
-              top: tooltipPosition.y + 10, // 10px below the cursor
-              left: tooltipPosition.x + 10, // 10px to the right of the cursor
+              top: tooltipPosition.y - 110, // 10px below the cursor
+              left: tooltipPosition.x - 200, // 10px to the right of the cursor
               background: "#fff",
               // color: "white",
               padding: "5px 10px",
@@ -306,6 +306,7 @@ const Laporan = () => {
               transform: "translate(-50%, -50%)",
               whiteSpace: "nowrap",
             }}
+            className="hidden sm:block"
           >
             {tooltipContent}
           </div>
@@ -349,6 +350,20 @@ const Laporan = () => {
             }
           </Geographies>
         </ComposableMap>
+        {tooltipContent && (
+          <div
+            style={{
+              background: "#fff",
+              // color: "white",
+              padding: "5px 10px",
+              borderRadius: "4px",
+              pointerEvents: "none",
+            }}
+            className="sm:hidden mx-auto w-1/2 relative -mt-20 mb-6"
+          >
+            {tooltipContent}
+          </div>
+        )}
       </div>
       <div className="tooltip">{tooltip}</div>
       <div className="flex flex-col items-center justify-center w-full tracking-tight mb-8">

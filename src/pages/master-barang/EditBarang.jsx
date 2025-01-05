@@ -15,6 +15,7 @@ import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { CgSpinner } from "react-icons/cg";
+import FormInput from "../../components/Form/FormInput";
 
 const EditBarang = () => {
   const [formData, setFormData] = useState({
@@ -26,6 +27,10 @@ const EditBarang = () => {
     satuan: "",
     harga_satuan: "",
     keterangan: "",
+    contractFile: null,
+    contractFileName: "",
+    contractFileLink: "",
+    penyedia: "",
   });
 
   const navigate = useNavigate();
@@ -79,16 +84,6 @@ const EditBarang = () => {
         // console.log(response)
         const data = response.data.data;
         setFormData({
-          password: "",
-          email: "",
-          c_password: "",
-          username: "",
-          name: "",
-          role: roleOptions[2],
-          provinsi: "",
-          kabupaten: "",
-          kecamatan: "",
-          nip: "",
           nama_alkes: data.nama_alkes || "",
           standar_rawat_inap: data.standar_rawat_inap || "",
           standar_nonrawat_inap: data.standar_nonrawat_inap || "",
@@ -97,6 +92,13 @@ const EditBarang = () => {
           satuan: data.satuan || "",
           harga_satuan: data.harga_satuan || "",
           keterangan: data.keterangan || "",
+          contractFileName: data.contractFileName || "",
+          contractFileLink: data.file_kontrak || "",
+
+          penyedia: data.penyedia || "",
+          jml_eksisting: data.jml_eksisting || "",
+          jml_usulan: data.jml_usulan || "",
+          jml_verifikasi: data.jml_verifikasi || "",
         });
         setGetLoading(false);
       });
@@ -114,6 +116,24 @@ const EditBarang = () => {
   };
 
   const updateBarang = async () => {
+    if (!formData.contractFile) {
+      Swal.fire("Error", "File Kontrak Masih Kosong", "error");
+      setLoading(false);
+      return;
+    }
+    const formDataToSend = new FormData();
+    formDataToSend.append("nama_alkes", formData.nama_alkes);
+    formDataToSend.append("merk", formData.merk);
+    formDataToSend.append("satuan", formData.satuan);
+    formDataToSend.append("harga_satuan", formData.harga_satuan);
+    formDataToSend.append("keterangan", formData.keterangan);
+    formDataToSend.append("penyedia", formData.penyedia);
+    if (formData.contractFile) {
+      formDataToSend.append("file_kontrak", formData.contractFile);
+    }
+    if (!formData.contractFile && formData.contractFileLink) {
+      formDataToSend.append("file_kontrak", formData.contractFileLink);
+    }
     await axios({
       method: "put",
       url: `${import.meta.env.VITE_APP_API_URL}/api/barang/${encodeURIComponent(
@@ -375,6 +395,66 @@ const EditBarang = () => {
                  rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
                   placeholder="Keterangan Barang"
                 ></textarea>
+              </div>
+            </div>
+
+            <FormInput
+              id="penyedia"
+              value={formData.penyedia}
+              onChange={handleChange}
+              type="text"
+              placeholder={"Nama Penyedia Barang"}
+              label="Nama Penyedia Barang :"
+              required
+            />
+
+            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+              <div className="sm:flex-[2_2_0%]">
+                <label
+                  className="block text-[#728294] text-base font-normal mb-2"
+                  htmlFor="contractFile"
+                >
+                  Upload Bukti Kontrak Pengadaan:
+                </label>
+              </div>
+              <div className="sm:flex-[5_5_0%] flex flex-col items-start gap-1">
+                <div className="flex items-center">
+                  <label className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded cursor-pointer inline-flex items-center">
+                    <input
+                      className="hidden"
+                      id="contractFile"
+                      onChange={handleChange}
+                      type="file"
+                      accept="application/pdf"
+                    />
+                    Upload File
+                  </label>
+                  {formData.contractFileName && (
+                    <p className="text-gray-500 text-xs mx-4">
+                      File: {formData.contractFileName}
+                    </p>
+                  )}
+                  {formData.contractFileLink && !formData.contractFile ? (
+                    <a
+                      href={formData.contractFileLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="ml-1 px-4 py-2 bg-blue-500 text-white rounded-md"
+                    >
+                      File Kontrak Anda
+                    </a>
+                  ) : !formData.contractFileLink && !formData.contractFile ? (
+                    <p className="text-gray-500 text-xs ml-1">
+                      Anda Belum Mengupload File Kontrak
+                    </p>
+                  ) : (
+                    ""
+                  )}
+                </div>
+
+                <p className="text-gray-500 text-xs mt-1">
+                  Max file size: 15MB, Type: PDF
+                </p>
               </div>
             </div>
 
