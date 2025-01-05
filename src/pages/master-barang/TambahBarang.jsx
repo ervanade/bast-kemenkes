@@ -104,10 +104,10 @@ const TambahBarang = () => {
       method: "post",
       url: `${import.meta.env.VITE_APP_API_URL}/api/barang`,
       headers: {
-        "Content-Type": "application/json",
+        // "Content-Type": "application/json",
         Authorization: `Bearer ${user?.token}`,
       },
-      data: JSON.stringify(formData),
+      data: formDataToSend,
     })
       .then(function (response) {
         Swal.fire("Data Berhasil di Input!", "", "success");

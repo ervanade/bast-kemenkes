@@ -6,6 +6,7 @@ import { FaBell } from "react-icons/fa";
 import parse from "html-react-parser";
 
 import { encode, decode } from "html-encoder-decoder"; // Gunakan import alih-alih require
+import { Link } from "react-router-dom";
 
 const DropdownNotification = () => {
   const dispatch = useDispatch();
@@ -77,6 +78,17 @@ const DropdownNotification = () => {
                 </p>
               )}
             </ul>
+            <div className="w-full flex items-center">
+              <button className="w-full bg-green-500 text-white p-2 text-center text-sm font-semibold">
+                Baca Semua
+              </button>
+              <Link
+                to="/notifikasi"
+                className="w-full bg-primary text-white p-2 text-center text-sm font-semibold"
+              >
+                Semua Notifikasi
+              </Link>
+            </div>
           </div>
         )}
       </li>

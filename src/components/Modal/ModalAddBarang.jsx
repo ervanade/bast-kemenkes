@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import FormInput from "../Form/FormInput";
-import { ujiFungsiOptions } from "../../data/data";
+import { konfirmasiJumlahOptions, ujiFungsiOptions } from "../../data/data";
 
 const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
   const user = useSelector((a) => a.auth.user);
@@ -30,6 +30,19 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
       ...prev,
       uji_fungsi: selectedOption ? selectedOption.value.toString() : "",
     }));
+  };
+
+  const [selectedKonfirmasi, setSelectedKonfirmasi] = useState(
+    konfirmasiJumlahOptions[0]
+  );
+  const handleKonfirmasiChange = (selectedOption) => {
+    setSelectedKonfirmasi(selectedOption);
+    if (selectedOption.value === "1") {
+      setBarang((prev) => ({
+        ...prev,
+        jumlah_diterima: barang.jumlah_dikirim || "0",
+      }));
+    }
   };
   const [listBarang, setListBarang] = useState([]);
   const [selectedBarang, setSelectedBarang] = useState(null);
@@ -91,6 +104,8 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
       keterangan: "",
     });
     setSelectedBarang(null);
+    setSelectedProgram(ujiFungsiOptions[0]);
+    setSelectedKonfirmasi(konfirmasiJumlahOptions[0]);
     onClose();
   };
 
@@ -236,34 +251,67 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                 </div>
               ) : user.role === "3" ? (
                 <>
+                  <p className="text-center font-semibold text-primary">
+                    Jumlah Barang Dikirim : {barang?.jumlah_dikirim}
+                  </p>
                   <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
                     <div className="">
                       <label
                         className=" block text-[#728294] text-base font-semibold mb-2"
                         htmlFor="email"
                       >
-                        Jumlah Barang yang Diterima :
+                        Jumlah Barang :
                       </label>
                     </div>
                     <div className="">
-                      <input
-                        className={` bg-white disabled:bg-[#F2F2F2] appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                    "border-red-500" 
-                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                        id="jumlah_diterima"
-                        type="number"
-                        required
-                        value={barang.jumlah_diterima}
-                        onChange={(e) =>
-                          setBarang((prev) => ({
-                            ...prev,
-                            jumlah_diterima: e.target.value,
-                          }))
-                        }
-                        placeholder="Jumlah Barang yang Diterima"
+                      <Select
+                        options={konfirmasiJumlahOptions}
+                        onChange={handleKonfirmasiChange}
+                        value={selectedKonfirmasi}
+                        placeholder="Konfirmasi Penerimaan Barang"
+                        className="w-full cursor-pointer"
+                        theme={selectThemeColors}
                       />
                     </div>
                   </div>
+                  {selectedKonfirmasi.value === "0" ? (
+                    <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
+                      <div className="">
+                        <label
+                          className=" block text-[#728294] text-base font-semibold mb-2"
+                          htmlFor="email"
+                        >
+                          Jumlah Barang yang Diterima :
+                        </label>
+                      </div>
+                      <div className="">
+                        <input
+                          className={` bg-white disabled:bg-[#F2F2F2] appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                    "border-red-500" 
+                 rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                          id="jumlah_diterima"
+                          type="number"
+                          max={parseInt(barang.jumlah_dikirim) - 1}
+                          min={0}
+                          required
+                          value={barang.jumlah_diterima}
+                          onChange={(e) => {
+                            const value = Math.min(
+                              Math.max(0, parseInt(e.target.value) || 0), // Batas minimum
+                              barang.jumlah_dikirim - 1 // Batas maksimum
+                            );
+                            setBarang((prev) => ({
+                              ...prev,
+                              jumlah_diterima: value,
+                            }));
+                          }}
+                          placeholder="Jumlah Barang yang Diterima"
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    ""
+                  )}
 
                   <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
                     <div className="">

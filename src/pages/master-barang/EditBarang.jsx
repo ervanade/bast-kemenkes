@@ -94,7 +94,7 @@ const EditBarang = () => {
           keterangan: data.keterangan || "",
           contractFileName: data.contractFileName || "",
           contractFileLink: data.file_kontrak || "",
-
+          contractFile: null,
           penyedia: data.penyedia || "",
           jml_eksisting: data.jml_eksisting || "",
           jml_usulan: data.jml_usulan || "",
@@ -112,7 +112,24 @@ const EditBarang = () => {
 
   const handleChange = (event) => {
     const { id, value, files } = event.target;
-    setFormData((prev) => ({ ...prev, [id]: value }));
+    if (files) {
+      const file = files[0];
+      if (file.type !== "application/pdf") {
+        Swal.fire("Error", "File type harus PDF", "error");
+        return;
+      }
+      if (file.size > 15 * 1024 * 1024) {
+        Swal.fire("Error", "File size harus dibawah 15 MB", "error");
+        return;
+      }
+      setFormData((prev) => ({
+        ...prev,
+        [id]: file,
+        contractFileName: file.name,
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [id]: value }));
+    }
   };
 
   const updateBarang = async () => {
@@ -134,16 +151,16 @@ const EditBarang = () => {
     if (!formData.contractFile && formData.contractFileLink) {
       formDataToSend.append("file_kontrak", formData.contractFileLink);
     }
+
     await axios({
-      method: "put",
-      url: `${import.meta.env.VITE_APP_API_URL}/api/barang/${encodeURIComponent(
-        decryptId(id)
-      )}`,
+      method: "post",
+      url: `${
+        import.meta.env.VITE_APP_API_URL
+      }/api/update/barang/${encodeURIComponent(decryptId(id))}`,
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${user?.token}`,
       },
-      data: JSON.stringify(formData),
+      data: formDataToSend,
     })
       .then(function (response) {
         Swal.fire("Data Berhasil di Update!", "", "success");
@@ -191,6 +208,7 @@ const EditBarang = () => {
       </div>
     );
   }
+  console.log(formData);
 
   return (
     <div>

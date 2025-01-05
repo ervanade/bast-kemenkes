@@ -257,6 +257,18 @@ export const ujiFungsiOptions = [
     }
 
 ]
+
+export const konfirmasiJumlahOptions = [
+    {
+        "label": "Jumlah Belum Sesuai",
+        "value": "0"
+    },
+    {
+        "label": "Jumlah Sudah Sesuai",
+        "value": "1"
+    }
+
+]
 export const SelectOptions = [
     {
         "label": "Ya",

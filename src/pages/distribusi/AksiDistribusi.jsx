@@ -95,15 +95,82 @@ const AksiDistribusi = () => {
     );
   };
 
-  const handleDeleteSelected = () => {
-    // Add your delete logic here
-    console.log("Delete selected items:", selectedItems);
-  };
-
-  const handleConfirmAll = (e) => {
+  const handleConfirmAll = async (e) => {
     e.preventDefault();
-    // Add your confirm logic here
-    confirm("Confirm all selected items:", selectedItems);
+
+    // Ambil data barang berdasarkan selectedItems
+    const selectedBarang = selectedItems.map(
+      (index) => formData.dataBarang[index]
+    );
+
+    if (selectedBarang.length === 0) {
+      Swal.fire({
+        icon: "warning",
+        title: "Tidak ada barang yang dipilih",
+        text: "Silakan pilih barang terlebih dahulu.",
+      });
+      return;
+    }
+
+    // Tampilkan SweetAlert untuk konfirmasi
+    const { isConfirmed } = await Swal.fire({
+      title: "Konfirmasi Barang",
+      html: `
+        <p>Apakah Anda ingin mengonfirmasi barang berikut?</p>
+        <ul>
+          ${selectedBarang
+            .map((barang) => `<li><strong>${barang.jenis_alkes}</strong></li>`)
+            .join("")}
+        </ul>
+      `,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Ya, Konfirmasi",
+      cancelButtonText: "Batal",
+    });
+
+    if (!isConfirmed) {
+      return; // Batalkan jika user memilih "Batal"
+    }
+
+    // Siapkan payload untuk API
+    const payload = {
+      barang_ids: selectedBarang.map((barang) => barang.id_barang),
+    };
+
+    try {
+      const response = await fetch("/api/konfirmasi-barang", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error("Gagal mengirim konfirmasi barang");
+      }
+
+      const result = await response.json();
+
+      // Tampilkan notifikasi berhasil
+      Swal.fire({
+        icon: "success",
+        title: "Konfirmasi Berhasil",
+        text: result.message || "Barang berhasil dikonfirmasi.",
+      });
+
+      // Reset selection jika diperlukan
+      setSelectedItems([]);
+      setSelectAll(false);
+    } catch (error) {
+      console.error("Error:", error.message);
+      Swal.fire({
+        icon: "error",
+        title: "Gagal Mengonfirmasi",
+        text: error.message || "Terjadi kesalahan saat mengonfirmasi barang.",
+      });
+    }
   };
 
   const handleKotaChange = (selectedOption) => {
@@ -705,7 +772,7 @@ const AksiDistribusi = () => {
                     onClick={handleConfirmAll}
                     className="bg-green-500 text-white py-2 px-4 rounded-md"
                   >
-                    Konfirmasi Semua Barang
+                    Konfirmasi Barang Dipilih
                   </button>
                   <button
                     onClick={() => {
@@ -804,10 +871,16 @@ const AksiDistribusi = () => {
                           </td>
                           <td className="px-2 py-2 text-center">
                             <button
-                              className={`text-white py-2 font-medium text-xs px-2 rounded-md bg-green-500`}
+                              className={`text-white py-2 font-medium text-xs px-2 rounded-md ${
+                                barang.uji_fungsi === "1"
+                                  ? "bg-green-500"
+                                  : "bg-yellow-500"
+                              }`}
                               onClick={(e) => e.preventDefault()}
                             >
-                              Sudah Uji Fungsi
+                              {barang.uji_fungsi === "1"
+                                ? "Sudah Uji Fungsi"
+                                : "Belum Uji Fungsi"}
                             </button>
                           </td>
                           {user.role !== "2" ? (

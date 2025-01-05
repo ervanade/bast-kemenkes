@@ -57,6 +57,7 @@ import DetailLogActivity from "./pages/log/DetailLogActivity";
 import LaporanBarangProvinsi from "./pages/laporan/LaporanBarangProvinsi";
 import LaporanBarangKabupaten from "./pages/laporan/LaporanBarangKabupaten";
 import LaporanBarangPuskesmas from "./pages/laporan/LaporanBarangPuskesmas";
+import Notifikasi from "./pages/notifikasi/Notifikasi";
 
 function App() {
   const { pathname } = useLocation();
@@ -135,6 +136,7 @@ function App() {
                 element={<TambahDistribusi />}
               />
               <Route path="/not-found" element={<NotFound />} />
+              <Route path="notifikasi" element={<Notifikasi />} />
               <Route path="/" element={<ProtectedRoutesAdmin />}>
                 <Route path="/logactivity" element={<LogActivity />} />
                 <Route
