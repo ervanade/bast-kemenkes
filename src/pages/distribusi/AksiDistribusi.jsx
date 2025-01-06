@@ -135,42 +135,39 @@ const AksiDistribusi = () => {
 
     // Siapkan payload untuk API
     const payload = {
-      barang_ids: selectedBarang.map((barang) => barang.id_barang),
+      id: selectedBarang.map((barang) => barang.id_barang),
     };
 
-    try {
-      const response = await fetch("/api/konfirmasi-barang", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
+    await axios({
+      method: "post",
+      url: `${import.meta.env.VITE_APP_API_URL}/api/distribusi/updateall`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user?.token}`,
+      },
+      data: JSON.stringify(payload),
+    })
+      .then(function (response) {
+        Swal.fire({
+          icon: "success",
+          title: "Konfirmasi Berhasil",
+          text: response || "Barang berhasil dikonfirmasi.",
+        });
+
+        // Reset selection jika diperlukan
+        setSelectedItems([]);
+        setSelectAll(false);
+        fetchDistribusiData();
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error("Error:", error.message);
+        Swal.fire({
+          icon: "error",
+          title: "Gagal Mengonfirmasi",
+          text: error.message || "Terjadi kesalahan saat mengonfirmasi barang.",
+        });
       });
-
-      if (!response.ok) {
-        throw new Error("Gagal mengirim konfirmasi barang");
-      }
-
-      const result = await response.json();
-
-      // Tampilkan notifikasi berhasil
-      Swal.fire({
-        icon: "success",
-        title: "Konfirmasi Berhasil",
-        text: result.message || "Barang berhasil dikonfirmasi.",
-      });
-
-      // Reset selection jika diperlukan
-      setSelectedItems([]);
-      setSelectAll(false);
-    } catch (error) {
-      console.error("Error:", error.message);
-      Swal.fire({
-        icon: "error",
-        title: "Gagal Mengonfirmasi",
-        text: error.message || "Terjadi kesalahan saat mengonfirmasi barang.",
-      });
-    }
   };
 
   const handleKotaChange = (selectedOption) => {
