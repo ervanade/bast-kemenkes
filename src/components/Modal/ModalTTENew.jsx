@@ -167,13 +167,13 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData }) => {
                         }}
                       />
                       <div className="flex space-x-2 mt-4">
-                        <button
+                        {/* <button
                           type="button"
                           className="bg-primary hover:bg-primary text-white font-bold py-2 px-4 rounded"
                           onClick={handleSaveSignature}
                         >
                           Save TTE
-                        </button>
+                        </button> */}
                         <button
                           type="button"
                           className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
