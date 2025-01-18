@@ -325,7 +325,7 @@ const Profile = () => {
                     </div>
                     <div>
                       <span className="mb-1.5 text-black dark:text-white">
-                        Foto Profil Anda
+                        Logo Anda
                       </span>
                     </div>
                   </div>
@@ -341,9 +341,7 @@ const Profile = () => {
                     />
                     <div className="flex flex-col items-center justify-center space-y-3">
                       <p>
-                        <span className="text-primary">
-                          Upload Foto Profile Anda
-                        </span>
+                        <span className="text-primary">Upload Logo Anda</span>
                       </p>
                       <p className="mt-1.5">SVG, PNG, JPG</p>
                       <p>(max: 1MB size:800 X 800px)</p>

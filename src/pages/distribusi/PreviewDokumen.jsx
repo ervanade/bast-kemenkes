@@ -40,7 +40,7 @@ import { CgSpinner } from "react-icons/cg";
 import HeaderDokumen from "../../components/Title/HeaderDokumen";
 import { RenderBarangPages } from "../../components/Table/TableLampiran";
 import { RenderHibahPages } from "../../components/Table/TableHibah";
-import { FaDownload } from "react-icons/fa";
+import { FaDownload, FaSpinner } from "react-icons/fa";
 import { PDFDocument } from "pdf-lib";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
@@ -53,6 +53,8 @@ import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 
 import { useResizeObserver } from "@wojtekmaj/react-hooks";
 import Swal from "sweetalert2";
+import GenerateDokumen from "../../components/Dokumen/GenerateDokumen";
+import { MdWarning } from "react-icons/md";
 
 // pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
 // pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.mjs";
@@ -72,7 +74,9 @@ const PreviewDokumen = () => {
   const [showModal, setShowModal] = useState(false);
   const isMobile = useMediaQuery({ maxWidth: 500 }); // adjust the max width to your desired breakpoint
   const [pdfUrl, setPdfUrl] = useState(null); // Replace with your API link
+  const [pdfBlob, setPdfBlob] = useState(null); // Replace with your API link
   const [numPages, setNumPages] = useState(null);
+  const [error, setError] = useState(false);
   const [pageNumber, setPageNumber] = useState(1);
   const [scale, setScale] = useState(1);
 
@@ -93,9 +97,31 @@ const PreviewDokumen = () => {
     setNumPages(numPages);
   };
   const onLoadError = () => {
-    setJsonData((prev) => ({ ...prev, file_dokumen: null }));
+    setError(true);
   };
+  useEffect(() => {
+    const updateScale = () => {
+      const width = window.innerWidth;
+      if (width < 450) {
+        setScale(0.5);
+      } else if (width < 768) {
+        setScale(0.7);
+      } else if (width < 1366) {
+        setScale(1);
+      } else {
+        setScale(1.2);
+      }
+    };
 
+    // Set scale on component mount
+    updateScale();
+
+    // Add event listener for window resize
+    window.addEventListener("resize", updateScale);
+
+    // Clean up event listener on unmount
+    return () => window.removeEventListener("resize", updateScale);
+  }, []);
   const zoomIn = () => setScale((prevScale) => Math.min(prevScale + 0.1, 3));
   const zoomOut = () => setScale((prevScale) => Math.max(prevScale - 0.1, 0.5));
 
@@ -133,7 +159,7 @@ const PreviewDokumen = () => {
           //eslint-disable-next-line
           Authorization: `Bearer ${user?.token}`,
         },
-      }).then(function (response) {
+      }).then(async function (response) {
         // handle success
         // console.log(response)
         const data = response.data.data;
@@ -179,7 +205,64 @@ const PreviewDokumen = () => {
         if (data?.file_dokumen) {
           setPdfUrl(data?.file_dokumen);
           Swal.close();
+          setGetLoading(false);
+          return;
         }
+        const dataJson = {
+          nama_dokumen: data.nama_dokumen || "",
+          id: data.id,
+          nomorSurat: data.nomor_bast || "",
+          tanggal: data.tanggal_bast || defaultDate,
+          tanggal_tte_ppk: data.tanggal_tte_ppk || defaultDate,
+          tanggal_tte_daerah: data.tanggal_tte_daerah || defaultDate,
+          kecamatan: data.kecamatan,
+          puskesmas: data.Puskesmas,
+          namaKapus: data.nama_kapus,
+          provinsi: data.provinsi || "",
+          kabupaten: data.kabupaten || "",
+          penerima_hibah: data.penerima_hibah || "",
+          kepala_unit_pemberi: data.kepala_unit_pemberi || "",
+          distribusi: data.distribusi || [],
+          nipKapus: "nip.121212",
+          namaBarang: data.nama_barang,
+          status_tte: data.status_tte || "",
+          jumlahDikirim: "24",
+          jumlahDiterima: "24",
+          tte: "",
+          tteDaerah: {
+            image_url:
+              "https://www.shutterstock.com/image-vector/fake-autograph-samples-handdrawn-signatures-260nw-2332469589.jpg",
+            width: 50,
+            height: 50,
+          },
+          ket_daerah: "",
+          ket_ppk: data.keterangan_ppk,
+          tte_daerah: data.tte_daerah || defaultImage,
+          nama_daerah:
+            user?.role == "3"
+              ? data.nama_daerah || user?.name || ""
+              : data.nama_daerah || "",
+          nip_daerah:
+            user?.role == "3"
+              ? data.nip_daerah || user?.nip || ""
+              : data.nip_daerah || "",
+          tte_ppk: data.tte_ppk || defaultImage,
+          nama_ppk:
+            user?.role == "4"
+              ? data.nama_ppk || user?.name || ""
+              : data.nama_ppk || "",
+          nip_ppk:
+            user?.role == "4"
+              ? data.nip_ppk || user?.nip || ""
+              : data.nip_ppk || "",
+          total_barang_dikirim: data.total_barang_dikirim || "",
+          total_harga: data.total_harga || "",
+          file_dokumen: data.file_dokumen || null,
+        };
+
+        const pdfBlob = await GenerateDokumen(dataJson); // GenerateDokumen harus mengembalikan Blob PDF
+        setPdfBlob(pdfBlob);
+
         setGetLoading(false);
         Swal.close();
       });
@@ -199,7 +282,7 @@ const PreviewDokumen = () => {
 
   const renderError = (error) => {
     let message = "";
-    setJsonData((prev) => ({ ...prev, file_dokumen: null }));
+    setError(true);
     switch (error.name) {
       case "InvalidPDFException":
         message = "The document is invalid or corrupted";
@@ -436,6 +519,20 @@ const PreviewDokumen = () => {
     },
   });
 
+  const handleSwalLoading = (loading) => {
+    if (loading) {
+      Swal.fire({
+        title: "Generate dokumen...",
+        text: "Tunggu Sebentar Dokumen Disiapkan...",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading(); // Tampilkan loading spinner
+        },
+      });
+    } else {
+      Swal.close(); // Tutup swal ketika loading selesai
+    }
+  };
   if (getLoading) {
     return (
       <div className="flex justify-center items-center">
@@ -1881,16 +1978,17 @@ const PreviewDokumen = () => {
         <div className="flex justify-end items-center">
           <a
             href={pdfUrl}
-            download
+            download={`${jsonData.nama_dokumen || "document"}.pdf`}
             target="_blank"
-            className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition"
+            className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition flex items-center"
           >
-            Download Dokumen
+            <FaDownload className="mr-2" />
+            <span>Download Dokumen</span>
           </a>
         </div>
       ) : jsonData && !jsonData?.file_dokumen ? (
         <div className="flex justify-end items-center">
-          <PDFDownloadLink
+          {/* <PDFDownloadLink
             document={<Dokumen />}
             fileName={`Dokumen ${jsonData?.nama_dokumen}`}
             className="flex justify-center items-center bg-teal-500 text-white px-4 py-2 rounded-md"
@@ -1905,12 +2003,33 @@ const PreviewDokumen = () => {
                 </>
               )
             }
-          </PDFDownloadLink>
+          </PDFDownloadLink> */}
+          {pdfBlob ? (
+            <a
+              href={URL.createObjectURL(pdfBlob)}
+              download={`${jsonData.nama_dokumen || "document"}.pdf`}
+              target="_blank"
+              className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition flex items-center"
+            >
+              <FaDownload className="mr-2" />
+              <span>Download Dokumen</span>
+            </a>
+          ) : (
+            <FaSpinner />
+          )}
         </div>
       ) : (
         ""
       )}
-
+      {error && (
+        <div className="flex justify-center items-center flex-col h-[20vh] gap-2">
+          <MdWarning className=" inline-block w-8 h-8 text-teal-400" />
+          <span className="ml-2 font-semibold text-lg text-body">
+            Sedang Terjadi Error Pada File PDF, Silahkan coba pada beberapa saat
+            lagi
+          </span>
+        </div>
+      )}
       {!jsonData?.file_dokumen && isIFrameLoaded === false ? (
         <div className="flex h-[81vh]">
           <div className="m-auto">
@@ -2000,21 +2119,93 @@ const PreviewDokumen = () => {
       //   </div>
       // </div>
       jsonData && !jsonData.file_dokumen ? (
-        <div
-          className={`mt-4 flex [&>*]:w-full ${
-            isIFrameLoaded ? "h-[81vh]" : "h-0"
-          }`}
-        >
-          <PDFViewer
-            height="100%"
-            width="100%"
-            showToolbar={true}
-            className="rounded-md"
-            innerRef={iframeRef}
+        <>
+          {/* <div
+            className={`mt-4 flex [&>*]:w-full ${
+              isIFrameLoaded ? "h-[81vh]" : "h-0"
+            }`}
           >
-            <Dokumen />
-          </PDFViewer>
-        </div>
+            <PDFViewer
+              height="100%"
+              width="100%"
+              showToolbar={true}
+              className="rounded-md"
+              innerRef={iframeRef}
+            >
+              <Dokumen />
+            </PDFViewer>
+          </div> */}
+          <div className="flex flex-col items-center h-[80vh] w-full bg-gray-100 p-4">
+            <div className="bg-gray-300 rounded-lg shadow-lg w-full ">
+              <div className="mb-4 flex justify-between items-center bg-teal-500 py-2 md:py-3 rounded-lg md:px-2 px-3 text-xs md:flex-row flex-col gap-1 md:gap-2 md:text-sm">
+                <span className="text-white font-semibold">
+                  {jsonData?.nomorSurat}
+                </span>
+                <span className="text-white flex items-center gap-1">
+                  Total Page : {numPages || <FaSpinner />}
+                </span>
+                <div className="flex items-center gap-2">
+                  {pdfBlob ? (
+                    <a
+                      href={URL.createObjectURL(pdfBlob)}
+                      download={`${jsonData.nama_dokumen || "document"}.pdf`}
+                      target="_blank"
+                      className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition"
+                    >
+                      <FaDownload />
+                    </a>
+                  ) : (
+                    <FaSpinner />
+                  )}
+                  <button
+                    onClick={zoomOut}
+                    className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition"
+                  >
+                    -
+                  </button>
+                  <span className="text-white">{Math.round(scale * 100)}%</span>
+                  <button
+                    onClick={zoomIn}
+                    className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+              <div
+                ref={containerRef}
+                className="relative bg-gray-200 p-4 rounded-lg overflow-auto"
+                style={{ height: "80vh", width: "100%" }}
+              >
+                <DocumentPreview
+                  file={pdfBlob}
+                  onLoadSuccess={onLoadSuccess}
+                  onLoadError={onLoadError}
+                  className="pdf-document"
+                  loading={
+                    <div className="flex justify-center items-center flex-col h-[20vh] gap-2">
+                      <CgSpinner className="animate-spin inline-block w-8 h-8 text-teal-400" />
+                      <span className="ml-2 font-semibold text-lg text-body">
+                        Loading Generate Dokumen...
+                      </span>
+                    </div>
+                  }
+                >
+                  {[...Array(numPages).keys()].map((_, index) => (
+                    <PagePreview
+                      key={index}
+                      pageNumber={index + 1}
+                      scale={scale}
+                      className={`!bg-[#F5F9F9]`}
+                      renderTextLayer={false}
+                      renderAnnotationLayer={false}
+                    />
+                  ))}
+                </DocumentPreview>
+              </div>
+            </div>
+          </div>
+        </>
       ) : (
         ""
       )}

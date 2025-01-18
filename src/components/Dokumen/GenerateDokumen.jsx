@@ -244,7 +244,6 @@ const styles = StyleSheet.create({
 });
 
 const GenerateDokumen = async (jsonData) => {
-  console.log(jsonData);
   const MyDocument = () => (
     <Document title={`Dokumen ${jsonData?.nomorSurat}`}>
       <Page size="FOLIO" style={styles.page}>

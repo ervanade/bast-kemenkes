@@ -31,9 +31,12 @@ body {
 }
 
 canvas.react-pdf__Page__canvas {
-  margin-bottom: 50px;
+  margin-bottom: 16px;
   margin-left: auto;
   margin-right: auto;
+  /* margin: 0 auto;
+    width: 80% !important;
+    height: 100% !important; */
 }
 
 .notifikasi li {

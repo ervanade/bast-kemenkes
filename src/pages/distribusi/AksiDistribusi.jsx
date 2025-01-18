@@ -968,6 +968,57 @@ const AksiDistribusi = () => {
                 <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
                   <div className="sm:flex-[2_2_0%]">
                     <label
+                      className="block text-[#728294] text-base font-normal mb-2"
+                      htmlFor="contractFile"
+                    >
+                      Upload Dokumen Pendukung:
+                    </label>
+                  </div>
+                  <div className="sm:flex-[5_5_0%] flex flex-col items-start gap-1">
+                    <div className="flex items-center">
+                      <label className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded cursor-pointer inline-flex items-center">
+                        <input
+                          className="hidden"
+                          id="contractFile"
+                          onChange={handleChange}
+                          type="file"
+                          accept="application/pdf"
+                        />
+                        Upload File
+                      </label>
+                      {formData.contractFileName && (
+                        <p className="text-gray-500 text-xs mx-4">
+                          File: {formData.contractFileName}
+                        </p>
+                      )}
+                      {formData.contractFileLink && !formData.contractFile ? (
+                        <a
+                          href={formData.contractFileLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="ml-1 px-4 py-2 bg-blue-500 text-white rounded-md"
+                        >
+                          Dokumen Anda
+                        </a>
+                      ) : !formData.contractFileLink &&
+                        !formData.contractFile ? (
+                        <p className="text-gray-500 text-xs ml-1">
+                          Anda Belum Mengupload Dokumen Pendukung
+                        </p>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                    <p className="text-gray-500 text-xs mt-1">
+                      Max file size: 15MB, Type: PDF
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+                  <div className="sm:flex-[2_2_0%]">
+                    <label
                       className="block text-[#728294] text-base font-semibold mb-2"
                       htmlFor="email"
                     >
