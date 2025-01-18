@@ -54,6 +54,9 @@ const AksiDistribusi = () => {
     id_user_pembuat: 1,
     id_user_penerima: "2",
     dataBarang: [],
+    pendukungFile: null,
+    pendukungFileName: "",
+    pendukungFileLink: "",
   });
 
   const navigate = useNavigate();
@@ -151,7 +154,7 @@ const AksiDistribusi = () => {
         Swal.fire({
           icon: "success",
           title: "Konfirmasi Berhasil",
-          text: response || "Barang berhasil dikonfirmasi.",
+          text: "Barang berhasil dikonfirmasi.",
         });
 
         // Reset selection jika diperlukan
@@ -228,9 +231,26 @@ const AksiDistribusi = () => {
 
   const handleChange = (event) => {
     const { id, value, files } = event.target;
-    setFormData((prev) => ({ ...prev, [id]: value }));
+    if (files) {
+      const file = files[0];
+      if (file.type !== "application/pdf") {
+        Swal.fire("Error", "File type harus PDF", "error");
+        return;
+      }
+      if (file.size > 15 * 1024 * 1024) {
+        Swal.fire("Error", "File size harus dibawah 15 MB", "error");
+        return;
+      }
+      setFormData((prev) => ({
+        ...prev,
+        [id]: file,
+        pendukungFileName: file.name,
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [id]: value }));
+    }
   };
-
+  console.log(formData);
   const fetchKota = async () => {
     setGetLoading(true);
     try {
@@ -377,6 +397,9 @@ const AksiDistribusi = () => {
           id_user_pemberi: "1",
           id_user_pembuat: 1,
           id_user_penerima: "2",
+          pendukungFileName: data.pendukungFileName || "",
+          pendukungFile: null,
+          pendukungFileLink: data.dokumen_pendukung || "",
           dataBarang: data.dataBarang || [],
         });
       });
@@ -399,19 +422,40 @@ const AksiDistribusi = () => {
       Swal.fire("Error", "Form Data Barang Masih Kosong", "error");
       return;
     }
+    if (
+      user.role === "3" &&
+      !formData.pendukungFile &&
+      !formData.pendukungFileLink
+    ) {
+      Swal.fire("Error", "Dokumen Pendukung Masih Kosong", "error");
+      setLoading(false);
+      return;
+    }
     setLoading(true);
+    const formDataToSend = new FormData();
+    formDataToSend.append("id_kecamatan", formData.id_kecamatan);
+    formDataToSend.append("id_puskesmas", formData.id_puskesmas);
+    formDataToSend.append("id_dokumen", formData.id_dokumen);
+    formDataToSend.append("id_provinsi", formData.id_provinsi);
+    formDataToSend.append("id_kabupaten", formData.id_kabupaten);
+    formDataToSend.append("tanggal_kirim", formData.tanggal_kirim);
+    formDataToSend.append("keterangan_ppk", formData.keterangan_ppk);
+    formDataToSend.append("keterangan_daerah", formData.keterangan_daerah);
+    formDataToSend.append("dataBarang", JSON.stringify(formData.dataBarang));
+    if (formData.pendukungFile) {
+      formDataToSend.append("dokumen_pendukung", formData.pendukungFile);
+    }
+    // if (!formData.pendukungFile && formData.pendukungFileLink) {
+    //   formDataToSend.append("dokumen_pendukung", formData.pendukungFileLink);
+    // }
     await axios({
-      method: "put",
+      method: "post",
       url: `${import.meta.env.VITE_APP_API_URL}/api/distribusi/${id}`,
       headers: {
-        "Content-Type": "application/json",
+        // "Content-Type": "application/json",
         Authorization: `Bearer ${user?.token}`,
       },
-      data: JSON.stringify({
-        ...formData,
-        konfirmasi_daerah: formData.konfirmasi_daerah?.value,
-        konfirmasi_ppk: formData.konfirmasi_ppk?.value,
-      }),
+      data: formDataToSend,
     })
       .then(function (response) {
         Swal.fire("Data Berhasil di Input!", "", "success");
@@ -965,56 +1009,59 @@ const AksiDistribusi = () => {
                   </div>
                 </div>
 
-                <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-                  <div className="sm:flex-[2_2_0%]">
-                    <label
-                      className="block text-[#728294] text-base font-normal mb-2"
-                      htmlFor="contractFile"
-                    >
-                      Upload Dokumen Pendukung:
-                    </label>
-                  </div>
-                  <div className="sm:flex-[5_5_0%] flex flex-col items-start gap-1">
-                    <div className="flex items-center">
-                      <label className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded cursor-pointer inline-flex items-center">
-                        <input
-                          className="hidden"
-                          id="contractFile"
-                          onChange={handleChange}
-                          type="file"
-                          accept="application/pdf"
-                        />
-                        Upload File
+                {user.role === "3" && (
+                  <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+                    <div className="sm:flex-[2_2_0%]">
+                      <label
+                        className=" block text-[#728294] text-base font-semibold mb-2"
+                        htmlFor="pendukungFile"
+                      >
+                        Upload Dokumen Pendukung:
                       </label>
-                      {formData.contractFileName && (
-                        <p className="text-gray-500 text-xs mx-4">
-                          File: {formData.contractFileName}
-                        </p>
-                      )}
-                      {formData.contractFileLink && !formData.contractFile ? (
-                        <a
-                          href={formData.contractFileLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="ml-1 px-4 py-2 bg-blue-500 text-white rounded-md"
-                        >
-                          Dokumen Anda
-                        </a>
-                      ) : !formData.contractFileLink &&
-                        !formData.contractFile ? (
-                        <p className="text-gray-500 text-xs ml-1">
-                          Anda Belum Mengupload Dokumen Pendukung
-                        </p>
-                      ) : (
-                        ""
-                      )}
                     </div>
+                    <div className="sm:flex-[5_5_0%] flex flex-col items-start gap-1">
+                      <div className="flex items-center">
+                        <label className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded cursor-pointer inline-flex items-center">
+                          <input
+                            className="hidden"
+                            id="pendukungFile"
+                            onChange={handleChange}
+                            type="file"
+                            accept="application/pdf"
+                          />
+                          Upload File
+                        </label>
+                        {formData.pendukungFileName && (
+                          <p className="text-gray-500 text-xs mx-4">
+                            File: {formData.pendukungFileName}
+                          </p>
+                        )}
+                        {formData.pendukungFileLink &&
+                        !formData.pendukungFile ? (
+                          <a
+                            href={formData.pendukungFileLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="ml-1 px-4 py-2 bg-blue-500 text-white rounded-md"
+                          >
+                            Dokumen Anda
+                          </a>
+                        ) : !formData.pendukungFileLink &&
+                          !formData.pendukungFile ? (
+                          <p className="text-gray-500 text-xs ml-1">
+                            Anda Belum Mengupload Dokumen Pendukung
+                          </p>
+                        ) : (
+                          ""
+                        )}
+                      </div>
 
-                    <p className="text-gray-500 text-xs mt-1">
-                      Max file size: 15MB, Type: PDF
-                    </p>
+                      <p className="text-gray-500 text-xs mt-1">
+                        Max file size: 100MB, Type: PDF
+                      </p>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
                   <div className="sm:flex-[2_2_0%]">
@@ -1082,6 +1129,7 @@ const AksiDistribusi = () => {
                   <button
                     className="w-full bg-[#0ACBC2]  text-white font-bold py-4 px-6 rounded-md focus:outline-none focus:shadow-outline dark:bg-transparent"
                     type="submit"
+                    disabled={loading}
                   >
                     {loading ? "Loading..." : "Simpan"}
                   </button>

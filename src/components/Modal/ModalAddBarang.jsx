@@ -70,6 +70,16 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
   useEffect(() => {
     if (editIndex !== null && dataBarang) {
       setBarang(dataBarang);
+      setSelectedKonfirmasi(
+        dataBarang?.jumlah_dikirim === dataBarang?.jumlah_diterima
+          ? konfirmasiJumlahOptions[1]
+          : konfirmasiJumlahOptions[0]
+      );
+      setSelectedProgram(
+        dataBarang?.uji_fungsi == "1"
+          ? ujiFungsiOptions[1]
+          : ujiFungsiOptions[0]
+      );
     } else {
       setBarang({
         id_barang: "",
@@ -81,6 +91,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
         satuan: "",
         harga_satuan: "",
         keterangan: "",
+        uji_fungsi: "",
       });
     }
   }, [editIndex, dataBarang]);

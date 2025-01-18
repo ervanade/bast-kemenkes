@@ -526,7 +526,7 @@ const TambahDokumen = () => {
                   )}
                 </div>
                 <p className="text-gray-500 text-xs mt-1">
-                  Max file size: 15MB, Type: PDF
+                  Max file size: 100MB, Type: PDF
                 </p>
               </div>
             </div>

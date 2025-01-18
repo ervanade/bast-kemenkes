@@ -762,7 +762,7 @@ const Dokumen = () => {
             >
               <FaDownload size={20} />
             </button>
-            {user.role === "2" || user.role === "3" || user.role === "4" ? (
+            {/* {user.role === "2" || user.role === "3" || user.role === "4" ? (
               <button
                 title="Upload Dokumen"
                 className="text-white py-2 w-20 bg-teal-500 rounded-md"
@@ -772,7 +772,7 @@ const Dokumen = () => {
               </button>
             ) : (
               ""
-            )}
+            )} */}
           </div>
         ),
         ignoreRowClick: true,
@@ -848,13 +848,14 @@ const Dokumen = () => {
                     handleTTE(e, row.id, row.nama_dokumen);
                   }}
                 >
-                  <Link
+                  TTE
+                  {/* <Link
                     to={`/dokumen/preview-dokumen/${encodeURIComponent(
                       encryptId(row.id)
                     )}`}
                   >
                     TTE
-                  </Link>
+                  </Link> */}
                 </button>
               ) : (
                 // <button
