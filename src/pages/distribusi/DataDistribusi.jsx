@@ -773,7 +773,7 @@ const DataDistribusi = () => {
               columns={columns}
               data={filteredData}
               pagination
-              defaultSortFieldId="Aksi"
+              // defaultSortFieldId="Aksi"
               defaultSortAsc={false}
               persistTableHead
               highlightOnHover

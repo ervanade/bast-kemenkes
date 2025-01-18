@@ -135,7 +135,7 @@ const AksiDistribusi = () => {
 
     // Siapkan payload untuk API
     const payload = {
-      id: selectedBarang.map((barang) => barang.id_barang),
+      id: selectedBarang.map((barang) => barang.id),
     };
 
     await axios({
