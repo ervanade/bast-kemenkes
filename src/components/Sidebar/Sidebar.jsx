@@ -136,7 +136,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                     <NavLink
                       to="/dokumen"
                       className={`group relative flex items-center gap-2.5 rounded-md py-3 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                        pathname.includes("dokumen") &&
+                        pathname === "/dokumen" &&
                         "bg-graydark dark:bg-meta-4 text-primary"
                       }`}
                     >
@@ -151,7 +151,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                     <NavLink
                       to="/dokumen"
                       className={`group relative flex items-center gap-2.5 rounded-md py-3 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                        pathname.includes("dokumen") &&
+                        pathname === "/dokumen" &&
                         "bg-graydark dark:bg-meta-4 text-primary"
                       }`}
                     >
@@ -178,7 +178,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                     <NavLink
                       to="/dokumen"
                       className={`group relative flex items-center gap-2.5 rounded-md py-3 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                        pathname.includes("dokumen") &&
+                        pathname === "/dokumen" &&
                         "bg-graydark dark:bg-meta-4 text-primary"
                       }`}
                     >
@@ -195,7 +195,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                   <NavLink
                     to="/dokumen"
                     className={`group relative flex items-center gap-2.5 rounded-md py-3 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                      pathname.includes("dokumen") &&
+                      pathname === ("/dokumen") &&
                       "bg-graydark dark:bg-meta-4 text-primary"
                     }`}
                   >
@@ -317,6 +317,21 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                 </SidebarLinkGroup>
                 {/* <!-- Menu Item Ui Elements --> */}
               </ul>
+
+              {user?.role !== "3" && (
+                <li>
+                  <NavLink
+                    to="/dokumen-distributor"
+                    className={`group relative flex items-center gap-2.5 rounded-md py-3 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                      pathname.includes("dokumen-distributor") &&
+                      "bg-graydark dark:bg-meta-4 text-primary"
+                    }`}
+                  >
+                    <MdOutlineDomainVerification size={22} />
+                    Dokumen Distributor
+                  </NavLink>
+                </li>
+              )}
               {/* <!-- Menu Item Profile --> */}
 
               {/* <!-- Menu Item Forms --> */}

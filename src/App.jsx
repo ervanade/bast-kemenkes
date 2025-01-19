@@ -58,6 +58,7 @@ import LaporanBarangProvinsi from "./pages/laporan/LaporanBarangProvinsi";
 import LaporanBarangKabupaten from "./pages/laporan/LaporanBarangKabupaten";
 import LaporanBarangPuskesmas from "./pages/laporan/LaporanBarangPuskesmas";
 import Notifikasi from "./pages/notifikasi/Notifikasi";
+import DokumenDistributor from "./pages/dokumen-distributor/DokumenDistributor";
 
 function App() {
   const { pathname } = useLocation();
@@ -88,6 +89,11 @@ function App() {
                 path="data-distribusi/detail/:id"
                 element={<DetailDistribusi />}
               />
+              <Route
+                path="/dokumen-distributor"
+                element={<DokumenDistributor />}
+              />
+
               <Route path="dokumen" element={<Dokumen />} />
               <Route path="tes-upload" element={<TesUpload />} />
               <Route path="dokumen/add" element={<TambahDokumen />} />

@@ -18,6 +18,7 @@ import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import FormInput from "../../components/Form/FormInput";
+import { MdCheckCircle } from "react-icons/md";
 
 const TambahDokumen = () => {
   var today = new Date();
@@ -46,6 +47,15 @@ const TambahDokumen = () => {
   const [dataKota, setDataKota] = useState([]);
   const [dataKecamatan, setDataKecamatan] = useState([]);
   const [dataUser, setDataUser] = useState([]);
+  const [errors, setErrors] = useState({
+    nomor_bast: "",
+    nomor_dokumen: "",
+    // ... Error untuk form lainnya
+  });
+  const [valid, setValid] = useState({
+    nomor_bast: false,
+    nomor_dokumen: false,
+  });
 
   const [selectedProvinsi, setSelectedProvinsi] = useState(null);
   const [selectedKota, setSelectedKota] = useState(null);
@@ -136,7 +146,11 @@ const TambahDokumen = () => {
 
   const handleChange = (event) => {
     const { id, value, files } = event.target;
+    let errorMessage = "";
+    let isValid = true;
+
     if (files) {
+      // Validasi file PDF
       const file = files[0];
       if (file.type !== "application/pdf") {
         Swal.fire("Error", "File type harus PDF", "error");
@@ -152,8 +166,33 @@ const TambahDokumen = () => {
         contractFileName: file.name,
       }));
     } else {
-      setFormData((prev) => ({ ...prev, [id]: value }));
+      // Validasi untuk Nomor BAST
+      if (id === "nomor_bast") {
+        const regexBast =
+          /^KN\.02\.07\/([A-Za-z0-9\[\]A-Za-z\-\_]+)\/([A-Za-z0-9\[\]A-Za-z\-\_]+)\/([A-Za-z0-9\[\]A-Za-z\-\_]+)\/([A-Za-z0-9\[\]A-Za-z\-\_]+)$/;
+        if (!regexBast.test(value)) {
+          errorMessage =
+            "Format nomor BAST salah. Format yang benar adalah: KN.02.07/[KODE_TAKELNAS]/[BATCH]/[NO]/[TAHUN]";
+          isValid = false;
+        }
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        [id]: value,
+      }));
     }
+
+    // Update error state
+    setErrors((prev) => ({
+      ...prev,
+      [id]: errorMessage,
+    }));
+
+    setValid((prev) => ({
+      ...prev,
+      [id]: isValid,
+    }));
   };
 
   const tambahDokumen = async () => {
@@ -169,6 +208,12 @@ const TambahDokumen = () => {
       !selectedProgram
     ) {
       Swal.fire("Error", "Ada Form yang belum di lengkapi", "error");
+      setLoading(false);
+      return;
+    }
+    // Cek error di setiap form
+    if (Object.values(errors).some((err) => err !== "")) {
+      Swal.fire("Error", "Ada form yang belum diisi dengan benar", "error");
       setLoading(false);
       return;
     }
@@ -367,11 +412,15 @@ const TambahDokumen = () => {
                   Nomor BAST :
                 </label>
               </div>
-              <div className="sm:flex-[5_5_0%]">
+              <div className="sm:flex-[5_5_0%] relative">
                 <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                  className={`sm:flex-[5_5_0%] bg-white appearance-none border ${
+                    errors.nomor_bast
+                      ? "border-red-500"
+                      : valid.nomor_bast
+                      ? "border-green-500"
+                      : "border-[#cacaca]"
+                  } rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
                   id="nomor_bast"
                   value={formData.nomor_bast}
                   onChange={handleChange}
@@ -379,6 +428,25 @@ const TambahDokumen = () => {
                   required
                   placeholder="Nomor BAST"
                 />
+                {/* Tampilkan pesan error jika format salah */}
+                {valid.nomor_bast && (
+                  <MdCheckCircle
+                    size={20}
+                    className="absolute right-3 top-3 text-green-500"
+                  />
+                )}
+                {errors.nomor_bast && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.nomor_bast}
+                  </p>
+                )}
+
+                {/* Tampilkan icon checklist jika format benar */}
+                {formData.validNomorBast === true && (
+                  <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500">
+                    ✔
+                  </span>
+                )}
               </div>
             </div>
 
