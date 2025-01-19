@@ -1130,6 +1130,7 @@ const Dokumen = () => {
         onClose={() => setShowPopup(false)}
         setShowPopup={setShowPopup}
         jsonData={jsonData}
+        user={user}
       />
       <ModalTTE
         show={showModal}

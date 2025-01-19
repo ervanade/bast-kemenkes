@@ -6,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { selectThemeColors } from "../../data/utils";
 import Select from "react-select";
+import NoImage from "../../assets/no-image.png";
 import SignatureCanvas from "react-signature-canvas";
 import {
   dataBarang,
@@ -14,12 +15,35 @@ import {
   dataPuskesmas,
   konfirmasiOptions,
 } from "../../data/data";
+import axios from "axios";
 
-const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData }) => {
+const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
   const [signature, setSignature] = useState(null);
   const [file, setFile] = useState(null);
   const [activeTab, setActiveTab] = useState("tab2");
+  const [loading, setLoading] = useState(false);
+  const [setuju, setSetuju] = useState(false);
+
+  const navigate = useNavigate();
   //   const [showModal, setShowModal] = useState(false);
+
+  const [previewImages, setPreviewImages] = useState({
+    ttd: null,
+  });
+
+  useEffect(() => {
+    if (user?.ttd) {
+      setPreviewImages({ ttd: user?.ttd });
+    }
+  }, [user?.ttd, isVisible]);
+
+  useEffect(() => {
+    // Reset setuju setiap kali modal ditutup atau dibuka kembali
+    if (!isVisible) {
+      setSetuju(false);
+    }
+  }, [isVisible]);
+
   const signatureRef = useRef(null);
   const onSaveSignature = (signatureDataURL) => {
     setSignature(signatureDataURL);
@@ -41,7 +65,7 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData }) => {
   const handleUploadFile = (event) => {
     setFile(event.target.files[0]);
     setSignature(null); // Clear signature if a file is uploaded
-    setShowPopup(false);
+    // setShowPopup(false);
   };
 
   const handleTabChange = (event, tab) => {
@@ -50,12 +74,115 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData }) => {
   };
 
   const handleResetSignature = () => {
-    signatureRef.current.clear();
+    signatureRef?.current?.clear();
     onSaveSignature(null);
+    setPreviewImages((prev) => ({ ...prev, ttd: null }));
+    setFile(null);
     // onClose();
   };
-  const [setuju, setSetuju] = useState(false);
 
+  const cekTte = async () => {
+    setLoading(true);
+
+    // Validasi jika tidak ada TTE (signature atau file)
+
+    Swal.fire({
+      title: "TTE dokumen...",
+      text: "Tunggu Sebentar TTE Dokumen Disiapkan...",
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      willOpen: () => {
+        Swal.showLoading();
+      },
+    });
+    const formDataToSend = new FormData();
+
+    // Jika previewImages.ttd tersedia, ubah menjadi File
+    if (previewImages?.ttd) {
+      const response = await fetch(previewImages.ttd);
+      const blob = await response.blob();
+      const fileFromTtd = new File([blob], "signature.png", {
+        type: "image/png",
+      });
+      if (user?.role === "3") {
+        formDataToSend.append("tte_daerah", fileFromTtd);
+      } else if (user?.role === "4") {
+        formDataToSend.append("tte_ppk", fileFromTtd);
+      }
+    } else if (file) {
+      // Jika file diunggah
+      if (user?.role === "3") {
+        formDataToSend.append("tte_daerah", file);
+      } else if (user?.role === "4") {
+        formDataToSend.append("tte_ppk", file);
+      }
+    } else if (signature) {
+      // Jika signature (dari canvas)
+      const blob = await (await fetch(signature)).blob();
+      const fileFromSignature = new File([blob], "signature.png", {
+        type: "image/png",
+      });
+      if (user?.role === "3") {
+        formDataToSend.append("tte_daerah", fileFromSignature);
+      } else if (user?.role === "4") {
+        formDataToSend.append("tte_ppk", fileFromSignature);
+      }
+    }
+
+    formDataToSend.append("id_dokumen", jsonData?.id_dokumen);
+
+    // Kirim FormData ke API
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_APP_API_URL}/api/update/tte`,
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${user?.token}`,
+          },
+        }
+      );
+      Swal.fire("Dokumen Berhasil di TTE!", "", "success");
+      navigate("/dokumen");
+    } catch (error) {
+      Swal.fire(
+        "Gagal TTE! Pastikan TTE, Nama, NIP Sudah di Input",
+        "",
+        "error"
+      );
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTTE = () => {
+    if (!setuju) {
+      Swal.fire("Error", "Anda Belum Menyetujui TTE", "warning");
+      setLoading(false);
+      return;
+    }
+    if (!previewImages?.ttd && !signature && !file) {
+      Swal.fire("Error", "Anda Belum TTE", "warning");
+      setLoading(false);
+      return;
+    }
+    Swal.fire({
+      title: "Perhatian",
+      text: "Jumlah dikirim dan diterima sudah sesuai, tandatangani BAST ini?",
+      showCancelButton: true,
+      denyButtonColor: "#3B82F6",
+      confirmButtonColor: "#16B3AC",
+      confirmButtonText: "Ya",
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        cekTte();
+      }
+    });
+    onClose();
+  };
   return (
     <>
       {/* <button
@@ -111,35 +238,63 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData }) => {
                       id="tab1"
                       className="tab-pane h-64 w-full flex flex-col items-center justify-center"
                     >
-                      <div
-                        id="FileUpload"
-                        className="relative my-2 block w-full cursor-pointer appearance-none rounded border border-dashed border-primary bg-gray py-4 px-4 dark:bg-meta-4 sm:py-4.5"
-                      >
-                        <input
-                          type="file"
-                          onChange={handleUploadFile}
-                          accept="image/*"
-                          className="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
-                        />
-                        <div className="flex flex-col items-center justify-center space-y-3">
-                          <p>
-                            <span className="text-primary">
-                              Click to upload
-                            </span>{" "}
-                            or drag and drop
-                          </p>
-                          <p className="mt-1.5">
-                            Disarankan Background Berwarna Putih
-                          </p>
-                          <p>(FILE PNG, 800 X 800px)</p>
+                      {previewImages?.ttd ? (
+                        <>
+                          <div className="mb-6">
+                            <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 text-center">
+                              Preview TTE
+                            </label>
+                            <img
+                              src={previewImages.ttd || NoImage}
+                              className="w-48 mx-auto py-2 rounded-md"
+                              alt="Profile Preview"
+                              style={{ width: "200px", height: "100px" }}
+                              onError={({ currentTarget }) => {
+                                currentTarget.onerror = null; // prevents looping
+                                currentTarget.src = NoImage;
+                              }}
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                            onClick={handleResetSignature}
+                          >
+                            Reset TTE
+                          </button>
+                        </>
+                      ) : (
+                        <div
+                          id="FileUpload"
+                          className="relative my-2 block w-full cursor-pointer appearance-none rounded border border-dashed border-primary bg-gray py-4 px-4 dark:bg-meta-4 sm:py-4.5"
+                        >
+                          <input
+                            type="file"
+                            onChange={handleUploadFile}
+                            accept="image/png"
+                            className="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
+                          />
+                          <div className="flex flex-col items-center justify-center space-y-3">
+                            <p>
+                              <span className="text-primary">
+                                Click to upload
+                              </span>{" "}
+                              or drag and drop
+                            </p>
+                            <p className="mt-1.5">
+                              Disarankan Background Berwarna Putih
+                            </p>
+                            <p>(FILE PNG, 800 X 800px)</p>
+                          </div>
                         </div>
-                      </div>
+                      )}
+
                       {/* <input
                         type="file"
                         className="appearance-none block mt-4 bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white"
                         onChange={onUploadFile}
                       /> */}
-                      {file && (
+                      {file && !previewImages.ttd && (
                         <div className="my-2">
                           <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
                             Preview File
@@ -158,30 +313,59 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData }) => {
                       id="tab2"
                       className="tab-pane h-64 w-full flex flex-col items-center justify-center"
                     >
-                      <SignatureCanvas
-                        ref={signatureRef}
-                        canvasProps={{
-                          width: 400,
-                          height: 200,
-                          className: "border border-gray-300",
-                        }}
-                      />
-                      <div className="flex space-x-2 mt-4">
-                        {/* <button
+                      {previewImages?.ttd ? (
+                        <>
+                          <div className="mb-6">
+                            <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 text-center">
+                              Preview TTE
+                            </label>
+                            <img
+                              src={previewImages.ttd || NoImage}
+                              className="w-48 mx-auto py-2 rounded-md"
+                              alt="Profile Preview"
+                              style={{ width: "200px", height: "100px" }}
+                              onError={({ currentTarget }) => {
+                                currentTarget.onerror = null; // prevents looping
+                                currentTarget.src = NoImage;
+                              }}
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                            onClick={handleResetSignature}
+                          >
+                            Reset TTE
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <SignatureCanvas
+                            ref={signatureRef}
+                            canvasProps={{
+                              width: 400,
+                              height: 200,
+                              className: "border border-gray-300",
+                            }}
+                          />
+                          <div className="flex space-x-2 mt-4">
+                            {/* <button
                           type="button"
                           className="bg-primary hover:bg-primary text-white font-bold py-2 px-4 rounded"
                           onClick={handleSaveSignature}
                         >
                           Save TTE
                         </button> */}
-                        <button
-                          type="button"
-                          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                          onClick={handleResetSignature}
-                        >
-                          Reset TTE
-                        </button>
-                      </div>
+                            <button
+                              type="button"
+                              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                              onClick={handleResetSignature}
+                            >
+                              Reset TTE
+                            </button>
+                          </div>
+                        </>
+                      )}
                     </div>
                   )}
                 </div>
@@ -204,7 +388,11 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData }) => {
                     </label>
                   </div>
                   <div className="flex items-center justify-center">
-                    <button className="bg-primary hover:bg-primary text-white font-bold py-3 px-6 rounded">
+                    <button
+                      onClick={handleTTE}
+                      disabled={loading}
+                      className="bg-primary hover:bg-primary text-white font-bold py-3 px-6 rounded"
+                    >
                       Submit
                     </button>
                   </div>

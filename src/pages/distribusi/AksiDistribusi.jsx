@@ -1063,6 +1063,41 @@ const AksiDistribusi = () => {
                   </div>
                 )}
 
+                {user.role !== "3" && formData?.pendukungFileLink && (
+                  <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+                    <div className="sm:flex-[2_2_0%]">
+                      <label
+                        className=" block text-[#728294] text-base font-semibold mb-2"
+                        htmlFor="pendukungFile"
+                      >
+                        Dokumen Pendukung:
+                      </label>
+                    </div>
+                    <div className="sm:flex-[5_5_0%] flex flex-col items-start gap-1">
+                      <div className="flex items-center">
+                        {formData.pendukungFileLink &&
+                        !formData.pendukungFile ? (
+                          <a
+                            href={formData.pendukungFileLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="ml-1 px-4 py-2 bg-blue-500 text-white rounded-md"
+                          >
+                            Dokumen Pendukung Uji Fungsi
+                          </a>
+                        ) : !formData.pendukungFileLink &&
+                          !formData.pendukungFile ? (
+                          <p className="text-gray-500 text-xs ml-1">
+                            Anda Belum Mengupload Dokumen Pendukung
+                          </p>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
                   <div className="sm:flex-[2_2_0%]">
                     <label
