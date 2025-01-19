@@ -16,6 +16,7 @@ import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import ModalAddBarang from "../../components/Modal/ModalAddBarang";
 import axios from "axios";
 import { CgSpinner } from "react-icons/cg";
+import FormInput from "../../components/Form/FormInput";
 
 const AksiDistribusi = () => {
   var today = new Date();
@@ -57,6 +58,8 @@ const AksiDistribusi = () => {
     pendukungFile: null,
     pendukungFileName: "",
     pendukungFileLink: "",
+    penyedia: "",
+    id_penyedia: "",
   });
 
   const navigate = useNavigate();
@@ -72,11 +75,13 @@ const AksiDistribusi = () => {
   const [dataDokumen, setDataDokumen] = useState([]);
   const [dataKecamatan, setDataKecamatan] = useState([]);
   const [dataPuskesmas, setDataPuskesmas] = useState([]);
+  const [dataPenyedia, setDataPenyedia] = useState([]);
 
   const [selectedKota, setSelectedKota] = useState(null);
   const [selectedDokumen, setSelectedDokumen] = useState(null);
   const [selectedKecamatan, setSelectedKecamatan] = useState(null);
   const [selectedPuskesmas, setSelectedPuskesmas] = useState(null);
+  const [selectedPenyedia, setSelectedPenyedia] = useState(null);
 
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
@@ -212,6 +217,17 @@ const AksiDistribusi = () => {
     }
   };
 
+  const handlePenyediaChange = (selectedOption) => {
+    setSelectedPenyedia(selectedOption);
+    if (selectedOption) {
+      setFormData((prev) => ({
+        ...prev,
+        id_penyedia: selectedOption.value.toString(),
+        penyedia: selectedOption.label.toString(),
+      }));
+    }
+  };
+  console.log(formData);
   const handleDokumenChange = (selectedOption) => {
     setSelectedKecamatan(null);
     setDataKecamatan([]);
@@ -345,6 +361,29 @@ const AksiDistribusi = () => {
       setDataDokumen([]);
     }
   };
+  const fetchPenyedia = async () => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/penyedia`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataPenyedia([
+        ...response.data.data
+          // .filter((a) => a.status_tte == "0")
+          .map((item) => ({
+            label: item.penyedia,
+            value: item.id,
+          })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setDataPenyedia([]);
+    }
+  };
   const { id } = useParams();
 
   const fetchDistribusiData = async () => {
@@ -401,6 +440,8 @@ const AksiDistribusi = () => {
           pendukungFile: null,
           pendukungFileLink: data.dokumen_pendukung || "",
           dataBarang: data.dataBarang || [],
+          id_penyedia: data.id_penyedia || "",
+          penyedia: data.penyedia || "",
         });
       });
     } catch (error) {
@@ -412,6 +453,7 @@ const AksiDistribusi = () => {
   };
 
   useEffect(() => {
+    fetchPenyedia();
     fetchDistribusiData();
     fetchKota();
     fetchDokumen();
@@ -441,6 +483,8 @@ const AksiDistribusi = () => {
     formDataToSend.append("tanggal_kirim", formData.tanggal_kirim);
     formDataToSend.append("keterangan_ppk", formData.keterangan_ppk);
     formDataToSend.append("keterangan_daerah", formData.keterangan_daerah);
+    formDataToSend.append("penyedia", formData.penyedia);
+    formDataToSend.append("id_penyedia", formData.id_penyedia);
     formDataToSend.append("dataBarang", JSON.stringify(formData.dataBarang));
     if (formData.pendukungFile) {
       formDataToSend.append("dokumen_pendukung", formData.pendukungFile);
@@ -600,7 +644,26 @@ const AksiDistribusi = () => {
         });
       }
     }
-  }, [formData, dataDokumen, dataKecamatan, dataKota, dataPuskesmas]);
+
+    if (formData.id_penyedia && dataPenyedia.length > 0) {
+      const initialOption = dataPenyedia?.find(
+        (prov) => prov.value == formData?.id_penyedia
+      );
+      if (initialOption) {
+        setSelectedPenyedia({
+          label: initialOption.label,
+          value: initialOption.value,
+        });
+      }
+    }
+  }, [
+    formData,
+    dataDokumen,
+    dataKecamatan,
+    dataKota,
+    dataPuskesmas,
+    dataPenyedia,
+  ]);
   useEffect(() => {
     if (formData.id_kabupaten) {
       fetchKecamatan(formData.id_kabupaten);
@@ -747,6 +810,17 @@ const AksiDistribusi = () => {
                 />
               </div>
             </div>
+            <FormInput
+              select={true}
+              id="penyedia"
+              options={dataPenyedia}
+              value={selectedPenyedia}
+              onChange={handlePenyediaChange}
+              placeholder="Pilih Penyedia"
+              label="Penyedia Barang :
+"
+              required
+            />
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
                 <label

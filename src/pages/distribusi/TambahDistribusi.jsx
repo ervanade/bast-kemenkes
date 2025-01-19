@@ -50,6 +50,8 @@ const TambahDistribusi = () => {
     id_user_pembuat: 1,
     id_user_penerima: "2",
     dataBarang: [],
+    penyedia: "",
+    id_penyedia: "",
   });
 
   const navigate = useNavigate();
@@ -64,11 +66,13 @@ const TambahDistribusi = () => {
   const [dataDokumen, setDataDokumen] = useState([]);
   const [dataKecamatan, setDataKecamatan] = useState([]);
   const [dataPuskesmas, setDataPuskesmas] = useState([]);
+  const [dataPenyedia, setDataPenyedia] = useState([]);
 
   const [selectedKota, setSelectedKota] = useState(null);
   const [selectedDokumen, setSelectedDokumen] = useState(null);
   const [selectedKecamatan, setSelectedKecamatan] = useState(null);
   const [selectedPuskesmas, setSelectedPuskesmas] = useState(null);
+  const [selectedPenyedia, setSelectedPenyedia] = useState(null);
 
   const handleKotaChange = (selectedOption) => {
     setSelectedKota(selectedOption);
@@ -104,6 +108,17 @@ const TambahDistribusi = () => {
       setFormData((prev) => ({
         ...prev,
         id_puskesmas: selectedOption.value.toString(),
+      }));
+    }
+  };
+
+  const handlePenyediaChange = (selectedOption) => {
+    setSelectedPenyedia(selectedOption);
+    if (selectedOption) {
+      setFormData((prev) => ({
+        ...prev,
+        id_penyedia: selectedOption.value.toString(),
+        penyedia: selectedOption.label.toString(),
       }));
     }
   };
@@ -224,14 +239,50 @@ const TambahDistribusi = () => {
     }
   };
 
+  const fetchPenyedia = async () => {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/penyedia`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setDataPenyedia([
+        ...response.data.data
+          // .filter((a) => a.status_tte == "0")
+          .map((item) => ({
+            label: item.penyedia,
+            value: item.id,
+          })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setDataPenyedia([]);
+    }
+  };
+
   useEffect(() => {
+    fetchPenyedia();
     fetchKota();
     fetchDokumen();
   }, []);
+  console.log(formData);
 
   const tambahDistribusi = async () => {
     if (formData.dataBarang.length < 1) {
       Swal.fire("Error", "Form Data Barang Masih Kosong", "error");
+      return;
+    }
+    if (
+      !formData.id_dokumen ||
+      !formData.id_penyedia ||
+      !formData.id_kecamatan ||
+      !formData.id_kabupaten ||
+      !formData.id_puskesmas
+    ) {
+      Swal.fire("Error", "Ada Form yang Belum Diisi", "error");
       return;
     }
     await axios({
@@ -445,6 +496,18 @@ const TambahDistribusi = () => {
                   : "Pilih Kecamatan Dahulu"
               }
               label="Puskesmas :"
+              required
+            />
+
+            <FormInput
+              select={true}
+              id="penyedia"
+              options={dataPenyedia}
+              value={selectedPenyedia}
+              onChange={handlePenyediaChange}
+              placeholder="Pilih Penyedia"
+              label="Penyedia Barang :
+"
               required
             />
 

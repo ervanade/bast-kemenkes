@@ -59,6 +59,9 @@ import LaporanBarangKabupaten from "./pages/laporan/LaporanBarangKabupaten";
 import LaporanBarangPuskesmas from "./pages/laporan/LaporanBarangPuskesmas";
 import Notifikasi from "./pages/notifikasi/Notifikasi";
 import DokumenDistributor from "./pages/dokumen-distributor/DokumenDistributor";
+import DataPenyedia from "./pages/master-penyedia/DataPenyedia";
+import TambahPenyedia from "./pages/master-penyedia/TambahPenyedia";
+import EditPenyedia from "./pages/master-penyedia/EditPenyedia";
 
 function App() {
   const { pathname } = useLocation();
@@ -181,6 +184,16 @@ function App() {
                 <Route
                   path="master-data-puskesmas/edit/:id"
                   element={<EditPuskesmas />}
+                />
+
+                <Route path="master-data-penyedia" element={<DataPenyedia />} />
+                <Route
+                  path="master-data-penyedia/add"
+                  element={<TambahPenyedia />}
+                />
+                <Route
+                  path="master-data-penyedia/edit/:id"
+                  element={<EditPenyedia />}
                 />
 
                 <Route path="master-data-provinsi" element={<DataProvinsi />} />

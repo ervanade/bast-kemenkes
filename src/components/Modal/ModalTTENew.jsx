@@ -159,7 +159,7 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
     if (formData?.dokumen_array?.length > 0) {
       formDataToSend.append(
         "id_dokumen",
-        JSON.stringify(formData?.dokumen_array)
+        JSON.stringify(formData?.dokumen_array?.map((a) => a.id))
       );
     } else {
       formDataToSend.append("id_dokumen", formData?.id_dokumen);
