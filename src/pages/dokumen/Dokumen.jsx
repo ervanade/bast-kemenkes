@@ -62,10 +62,22 @@ const Dokumen = () => {
   const [jsonData, setJsonData] = useState({
     id: "",
     nama_dokumen: "",
+    dokumen_array: [],
   });
 
   const [selectedRows, setSelectedRows] = React.useState([]);
   const [toggleCleared, setToggleCleared] = React.useState(false);
+
+  const handleTTE = async (id, nama_dokumen, dokumen_array) => {
+    // e.preventDefault();
+    // setShowModal(true);
+    setShowPopup(true);
+    setJsonData({
+      id: id,
+      nama_dokumen: nama_dokumen,
+      dokumen_array: dokumen_array,
+    });
+  };
 
   const handleRowSelected = React.useCallback((state) => {
     setSelectedRows(state.selectedRows);
@@ -73,17 +85,9 @@ const Dokumen = () => {
 
   const contextActions = React.useMemo(() => {
     const handleDelete = () => {
-      if (
-        window.confirm(
-          `Apakah Anda Mau TTE Dokumen:\r ${selectedRows.map(
-            (r) => r.nama_dokumen
-          )}?`
-        )
-      ) {
-        setToggleCleared(!toggleCleared);
-        setData(differenceBy(filteredData, selectedRows, "nama_dokumen"));
-        handleTTE();
-      }
+      setToggleCleared(!toggleCleared);
+      setData(differenceBy(filteredData, selectedRows, "nama_dokumen"));
+      handleTTE(null, null, selectedRows);
     };
 
     const handleReset = () => {
@@ -112,16 +116,6 @@ const Dokumen = () => {
       </div>
     );
   }, [filteredData, selectedRows, toggleCleared]);
-
-  const handleTTE = async (e, id, nama_dokumen) => {
-    // e.preventDefault();
-    // setShowModal(true);
-    setShowPopup(true);
-    setJsonData({
-      id: id,
-      nama_dokumen: nama_dokumen,
-    });
-  };
 
   const handleModalDokumen = async (e, id, nama_dokumen) => {
     e.preventDefault();
@@ -795,7 +789,7 @@ const Dokumen = () => {
                     //     encryptId(row.id)
                     //   )}`
                     // );
-                    handleTTE(e, row.id, row.nama_dokumen);
+                    handleTTE(row.id, row.nama_dokumen);
                   }}
                 >
                   TTE
@@ -839,7 +833,7 @@ const Dokumen = () => {
                     //     encryptId(row.id)
                     //   )}`
                     // );
-                    handleTTE(e, row.id, row.nama_dokumen);
+                    handleTTE(row.id, row.nama_dokumen);
                   }}
                 >
                   TTE

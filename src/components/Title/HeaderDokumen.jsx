@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ModalTTE from "../Modal/ModalTTE";
 import { Link } from "react-router-dom";
 import { encryptId } from "../../data/utils";
+import ModalTTENew from "../Modal/ModalTTENew";
 
 const HeaderDokumen = ({ jsonData, user }) => {
   const [showModal, setShowModal] = useState(false);
@@ -14,13 +15,19 @@ const HeaderDokumen = ({ jsonData, user }) => {
       <h1 className="font-semibold mb-3 text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
         Dokumen {jsonData?.nama_dokumen || ""}
       </h1>
-
-      <ModalTTE
+      <ModalTTENew
+        isVisible={showModal}
+        onClose={() => setShowModal(false)}
+        setShowPopup={setShowModal}
+        jsonData={jsonData}
+        user={user}
+      />
+      {/* <ModalTTE
         show={showModal}
         onClose={() => setShowModal(false)}
         jsonData={jsonData}
         user={user}
-      />
+      /> */}
       {user.role === "4" ? (
         jsonData?.status_tte === "1" ? (
           <button

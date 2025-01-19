@@ -279,7 +279,7 @@ const GenerateDokumen = async (jsonData, distributor) => {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              marginBottom: 24,
+              marginBottom: 16,
             }}
           >
             <Image
@@ -289,6 +289,33 @@ const GenerateDokumen = async (jsonData, distributor) => {
                 // marginVertical: 16,
               }}
               src="/kop_surat.png"
+            />
+          </View>
+          <View
+            style={{
+              textAlign: "center",
+              display: "flex",
+              justifyContent: "space-between",
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 24,
+            }}
+          >
+            <Image
+              style={{
+                width: "32px",
+                height: "32px",
+                // marginVertical: 16,
+              }}
+              src="/favicon.png"
+            />
+            <Image
+              style={{
+                width: "32px",
+                height: "32px",
+                // marginVertical: 16,
+              }}
+              src="/favicon.png"
             />
           </View>
           <Text

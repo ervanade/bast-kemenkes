@@ -29,6 +29,7 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
     email: "",
     password: "",
     id_dokumen: jsonData?.id || "",
+    dokumen_array: jsonData?.dokumen_array || [],
   });
 
   const navigate = useNavigate();
@@ -52,7 +53,11 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
   }, [isVisible]);
 
   useEffect(() => {
-    setFormData((prev) => ({ ...prev, id_dokumen: jsonData?.id }));
+    setFormData((prev) => ({
+      ...prev,
+      id_dokumen: jsonData?.id,
+      dokumen_array: jsonData?.dokumen_array,
+    }));
   }, [jsonData]);
 
   const onSaveSignature = (signatureDataURL) => {
@@ -151,13 +156,21 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
         }
       }
     }
-
-    formDataToSend.append("id_dokumen", formData?.id_dokumen);
+    if (formData?.dokumen_array?.length > 0) {
+      formDataToSend.append(
+        "id_dokumen",
+        JSON.stringify(formData?.dokumen_array)
+      );
+    } else {
+      formDataToSend.append("id_dokumen", formData?.id_dokumen);
+    }
 
     // Kirim FormData ke API
     try {
       await axios.post(
-        `${import.meta.env.VITE_APP_API_URL}/api/update/tte`,
+        `${import.meta.env.VITE_APP_API_URL}/api/update/tte${
+          formData?.dokumen_array?.length > 0 ? "all" : ""
+        }`,
         formDataToSend,
         {
           headers: {
@@ -389,7 +402,21 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
                   )}
                 </div>
                 <div className="mt-6">
-                  {" "}
+                  <div className="my-2 px-4">
+                    <p className="mb-1 ">
+                      Apakah Anda ingin TTE dokumen berikut?
+                    </p>
+                    <ul className="">
+                      {formData?.dokumen_array?.length > 0 &&
+                        formData?.dokumen_array?.map((item, index) => (
+                          <li key={index}>
+                            <strong>
+                              {index + 1}. {item?.nama_dokumen}
+                            </strong>
+                          </li>
+                        ))}
+                    </ul>
+                  </div>{" "}
                   <div className="w-full flex items-center py-4 mb-5 justify-self-center place-items-center">
                     <input
                       id="default-checkbox"
