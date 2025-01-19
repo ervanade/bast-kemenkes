@@ -19,10 +19,17 @@ import axios from "axios";
 
 const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
   const [signature, setSignature] = useState(null);
+  const signatureRef = useRef(null);
+
   const [file, setFile] = useState(null);
   const [activeTab, setActiveTab] = useState("tab2");
   const [loading, setLoading] = useState(false);
   const [setuju, setSetuju] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    id_dokumen: jsonData?.id || "",
+  });
 
   const navigate = useNavigate();
   //   const [showModal, setShowModal] = useState(false);
@@ -44,7 +51,10 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
     }
   }, [isVisible]);
 
-  const signatureRef = useRef(null);
+  useEffect(() => {
+    setFormData((prev) => ({ ...prev, id_dokumen: jsonData?.id }));
+  }, [jsonData]);
+
   const onSaveSignature = (signatureDataURL) => {
     setSignature(signatureDataURL);
     setFile(null); // Clear file if a signature is saved
@@ -66,6 +76,18 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
     setFile(event.target.files[0]);
     setSignature(null); // Clear signature if a file is uploaded
     // setShowPopup(false);
+  };
+
+  const dataURLtoFile = (dataUrl, filename) => {
+    const arr = dataUrl.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
   };
 
   const handleTabChange = (event, tab) => {
@@ -116,20 +138,21 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
       } else if (user?.role === "4") {
         formDataToSend.append("tte_ppk", file);
       }
-    } else if (signature) {
+    } else if (signatureRef?.current) {
       // Jika signature (dari canvas)
-      const blob = await (await fetch(signature)).blob();
-      const fileFromSignature = new File([blob], "signature.png", {
-        type: "image/png",
-      });
-      if (user?.role === "3") {
-        formDataToSend.append("tte_daerah", fileFromSignature);
-      } else if (user?.role === "4") {
-        formDataToSend.append("tte_ppk", fileFromSignature);
+      const trimmedCanvas = signatureRef.current.getTrimmedCanvas();
+      if (trimmedCanvas) {
+        const signatureDataURL = trimmedCanvas.toDataURL("image/png");
+        const signatureFile = dataURLtoFile(signatureDataURL, "signature.png"); // Konversi Base64 ke File
+        if (user?.role === "3") {
+          formDataToSend.append("tte_daerah", signatureFile);
+        } else if (user?.role === "4") {
+          formDataToSend.append("tte_ppk", signatureFile);
+        }
       }
     }
 
-    formDataToSend.append("id_dokumen", jsonData?.id_dokumen);
+    formDataToSend.append("id_dokumen", formData?.id_dokumen);
 
     // Kirim FormData ke API
     try {
@@ -146,14 +169,11 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
       Swal.fire("Dokumen Berhasil di TTE!", "", "success");
       navigate("/dokumen");
     } catch (error) {
-      Swal.fire(
-        "Gagal TTE! Pastikan TTE, Nama, NIP Sudah di Input",
-        "",
-        "error"
-      );
+      Swal.fire("Gagal TTE! Dokumen Tidak Ditemukan", "", "error");
       console.error(error);
     } finally {
       setLoading(false);
+      onClose();
     }
   };
 
@@ -163,7 +183,7 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
       setLoading(false);
       return;
     }
-    if (!previewImages?.ttd && !signature && !file) {
+    if (!previewImages?.ttd && !signatureRef.current && !file) {
       Swal.fire("Error", "Anda Belum TTE", "warning");
       setLoading(false);
       return;
@@ -181,7 +201,6 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
         cekTte();
       }
     });
-    onClose();
   };
   return (
     <>

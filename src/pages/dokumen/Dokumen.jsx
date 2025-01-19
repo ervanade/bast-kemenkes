@@ -798,13 +798,7 @@ const Dokumen = () => {
                     handleTTE(e, row.id, row.nama_dokumen);
                   }}
                 >
-                  <Link
-                    to={`/dokumen/preview-dokumen/${encodeURIComponent(
-                      encryptId(row.id)
-                    )}`}
-                  >
-                    TTE
-                  </Link>
+                  TTE
                 </button>
               ) : row.status_tte === "2" ? (
                 <button
