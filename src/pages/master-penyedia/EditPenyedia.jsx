@@ -19,18 +19,10 @@ import FormInput from "../../components/Form/FormInput";
 
 const EditPenyedia = () => {
   const [formData, setFormData] = useState({
-    nama_penyedia: "",
-    id_provinsi: "",
-    id_kabupaten: "",
-    id_kecamatan: "",
-    alamat: "",
-    nomor_telpon: "",
-    email: "",
-    status_penyedia: "",
-    wilayah_kerja: "",
-    pelayanan: "",
-    kode_pusdatin_baru: "",
-    keterangan: "",
+    penyedia: "",
+    // alamat: "",
+    status: "1",
+    dokumen: null
   });
 
   const navigate = useNavigate();
@@ -73,25 +65,12 @@ const EditPenyedia = () => {
         // console.log(response)
         const data = response.data.data;
         setFormData({
-          nama_penyedia: data.nama_penyedia || "",
-          id_provinsi: data.id_provinsi || "",
-          id_kabupaten: data.id_kabupaten || "",
-          id_kecamatan: data.id_kecamatan || "",
-          alamat: data.alamat || "",
-          nomor_telpon: data.nomor_telpon || "",
-          email: data.email || "",
-          status_penyedia: data.status_penyedia || "",
-          wilayah_kerja: data.wilayah_kerja || "",
-          kode_pusdatin_baru: data.kode_pusdatin_baru || "",
-          pelayanan: data.pelayanan || "",
-          keterangan: data.keterangan || "",
+          penyedia: data.penyedia || "",
+          // alamat: "",
+    status: "1",
+    dokumen: null
+
         });
-        setSelectedWilayahKerja(
-          wilayahKerjaOptions.find((a) => a.value == data.wilayah_kerja)
-        );
-        setSelectedPelayanan(
-          pelayananOptions.find((a) => a.value == data.pelayanan)
-        );
       });
       setGetLoading(false);
     } catch (error) {
@@ -102,71 +81,7 @@ const EditPenyedia = () => {
     }
   };
 
-  const fetchProvinsi = async () => {
-    try {
-      const response = await axios({
-        method: "get",
-        url: `${import.meta.env.VITE_APP_API_URL}/api/provinsi`,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user?.token}`,
-        },
-      });
-      setDataProvinsi([
-        ...response.data.data.map((item) => ({
-          label: item.name,
-          value: item.id,
-        })),
-      ]);
-    } catch (error) {
-      setError(true);
-      setDataProvinsi([]);
-    }
-  };
-  const fetchKota = async (idProvinsi) => {
-    try {
-      const response = await axios({
-        method: "get",
-        url: `${
-          import.meta.env.VITE_APP_API_URL
-        }/api/getkabupaten/${idProvinsi}`,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user?.token}`,
-        },
-      });
-      setDataKota([
-        ...response.data.data.map((item) => ({
-          label: item.name,
-          value: item.id,
-        })),
-      ]);
-    } catch (error) {
-      setError(true);
-      setDataKota([]);
-    }
-  };
-  const fetchKecamatan = async (idKota) => {
-    try {
-      const response = await axios({
-        method: "get",
-        url: `${import.meta.env.VITE_APP_API_URL}/api/getkecamatan/${idKota}`,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user?.token}`,
-        },
-      });
-      setDataKecamatan([
-        ...response.data.data.map((item) => ({
-          label: item.name,
-          value: item.id,
-        })),
-      ]);
-    } catch (error) {
-      setError(true);
-      setDataKecamatan([]);
-    }
-  };
+
 
   const handleChange = (event) => {
     const { id, value, files } = event.target;
@@ -201,106 +116,9 @@ const EditPenyedia = () => {
   };
   useEffect(() => {
     fetchPenyediaData();
-    fetchProvinsi();
+
   }, []);
 
-  const handleProvinsiChange = (selectedOption) => {
-    setSelectedProvinsi(selectedOption);
-    setSelectedKota(null);
-    setSelectedKecamatan(null);
-    setDataKota([]);
-    setDataKecamatan([]);
-    setFormData((prev) => ({
-      ...prev,
-      id_provinsi: selectedOption ? selectedOption.value.toString() : "",
-    }));
-    if (selectedOption) {
-      fetchKota(selectedOption.value);
-    }
-  };
-
-  const handleKotaChange = (selectedOption) => {
-    setSelectedKota(selectedOption);
-    setSelectedKecamatan(null);
-    setDataKecamatan([]);
-    setFormData((prev) => ({
-      ...prev,
-      id_kabupaten: selectedOption ? selectedOption.value.toString() : "",
-    }));
-    if (selectedOption) {
-      fetchKecamatan(selectedOption.value);
-    }
-  };
-
-  const handleKecamatanChange = (selectedOption) => {
-    setSelectedKecamatan(selectedOption);
-    setFormData((prev) => ({
-      ...prev,
-      id_kecamatan: selectedOption ? selectedOption.value.toString() : "",
-    }));
-  };
-
-  const handleWilayahKerjaChange = (selectedOption) => {
-    setSelectedWilayahKerja(selectedOption);
-    setFormData((prev) => ({
-      ...prev,
-      wilayah_kerja: selectedOption ? selectedOption.value.toString() : "",
-    }));
-  };
-
-  const handlePelayananChange = (selectedOption) => {
-    setSelectedPelayanan(selectedOption);
-    setFormData((prev) => ({
-      ...prev,
-      pelayanan: selectedOption ? selectedOption.value.toString() : "",
-    }));
-  };
-
-  useEffect(() => {
-    if (formData.id_provinsi && dataProvinsi.length > 0) {
-      const initialOption = dataProvinsi?.find(
-        (prov) => prov.value == formData.id_provinsi
-      );
-      if (initialOption) {
-        setSelectedProvinsi({
-          label: initialOption.label,
-          value: initialOption.value,
-        });
-      }
-    }
-    if (formData.id_kecamatan && dataKecamatan.length > 0) {
-      const initialOption = dataKecamatan.find(
-        (kec) => kec.value == formData.id_kecamatan
-      );
-      if (initialOption) {
-        setSelectedKecamatan({
-          label: initialOption.label,
-          value: initialOption.value,
-        });
-      }
-    }
-    if (formData.id_kabupaten && dataKota.length > 0) {
-      const initialOption = dataKota.find(
-        (kec) => kec.value == formData.id_kabupaten
-      );
-
-      if (initialOption) {
-        setSelectedKota({
-          label: initialOption.label,
-          value: initialOption.value,
-          provinsi: initialOption.provinsi,
-        });
-      }
-    }
-  }, [formData, dataProvinsi, dataKecamatan, dataKota]);
-  useEffect(() => {
-    if (formData.id_provinsi) {
-      fetchKota(formData.id_provinsi);
-    }
-    if (formData.id_kabupaten) {
-      fetchKecamatan(formData.id_kabupaten);
-    }
-  }, [formData.id_provinsi, formData.id_kabupaten]);
   if (getLoading) {
     return (
       <div className="flex justify-center items-center">
@@ -342,8 +160,8 @@ const EditPenyedia = () => {
                   className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="nama_penyedia"
-                  value={formData.nama_penyedia}
+                  id="penyedia"
+                  value={formData.penyedia}
                   onChange={handleChange}
                   type="text"
                   required
@@ -352,7 +170,7 @@ const EditPenyedia = () => {
               </div>
             </div>
 
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+            {/* <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
                 <label
                   className="block text-[#728294] text-base font-normal mb-2"
@@ -397,7 +215,7 @@ const EditPenyedia = () => {
                   placeholder="Status Penyedia"
                 />
               </div>
-            </div>
+            </div> */}
 
             <div className="flex items-center justify-center mt-6 sm:mt-12 sm:gap-8">
               <div className="div sm:flex-[2_2_0%]"></div>

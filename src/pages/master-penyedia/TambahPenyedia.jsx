@@ -18,18 +18,10 @@ import FormInput from "../../components/Form/FormInput";
 
 const TambahPenyedia = () => {
   const [formData, setFormData] = useState({
-    nama_penyedia: "",
-    id_provinsi: "",
-    id_kabupaten: "",
-    id_kecamatan: "",
-    alamat: "",
-    nomor_telpon: "",
-    email: "",
-    status_penyedia: "",
-    wilayah_kerja: "",
-    kode_pusdatin_baru: "",
-    pelayanan: "",
-    keterangan: "",
+    penyedia: "",
+    // alamat: "",
+    status: "1",
+    dokumen: null
   });
 
   const navigate = useNavigate();
@@ -52,71 +44,6 @@ const TambahPenyedia = () => {
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
 
-  const fetchProvinsi = async () => {
-    try {
-      const response = await axios({
-        method: "get",
-        url: `${import.meta.env.VITE_APP_API_URL}/api/provinsi`,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user?.token}`,
-        },
-      });
-      setDataProvinsi([
-        ...response.data.data.map((item) => ({
-          label: item.name,
-          value: item.id,
-        })),
-      ]);
-    } catch (error) {
-      setError(true);
-      setDataProvinsi([]);
-    }
-  };
-  const fetchKota = async (idProvinsi) => {
-    try {
-      const response = await axios({
-        method: "get",
-        url: `${
-          import.meta.env.VITE_APP_API_URL
-        }/api/getkabupaten/${idProvinsi}`,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user?.token}`,
-        },
-      });
-      setDataKota([
-        ...response.data.data.map((item) => ({
-          label: item.name,
-          value: item.id,
-        })),
-      ]);
-    } catch (error) {
-      setError(true);
-      setDataKota([]);
-    }
-  };
-  const fetchKecamatan = async (idKota) => {
-    try {
-      const response = await axios({
-        method: "get",
-        url: `${import.meta.env.VITE_APP_API_URL}/api/getkecamatan/${idKota}`,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user?.token}`,
-        },
-      });
-      setDataKecamatan([
-        ...response.data.data.map((item) => ({
-          label: item.name,
-          value: item.id,
-        })),
-      ]);
-    } catch (error) {
-      setError(true);
-      setDataKecamatan([]);
-    }
-  };
 
   const handleChange = (event) => {
     const { id, value, files } = event.target;
@@ -148,61 +75,6 @@ const TambahPenyedia = () => {
     tambahPenyedia();
   };
 
-  useEffect(() => {
-    fetchProvinsi();
-  }, []);
-
-  const handleProvinsiChange = (selectedOption) => {
-    setSelectedProvinsi(selectedOption);
-    setSelectedKota(null);
-    setSelectedKecamatan(null);
-    setDataKota([]);
-    setDataKecamatan([]);
-    setFormData((prev) => ({
-      ...prev,
-      id_provinsi: selectedOption ? selectedOption.value.toString() : "",
-    }));
-    if (selectedOption) {
-      fetchKota(selectedOption.value);
-    }
-  };
-
-  const handleKotaChange = (selectedOption) => {
-    setSelectedKota(selectedOption);
-    setSelectedKecamatan(null);
-    setDataKecamatan([]);
-    setFormData((prev) => ({
-      ...prev,
-      id_kabupaten: selectedOption ? selectedOption.value.toString() : "",
-    }));
-    if (selectedOption) {
-      fetchKecamatan(selectedOption.value);
-    }
-  };
-
-  const handleKecamatanChange = (selectedOption) => {
-    setSelectedKecamatan(selectedOption);
-    setFormData((prev) => ({
-      ...prev,
-      id_kecamatan: selectedOption ? selectedOption.value.toString() : "",
-    }));
-  };
-
-  const handleWilayahKerjaChange = (selectedOption) => {
-    setSelectedWilayahKerja(selectedOption);
-    setFormData((prev) => ({
-      ...prev,
-      wilayah_kerja: selectedOption ? selectedOption.value.toString() : "",
-    }));
-  };
-
-  const handlePelayananChange = (selectedOption) => {
-    setSelectedPelayanan(selectedOption);
-    setFormData((prev) => ({
-      ...prev,
-      pelayanan: selectedOption ? selectedOption.value.toString() : "",
-    }));
-  };
 
   return (
     <div>
@@ -237,8 +109,8 @@ const TambahPenyedia = () => {
                   className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="nama_penyedia"
-                  value={formData.nama_penyedia}
+                  id="penyedia"
+                  value={formData.penyedia}
                   onChange={handleChange}
                   type="text"
                   required
@@ -247,7 +119,7 @@ const TambahPenyedia = () => {
               </div>
             </div>
 
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+            {/* <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
                 <label
                   className="block text-[#728294] text-base font-normal mb-2"
@@ -275,7 +147,7 @@ const TambahPenyedia = () => {
               <div className="sm:flex-[2_2_0%]">
                 <label
                   className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="status_penyedia"
+                  htmlFor="status"
                 >
                   Status Penyedia :
                 </label>
@@ -285,14 +157,14 @@ const TambahPenyedia = () => {
                   className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="status_penyedia"
-                  value={formData.status_penyedia}
+                  id="status"
+                  value={formData.status}
                   onChange={handleChange}
                   type="text"
                   placeholder="Status Penyedia"
                 />
               </div>
-            </div>
+            </div> */}
 
             <div className="flex items-center justify-center mt-6 sm:mt-12 sm:gap-8">
               <div className="div sm:flex-[2_2_0%]"></div>

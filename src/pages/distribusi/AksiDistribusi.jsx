@@ -816,6 +816,7 @@ const AksiDistribusi = () => {
               options={dataPenyedia}
               value={selectedPenyedia}
               onChange={handlePenyediaChange}
+              isDisabled={user.role !== "1"}
               placeholder="Pilih Penyedia"
               label="Penyedia Barang :
 "
