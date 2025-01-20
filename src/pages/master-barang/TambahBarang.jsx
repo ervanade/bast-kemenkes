@@ -62,6 +62,17 @@ const TambahBarang = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Fungsi untuk memformat angka ke format rupiah
+const formatRupiah = (value) => {
+  if (!value) return "";
+  return parseInt(value, 10).toLocaleString("id-ID");
+};
+
+// Fungsi untuk mendapatkan nilai asli (tanpa format)
+const getRawValue = (formattedValue) => {
+  return formattedValue.replace(/\./g, "");
+};
+
   const handleChange = (event) => {
     const { id, value, files } = event.target;
     if (files) {
@@ -80,7 +91,17 @@ const TambahBarang = () => {
         contractFileName: file.name,
       }));
     } else {
-      setFormData((prev) => ({ ...prev, [id]: value }));
+      if (id === "harga_satuan") {
+        const unformattedValue = value.replace(/\./g, ""); // Hapus semua titik
+        if (!isNaN(unformattedValue)) {
+          setFormData((prev) => ({
+            ...prev,
+            harga_satuan: formatRupiah(unformattedValue),
+          }));
+        }
+      } else {
+        setFormData((prev) => ({ ...prev, [id]: value }));
+      }
     }
   };
 
@@ -94,7 +115,7 @@ const TambahBarang = () => {
     formDataToSend.append("nama_alkes", formData.nama_alkes);
     formDataToSend.append("merk", formData.merk);
     formDataToSend.append("satuan", formData.satuan);
-    formDataToSend.append("harga_satuan", formData.harga_satuan);
+    formDataToSend.append("harga_satuan", getRawValue(formData.harga_satuan));
     formDataToSend.append("keterangan", formData.keterangan);
     formDataToSend.append("penyedia", formData.penyedia);
     if (formData.contractFile) {
