@@ -46,10 +46,10 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            {user.username || "Username"}
+            {user?.username || "Username"}
           </span>
           <span className="block text-xs capitalize">
-            {user.role ? returnRole(user.role) : "" || "Role"}
+            {user?.role ? returnRole(user.role) : "" || "Role"}
           </span>
         </span>
 

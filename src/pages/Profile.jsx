@@ -322,6 +322,17 @@ const Profile = () => {
                           }}
                         />
                       )}
+                        {!formData.profile && !previewImages.profile && (
+                      <img
+                        src={UserDefault}
+                        className="rounded-full"
+                        alt="Profile Preview"
+                        onError={({ currentTarget }) => {
+                          currentTarget.onerror = null; // prevents looping
+                          currentTarget.src = UserDefault;
+                        }}
+                      />
+                    )}
                     </div>
                     <div>
                       <span className="mb-1.5 text-black dark:text-white">
@@ -357,6 +368,7 @@ const Profile = () => {
                         }}
                       />
                     )}
+                  
                   </div>
                 </div>
 
