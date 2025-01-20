@@ -310,7 +310,7 @@ const Profile = () => {
               <form onSubmit={handleSimpan}>
                 <div className="mb-5.5">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="h-14 w-14 rounded-full">
+                    <div className="h-14 w-14 rounded-full overflow-hidden">
                       {formData.profile && previewImages.profile && (
                         <img
                           src={previewImages.profile || UserDefault}
@@ -360,7 +360,7 @@ const Profile = () => {
                     {formData.profile && previewImages.profile && (
                       <img
                         src={previewImages.profile || UserDefault}
-                        className="rounded-full mt-2 h-[100px] mx-auto"
+                        className="rounded-md mt-2 h-[100px] mx-auto"
                         alt="Profile Preview"
                         onError={({ currentTarget }) => {
                           currentTarget.onerror = null; // prevents looping

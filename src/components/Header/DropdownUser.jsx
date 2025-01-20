@@ -53,10 +53,10 @@ const DropdownUser = () => {
           </span>
         </span>
 
-        <span className="h-12 w-12 rounded-full">
+        <span className="h-12 w-12 rounded-full overflow-hidden">
           <img
             src={userAvatar}
-            className="rounded-full"
+            className="rounded-full object-cover"
             alt="Brand Image"
             onError={({ currentTarget }) => {
               currentTarget.onerror = null; // prevents looping
