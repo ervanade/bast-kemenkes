@@ -342,7 +342,10 @@ const GenerateDokumen = async (jsonData, distributor) => {
             {jsonData?.nama_ppk} berdasarkan Kontrak Pengadaan Nomor{" "}
             {jsonData?.nomorSurat} tanggal {jsonData?.tanggal} dan PIHAK KEDUA
             dalam hal ini Masyarakat/Pemerintah Daerah yang diwakili oleh Kepala
-            Dinas Kesehatan {jsonData?.kabupaten}
+            Dinas Kesehatan{" "}
+            <Text style={{ fontFamily: "Helvetica-Bold" }}>
+              {jsonData?.kabupaten}
+            </Text>
             {"\n"}
             Berita Acara Serah Terima Operasional (BASTO) dibuat dan
             ditandatangani oleh PIHAK KESATU dan PIHAK KEDUA pada hari tanggal{" "}
