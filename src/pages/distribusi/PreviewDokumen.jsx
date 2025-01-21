@@ -279,7 +279,6 @@ const PreviewDokumen = () => {
     fetchDokumenData();
     moment.locale("id");
   }, []);
-
   const renderError = (error) => {
     let message = "";
     setError(true);
@@ -597,10 +596,10 @@ const PreviewDokumen = () => {
             <Image
               style={{
                 width: "490px",
-                height: "120px",
+                height: "96px",
                 // marginVertical: 16,
               }}
-              src="/kop_surat.png"
+              src="/kop_surat1.png"
             />
           </View>
           <Text
@@ -891,7 +890,7 @@ const PreviewDokumen = () => {
             >
               Jumlah barang yang dihibahkan adalah{" "}
               {jsonData?.total_barang_dikirim || ""} unit dan jumlah nilai
-              perolehan sebesar Rp {jsonData?.dtotal_harga || ""} dengan rincian
+              perolehan sebesar Rp {jsonData?.total_harga || ""} dengan rincian
               sebagaimana tercantum dalam lampiran, yang merupakan bagian tidak
               terpisahkan dari Berita Acara Serah Terima Operasional (BASTO)
               ini.
@@ -1895,10 +1894,10 @@ const PreviewDokumen = () => {
             <Image
               style={{
                 width: "490px",
-                height: "120px",
+                height: "96px",
                 // marginVertical: 16,
               }}
-              src="/kop_surat.png"
+              src="/kop_surat1.png"
             />
           </View>
           <Text

@@ -984,3 +984,44 @@ export const dataLaporan = [
         statusTTE: 'Telah Diverifikasi'
     }
 ];
+export function formatTanggal(tanggal) {
+    const bulanIndonesia = [
+        "JANUARI",
+        "FEBRUARI",
+        "MARET",
+        "APRIL",
+        "MEI",
+        "JUNI",
+        "JULI",
+        "AGUSTUS",
+        "SEPTEMBER",
+        "OKTOBER",
+        "NOVEMBER",
+        "DESEMBER",
+    ];
+
+    // Validasi format tanggal (YYYY-MM-DD)
+    const regex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!regex.test(tanggal)) {
+        return tanggal; // Jika format tidak sesuai, kembalikan input apa adanya
+    }
+
+    try {
+        // Memisahkan tahun, bulan, dan hari dari input
+        const [tahun, bulan, hari] = tanggal.split("-");
+
+        // Pastikan nilai bulan dan hari valid
+        if (bulan < "01" || bulan > "12" || hari < "01" || hari > "31") {
+            return tanggal; // Jika tidak valid, kembalikan input apa adanya
+        }
+
+        // Mengonversi bulan menjadi nama bulan
+        const namaBulan = bulanIndonesia[parseInt(bulan, 10) - 1];
+
+        // Mengembalikan format tanggal baru
+        return `${parseInt(hari, 10)} ${namaBulan} ${tahun}`;
+    } catch {
+        return tanggal; // Jika ada error saat proses, kembalikan input apa adanya
+    }
+}
+

@@ -597,10 +597,10 @@ const PreviewDokumen = () => {
             <Image
               style={{
                 width: "490px",
-                height: "120px",
+                height: "96px",
                 // marginVertical: 16,
               }}
-              src="/kop_surat.png"
+              src="/kop_surat1.png"
             />
           </View>
           <Text
@@ -1895,10 +1895,10 @@ const PreviewDokumen = () => {
             <Image
               style={{
                 width: "490px",
-                height: "120px",
+                height: "96px",
                 // marginVertical: 16,
               }}
-              src="/kop_surat.png"
+              src="/kop_surat1.png"
             />
           </View>
           <Text
