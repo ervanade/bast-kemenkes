@@ -301,14 +301,16 @@ const GenerateDokumen = async (jsonData, distributor) => {
               }}
               src="/favicon.png"
             />
-            <Image
-              style={{
-                width: "32px",
-                height: "32px",
-                // marginVertical: 16,
-              }}
-              src="/favicon.png"
-            />
+              <Image
+                  style={{
+                    width: '32px',
+                    height: "32px",
+                  objectFit: 'contain'}}
+                  src={`${jsonData?.logo_daerah ? jsonData?.logo_daerah + '?not-from-cache-please' : "/favicon.png"}`}
+                  onError={(error) => {
+                    error.target.src = "/favicon.png";
+                  }}
+                />
           </View>
           <Text
             style={{

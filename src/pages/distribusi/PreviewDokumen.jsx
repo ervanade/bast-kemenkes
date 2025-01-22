@@ -196,6 +196,7 @@ const PreviewDokumen = () => {
           tte_daerah: data.tte_daerah || defaultImage,
           nama_daerah: data.nama_daerah || "",
           nip_daerah: data.nip_daerah || "",
+          logo_daerah: data.logo_daerah || "",
           tte_ppk: data.tte_ppk || defaultImage,
           nama_ppk: data.nama_ppk || "",
           nip_ppk: data.nip_ppk || "",
@@ -238,6 +239,7 @@ const PreviewDokumen = () => {
           ket_daerah: "",
           ket_ppk: data.keterangan_ppk,
           tte_daerah: data.tte_daerah || defaultImage,
+          logo_daerah: data.logo_daerah || "",
           nama_daerah:
             user?.role == "3"
               ? data.nama_daerah || user?.name || ""
