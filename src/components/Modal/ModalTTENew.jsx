@@ -192,8 +192,8 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
 
   const handleTTE = () => {
 
-    if (!user.ttd || !user.name || !user.nip ) {
-      Swal.fire("Error", "Anda Belum Input Nama / NIP / TTE", "error");
+    if (!user.name || !user.nip || !user.profile) {
+      Swal.fire("Error", "Anda Belum Input Nama / NIP / Logo", "error");
       navigate("/profile");
       setLoading(false);
       return;
