@@ -295,16 +295,16 @@ const GenerateDokumen = async (jsonData, distributor) => {
           >
             <Image
               style={{
-                width: "32px",
-                height: "32px",
+                width: "40px",
+                height: "40px",
                 // marginVertical: 16,
               }}
               src="/favicon.png"
             />
               <Image
                   style={{
-                    width: '32px',
-                    height: "32px",
+                    width: '40px',
+                    height: "40px",
                   objectFit: 'contain'}}
                   src={`${jsonData?.logo_daerah ? jsonData?.logo_daerah + '?not-from-cache-please' : "/favicon.png"}`}
                   onError={(error) => {
