@@ -553,26 +553,34 @@ const Dokumen = () => {
     () => [
       // { name: "No", selector: (row) => row.id, sortable: true },
       {
-        name: "Nama Dokumen",
+        name: <div className="text-wrap">Nama Dokumen</div>,
         selector: (row) => row.nama_dokumen,
         sortable: true,
-        width: "200px",
-      },
-      {
-        name: "Provinsi",
-        selector: (row) => row.provinsi,
-        sortable: true,
+        cell: ( row ) => <div className="text-wrap py-2">{row.nama_dokumen}</div>,
         width: "120px",
       },
       {
-        name: "Kab/Kota",
+        name: <div className="text-wrap">Provinsi</div>,
+        selector: (row) => row.provinsi,
+        sortable: true,
+        cell: ( row ) => <div className="text-wrap py-2">{row.provinsi}</div>,
+        width: "120px",
+      },
+      {
+        name: <div className="text-wrap">Kab / Kota</div>,
         selector: (row) => row.kabupaten,
+        cell: ( row ) => <div className="text-wrap py-2">{row.kabupaten}</div>,
+        width: "120px",
         sortable: true,
       },
       {
-        name: "Nomor BAST",
+        name: <div className="text-wrap">Nomor BAST</div>,
         selector: (row) => row.nomor_bast,
+        cell: ( row ) => <div className="text-wrap py-4">{row.nomor_bast}</div>,
+        width: "150px",
         sortable: true,
+        
+        
         // width: "100px",
       },
       // {
@@ -582,10 +590,11 @@ const Dokumen = () => {
       //   // width: "100px",
       // },
       {
-        name: "Tahun Lokus",
+        name: <div className="text-wrap">Tahun Lokus</div>,
         selector: (row) => row.tahun_lokus,
+        cell: (row) => <div className="text-wrap py-2">{row.tahun_lokus}</div>,
         sortable: true,
-        // width: "100px",
+        width: "100px",
       },
       // {
       //   name: "Kepala Unit Pemberi",
@@ -600,7 +609,7 @@ const Dokumen = () => {
       //   // width: "100px",
       // },
       {
-        name: "Status TTE",
+        name: <div className="text-wrap">Status TTE</div>,
         cell: (row) =>
           user.role === "2" || user.role === "4" ? (
             row.status_tte === "1" ? (
@@ -718,7 +727,7 @@ const Dokumen = () => {
         sortable: true,
         selector: (row) => row.status_tte,
 
-        width: "180px",
+        width: "120px",
       },
       // {
       //   name: "Keterangan PPK Kemenkes",
@@ -726,7 +735,7 @@ const Dokumen = () => {
       //   sortable: true,
       // },
       {
-        name: "Dokumen BAST",
+        name: <div className="text-wrap">Dokumen BAST</div>,
         cell: (row) => (
           <div className="flex items-center space-x-2">
             {/* <button
@@ -772,7 +781,7 @@ const Dokumen = () => {
         ignoreRowClick: true,
         allowOverflow: true,
         button: true,
-        width: "200px",
+        width: "80px",
       },
       {
         name: "TTE",
@@ -979,19 +988,12 @@ const Dokumen = () => {
   return (
     <div>
       <Breadcrumb pageName="Dokumen TTE" linkBack="/dokumen" />
-      <div className="flex flex-col items-center justify-center w-full tracking-tight mb-12">
+      <div className="flex flex-col items-center justify-center w-full tracking-tight mb-6">
         <h1 className="font-normal mb-3 text-xl lg:text-[28px] tracking-tight text-center text-bodydark1">
-          SELAMAT DATANG{" "}
-          {user.role === "1"
-            ? "ADMIN PUSAT"
-            : user.role === "2"
-            ? "ADMIN PPK"
-            : user.role === "3"
-            ? `ADMIN KAB/KOTA`
-            : ""}
+        DATA DOKUMEN
         </h1>
-        <div className="flex items-center lg:items-end mt-8 gap-4 flex-col lg:flex-row">
-          <div className="flex items-center gap-4 flex-col sm:flex-row">
+        <div className="flex items-center lg:items-end mt-3 gap-3 flex-col lg:flex-row">
+          <div className="flex items-center gap-3 flex-col sm:flex-row">
             <div className="text-base">
               <label
                 className="block text-[#728294] text-base font-normal mb-2"
@@ -1132,8 +1134,8 @@ const Dokumen = () => {
         jsonData={jsonData}
         user={user}
       />
-      <div className="rounded-md flex flex-col gap-4 overflow-hidden overflow-x-auto  border border-stroke bg-white py-4 md:py-8 px-4 md:px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-        <div className="flex justify-between mb-4 items-center">
+      <div className="rounded-md flex flex-col gap-2 overflow-hidden overflow-x-auto  border border-stroke bg-white py-4 md:py-8 px-4 md:px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div className="flex justify-between mb-2 items-center">
           <div className="relative">
             <button className="absolute left-2 top-1/2 -translate-y-1/2">
               <svg
@@ -1208,6 +1210,7 @@ const Dokumen = () => {
               title={selectedRows.length > 0 ? "Data Dokumen" : ""}
               columns={columns}
               data={filteredData}
+              striped
               pagination
               persistTableHead
               highlightOnHover
@@ -1231,8 +1234,27 @@ const Dokumen = () => {
               customStyles={{
                 headCells: {
                   style: {
-                    backgroundColor: "#EBFBFA",
-                    color: "#728294",
+                    padding: 12,
+                    backgroundColor: "#EBFBFA", // Warna header biru
+      color: "#212121", // Teks header putih
+                    fontWeight: 700,
+                    fontSize: 14,
+
+                  },
+                },
+                rows : {
+                  style: {
+                    fontSize: 14,
+                    paddingTop: 4,
+                    paddingBottom: 4,
+                    backgroundColor: "#FFFFFF", // Default warna baris ganjil (putih)
+                    "&:nth-of-type(odd)": {
+                      backgroundColor: "#F9FAFB", // Warna baris genap (abu terang)
+                    },
+                    highlightOnHoverStyle: {
+                      backgroundColor: "#D1E8FF", // Warna saat hover (biru terang)
+                      color: "#212121", // Warna teks tetap gelap
+                    },
                   },
                 },
               }}

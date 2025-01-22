@@ -59,12 +59,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   return (
     <aside
       ref={sidebar}
-      className={`absolute left-0 top-0 z-99 flex h-screen w-70 flex-col overflow-y-hidden bg-white duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
+      className={`absolute left-0 top-0 z-99 flex h-screen w-67 flex-col overflow-y-hidden bg-white duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       }`}
     >
       {/* <!-- SIDEBAR HEADER --> */}
-      <div className="flex items-center justify-between gap-2 px-6 py-2 lg:py-4 round">
+      <div className="flex items-center justify-between gap-2 px-4 py-2 lg:py-4 round">
         <NavLink to="/">
           <img src={`/logo-kemenkes.png`} alt="Logo" />
         </NavLink>
@@ -95,7 +95,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
 
       <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
         {/* <!-- Sidebar Menu --> */}
-        <nav className="mt-1 py-4 px-4 lg:mt-1 lg:px-6">
+        <nav className="mt-1 py-4 px-4 lg:mt-1 lg:px-4">
           {/* <!-- Menu Group --> */}
           <div>
             <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">

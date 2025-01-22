@@ -211,11 +211,30 @@ const DataKecamatan = () => {
               persistTableHead
               highlightOnHover
               pointerOnHover
-              customStyles={{
+               customStyles={{
                 headCells: {
                   style: {
-                    backgroundColor: "#EBFBFA",
-                    color: "#728294",
+                    padding: 12,
+                    backgroundColor: "#EBFBFA", // Warna header biru
+      color: "#212121", // Teks header putih
+                    fontWeight: 700,
+                    fontSize: 14,
+
+                  },
+                },
+                rows : {
+                  style: {
+                    fontSize: 14,
+                    paddingTop: 6,
+                    paddingBottom: 6,
+                    backgroundColor: "#FFFFFF", // Default warna baris ganjil (putih)
+                    "&:nth-of-type(odd)": {
+                      backgroundColor: "#F9FAFB", // Warna baris genap (abu terang)
+                    },
+                    highlightOnHoverStyle: {
+                      backgroundColor: "#D1E8FF", // Warna saat hover (biru terang)
+                      color: "#212121", // Warna teks tetap gelap
+                    },
                   },
                 },
               }}

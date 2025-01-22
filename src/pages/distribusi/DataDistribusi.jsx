@@ -379,47 +379,54 @@ const DataDistribusi = () => {
       //   width: "100px",
       // },
       {
-        name: "Provinsi",
+        name: <div className="text-wrap">Provinsi</div>,
         selector: (row) => row.provinsi,
         sortable: true,
+        cell: ( row ) => <div className="text-wrap py-2">{row.provinsi}</div>,
         width: "120px",
         omit: user.role === "3",
       },
       {
-        name: "Kab/Kota",
+        name: <div className="text-wrap">Kab / Kota</div>,
         selector: (row) => row.kabupaten,
-        sortable: true,
-        minWidth: "150px",
-      },
-      {
-        name: "Kecamatan",
-        selector: (row) => row.kecamatan,
-        sortable: true,
-        minWidth: "150px",
-      },
-      {
-        name: "Puskesmas",
-        selector: (row) => row.nama_puskesmas,
-        sortable: true,
-        width: "200px",
-      },
-      {
-        name: "Tahun Lokus",
-        selector: (row) => row.tahun_lokus,
-        sortable: true,
+        cell: ( row ) => <div className="text-wrap py-2">{row.kabupaten}</div>,
         width: "120px",
+        sortable: true,
       },
       {
-        name: "Jumlah Dikirim",
+        name: <div className="text-wrap">Kecamatan</div>,
+        selector: (row) => row.kecamatan,
+        cell: ( row ) => <div className="text-wrap py-2">{row.kecamatan}</div>,
+        width: "120px",
+        sortable: true,
+      },
+      {
+        name: <div className="text-wrap">Puskesmas</div>,
+        selector: (row) => row.nama_puskesmas,
+        cell: ( row ) => <div className="text-wrap py-2">{row.nama_puskesmas}</div>,
+        // width: "120px",
+        sortable: true,
+      },
+      {
+        name: <div className="text-wrap">Tahun Lokus</div>,
+        selector: (row) => row.tahun_lokus,
+        cell: (row) => <div className="text-wrap py-2">{row.tahun_lokus}</div>,
+        sortable: true,
+        width: "100px",
+      },
+      {
+        name: <div className="text-wrap">Jumlah Dikirim</div>,
         selector: (row) => Number(row.jumlah_barang_dikirim) || 0,
+        cell: (row) => <div className="text-wrap py-2">{row.jumlah_barang_dikirim}</div>,
         sortable: true,
-        width: "140px",
+        width: "100px",
       },
       {
-        name: "Jumlah Diterima",
+        name: <div className="text-wrap">Jumlah Diterima</div>,
         selector: (row) => Number(row.jumlah_barang_diterima) || 0,
+        cell: (row) => <div className="text-wrap py-2">{row.jumlah_barang_diterima}</div>,
         sortable: true,
-        width: "140px",
+        width: "100px",
       },
       {
         name: "Aksi",
@@ -571,19 +578,20 @@ const DataDistribusi = () => {
   return (
     <div>
       <Breadcrumb pageName="Data Distribusi" />
-      <div className="flex flex-col items-center justify-center w-full tracking-tight mb-8">
+      <div className="flex flex-col items-center justify-center w-full tracking-tight mb-6">
         <h1 className="font-normal mb-3 text-xl lg:text-[28px] tracking-tight text-center text-bodydark1">
-          SELAMAT DATANG{" "}
+          DATA DISTRIBUSI
+          {/* SELAMAT DATANG{" "}
           {user.role === "1"
             ? "ADMIN PUSAT"
             : user.role === "2"
             ? "ADMIN PPK"
             : user.role === "3"
             ? `ADMIN KAB/KOTA`
-            : ""}
+            : ""} */}
         </h1>
-        <div className="flex items-center lg:items-end mt-8 gap-4 flex-col lg:flex-row">
-          <div className="flex items-center gap-4 flex-col sm:flex-row">
+        <div className="flex items-center lg:items-end mt-3 gap-3 flex-col lg:flex-row">
+          <div className="flex items-center gap-3 flex-col sm:flex-row">
             <div className="text-base">
               <label
                 className="block text-[#728294] text-base font-normal mb-2"
@@ -774,6 +782,7 @@ const DataDistribusi = () => {
               data={filteredData}
               pagination
               // defaultSortFieldId="Aksi"
+              striped
               defaultSortAsc={false}
               persistTableHead
               highlightOnHover
@@ -781,8 +790,27 @@ const DataDistribusi = () => {
               customStyles={{
                 headCells: {
                   style: {
-                    backgroundColor: "#EBFBFA",
-                    color: "#728294",
+                    padding: 12,
+                    backgroundColor: "#EBFBFA", // Warna header biru
+      color: "#212121", // Teks header putih
+                    fontWeight: 700,
+                    fontSize: 14,
+
+                  },
+                },
+                rows : {
+                  style: {
+                    fontSize: 14,
+                    paddingTop: 6,
+                    paddingBottom: 6,
+                    backgroundColor: "#FFFFFF", // Default warna baris ganjil (putih)
+                    "&:nth-of-type(odd)": {
+                      backgroundColor: "#F9FAFB", // Warna baris genap (abu terang)
+                    },
+                    highlightOnHoverStyle: {
+                      backgroundColor: "#D1E8FF", // Warna saat hover (biru terang)
+                      color: "#212121", // Warna teks tetap gelap
+                    },
                   },
                 },
               }}

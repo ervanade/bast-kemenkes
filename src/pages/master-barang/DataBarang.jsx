@@ -120,8 +120,10 @@ const DataBarang = () => {
   const columns = useMemo(
     () => [
       {
-        name: "Nama Barang",
+        name: <div className="text-wrap">Nama Barang</div>,
         selector: (row) => row.nama_alkes,
+        cell: ( row ) => <div className="text-wrap py-2">{row.nama_alkes}</div>,
+
         sortable: true,
         width: "200px",
       },
@@ -153,19 +155,22 @@ const DataBarang = () => {
         width: "100px",
       },
       {
-        name: "Harga Satuan",
+        name: <div className="text-wrap">Harga Satuan</div>,
+        cell: ( row ) => <div className="text-wrap py-2">{row.harga_satuan}</div>,
         selector: (row) => row.harga_satuan || "",
         sortable: true,
         width: "100px",
       },
       {
-        name: "Penyedia Barang",
+        name: <div className="text-wrap">Penyedia Barang</div>,
+        cell: ( row ) => <div className="text-wrap py-2">{row.penyedia}</div>,
         selector: (row) => row.penyedia || "",
         sortable: true,
         width: "100px",
       },
       {
-        name: "Keterangan",
+        name: <div className="text-wrap">Keterangan</div>,
+        cell: ( row ) => <div className="text-wrap py-2">{row.keterangan}</div>,
         selector: (row) => row.keterangan || "",
         sortable: true,
         width: "100px",
@@ -285,11 +290,30 @@ const DataBarang = () => {
               persistTableHead
               highlightOnHover
               pointerOnHover
-              customStyles={{
+               customStyles={{
                 headCells: {
                   style: {
-                    backgroundColor: "#EBFBFA",
-                    color: "#728294",
+                    padding: 12,
+                    backgroundColor: "#EBFBFA", // Warna header biru
+      color: "#212121", // Teks header putih
+                    fontWeight: 700,
+                    fontSize: 14,
+
+                  },
+                },
+                rows : {
+                  style: {
+                    fontSize: 14,
+                    paddingTop: 6,
+                    paddingBottom: 6,
+                    backgroundColor: "#FFFFFF", // Default warna baris ganjil (putih)
+                    "&:nth-of-type(odd)": {
+                      backgroundColor: "#F9FAFB", // Warna baris genap (abu terang)
+                    },
+                    highlightOnHoverStyle: {
+                      backgroundColor: "#D1E8FF", // Warna saat hover (biru terang)
+                      color: "#212121", // Warna teks tetap gelap
+                    },
                   },
                 },
               }}

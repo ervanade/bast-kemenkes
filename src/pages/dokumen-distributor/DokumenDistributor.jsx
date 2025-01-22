@@ -560,26 +560,33 @@ const DokumenDistributor = () => {
     () => [
       // { name: "No", selector: (row) => row.id, sortable: true },
       {
-        name: "Nama Dokumen",
+        name: <div className="text-wrap">Nama Dokumen</div>,
         selector: (row) => row.nama_dokumen,
         sortable: true,
-        width: "200px",
-      },
-      {
-        name: "Provinsi",
-        selector: (row) => row.provinsi,
-        sortable: true,
+        cell: ( row ) => <div className="text-wrap py-2">{row.nama_dokumen}</div>,
         width: "120px",
       },
       {
-        name: "Kab/Kota",
+        name: <div className="text-wrap">Provinsi</div>,
+        selector: (row) => row.provinsi,
+        sortable: true,
+        cell: ( row ) => <div className="text-wrap py-2">{row.provinsi}</div>,
+        width: "120px",
+      },
+      {
+        name: <div className="text-wrap">Kab / Kota</div>,
         selector: (row) => row.kabupaten,
+        cell: ( row ) => <div className="text-wrap py-2">{row.kabupaten}</div>,
+        width: "120px",
         sortable: true,
       },
       {
-        name: "Nomor BAST",
+        name: <div className="text-wrap">Nomor BAST</div>,
         selector: (row) => row.nomor_bast,
+        cell: ( row ) => <div className="text-wrap py-4">{row.nomor_bast}</div>,
         sortable: true,
+        
+        
         // width: "100px",
       },
       // {
@@ -589,10 +596,11 @@ const DokumenDistributor = () => {
       //   // width: "100px",
       // },
       {
-        name: "Tahun Lokus",
+        name: <div className="text-wrap">Tahun Lokus</div>,
         selector: (row) => row.tahun_lokus,
+        cell: (row) => <div className="text-wrap py-2">{row.tahun_lokus}</div>,
         sortable: true,
-        // width: "100px",
+        width: "100px",
       },
       // {
       //   name: "Kepala Unit Pemberi",
@@ -613,7 +621,7 @@ const DokumenDistributor = () => {
       //   sortable: true,
       // },
       {
-        name: "Dokumen BAST",
+        name: <div className="text-wrap">Dokumen BAST</div>,
         cell: (row) => (
           <div className="flex items-center space-x-2">
             {/* <button
@@ -624,7 +632,7 @@ const DokumenDistributor = () => {
                 <FaPlus />
               </Link>
             </button> */}
-            {/* <button
+            <button
               title="Lihat"
               className="text-[#16B3AC] hover:text-cyan-500"
             >
@@ -635,7 +643,7 @@ const DokumenDistributor = () => {
               >
                 <FaEye size={20} />
               </Link>
-            </button> */}
+            </button>
             <button
               title="Download"
               className="text-green-400 hover:text-green-500"
@@ -659,7 +667,7 @@ const DokumenDistributor = () => {
         ignoreRowClick: true,
         allowOverflow: true,
         button: true,
-        width: "200px",
+        width: "80px",
       },
 
       {
@@ -738,14 +746,7 @@ const DokumenDistributor = () => {
       <Breadcrumb pageName="Dokumen TTE" linkBack="/dokumen" />
       <div className="flex flex-col items-center justify-center w-full tracking-tight mb-12">
         <h1 className="font-normal mb-3 text-xl lg:text-[28px] tracking-tight text-center text-bodydark1">
-          SELAMAT DATANG{" "}
-          {user.role === "1"
-            ? "ADMIN PUSAT"
-            : user.role === "2"
-            ? "ADMIN PPK"
-            : user.role === "3"
-            ? `ADMIN KAB/KOTA`
-            : ""}
+        DATA DOKUMEN DISTRIBUTOR
         </h1>
         <div className="flex items-center lg:items-end mt-8 gap-4 flex-col lg:flex-row">
           <div className="flex items-center gap-4 flex-col sm:flex-row">
@@ -973,11 +974,30 @@ const DokumenDistributor = () => {
               onSelectedRowsChange={handleRowSelected}
               clearSelectedRows={toggleCleared}
               pointerOnHover
-              customStyles={{
+               customStyles={{
                 headCells: {
                   style: {
-                    backgroundColor: "#EBFBFA",
-                    color: "#728294",
+                    padding: 12,
+                    backgroundColor: "#EBFBFA", // Warna header biru
+      color: "#212121", // Teks header putih
+                    fontWeight: 700,
+                    fontSize: 14,
+
+                  },
+                },
+                rows : {
+                  style: {
+                    fontSize: 14,
+                    paddingTop: 6,
+                    paddingBottom: 6,
+                    backgroundColor: "#FFFFFF", // Default warna baris ganjil (putih)
+                    "&:nth-of-type(odd)": {
+                      backgroundColor: "#F9FAFB", // Warna baris genap (abu terang)
+                    },
+                    highlightOnHoverStyle: {
+                      backgroundColor: "#D1E8FF", // Warna saat hover (biru terang)
+                      color: "#212121", // Warna teks tetap gelap
+                    },
                   },
                 },
               }}

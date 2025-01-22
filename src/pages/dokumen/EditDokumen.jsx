@@ -191,8 +191,8 @@ const EditDokumen = () => {
         Swal.fire("Error", "File type harus PDF", "error");
         return;
       }
-      if (file.size > 15 * 1024 * 1024) {
-        Swal.fire("Error", "File size harus dibawah 15 MB", "error");
+      if (file.size > 100 * 1024 * 1024) {
+        Swal.fire("Error", "File size harus dibawah 100 MB", "error");
         return;
       }
       setFormData((prev) => ({
@@ -694,7 +694,7 @@ const EditDokumen = () => {
                 </div>
 
                 <p className="text-gray-500 text-xs mt-1">
-                  Max file size: 15MB, Type: PDF
+                  Max file size: 100MB, Type: PDF
                 </p>
               </div>
             </div>

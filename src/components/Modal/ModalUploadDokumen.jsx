@@ -79,8 +79,8 @@ const ModalUploadDokumen = ({
         Swal.fire("Error", "File type harus PDF", "error");
         return;
       }
-      if (file.size > 15 * 1024 * 1024) {
-        Swal.fire("Error", "File size harus dibawah 15 MB", "error");
+      if (file.size > 100 * 1024 * 1024) {
+        Swal.fire("Error", "File size harus dibawah 100 MB", "error");
         return;
       }
       setFormData((prev) => ({
@@ -319,7 +319,7 @@ const ModalUploadDokumen = ({
                           or drag and drop
                         </p>
                       )}
-                      <p>(File PDF, Max: 15MB)</p>
+                      <p>(File PDF, Max: 100MB)</p>
                     </div>
                   </div>
                 </div>
