@@ -1113,7 +1113,7 @@ const AksiDistribusi = () => {
                         </a>
                       ) : !formData.pendukungFileLink &&
                         !formData.pendukungFile ? (
-                        <p className="text-red-600 text-xs ml-1 mb-1">
+                        <p className="text-red-600 text-xs ml-1 mb-1 font-semibold">
                           Anda Belum Mengupload Dokumen Pendukung
                         </p>
                       ) : (
@@ -1146,7 +1146,7 @@ const AksiDistribusi = () => {
                   </div>
                 )}
 
-                {user.role !== "3" && formData?.pendukungFileLink && (
+                {user.role !== "3" && (
                   <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
                     <div className="sm:flex-[2_2_0%]">
                       <label
@@ -1180,7 +1180,7 @@ const AksiDistribusi = () => {
                           </a>
                         ) : !formData.pendukungFileLink &&
                           !formData.pendukungFile ? (
-                          <p className="text-gray-500 text-xs ml-1">
+                          <p className="text-red-600 text-xs ml-1 font-semibold">
                             Belum Mengupload Dokumen Pendukung
                           </p>
                         ) : (
