@@ -1095,6 +1095,30 @@ const AksiDistribusi = () => {
                       </label>
                     </div>
                     <div className="sm:flex-[5_5_0%] flex flex-col items-start gap-1">
+                      {formData.pendukungFileLink && !formData.pendukungFile ? (
+                        <a
+                          href={formData.pendukungFileLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex flex-col items-center gap-4 mb-2"
+                        >
+                          <img
+                            src="/pdf.png"
+                            alt="PDF Icon"
+                            className="w-20 h-20" /* Ukuran yang sesuai untuk ikon PDF */
+                          />
+                          <span className="px-6 py-3 bg-blue-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                            Lihat Dokumen
+                          </span>
+                        </a>
+                      ) : !formData.pendukungFileLink &&
+                        !formData.pendukungFile ? (
+                        <p className="text-red-600 text-xs ml-1 mb-1">
+                          Anda Belum Mengupload Dokumen Pendukung
+                        </p>
+                      ) : (
+                        ""
+                      )}
                       <div className="flex items-center">
                         <label className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded cursor-pointer inline-flex items-center">
                           <input
@@ -1104,30 +1128,14 @@ const AksiDistribusi = () => {
                             type="file"
                             accept="application/pdf"
                           />
-                          Upload File
+                          {formData?.pendukungFileLink
+                            ? "Ganti File"
+                            : "Upload File"}
                         </label>
                         {formData.pendukungFileName && (
                           <p className="text-gray-500 text-xs mx-4">
                             File: {formData.pendukungFileName}
                           </p>
-                        )}
-                        {formData.pendukungFileLink &&
-                        !formData.pendukungFile ? (
-                          <a
-                            href={formData.pendukungFileLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="ml-1 px-4 py-2 bg-blue-500 text-white rounded-md"
-                          >
-                            Dokumen Anda
-                          </a>
-                        ) : !formData.pendukungFileLink &&
-                          !formData.pendukungFile ? (
-                          <p className="text-gray-500 text-xs ml-1">
-                            Anda Belum Mengupload Dokumen Pendukung
-                          </p>
-                        ) : (
-                          ""
                         )}
                       </div>
 
@@ -1156,14 +1164,24 @@ const AksiDistribusi = () => {
                             href={formData.pendukungFileLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="ml-1 px-4 py-2 bg-blue-500 text-white rounded-md"
+                            className="flex flex-col items-center gap-4"
                           >
-                            Dokumen Pendukung Uji Fungsi
+                            <img
+                              src="/pdf.png"
+                              alt="PDF Icon"
+                              className="w-20 h-20" /* Ukuran yang sesuai untuk ikon PDF */
+                            />
+                            {/* <span className="text-bodydark1">
+                              Dokumen Pendukung {selectedDokumen.label}
+                            </span> */}
+                            <span className="px-6 py-3 bg-teal-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-teal-600 transition duration-300">
+                              Lihat Dokumen
+                            </span>
                           </a>
                         ) : !formData.pendukungFileLink &&
                           !formData.pendukungFile ? (
                           <p className="text-gray-500 text-xs ml-1">
-                            Anda Belum Mengupload Dokumen Pendukung
+                            Belum Mengupload Dokumen Pendukung
                           </p>
                         ) : (
                           ""

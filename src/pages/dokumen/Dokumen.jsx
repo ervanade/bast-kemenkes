@@ -557,7 +557,7 @@ const Dokumen = () => {
         selector: (row) => row.nama_dokumen,
         sortable: true,
         cell: (row) => <div className="text-wrap py-2">{row.nama_dokumen}</div>,
-        width: "120px",
+        minWidth: "120px",
       },
       {
         name: <div className="text-wrap">Provinsi</div>,
