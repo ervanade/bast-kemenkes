@@ -556,31 +556,30 @@ const Dokumen = () => {
         name: <div className="text-wrap">Nama Dokumen</div>,
         selector: (row) => row.nama_dokumen,
         sortable: true,
-        cell: ( row ) => <div className="text-wrap py-2">{row.nama_dokumen}</div>,
+        cell: (row) => <div className="text-wrap py-2">{row.nama_dokumen}</div>,
         width: "120px",
       },
       {
         name: <div className="text-wrap">Provinsi</div>,
         selector: (row) => row.provinsi,
         sortable: true,
-        cell: ( row ) => <div className="text-wrap py-2">{row.provinsi}</div>,
+        cell: (row) => <div className="text-wrap py-2">{row.provinsi}</div>,
         width: "120px",
       },
       {
         name: <div className="text-wrap">Kab / Kota</div>,
         selector: (row) => row.kabupaten,
-        cell: ( row ) => <div className="text-wrap py-2">{row.kabupaten}</div>,
+        cell: (row) => <div className="text-wrap py-2">{row.kabupaten}</div>,
         width: "120px",
         sortable: true,
       },
       {
         name: <div className="text-wrap">Nomor BAST</div>,
         selector: (row) => row.nomor_bast,
-        cell: ( row ) => <div className="text-wrap py-4">{row.nomor_bast}</div>,
-        width: "150px",
+        cell: (row) => <div className="text-wrap py-4">{row.nomor_bast}</div>,
+        minWidth: "150px",
         sortable: true,
-        
-        
+
         // width: "100px",
       },
       // {
@@ -990,7 +989,7 @@ const Dokumen = () => {
       <Breadcrumb pageName="Dokumen TTE" linkBack="/dokumen" />
       <div className="flex flex-col items-center justify-center w-full tracking-tight mb-6">
         <h1 className="font-normal mb-3 text-xl lg:text-[28px] tracking-tight text-center text-bodydark1">
-        DATA DOKUMEN
+          DATA DOKUMEN
         </h1>
         <div className="flex items-center lg:items-end mt-3 gap-3 flex-col lg:flex-row">
           <div className="flex items-center gap-3 flex-col sm:flex-row">
@@ -1236,13 +1235,12 @@ const Dokumen = () => {
                   style: {
                     padding: 12,
                     backgroundColor: "#EBFBFA", // Warna header biru
-      color: "#212121", // Teks header putih
+                    color: "#212121", // Teks header putih
                     fontWeight: 700,
                     fontSize: 14,
-
                   },
                 },
-                rows : {
+                rows: {
                   style: {
                     fontSize: 14,
                     paddingTop: 4,
