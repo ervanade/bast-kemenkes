@@ -116,7 +116,7 @@ const Notifikasi = () => {
   return (
     <div>
       <Breadcrumb pageName="Notifikasi" title="Notifikasi" />
-      <div className="rounded-md flex flex-col gap-4 overflow-hidden overflow-x-auto  border border-stroke bg-white py-4 md:py-8 px-4 md:px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
+      <div className="rounded-md flex flex-col gap-4 overflow-hidden overflow-x-auto border border-stroke bg-white py-4 md:py-8 px-4 md:px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex justify-between mb-4 items-center">
           <div className="relative">
             <button className="absolute left-2 top-1/2 -translate-y-1/2">
@@ -142,7 +142,6 @@ const Notifikasi = () => {
                 />
               </svg>
             </button>
-
             <input
               type="text"
               value={search}
@@ -155,7 +154,6 @@ const Notifikasi = () => {
             <button
               title="Read All"
               className="flex items-center gap-2 cursor-pointer text-base text-white px-4 py-2 bg-green-500 rounded-md tracking-tight"
-              //   onClick={handleExport}
             >
               <FaCheck />
               <span className="hidden sm:block">Baca Semua</span>
@@ -169,7 +167,7 @@ const Notifikasi = () => {
               <span className="ml-2">Loading...</span>
             </div>
           ) : status === "failed" ? (
-            <div className="text-center text-red-500">Error: {error}</div>
+            <div className="text-center">Data Tidak Tersedia.</div>
           ) : filteredData.length === 0 ? (
             <div className="text-center">Data Tidak Tersedia.</div>
           ) : (
@@ -184,8 +182,8 @@ const Notifikasi = () => {
                 headCells: {
                   style: {
                     padding: 12,
-                    backgroundColor: "#EBFBFA", // Warna header biru
-                    color: "#212121", // Teks header putih
+                    backgroundColor: "#EBFBFA",
+                    color: "#212121",
                     fontWeight: 700,
                     fontSize: 14,
                   },
@@ -195,13 +193,13 @@ const Notifikasi = () => {
                     fontSize: 14,
                     paddingTop: 6,
                     paddingBottom: 6,
-                    backgroundColor: "#FFFFFF", // Default warna baris ganjil (putih)
+                    backgroundColor: "#FFFFFF",
                     "&:nth-of-type(odd)": {
-                      backgroundColor: "#F9FAFB", // Warna baris genap (abu terang)
+                      backgroundColor: "#F9FAFB",
                     },
                     highlightOnHoverStyle: {
-                      backgroundColor: "#D1E8FF", // Warna saat hover (biru terang)
-                      color: "#212121", // Warna teks tetap gelap
+                      backgroundColor: "#D1E8FF",
+                      color: "#212121",
                     },
                   },
                 },

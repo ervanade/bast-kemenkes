@@ -12,51 +12,49 @@ import Swal from "sweetalert2";
 
 const DropdownNotification = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { notifs, status, error } = useSelector((state) => state.notifications);
-  const user = useSelector((state) => state.auth.user);
+  const { notifs, error } = useSelector((state) => state.notifications); // Ambil error dari Redux
   const unreadNotifs = notifs.filter((notif) => notif.is_read === "0");
+  const [loading, setLoading] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.auth.user);
 
-  // Fetch notifikasi saat komponen pertama kali dimuat
   useEffect(() => {
     dispatch(fetchNotifs());
-    return () => {
-      dispatch(clearNotifs());
-    };
   }, [dispatch]);
 
-  // Tandai notifikasi sebagai sudah dibaca
   const handleMarkAsRead = (id) => {
-    dispatch(markAsRead(id));
+    dispatch(markAsRead(id)).then(() => {
+      dispatch(fetchNotifs());
+    });
   };
 
-  // Tandai semua notifikasi sebagai sudah dibaca
   const readAll = async () => {
+    setLoading(true);
     try {
-      await fetch(`${import.meta.env.VITE_APP_API_URL}/api/notif/readall`, {
-        method: "GET",
+      await axios.get(`${import.meta.env.VITE_APP_API_URL}/api/notif/readall`, {
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${user?.token}`,
         },
       });
-      Swal.fire("Notifikasi berhasil ditandai telah dibaca!", "", "success");
+      Swal.fire("Notifikasi Berhasil di Tandai Telah di Baca!", "", "success");
       dispatch(fetchNotifs());
-    } catch (err) {
-      Swal.fire("Gagal membaca notifikasi!", "", "error");
+      navigate("/notifikasi");
+    } catch (error) {
+      Swal.fire("Gagal Membaca Notifikasi!", "", "error");
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Konfirmasi baca semua notifikasi
   const handleSave = () => {
     Swal.fire({
       title: "Perhatian",
-      text: "Anda akan menandai semua notifikasi sebagai sudah dibaca.",
+      text: "Anda Menandai Telah Membaca Semua Notifikasi",
       showCancelButton: true,
       confirmButtonColor: "#16B3AC",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Ya, tandai semua",
+      confirmButtonText: "Ya",
     }).then((result) => {
       if (result.isConfirmed) {
         readAll();
@@ -76,7 +74,14 @@ const DropdownNotification = () => {
               <span className="absolute -z-1 inline-flex h-full w-full animate-ping rounded-full bg-meta-1 opacity-75"></span>
             </span>
           )}
-          <FaBell className="fill-current duration-300 ease-in-out" />
+          <svg
+            className="fill-current duration-300 ease-in-out"
+            width="18"
+            height="18"
+            viewBox="0 0 18 18"
+          >
+            <FaBell />
+          </svg>
         </button>
 
         {dropdownOpen && (
@@ -84,15 +89,10 @@ const DropdownNotification = () => {
             <div className="px-4.5 py-3 border-b border-teal-500">
               <h5 className="text-sm font-medium text-gray-700">Notifikasi</h5>
             </div>
-
             <ul className="flex h-auto flex-col overflow-y-auto notifikasi">
-              {status === "loading" ? (
+              {error ? (
                 <p className="text-center mt-5 text-gray-500 font-semibold">
-                  Memuat notifikasi...
-                </p>
-              ) : error ? (
-                <p className="text-center mt-5 text-gray-500 font-semibold">
-                  Gagal memuat notifikasi: {error}
+                  Gagal Memuat Notifikasi!
                 </p>
               ) : notifs.length > 0 ? (
                 notifs.map((notif) => (
@@ -115,9 +115,13 @@ const DropdownNotification = () => {
                       )}
                     </div>
                     <div className="flex flex-col">
-                      {notif?.message && (
+                      {typeof notif.message === "string" ? (
                         <p className="text-sm text-gray-800">
-                          {parse(notif?.message)}
+                          {parse(decode(notif.message))}
+                        </p>
+                      ) : (
+                        <p className="text-sm text-gray-800">
+                          Pesan Tidak Valid
                         </p>
                       )}
                       <p className="text-xs text-gray-500">
@@ -139,11 +143,10 @@ const DropdownNotification = () => {
                 ))
               ) : (
                 <p className="text-center mt-5 text-gray-500 font-semibold">
-                  Tidak ada notifikasi.
+                  Tidak Ada Notifikasi!
                 </p>
               )}
             </ul>
-
             <div className="flex w-full border-t border-teal-500">
               <button
                 onClick={handleSave}
