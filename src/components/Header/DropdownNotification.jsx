@@ -80,8 +80,8 @@ const DropdownNotification = () => {
         </button>
 
         {dropdownOpen && (
-          <div className="absolute -right-27 mt-2.5 flex h-90 w-75 sm:w-80 flex-col rounded-sm border border-gray-300 bg-white shadow-lg">
-            <div className="px-4.5 py-3 border-b border-gray-200">
+          <div className="absolute -right-5 mt-2.5 flex h-90 w-75 sm:w-80 flex-col rounded-sm border border-teal-500 bg-white shadow-lg">
+            <div className="px-4.5 py-3 border-b border-teal-200">
               <h5 className="text-sm font-medium text-gray-700">Notifikasi</h5>
             </div>
 
@@ -144,7 +144,7 @@ const DropdownNotification = () => {
               )}
             </ul>
 
-            <div className="flex w-full border-t border-gray-200">
+            <div className="flex w-full border-t border-teal-200">
               <button
                 onClick={handleSave}
                 className="w-1/2 bg-green-500 text-white py-2 text-center text-sm font-semibold hover:bg-green-600 transition duration-300"
