@@ -1,63 +1,90 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-export const fetchNotifs = createAsyncThunk('notifications/fetchNotifs', async (_, { getState }) => {
-    const { user } = getState().auth; // Ambil user dari Redux state
-    if (user.role === "3") {
-        const response = await axios.get(`https://api.tatakelolakesmas.com/api/notif/${user.kabupaten}`, {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${user?.token}`,
-            },
-        });
-        return response.data.data;
+// Fetch notifications
+export const fetchNotifs = createAsyncThunk(
+    'notifications/fetchNotifs',
+    async (_, { getState, rejectWithValue }) => {
+        try {
+            const { user } = getState().auth; // Ambil user dari Redux state
+            const endpoint =
+                user.role === '3'
+                    ? `https://api.tatakelolakesmas.com/api/notif/${user.kabupaten}`
+                    : 'https://api.tatakelolakesmas.com/api/notif';
+
+            const response = await axios.get(endpoint, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${user?.token}`,
+                },
+            });
+
+            return response.data.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data || 'Terjadi kesalahan');
+        }
     }
-    const response = await axios.get('https://api.tatakelolakesmas.com/api/notif', {
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user?.token}`,
-        },
-    });
-    return response.data.data;
-});
+);
 
-// Thunk untuk menandai notifikasi sebagai read
-export const markAsRead = createAsyncThunk('notifications/markAsRead', async (notifId, { getState }) => {
-    const { user } = getState().auth; // Ambil user dari Redux state
-    await axios.get(`https://api.tatakelolakesmas.com/api/notif/read/${notifId}`, {
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user?.token}`,
-        },
-    });
-    return notifId;
-});
+// Mark notification as read
+export const markAsRead = createAsyncThunk(
+    'notifications/markAsRead',
+    async (notifId, { getState, rejectWithValue }) => {
+        try {
+            const { user } = getState().auth; // Ambil user dari Redux state
+            await axios.get(`https://api.tatakelolakesmas.com/api/notif/read/${notifId}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${user?.token}`,
+                },
+            });
+            return notifId;
+        } catch (error) {
+            return rejectWithValue(error.response?.data || 'Terjadi kesalahan');
+        }
+    }
+);
 
-
+// Slice
 const notifSlice = createSlice({
     name: 'notifications',
     initialState: {
         notifs: [],
-        status: 'idle',
+        status: 'idle', // idle | loading | succeeded | failed
         error: null,
     },
     reducers: {
         clearNotifs: (state) => {
             state.notifs = [];
+            state.status = 'idle';
+            state.error = null;
         },
     },
     extraReducers: (builder) => {
         builder
+            .addCase(fetchNotifs.pending, (state) => {
+                state.status = 'loading';
+                state.error = null;
+            })
             .addCase(fetchNotifs.fulfilled, (state, action) => {
+                state.status = 'succeeded';
                 state.notifs = action.payload;
+            })
+            .addCase(fetchNotifs.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.payload || 'Gagal mengambil notifikasi';
             })
             .addCase(markAsRead.fulfilled, (state, action) => {
                 const notif = state.notifs.find((n) => n.id === action.payload);
                 if (notif) {
                     notif.is_read = '1';
                 }
+            })
+            .addCase(markAsRead.rejected, (state, action) => {
+                state.error = action.payload || 'Gagal menandai notifikasi';
             });
     },
 });
+
 export const { clearNotifs } = notifSlice.actions;
 export default notifSlice.reducer;

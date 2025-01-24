@@ -23,169 +23,45 @@ import parse from "html-react-parser";
 
 import { encode, decode } from "html-encoder-decoder"; // Gunakan import alih-alih require
 const Notifikasi = () => {
-  const user = useSelector((a) => a.auth.user);
-  const { notifs } = useSelector((state) => state.notifications);
+  const { user } = useSelector((state) => state.auth);
+  const { notifs, status, error } = useSelector((state) => state.notifications);
   const unreadNotifs = notifs.filter((notif) => notif.is_read === "0");
 
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchNotifs());
   }, [dispatch]);
 
+  useEffect(() => {
+    setFilteredData(
+      search
+        ? notifs.filter((notif) =>
+            notif.message?.toLowerCase().includes(search.toLowerCase())
+          )
+        : notifs
+    );
+  }, [notifs, search]);
+
   const handleMarkAsRead = (id) => {
     dispatch(markAsRead(id));
-    dispatch(fetchNotifs());
-  };
-
-  const [search, setSearch] = useState(""); // Initialize search state with an empty string
-  const [data, setData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  const handleSearch = (event) => {
-    const value = event.target.value.toLowerCase();
-    setSearch(value);
-
-    const filtered = data.filter((item) => {
-      return item?.message && item.message.toLowerCase().includes(value);
-    });
-
-    setFilteredData(filtered);
-  };
-
-  const handleExport = () => {
-    // Implementasi untuk mengekspor data (misalnya ke CSV)
-
-    const exportData = filteredData?.map((item) => ({
-      User: item?.name,
-      Aksi: item?.action,
-      // "Model": item?.model,
-      Desc: item?.desc,
-      Url: item?.uri,
-      Tanggal: item?.created_at,
-    }));
-    const wb = XLSX.utils.book_new();
-
-    // Kolom yang konsisten untuk semua tabel
-    const cols = [
-      { wch: 20 }, // Kolom 1
-      { wch: 20 }, // Kolom 2
-      { wch: 20 }, // Kolom 3
-      { wch: 25 }, // Kolom 4
-      { wch: 20 }, // Kolom 5
-      { wch: 20 }, // Kolom 6
-      { wch: 20 }, // Kolom 7
-      { wch: 20 }, // Kolom 8
-    ];
-
-    // Membuat sheet untuk data filteredData
-    const wsFilteredData = XLSX.utils.json_to_sheet(exportData);
-    wsFilteredData["!cols"] = cols;
-
-    // Menambahkan sheet ke workbook
-    XLSX.utils.book_append_sheet(wb, wsFilteredData, "Aktivitas Log");
-
-    // Export file excel
-    const tanggal = moment().locale("id").format("DD MMMM YYYY HH:mm");
-    XLSX.writeFile(wb, `Aktivitas Log ${tanggal}.xlsx`);
-  };
-
-  const fetchLogData = async () => {
-    setLoading(true);
-    setError(false);
-    try {
-      const response = await axios({
-        method: "get",
-        url: `${import.meta.env.VITE_APP_API_URL}/api/log`,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user?.token}`,
-        },
-      });
-      setData(notifs);
-      setFilteredData(notifs);
-    } catch (error) {
-      setError(true);
-      setFilteredData([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchLogData();
-  }, []);
-
-  const deleteProvinsi = async (id) => {
-    await axios({
-      method: "delete",
-      url: `${import.meta.env.VITE_APP_API_URL}/api/logactivity/${id}`,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user?.token}`,
-      },
-    })
-      .then(() => {
-        fetchLogData();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const handleConfirmDeleteProvinsi = async (id) => {
-    return Swal.fire({
-      title: "Are you sure?",
-      text: "You will Delete This Provinsi!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, delete it!",
-      confirmButtonColor: "#16B3AC",
-    }).then(async (result) => {
-      if (result.value) {
-        await deleteProvinsi(id);
-        Swal.fire({
-          icon: "success",
-          title: "Deleted!",
-          text: "Your Provinsi has been deleted.",
-        });
-      }
-    });
   };
 
   const columns = useMemo(
     () => [
-      // { name: "No", selector: (row) => row.id, sortable: true },
       {
         name: "No",
         selector: (row, index) => index + 1,
         sortable: true,
         width: "80px",
       },
-      // {
-      //   name: "Model",
-      //   selector: (row, index) => row.model,
-      //   sortable: true,
-      //   width: "180px",
-      // },
-      //   {
-      //     name: "Changes",
-      //     selector: (row) => row.changes,
-      //     sortable: true,
-      //     // width: "100px",
-      //   },
       {
         name: "Message",
         selector: (row) => row.message,
-        cell: (row) => (
-          <div className="">{row?.message && parse(decode(row?.message))}</div>
-        ),
         sortable: true,
-        // width: "100px",
       },
       {
         name: "Tanggal",
@@ -199,35 +75,42 @@ const Notifikasi = () => {
         cell: (row) => (
           <div
             className={`p-2 rounded-md text-white ${
-              row?.is_read === "0" ? "bg-yellow-500" : "bg-green-500"
+              row.is_read === "0" ? "bg-yellow-500" : "bg-green-500"
             }`}
           >
-            {row?.is_read === "0" ? "Belum Dibaca" : "Sudah Dibaca"}
+            {row.is_read === "0" ? "Belum Dibaca" : "Sudah Dibaca"}
           </div>
         ),
         sortable: true,
-        // width: "100px",
       },
       {
         name: "Aksi",
+        selector: (row) => row.is_read,
+
         cell: (row) => (
-          <div className="flex items-center space-x-2">
-            <button
-              title="Tandai Telah Dibaca"
-              className="text-green-500 hover:text-cyan-500"
-            >
-              <button>
+          <div>
+            {row.is_read === "0" ? (
+              <button
+                title="Tandai Telah Dibaca"
+                className="text-green-500 hover:text-cyan-500"
+                onClick={() => handleMarkAsRead(row.id)}
+              >
                 <FaCheck size={16} />
               </button>
-            </button>
+            ) : (
+              <div
+                className={`p-2 rounded-md text-white ${
+                  row.is_read === "0" ? "bg-yellow-500" : "bg-green-500"
+                }`}
+              >
+                {row.is_read === "0" ? "Belum Dibaca" : "Sudah Dibaca"}
+              </div>
+            )}
           </div>
         ),
-        ignoreRowClick: true,
-        allowOverflow: true,
-        button: true,
       },
     ],
-    [handleConfirmDeleteProvinsi, user.role]
+    []
   );
 
   return (
@@ -263,22 +146,14 @@ const Notifikasi = () => {
             <input
               type="text"
               value={search}
-              onChange={handleSearch}
+              onChange={(e) => setSearch(e.target.value)}
               placeholder="Cari Data..."
               className="w-full bg-white pl-9 pr-4 text-black outline outline-1 outline-zinc-200 focus:outline-primary dark:text-white xl:w-125 py-2 rounded-md"
             />
           </div>
           <div className="div flex gap-2 flex-row">
             <button
-              title="Export Data Provinsi"
-              className="flex items-center gap-2 cursor-pointer text-base text-white px-4 py-2 bg-primary rounded-md tracking-tight"
-              onClick={handleExport}
-            >
-              <BiExport />
-              <span className="hidden sm:block">Export</span>
-            </button>
-            <button
-              title="Export Data Provinsi"
+              title="Read All"
               className="flex items-center gap-2 cursor-pointer text-base text-white px-4 py-2 bg-green-500 rounded-md tracking-tight"
               //   onClick={handleExport}
             >
@@ -288,12 +163,14 @@ const Notifikasi = () => {
           </div>
         </div>
         <div className="overflow-x-auto">
-          {loading ? (
+          {status === "loading" ? (
             <div className="flex justify-center items-center">
-              <CgSpinner className="animate-spin inline-block w-8 h-8 text-teal-400" />
+              <CgSpinner className="animate-spin w-8 h-8 text-teal-400" />
               <span className="ml-2">Loading...</span>
             </div>
-          ) : error || filteredData.length === 0 ? (
+          ) : status === "failed" ? (
+            <div className="text-center text-red-500">Error: {error}</div>
+          ) : filteredData.length === 0 ? (
             <div className="text-center">Data Tidak Tersedia.</div>
           ) : (
             <DataTable
@@ -303,18 +180,17 @@ const Notifikasi = () => {
               persistTableHead
               highlightOnHover
               pointerOnHover
-               customStyles={{
+              customStyles={{
                 headCells: {
                   style: {
                     padding: 12,
                     backgroundColor: "#EBFBFA", // Warna header biru
-      color: "#212121", // Teks header putih
+                    color: "#212121", // Teks header putih
                     fontWeight: 700,
                     fontSize: 14,
-
                   },
                 },
-                rows : {
+                rows: {
                   style: {
                     fontSize: 14,
                     paddingTop: 6,
