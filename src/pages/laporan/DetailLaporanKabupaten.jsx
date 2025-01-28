@@ -39,7 +39,8 @@ const DetailLaporanKabupaten = () => {
     const filtered = data.filter((item) => {
       return (
         (item?.kecamatan && item.kecamatan.toLowerCase().includes(value)) ||
-        (item?.puskesmas && item.puskesmas.toLowerCase().includes(value))
+        (item?.nama_puskesmas &&
+          item.nama_puskesmas.toLowerCase().includes(value))
       );
     });
 
@@ -398,18 +399,17 @@ const DetailLaporanKabupaten = () => {
               persistTableHead
               highlightOnHover
               pointerOnHover
-               customStyles={{
+              customStyles={{
                 headCells: {
                   style: {
                     padding: 12,
                     backgroundColor: "#EBFBFA", // Warna header biru
-      color: "#212121", // Teks header putih
+                    color: "#212121", // Teks header putih
                     fontWeight: 700,
                     fontSize: 14,
-
                   },
                 },
-                rows : {
+                rows: {
                   style: {
                     fontSize: 14,
                     paddingTop: 6,
