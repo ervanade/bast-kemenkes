@@ -62,12 +62,30 @@ const Laporan = () => {
       total_harga: 0,
     },
   };
+  const [mappedData, setMappedData] = useState([]);
+
+  // Fungsi untuk memproses data
+  const transformData = (data) => {
+    const result = {};
+
+    data.forEach((item) => {
+      const name = item.provinsi === "ACEH" ? "DI. ACEH" : item.provinsi; // Ubah "ACEH" menjadi "DI. ACEH"
+      result[name] = {
+        barang: item.barang || 0,
+        data_distribusi: item.jumlah_distribusi || 0,
+        jumlah_dikirim: item.jumlah_dikirim || 0,
+        jumlah_diterima: item.jumlah_diterima || 0,
+        total_harga: item.total_harga || 0,
+      };
+    });
+
+    return result;
+  };
   const [tooltipContent, setTooltipContent] = useState("");
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
-
   const handleMouseEnter = (geo, event) => {
     const { Propinsi } = geo.properties;
-    const data = dataMap[Propinsi];
+    const data = mappedData[Propinsi];
     if (data) {
       setTooltipContent(
         <div className="p-4">
@@ -81,7 +99,7 @@ const Laporan = () => {
     } else {
       setTooltipContent(`${Propinsi}: Data tidak tersedia`);
     }
-    setTooltipPosition({ x: event.clientX - 100, y: event.clientY - 100 });
+    setTooltipPosition({ x: event.clientX - 110, y: event.clientY + 50 });
   };
 
   const handleMouseLeave = () => {
@@ -127,6 +145,8 @@ const Laporan = () => {
       setLoading(false);
       setGetLoading(false);
       setData(response.data.data);
+      const transformedData = transformData(response.data.data); // Proses data dengan mapData
+      setMappedData(transformedData); // Simpan data yang sudah diubah ke state
     } catch (error) {
       setError(true);
       setLoading(false);
@@ -481,18 +501,17 @@ const Laporan = () => {
               persistTableHead
               highlightOnHover
               pointerOnHover
-               customStyles={{
+              customStyles={{
                 headCells: {
                   style: {
                     padding: 12,
                     backgroundColor: "#EBFBFA", // Warna header biru
-      color: "#212121", // Teks header putih
+                    color: "#212121", // Teks header putih
                     fontWeight: 700,
                     fontSize: 14,
-
                   },
                 },
-                rows : {
+                rows: {
                   style: {
                     fontSize: 14,
                     paddingTop: 6,
