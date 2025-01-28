@@ -7,6 +7,8 @@ import { RiHospitalLine } from "react-icons/ri";
 import Article1 from "../assets/article/article-3.png";
 import Article2 from "../assets/article/article-2.jpg";
 import Article3 from "../assets/article/article-1.png";
+import Admin from "../assets/article/admin.png";
+import Daerah from "../assets/article/daerah.png";
 import { useSelector } from "react-redux";
 import { returnRole } from "../data/utils";
 import axios from "axios";
@@ -123,6 +125,74 @@ const Dashboard = () => {
             <PiShieldWarningBold size={28} className="fill-[#F46D6D] " />
           </div>
         </CardDataStats>
+      </div>
+      <div className="mt-4 md:mt-8 rounded-md border border-stroke bg-white py-6 md:py-12 px-4 md:px-8 shadow-default dark:border-strokedark dark:bg-boxdark text-bodydark2">
+        <div className="welcome-text">
+          <h1 className="font-semibold mb-3 text-xl lg:text-[28px] tracking-tight text-center">
+            TUTORIAL PENGGUNAAN SIMBAH-BMN
+          </h1>
+        </div>
+        <div className="article-wrapper mt-12 flex flex-col lg:flex-row gap-8 w-full">
+          {[
+            {
+              title: "Tutorial SIMBAH-BMN Admin Pusat",
+              img: Admin,
+              link: "https://drive.google.com/file/d/11NaTKiULMGazHSsjDCS5W_TUoSDzyerl/view?usp=sharing",
+            },
+            {
+              title: "Tutorial SIMBAH-BMN User Daerah",
+              img: Daerah,
+              link: "https://drive.google.com/file/d/1bjpysZp4-tDog7ENr9r3LKmdiwowFjmJ/view?usp=sharing",
+            },
+          ].map((item, index) => (
+            <div
+              key={index}
+              className="w-full bg-transpatent border border-[#cacaca] rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+            >
+              <a
+                href={item.link || "https://kesmas.kemkes.go.id/"}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  className="rounded-t-lg max-h-64 w-full object-cover"
+                  src={item.img}
+                  alt="article"
+                />
+              </a>
+              <div className="p-5">
+                {/* <a href="#" className=""> */}
+                <p className="mb-4 text-xl lg:text-2xl font-medium tracking-tight text-gray-900 dark:text-white line-clamp-2">
+                  {item.title}
+                </p>
+                {/* </a> */}
+                <a
+                  href={item.link || "https://kesmas.kemkes.go.id/"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-primary rounded-lg hover:bg-primary focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-primary dark:hover:bg-primary dark:focus:ring-primary"
+                >
+                  Read more
+                  <svg
+                    className="rtl:rotate-180 w-3.5 h-3.5 ms-2"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 14 10"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M1 5h12m0 0L9 1m4 4L9 9"
+                    />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
       <div className="mt-4 md:mt-8 rounded-md border border-stroke bg-white py-6 md:py-12 px-4 md:px-8 shadow-default dark:border-strokedark dark:bg-boxdark text-bodydark2">
         <div className="welcome-text">
