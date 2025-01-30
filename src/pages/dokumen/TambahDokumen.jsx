@@ -169,7 +169,7 @@ const TambahDokumen = () => {
       // Validasi untuk Nomor BAST
       if (id === "nomor_bast") {
         const regexBast =
-          /^KN\.02\.07\/([A-Za-z0-9\[\]A-Za-z\-\_]+)\/([A-Za-z0-9\[\]A-Za-z\-\_]+)\/([A-Za-z0-9\[\]A-Za-z\-\_]+)\/([A-Za-z0-9\[\]A-Za-z\-\_]+)$/;
+          /^KN\.02\.07\/([\w.\[\]-]+)\/([\w.\[\]-]+)\/([\w.\[\]-]+)\/([\w.\[\]-]+)$/;
         if (!regexBast.test(value)) {
           errorMessage =
             "Format nomor BAST salah. Format yang benar adalah: KN.02.07/[KODE_TAKELNAS]/[BATCH]/[NO]/[TAHUN]";
