@@ -227,7 +227,6 @@ const AksiDistribusi = () => {
       }));
     }
   };
-  console.log(formData);
   const handleDokumenChange = (selectedOption) => {
     setSelectedKecamatan(null);
     setDataKecamatan([]);
@@ -266,7 +265,6 @@ const AksiDistribusi = () => {
       setFormData((prev) => ({ ...prev, [id]: value }));
     }
   };
-  console.log(formData);
   const fetchKota = async () => {
     setGetLoading(true);
     try {

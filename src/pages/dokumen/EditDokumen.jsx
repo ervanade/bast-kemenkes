@@ -375,7 +375,6 @@ const EditDokumen = () => {
       fetchKota(formData.id_provinsi);
     }
   }, [formData.id_provinsi]);
-  console.log(formData);
   if (getLoading) {
     return (
       <div className="flex justify-center items-center">

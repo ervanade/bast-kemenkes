@@ -17,6 +17,10 @@ export const store = configureStore({
         notifications: notifSlice,
     },
     devTools: true,
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+          serializableCheck: false, // Matikan serializable check untuk redux-persist
+        }),
 });
 
 export const persistor = persistStore(store);

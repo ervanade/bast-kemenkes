@@ -268,7 +268,6 @@ const TambahDistribusi = () => {
     fetchKota();
     fetchDokumen();
   }, []);
-  console.log(formData);
 
   const tambahDistribusi = async () => {
     if (formData.dataBarang.length < 1) {
