@@ -169,6 +169,8 @@ const EditDokumen = () => {
           contractFileLink: data.file_kontrak || "",
           id_provinsi: data.id_provinsi || "",
           id_kabupaten: data.id_kabupaten || "",
+          batch: data.batch || "",
+          program: data.program || "",
         });
       });
     } catch (error) {
@@ -304,7 +306,7 @@ const EditDokumen = () => {
     setSelectedBatch(selectedOption);
     setFormData((prev) => ({
       ...prev,
-      program: selectedOption ? selectedOption.value.toString() : "",
+      batch: selectedOption ? selectedOption.value.toString() : "",
     }));
   };
 

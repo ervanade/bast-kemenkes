@@ -35,6 +35,8 @@ const TambahDokumen = () => {
     id_kabupaten: "",
     contractFile: null,
     contractFileName: "",
+    program: "",
+    batch: "",
   });
 
   const [isPenerimaEditable, setIsPenerimaEditable] = useState(false);
@@ -311,7 +313,7 @@ const TambahDokumen = () => {
     setSelectedBatch(selectedOption);
     setFormData((prev) => ({
       ...prev,
-      program: selectedOption ? selectedOption.value.toString() : "",
+      batch: selectedOption ? selectedOption.value.toString() : "",
     }));
   };
   return (
