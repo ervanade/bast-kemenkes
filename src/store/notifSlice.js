@@ -9,8 +9,8 @@ export const fetchNotifs = createAsyncThunk(
             const { user } = getState().auth; // Ambil user dari Redux state
             const endpoint =
                 user.role === '3'
-                    ? `https://api.tatakelolakesmas.com/api/notif/${user.kabupaten}`
-                    : 'https://api.tatakelolakesmas.com/api/notif';
+                    ? `${import.meta.env.VITE_APP_API_URL}/api/notif/${user.kabupaten}`
+                    : `${import.meta.env.VITE_APP_API_URL}/api/notif`;
 
             const response = await axios.get(endpoint, {
                 headers: {
@@ -32,7 +32,7 @@ export const markAsRead = createAsyncThunk(
     async (notifId, { getState, rejectWithValue }) => {
         try {
             const { user } = getState().auth; // Ambil user dari Redux state
-            await axios.get(`https://api.tatakelolakesmas.com/api/notif/read/${notifId}`, {
+            await axios.get(`${import.meta.env.VITE_APP_API_URL}/api/notif/read/${notifId}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${user?.token}`,
