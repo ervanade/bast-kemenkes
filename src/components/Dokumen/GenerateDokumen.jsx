@@ -301,16 +301,21 @@ const GenerateDokumen = async (jsonData, distributor) => {
               }}
               src="/favicon.png"
             />
-              <Image
-                  style={{
-                    width: '40px',
-                    height: "40px",
-                  objectFit: 'contain'}}
-                  src={`${jsonData?.logo_daerah ? jsonData?.logo_daerah + '?not-from-cache-please' : "/favicon.png"}`}
-                  onError={(error) => {
-                    error.target.src = "/favicon.png";
-                  }}
-                />
+            <Image
+              style={{
+                width: "40px",
+                height: "40px",
+                objectFit: "contain",
+              }}
+              src={`${
+                jsonData?.logo_daerah
+                  ? jsonData?.logo_daerah + "?not-from-cache-please"
+                  : "/favicon.png"
+              }`}
+              onError={(error) => {
+                error.target.src = "/favicon.png";
+              }}
+            />
           </View>
           <Text
             style={{
@@ -1598,9 +1603,9 @@ const GenerateDokumen = async (jsonData, distributor) => {
           </View>
         </View>
       </Page>
-
-      {RenderBarangPages(jsonData)}
-      {!distributor && (
+      {RenderHibahPages(jsonData, true)}
+      {/* {RenderBarangPages(jsonData)} */}
+      {!distributor && jsonData?.status_tte == "2" && (
         <>
           <Page size="FOLIO" style={styles.page}>
             {/* <View style={styles.docContainer}>
@@ -1719,7 +1724,7 @@ const GenerateDokumen = async (jsonData, distributor) => {
               </View>
             </View>
           </Page>
-          {RenderHibahPages(jsonData)}
+          {/* {RenderHibahPages(jsonData, true)} */}
         </>
       )}
     </Document>

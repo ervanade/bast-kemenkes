@@ -234,7 +234,7 @@ const getAllDetailDistribusi = (distribusi) => {
   }));
 };
 
-export const RenderHibahPages = (jsonData) => {
+export const RenderHibahPages = (jsonData, basto) => {
   const distribusiData = getAllDetailDistribusi(jsonData?.distribusi || []);
   const pages = [];
 
@@ -303,7 +303,11 @@ export const RenderHibahPages = (jsonData) => {
                   }}
                 >
                   LAMPIRAN {distribusi.lampiran}.{i + 1}
-                  {"\n"}NASKAH HIBAH BARANG MILIK NEGARABARANG MILIK NEGARA
+                  {"\n"}
+                  {basto
+                    ? "BERITA ACARA SERAH TERIMA OPERASIONAL BARANG MILIK NEGARA"
+                    : "NASKAH HIBAH BARANG MILIK NEGARA                     "}
+                  {"              "}
                   {"\n"}NOMOR: {jsonData?.nomorSurat}
                   {"\n"}TANGGAL: {jsonData?.tanggal}
                 </Text>
