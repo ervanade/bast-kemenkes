@@ -60,6 +60,12 @@ const AksiDistribusi = () => {
     pendukungFileLink: "",
     penyedia: "",
     id_penyedia: "",
+    ujiFungsiFile: null,
+    ujiFungsiFileName: "",
+    ujiFungsiFileLink: "",
+    ujiOpsFile: null,
+    ujiOpsFileName: "",
+    ujiOpsFileLink: "",
   });
 
   const navigate = useNavigate();
@@ -259,7 +265,7 @@ const AksiDistribusi = () => {
       setFormData((prev) => ({
         ...prev,
         [id]: file,
-        pendukungFileName: file.name,
+        [id + "Name"]: file.name,
       }));
     } else {
       setFormData((prev) => ({ ...prev, [id]: value }));
@@ -437,6 +443,12 @@ const AksiDistribusi = () => {
           pendukungFileName: data.pendukungFileName || "",
           pendukungFile: null,
           pendukungFileLink: data.dokumen_pendukung || "",
+          ujiFungsiFileName: data.ujiFungsiFileName || "",
+          ujiFungsiFile: null,
+          ujiFungsiFileLink: data.dokumen_uji_fungsi || "",
+          ujiOpsFileName: data.ujiOpsFileName || "",
+          ujiOpsFile: null,
+          ujiOpsFileLink: data.dokumen_uji_ops || "",
           dataBarang: data.dataBarang || [],
           id_penyedia: data.id_penyedia || "",
           penyedia: data.penyedia || "",
@@ -471,6 +483,26 @@ const AksiDistribusi = () => {
       setLoading(false);
       return;
     }
+
+    if (
+      user.role === "3" &&
+      !formData.ujiFungsiFile &&
+      !formData.ujiFungsiFileLink
+    ) {
+      Swal.fire("Error", "Dokumen Uji Fungsi Masih Kosong", "error");
+      setLoading(false);
+      return;
+    }
+
+    if (
+      user.role === "3" &&
+      !formData.ujiOpsFile &&
+      !formData.ujiOpsFileLink
+    ) {
+      Swal.fire("Error", "Dokumen Uji Operasional Masih Kosong", "error");
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     const formDataToSend = new FormData();
     formDataToSend.append("id_kecamatan", formData.id_kecamatan);
@@ -486,6 +518,12 @@ const AksiDistribusi = () => {
     formDataToSend.append("dataBarang", JSON.stringify(formData.dataBarang));
     if (formData.pendukungFile) {
       formDataToSend.append("dokumen_pendukung", formData.pendukungFile);
+    }
+    if (formData.ujiFungsiFile) {
+      formDataToSend.append("dokumen_uji_fungsi", formData.ujiFungsiFile);
+    }
+    if (formData.ujiOpsFile) {
+      formDataToSend.append("dokumen_uji_ops", formData.ujiOpsFile);
     }
     // if (!formData.pendukungFile && formData.pendukungFileLink) {
     //   formDataToSend.append("dokumen_pendukung", formData.pendukungFileLink);
@@ -916,9 +954,12 @@ const AksiDistribusi = () => {
                           </th>
                         )}
 
-                        <th scope="col" className="px-4 py-3 text-center">
-                          Nama Barang
-                        </th>
+<th
+        scope="col"
+        className="px-4 py-3 text-center min-w-[150px] break-words"
+      >
+        Nama Barang
+      </th>
                         <th scope="col" className="px-4 py-3 text-center">
                           Merk/Tipe
                         </th>
@@ -962,12 +1003,12 @@ const AksiDistribusi = () => {
                               />
                             </td>
                           )}
-                          <th
-                            scope="row"
-                            className="px-2 py-2 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                          >
-                            {barang.jenis_alkes}
-                          </th>
+                           <td
+                              scope="row"
+                              className="px-2 py-2 text-center font-medium text-gray-900 dark:text-white min-w-[150px] break-words"
+                            >
+                              {barang.jenis_alkes}
+                            </td>
                           <td className="px-2 py-2 text-center">
                             {barang.merk}
                           </td>
@@ -1087,6 +1128,130 @@ const AksiDistribusi = () => {
                     <div className="sm:flex-[2_2_0%]">
                       <label
                         className=" block text-[#728294] text-base font-semibold mb-2"
+                        htmlFor="ujiFungsiFile"
+                      >
+                        Upload Dokumen Uji Fungsi:
+                      </label>
+                    </div>
+                    <div className="sm:flex-[5_5_0%] flex flex-col items-start gap-1">
+                      {formData.ujiFungsiFileLink && !formData.ujiFungsiFile ? (
+                        <a
+                          href={formData.ujiFungsiFileLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex flex-col items-center gap-4 mb-2"
+                        >
+                          <img
+                            src="/pdf.png"
+                            alt="PDF Icon"
+                            className="w-20 h-20" /* Ukuran yang sesuai untuk ikon PDF */
+                          />
+                          <span className="px-6 py-3 bg-blue-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                            Lihat Dokumen
+                          </span>
+                        </a>
+                      ) : !formData.ujiFungsiFileLink &&
+                        !formData.ujiFungsiFile ? (
+                        <p className="text-red-600 text-xs ml-1 mb-1 font-semibold">
+                          Anda Belum Mengupload Dokumen Uji FUngsi
+                        </p>
+                      ) : (
+                        ""
+                      )}
+                      <div className="flex items-center">
+                        <label className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded cursor-pointer inline-flex items-center">
+                          <input
+                            className="hidden"
+                            id="ujiFungsiFile"
+                            onChange={handleChange}
+                            type="file"
+                            accept="application/pdf"
+                          />
+                          {formData?.ujiFungsiFileLink
+                            ? "Ganti File"
+                            : "Upload File"}
+                        </label>
+                        {formData.ujiFungsiFileName && (
+                          <p className="text-gray-500 text-xs mx-4">
+                            File: {formData.ujiFungsiFileName}
+                          </p>
+                        )}
+                      </div>
+
+                      <p className="text-gray-500 text-xs mt-1">
+                        Max file size: 100MB, Type: PDF
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+{user.role === "3" && (
+                  <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+                    <div className="sm:flex-[2_2_0%]">
+                      <label
+                        className=" block text-[#728294] text-base font-semibold mb-2"
+                        htmlFor="ujiOpsFile"
+                      >
+                        Upload Dokumen Uji Operasional:
+                      </label>
+                    </div>
+                    <div className="sm:flex-[5_5_0%] flex flex-col items-start gap-1">
+                      {formData.ujiOpsFileLink && !formData.ujiOpsFile ? (
+                        <a
+                          href={formData.ujiOpsFileLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex flex-col items-center gap-4 mb-2"
+                        >
+                          <img
+                            src="/pdf.png"
+                            alt="PDF Icon"
+                            className="w-20 h-20" /* Ukuran yang sesuai untuk ikon PDF */
+                          />
+                          <span className="px-6 py-3 bg-blue-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-600 transition duration-300">
+                            Lihat Dokumen
+                          </span>
+                        </a>
+                      ) : !formData.ujiOpsFileLink &&
+                        !formData.ujiOpsFile? (
+                        <p className="text-red-600 text-xs ml-1 mb-1 font-semibold">
+                          Anda Belum Mengupload Dokumen Uji Operasional
+                        </p>
+                      ) : (
+                        ""
+                      )}
+                      <div className="flex items-center">
+                        <label className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded cursor-pointer inline-flex items-center">
+                          <input
+                            className="hidden"
+                            id="ujiOpsFile"
+                            onChange={handleChange}
+                            type="file"
+                            accept="application/pdf"
+                          />
+                          {formData?.ujiOpsFileLink
+                            ? "Ganti File"
+                            : "Upload File"}
+                        </label>
+                        {formData.ujiOpsFileName && (
+                          <p className="text-gray-500 text-xs mx-4">
+                            File: {formData.ujiOpsFileName}
+                          </p>
+                        )}
+                      </div>
+
+                      <p className="text-gray-500 text-xs mt-1">
+                        Max file size: 100MB, Type: PDF
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {user.role === "3" && (
+                  <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+                    <div className="sm:flex-[2_2_0%]">
+                      <label
+                        className=" block text-[#728294] text-base font-semibold mb-2"
                         htmlFor="pendukungFile"
                       >
                         Upload Dokumen Pendukung:
@@ -1145,6 +1310,96 @@ const AksiDistribusi = () => {
                 )}
 
                 {user.role !== "3" && (
+                  <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+                    <div className="sm:flex-[2_2_0%]">
+                      <label
+                        className=" block text-[#728294] text-base font-semibold mb-2"
+                        htmlFor="pendukungFile"
+                      >
+                        Dokumen Uji Fungsi:
+                      </label>
+                    </div>
+                    <div className="sm:flex-[5_5_0%] flex flex-col items-start gap-1">
+                      <div className="flex items-center">
+                        {formData.ujiFungsiFileLink &&
+                        !formData.ujiFungsiFile ? (
+                          <a
+                            href={formData.ujiFungsiFileLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex flex-col items-center gap-4"
+                          >
+                            <img
+                              src="/pdf.png"
+                              alt="PDF Icon"
+                              className="w-20 h-20" /* Ukuran yang sesuai untuk ikon PDF */
+                            />
+                            {/* <span className="text-bodydark1">
+                              Dokumen Pendukung {selectedDokumen.label}
+                            </span> */}
+                            <span className="px-6 py-3 bg-teal-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-teal-600 transition duration-300">
+                              Lihat Dokumen
+                            </span>
+                          </a>
+                        ) : !formData.ujiFungsiFileLink &&
+                          !formData.ujiFungsiFile ? (
+                          <p className="text-red-600 text-xs ml-1 font-semibold">
+                            Belum Mengupload Dokumen Pendukung
+                          </p>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+{user.role !== "3" && (
+                  <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+                    <div className="sm:flex-[2_2_0%]">
+                      <label
+                        className=" block text-[#728294] text-base font-semibold mb-2"
+                        htmlFor="pendukungFile"
+                      >
+                        Dokumen Uji Operasional:
+                      </label>
+                    </div>
+                    <div className="sm:flex-[5_5_0%] flex flex-col items-start gap-1">
+                      <div className="flex items-center">
+                        {formData.ujiOpsFileLink &&
+                        !formData.ujiOpsFile ? (
+                          <a
+                            href={formData.ujiOpsFileLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex flex-col items-center gap-4"
+                          >
+                            <img
+                              src="/pdf.png"
+                              alt="PDF Icon"
+                              className="w-20 h-20" /* Ukuran yang sesuai untuk ikon PDF */
+                            />
+                            {/* <span className="text-bodydark1">
+                              Dokumen Pendukung {selectedDokumen.label}
+                            </span> */}
+                            <span className="px-6 py-3 bg-teal-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-teal-600 transition duration-300">
+                              Lihat Dokumen
+                            </span>
+                          </a>
+                        ) : !formData.ujiOpsFileLink &&
+                          !formData.ujiOpsFile ? (
+                          <p className="text-red-600 text-xs ml-1 font-semibold">
+                            Belum Mengupload Dokumen Pendukung
+                          </p>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+{user.role !== "3" && (
                   <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
                     <div className="sm:flex-[2_2_0%]">
                       <label

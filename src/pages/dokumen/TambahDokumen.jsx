@@ -25,7 +25,7 @@ const TambahDokumen = () => {
   const defaultDate = today.toISOString().substring(0, 10);
   const [formData, setFormData] = useState({
     nama_dokumen: "",
-    nomor_bast: "",
+    nomor_bast: "KN.02.07/B.VI/[BATCH]/[NO]/[TAHUN]",
     tanggal_bast: defaultDate,
     tahun_lokus: "",
     penerima_hibah: "",
@@ -41,6 +41,14 @@ const TambahDokumen = () => {
 
   const [isPenerimaEditable, setIsPenerimaEditable] = useState(false);
   const [isKepalaEditable, setIsKepalaEditable] = useState(false);
+  const [isNomorBastEditable, setIsNomorBastEditable] = useState(false);
+
+  const updateNomorBast = (batch = "[BATCH]", tahun = "[TAHUN]") => {
+    setFormData((prev) => ({
+      ...prev,
+      nomor_bast: `KN.02.07/B.VI/${batch}/[NO]/${tahun}`,
+    }));
+  };
 
   const navigate = useNavigate();
   const user = useSelector((a) => a.auth.user);
@@ -167,6 +175,10 @@ const TambahDokumen = () => {
         [id]: file,
         contractFileName: file.name,
       }));
+    } else if (id === "tahun_lokus") {
+      const tahun = value.trim() || "[TAHUN]";
+      setFormData((prev) => ({ ...prev, tahun_lokus: value }));
+      updateNomorBast(formData.batch || "[BATCH]", tahun);
     } else {
       // Validasi untuk Nomor BAST
       if (id === "nomor_bast") {
@@ -310,11 +322,13 @@ const TambahDokumen = () => {
     }));
   };
   const handleBatchChange = (selectedOption) => {
+    const batch = selectedOption ? selectedOption.value.toString() : "[BATCH]";
     setSelectedBatch(selectedOption);
     setFormData((prev) => ({
       ...prev,
       batch: selectedOption ? selectedOption.value.toString() : "",
     }));
+    updateNomorBast(batch, formData.tahun_lokus || "[TAHUN]");
   };
   return (
     <div>
@@ -409,53 +423,6 @@ const TambahDokumen = () => {
               <div className="sm:flex-[2_2_0%]">
                 <label
                   className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="nomor_bast"
-                >
-                  Nomor BAST :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%] relative">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border ${
-                    errors.nomor_bast
-                      ? "border-red-500"
-                      : valid.nomor_bast
-                      ? "border-green-500"
-                      : "border-[#cacaca]"
-                  } rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="nomor_bast"
-                  value={formData.nomor_bast}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Nomor BAST"
-                />
-                {/* Tampilkan pesan error jika format salah */}
-                {valid.nomor_bast && (
-                  <MdCheckCircle
-                    size={20}
-                    className="absolute right-3 top-3 text-green-500"
-                  />
-                )}
-                {errors.nomor_bast && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.nomor_bast}
-                  </p>
-                )}
-
-                {/* Tampilkan icon checklist jika format benar */}
-                {formData.validNomorBast === true && (
-                  <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500">
-                    ✔
-                  </span>
-                )}
-              </div>
-            </div>
-
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
                   htmlFor="tanggal_bast"
                 >
                   Tanggal BAST :
@@ -500,6 +467,66 @@ const TambahDokumen = () => {
               </div>
             </div>
 
+            <div className="mb-8 flex flex-col sm:flex-row sm:gap-8 sm:items-center">
+  {/* Label */}
+  <div className="sm:flex-[2_2_0%]">
+    <label
+      className="block text-[#728294] text-base font-normal mb-2 sm:mb-0"
+      htmlFor="nomor_bast"
+    >
+      Nomor BAST :
+    </label>
+  </div>
+
+  {/* Input + Button */}
+  <div className="sm:flex-[5_5_0%]">
+    <div className="relative flex items-center">
+      <input
+        className={`bg-white appearance-none border ${
+          errors.nomor_bast
+            ? "border-red-500"
+            : valid.nomor_bast
+            ? "border-green-500"
+            : "border-[#cacaca]"
+        } rounded-md w-full py-3 px-3 text-[#728294] leading-tight 
+        focus:outline-none focus:shadow-outline dark:bg-transparent disabled:bg-slate-100`}
+        id="nomor_bast"
+        value={formData.nomor_bast}
+        onChange={handleChange}
+        type="text"
+        required
+        disabled={!isNomorBastEditable}
+        placeholder="Nomor BAST"
+      />
+      
+      {/* Icon Validasi */}
+      {valid.nomor_bast && (
+        <MdCheckCircle
+          size={20}
+          className="absolute right-10 top-1/2 transform -translate-y-1/2 text-green-500"
+        />
+      )}
+
+      {/* Tombol Edit */}
+      <button
+        type="button"
+        onClick={() => setIsNomorBastEditable((prev) => !prev)}
+        className={`ml-2 focus:outline-none ${
+          isNomorBastEditable ? "text-teal-500" : "text-[#728294]"
+        }`}
+      >
+        <FaEdit />
+      </button>
+    </div>
+
+    {/* Pesan Error */}
+    {errors.nomor_bast && (
+      <p className="text-red-500 text-sm mt-1">{errors.nomor_bast}</p>
+    )}
+  </div>
+</div>
+
+
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
                 <label
@@ -511,7 +538,7 @@ const TambahDokumen = () => {
               </div>
               <div className="sm:flex-[5_5_0%] flex items-center">
                 <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                  className={`sm:flex-[5_5_0%] bg-white disabled:bg-slate-100 appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
                   id="kepala_unit_pemberi"
@@ -545,7 +572,7 @@ const TambahDokumen = () => {
               </div>
               <div className="sm:flex-[5_5_0%] flex items-center">
                 <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                  className={`sm:flex-[5_5_0%] bg-white disabled:bg-slate-100 appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
                   id="penerima_hibah"

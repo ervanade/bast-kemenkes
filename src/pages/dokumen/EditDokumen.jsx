@@ -475,29 +475,7 @@ const EditDokumen = () => {
               required
             />
 
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
-              <div className="sm:flex-[2_2_0%]">
-                <label
-                  className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="nomor_bast"
-                >
-                  Nomor BAST :
-                </label>
-              </div>
-              <div className="sm:flex-[5_5_0%]">
-                <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="nomor_bast"
-                  value={formData.nomor_bast}
-                  onChange={handleChange}
-                  type="text"
-                  required
-                  placeholder="Nomor BAST"
-                />
-              </div>
-            </div>
+            
 
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">
@@ -551,9 +529,9 @@ const EditDokumen = () => {
               <div className="sm:flex-[2_2_0%]">
                 <label
                   className="block text-[#728294] text-base font-normal mb-2"
-                  htmlFor="penerima_hibah"
+                  htmlFor="nomor_bast"
                 >
-                  Penerima Hibah :
+                  Nomor BAST :
                 </label>
               </div>
               <div className="sm:flex-[5_5_0%]">
@@ -561,12 +539,12 @@ const EditDokumen = () => {
                   className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="penerima_hibah"
-                  value={formData.penerima_hibah}
+                  id="nomor_bast"
+                  value={formData.nomor_bast}
                   onChange={handleChange}
                   type="text"
                   required
-                  placeholder="Penerima Hibah"
+                  placeholder="Nomor BAST"
                 />
               </div>
             </div>
@@ -593,7 +571,7 @@ const EditDokumen = () => {
               </div>
               <div className="sm:flex-[5_5_0%] flex items-center">
                 <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                  className={`sm:flex-[5_5_0%] bg-white appearance-none border disabled:bg-slate-100 border-[#cacaca] focus:border-[#0ACBC2]
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
                   id="kepala_unit_pemberi"
@@ -627,7 +605,7 @@ const EditDokumen = () => {
               </div>
               <div className="sm:flex-[5_5_0%] flex items-center">
                 <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
+                  className={`sm:flex-[5_5_0%] bg-white appearance-none border disabled:bg-slate-100 border-[#cacaca] focus:border-[#0ACBC2]
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
                   id="penerima_hibah"
