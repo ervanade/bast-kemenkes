@@ -23,7 +23,12 @@ export const returnRole = (role) => {
         return "PPK"
     } else if (role === "3") {
         return "User"
-    } else {
+    } else if (role === "4") {
+        return "Direktur"
+    } else if (role === "5") {
+        return "User"
+    }
+    else {
         return ""
     }
 }
