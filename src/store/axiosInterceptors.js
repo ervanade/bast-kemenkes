@@ -1,6 +1,7 @@
 import axios from "axios";
 import { store } from "./index.js";
 import { logoutUser } from "./authSlice.js";
+import Swal from "sweetalert2";
 
 // Tambahkan interceptor untuk menangani response
 axios.interceptors.response.use(
@@ -17,7 +18,17 @@ axios.interceptors.response.use(
             store.dispatch(logoutUser());
 
             // Redirect ke halaman login
-            window.location.href = "/login";
+            Swal.fire({
+                icon: "warning",
+                title: "Sesi Anda Telah Habis",
+                text: "Silahkan login kembali.",
+                timer: 1500, // Swal akan otomatis tertutup dalam 2.5 detik
+                // showConfirmButton: false,
+                willClose: () => {
+                    window.location.href = "/login"; // Redirect setelah Swal tertutup
+                }
+            });
+            return; // Hentikan eksekusi lebih lanjut agar tidak langsung redirect
         }
 
         // Tetap lempar error untuk ditangani oleh caller
