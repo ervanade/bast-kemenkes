@@ -474,35 +474,35 @@ const AksiDistribusi = () => {
       Swal.fire("Error", "Form Data Barang Masih Kosong", "error");
       return;
     }
-    if (
-      user.role === "3" &&
-      !formData.pendukungFile &&
-      !formData.pendukungFileLink
-    ) {
-      Swal.fire("Error", "Dokumen Pendukung Masih Kosong", "error");
-      setLoading(false);
-      return;
-    }
+    // if (
+    //   user.role === "3" &&
+    //   !formData.pendukungFile &&
+    //   !formData.pendukungFileLink
+    // ) {
+    //   Swal.fire("Error", "Dokumen Pendukung Masih Kosong", "error");
+    //   setLoading(false);
+    //   return;
+    // }
 
-    if (
-      user.role === "3" &&
-      !formData.ujiFungsiFile &&
-      !formData.ujiFungsiFileLink
-    ) {
-      Swal.fire("Error", "Dokumen Uji Fungsi Masih Kosong", "error");
-      setLoading(false);
-      return;
-    }
+    // if (
+    //   user.role === "3" &&
+    //   !formData.ujiFungsiFile &&
+    //   !formData.ujiFungsiFileLink
+    // ) {
+    //   Swal.fire("Error", "Dokumen Uji Fungsi Masih Kosong", "error");
+    //   setLoading(false);
+    //   return;
+    // }
 
-    if (
-      user.role === "3" &&
-      !formData.ujiOpsFile &&
-      !formData.ujiOpsFileLink
-    ) {
-      Swal.fire("Error", "Dokumen Uji Operasional Masih Kosong", "error");
-      setLoading(false);
-      return;
-    }
+    // if (
+    //   user.role === "3" &&
+    //   !formData.ujiOpsFile &&
+    //   !formData.ujiOpsFileLink
+    // ) {
+    //   Swal.fire("Error", "Dokumen Uji Operasional Masih Kosong", "error");
+    //   setLoading(false);
+    //   return;
+    // }
     setLoading(true);
     const formDataToSend = new FormData();
     formDataToSend.append("id_kecamatan", formData.id_kecamatan);
@@ -1344,7 +1344,7 @@ const AksiDistribusi = () => {
                         ) : !formData.ujiFungsiFileLink &&
                           !formData.ujiFungsiFile ? (
                           <p className="text-red-600 text-xs ml-1 font-semibold">
-                            Belum Mengupload Dokumen Pendukung
+                            Belum Mengupload Dokumen Uji Fungsi
                           </p>
                         ) : (
                           ""
@@ -1389,7 +1389,7 @@ const AksiDistribusi = () => {
                         ) : !formData.ujiOpsFileLink &&
                           !formData.ujiOpsFile ? (
                           <p className="text-red-600 text-xs ml-1 font-semibold">
-                            Belum Mengupload Dokumen Pendukung
+                            Belum Mengupload Dokumen Uji Operasional
                           </p>
                         ) : (
                           ""
