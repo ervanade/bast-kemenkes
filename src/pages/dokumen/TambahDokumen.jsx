@@ -268,8 +268,19 @@ const TambahDokumen = () => {
   };
   const handleSimpan = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    tambahDokumen();
+    Swal.fire({
+      title: "Perhatian",
+      text: "Data yang diisi adalah sebenarnya dan dapat dipertanggungjawabkan?",
+      showCancelButton: true,
+      confirmButtonColor: "#16B3AC",
+      confirmButtonText: "Ya, Simpan Data",
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        setLoading(true);
+        tambahDokumen();
+      }
+    });
   };
 
   useEffect(() => {

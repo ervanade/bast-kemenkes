@@ -552,7 +552,7 @@ const AksiDistribusi = () => {
     e.preventDefault();
     Swal.fire({
       title: "Perhatian",
-      text: "Data sudah sesuai, Simpan Data ini?",
+      text: "Data yang diisi adalah sebenarnya dan dapat dipertanggungjawabkan?",
       showCancelButton: true,
       confirmButtonColor: "#16B3AC",
       confirmButtonText: "Ya, Simpan Data",
