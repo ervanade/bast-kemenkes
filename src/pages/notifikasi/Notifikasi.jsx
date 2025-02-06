@@ -25,7 +25,7 @@ import { encode, decode } from "html-encoder-decoder"; // Gunakan import alih-al
 const Notifikasi = () => {
   const { user } = useSelector((state) => state.auth);
   const { notifs, status, error } = useSelector((state) => state.notifications);
-  const unreadNotifs = notifs.filter((notif) => notif.is_read === "0");
+  const unreadNotifs = notifs.filter((notif) => notif.is_read == "0");
 
   const [search, setSearch] = useState("");
   const [filteredData, setFilteredData] = useState([]);
@@ -75,10 +75,10 @@ const Notifikasi = () => {
         cell: (row) => (
           <div
             className={`p-2 rounded-md text-white ${
-              row.is_read === "0" ? "bg-yellow-500" : "bg-green-500"
+              row.is_read == "0" ? "bg-yellow-500" : "bg-green-500"
             }`}
           >
-            {row.is_read === "0" ? "Belum Dibaca" : "Sudah Dibaca"}
+            {row.is_read == "0" ? "Belum Dibaca" : "Sudah Dibaca"}
           </div>
         ),
         sortable: true,
@@ -89,7 +89,7 @@ const Notifikasi = () => {
 
         cell: (row) => (
           <div>
-            {row.is_read === "0" ? (
+            {row.is_read == "0" ? (
               <button
                 title="Tandai Telah Dibaca"
                 className="text-green-500 hover:text-cyan-500"
@@ -100,10 +100,10 @@ const Notifikasi = () => {
             ) : (
               <div
                 className={`p-2 rounded-md text-white ${
-                  row.is_read === "0" ? "bg-yellow-500" : "bg-green-500"
+                  row.is_read == "0" ? "bg-yellow-500" : "bg-green-500"
                 }`}
               >
-                {row.is_read === "0" ? "Belum Dibaca" : "Sudah Dibaca"}
+                {row.is_read == "0" ? "Belum Dibaca" : "Sudah Dibaca"}
               </div>
             )}
           </div>

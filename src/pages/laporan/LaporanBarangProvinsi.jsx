@@ -157,7 +157,7 @@ const LaporanBarangProvinsi = () => {
   // Fetch cities based on the selected province
   const fetchPuskesmas = useCallback(
     async (idKecamatan) => {
-      if (dataPuskesmas.length > 0 && selectedKecamatan?.value === idKecamatan)
+      if (dataPuskesmas.length > 0 && selectedKecamatan?.value == idKecamatan)
         return;
 
       try {
@@ -190,7 +190,7 @@ const LaporanBarangProvinsi = () => {
   // Fetch subdistricts based on the selected city
   const fetchKecamatan = useCallback(
     async (idKota) => {
-      if (dataKecamatan.length > 0 && selectedKota?.value === idKota) return;
+      if (dataKecamatan.length > 0 && selectedKota?.value == idKota) return;
 
       try {
         const response = await axios({
@@ -316,7 +316,7 @@ const LaporanBarangProvinsi = () => {
       {
         name: <div className="text-wrap">Nama Barang</div>,
         selector: (row) => row.nama_alkes,
-        cell: ( row ) => <div className="text-wrap py-2">{row.nama_alkes}</div>,
+        cell: (row) => <div className="text-wrap py-2">{row.nama_alkes}</div>,
 
         sortable: true,
         width: "200px",
@@ -510,18 +510,17 @@ const LaporanBarangProvinsi = () => {
               persistTableHead
               highlightOnHover
               pointerOnHover
-               customStyles={{
+              customStyles={{
                 headCells: {
                   style: {
                     padding: 12,
                     backgroundColor: "#EBFBFA", // Warna header biru
-      color: "#212121", // Teks header putih
+                    color: "#212121", // Teks header putih
                     fontWeight: 700,
                     fontSize: 14,
-
                   },
                 },
-                rows : {
+                rows: {
                   style: {
                     fontSize: 14,
                     paddingTop: 6,

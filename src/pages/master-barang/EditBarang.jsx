@@ -114,7 +114,7 @@ const EditBarang = () => {
     if (!value) return "";
     return parseInt(value, 10).toLocaleString("id-ID");
   };
-  
+
   // Fungsi untuk mendapatkan nilai asli (tanpa format)
   const getRawValue = (formattedValue) => {
     return formattedValue.replace(/\./g, "");
@@ -235,7 +235,7 @@ const EditBarang = () => {
       <Card>
         <div className="card-header flex justify-between">
           <h1 className="mb-12 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
-            {user.role === "1" ? "Form Edit Data Barang" : ""}
+            {user.role == "1" ? "Form Edit Data Barang" : ""}
           </h1>
           <div>
             <Link

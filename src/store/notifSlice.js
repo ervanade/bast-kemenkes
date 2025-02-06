@@ -8,7 +8,7 @@ export const fetchNotifs = createAsyncThunk(
         try {
             const { user } = getState().auth; // Ambil user dari Redux state
             const endpoint =
-                user.role === '3'
+                user.role == '3'
                     ? `${import.meta.env.VITE_APP_API_URL}/api/notif/${user.kabupaten}`
                     : `${import.meta.env.VITE_APP_API_URL}/api/notif`;
 
@@ -75,7 +75,7 @@ const notifSlice = createSlice({
                 state.error = action.payload || 'Gagal mengambil notifikasi';
             })
             .addCase(markAsRead.fulfilled, (state, action) => {
-                const notif = state.notifs.find((n) => n.id === action.payload);
+                const notif = state.notifs.find((n) => n.id == action.payload);
                 if (notif) {
                     notif.is_read = '1';
                 }

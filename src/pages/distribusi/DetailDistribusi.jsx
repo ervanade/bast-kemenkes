@@ -83,7 +83,7 @@ const DetailDistribusi = () => {
                 <FaEdit size={16} />
               </Link>
             </button> */}
-            {row.status_tte === "Belum" ? (
+            {row.status_tte == "Belum" ? (
               <button
                 title="Konfirmasi"
                 className="text-white py-2 w-22 bg-red-500 rounded-md"
@@ -108,7 +108,7 @@ const DetailDistribusi = () => {
                 Sudah Sesuai
               </button>
             )}
-            {user.role === "1" ? (
+            {user.role == "1" ? (
               <button
                 title="Delete"
                 className="text-red-500 hover:text-red-700"
@@ -157,9 +157,7 @@ const DetailDistribusi = () => {
     if (selectedKecamatan) {
       selectedKecamatan.value != "all"
         ? setFilteredData(
-            filtered.filter(
-              (item) => item.kecamatan === selectedKecamatan.label
-            )
+            filtered.filter((item) => item.kecamatan == selectedKecamatan.label)
           )
         : setFilteredData(filtered);
     } else {
@@ -209,7 +207,7 @@ const DetailDistribusi = () => {
             className="w-64 sm:w-100 bg-slate-500 my-react-select-container"
             classNamePrefix="my-react-select"
             theme={selectThemeColors}
-            isDisabled={user.role === "3"}
+            isDisabled={user.role == "3"}
           />
         </div>
         <div className="mb-3">
@@ -224,7 +222,7 @@ const DetailDistribusi = () => {
             defaultValue={dataKota[0]}
             className="w-64 sm:w-100"
             theme={selectThemeColors}
-            isDisabled={user.role === "3"}
+            isDisabled={user.role == "3"}
           />
         </div>
         <div className="mb-3">
@@ -293,7 +291,7 @@ const DetailDistribusi = () => {
               <BiExport />
               <span className="hidden sm:block">Export</span>
             </button>
-            {user.role === "1" ? (
+            {user.role == "1" ? (
               <button
                 title="Tambah Data Distribusi"
                 className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"

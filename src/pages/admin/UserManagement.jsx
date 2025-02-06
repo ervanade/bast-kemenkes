@@ -137,13 +137,13 @@ const UserManagement = () => {
       {
         name: "Role",
         selector: (row) =>
-          row.role === "1"
+          row.role == "1"
             ? "Admin"
-            : row.role === "2"
+            : row.role == "2"
             ? "PPK"
-            : row.role === "3"
+            : row.role == "3"
             ? "User"
-            : row.role === "4"
+            : row.role == "4"
             ? "Direktur"
             : "" || "",
         sortable: true,
@@ -167,7 +167,7 @@ const UserManagement = () => {
                 <FaEdit size={16} />
               </Link>
             </button>
-            {user.role === "1" ? (
+            {user.role == "1" ? (
               <button
                 title="Delete"
                 className="text-red-500 hover:text-red-700"
@@ -235,7 +235,7 @@ const UserManagement = () => {
               <BiExport />
               <span className="hidden sm:block">Export</span>
             </button>
-            {user.role === "1" ? (
+            {user.role == "1" ? (
               <button
                 title="Tambah Data User"
                 className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
@@ -269,18 +269,17 @@ const UserManagement = () => {
               persistTableHead
               highlightOnHover
               pointerOnHover
-               customStyles={{
+              customStyles={{
                 headCells: {
                   style: {
                     padding: 12,
                     backgroundColor: "#EBFBFA", // Warna header biru
-      color: "#212121", // Teks header putih
+                    color: "#212121", // Teks header putih
                     fontWeight: 700,
                     fontSize: 14,
-
                   },
                 },
-                rows : {
+                rows: {
                   style: {
                     fontSize: 14,
                     paddingTop: 6,

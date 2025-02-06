@@ -392,7 +392,7 @@ const EditDokumen = () => {
       <Card>
         <div className="card-header flex justify-between">
           <h1 className="mb-12 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
-            {user.role === "1" ? "Form Edit Data Dokumen" : ""}
+            {user.role == "1" ? "Form Edit Data Dokumen" : ""}
           </h1>
           <div>
             <Link
@@ -474,8 +474,6 @@ const EditDokumen = () => {
               label="Batch :"
               required
             />
-
-            
 
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">

@@ -17,15 +17,15 @@ export const selectThemeColors = (theme) => ({
 });
 
 export const returnRole = (role) => {
-    if (role === "1") {
+    if (role == "1") {
         return "Admin"
-    } else if (role === "2") {
+    } else if (role == "2") {
         return "PPK"
-    } else if (role === "3") {
+    } else if (role == "3") {
         return "User"
-    } else if (role === "4") {
+    } else if (role == "4") {
         return "Direktur"
-    } else if (role === "5") {
+    } else if (role == "5") {
         return "User"
     }
     else {

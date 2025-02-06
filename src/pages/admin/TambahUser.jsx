@@ -120,7 +120,7 @@ const TambahUser = () => {
       setLoading(false);
       return;
     }
-    if (formData.role === "3" && (!formData.provinsi || !formData.kabupaten)) {
+    if (formData.role == "3" && (!formData.provinsi || !formData.kabupaten)) {
       Swal.fire(
         "Error",
         "Jika User Daerah Harap Masukan Provinsi & Kabupaten",
@@ -149,7 +149,7 @@ const TambahUser = () => {
     } catch (error) {
       setLoading(false);
       console.log(error);
-      if (error.response.status === 500) {
+      if (error.response.status == 500) {
         Swal.fire("Error", "Email Telah Digunakan", "error");
         setLoading(false);
         return;
@@ -214,7 +214,7 @@ const TambahUser = () => {
       <Card>
         <div className="card-header flex justify-between">
           <h1 className="mb-12 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
-            {user.role === "1" ? "Form Input Data User" : ""}
+            {user.role == "1" ? "Form Input Data User" : ""}
           </h1>
           <div>
             <Link

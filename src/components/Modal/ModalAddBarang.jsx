@@ -71,7 +71,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
     if (editIndex !== null && dataBarang) {
       setBarang(dataBarang);
       setSelectedKonfirmasi(
-        dataBarang?.jumlah_dikirim === dataBarang?.jumlah_diterima
+        dataBarang?.jumlah_dikirim == dataBarang?.jumlah_diterima
           ? konfirmasiJumlahOptions[1]
           : konfirmasiJumlahOptions[0]
       );
@@ -231,7 +231,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                   />
                 </div>
               </div> */}
-              {user.role === "1" ? (
+              {user.role == "1" ? (
                 <div className="mb-6 flex-col  sm:gap-2 w-full flex ">
                   <div className="">
                     <label
@@ -260,7 +260,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                     />
                   </div>
                 </div>
-              ) : user.role === "3" ? (
+              ) : user.role == "3" ? (
                 <>
                   <p className="text-center font-semibold text-primary">
                     Jumlah Barang Dikirim : {barang?.jumlah_dikirim}
@@ -285,7 +285,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                       />
                     </div>
                   </div>
-                  {selectedKonfirmasi.value === "0" ? (
+                  {selectedKonfirmasi.value == "0" ? (
                     <div className="mb-6 flex-col  sm:gap-2 w-full flex ">
                       <div className="">
                         <label

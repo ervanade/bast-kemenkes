@@ -137,7 +137,7 @@ const DetailProvinsi = () => {
                 <FaEdit size={16} />
               </Link>
             </button>
-            {user.role === "1" ? (
+            {user.role == "1" ? (
               <button
                 title="Delete"
                 className="text-red-500 hover:text-red-700"
@@ -216,7 +216,7 @@ const DetailProvinsi = () => {
               <BiExport />
               <span className="hidden sm:block">Export</span>
             </button>
-            {user.role === "1" ? (
+            {user.role == "1" ? (
               <button
                 title="Tambah Data Kota"
                 className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
@@ -251,18 +251,17 @@ const DetailProvinsi = () => {
               persistTableHead
               highlightOnHover
               pointerOnHover
-               customStyles={{
+              customStyles={{
                 headCells: {
                   style: {
                     padding: 12,
                     backgroundColor: "#EBFBFA", // Warna header biru
-      color: "#212121", // Teks header putih
+                    color: "#212121", // Teks header putih
                     fontWeight: 700,
                     fontSize: 14,
-
                   },
                 },
-                rows : {
+                rows: {
                   style: {
                     fontSize: 14,
                     paddingTop: 6,

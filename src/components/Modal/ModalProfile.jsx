@@ -74,7 +74,7 @@ const ModalProfile = ({
                 <div className="tabs mb-4 flex space-x-4">
                   <button
                     className={`px-4 py-2 font-bold border-b-2 ${
-                      activeTab === "tab1"
+                      activeTab == "tab1"
                         ? "border-teal-500"
                         : "border-transparent"
                     }`}
@@ -84,7 +84,7 @@ const ModalProfile = ({
                   </button>
                   <button
                     className={`px-4 py-2 font-bold border-b-2 ${
-                      activeTab === "tab2"
+                      activeTab == "tab2"
                         ? "border-teal-500"
                         : "border-transparent"
                     }`}
@@ -94,7 +94,7 @@ const ModalProfile = ({
                   </button>
                 </div>
                 <div className="tab-content">
-                  {activeTab === "tab1" && (
+                  {activeTab == "tab1" && (
                     <div
                       id="tab1"
                       className="tab-pane h-64 w-full flex flex-col items-center justify-center"
@@ -141,7 +141,7 @@ const ModalProfile = ({
                       )}
                     </div>
                   )}
-                  {activeTab === "tab2" && (
+                  {activeTab == "tab2" && (
                     <div
                       id="tab2"
                       className="tab-pane h-64 w-full flex flex-col items-center justify-center"

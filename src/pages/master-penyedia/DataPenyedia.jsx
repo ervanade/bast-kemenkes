@@ -134,7 +134,7 @@ const DataPenyedia = () => {
         selector: (row) => row.status,
         cell: (row) => (
           <div>
-            <p>{row.status === "1" ? "Active" : "Not Active"}</p>
+            <p>{row.status == "1" ? "Active" : "Not Active"}</p>
           </div>
         ),
         sortable: true,
@@ -165,7 +165,7 @@ const DataPenyedia = () => {
                 <FaEdit size={16} />
               </Link>
             </button>
-            {user.role === "1" ? (
+            {user.role == "1" ? (
               <button
                 title="Delete"
                 className="text-red-500 hover:text-red-700"
@@ -233,7 +233,7 @@ const DataPenyedia = () => {
               <BiExport />
               <span className="hidden sm:block">Export</span>
             </button>
-            {user.role === "1" ? (
+            {user.role == "1" ? (
               <button
                 title="Tambah Data Penyedia"
                 className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
@@ -268,18 +268,17 @@ const DataPenyedia = () => {
               persistTableHead
               highlightOnHover
               pointerOnHover
-               customStyles={{
+              customStyles={{
                 headCells: {
                   style: {
                     padding: 12,
                     backgroundColor: "#EBFBFA", // Warna header biru
-      color: "#212121", // Teks header putih
+                    color: "#212121", // Teks header putih
                     fontWeight: 700,
                     fontSize: 14,
-
                   },
                 },
-                rows : {
+                rows: {
                   style: {
                     fontSize: 14,
                     paddingTop: 6,

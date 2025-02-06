@@ -28,8 +28,8 @@ const HeaderDokumen = ({ jsonData, user }) => {
         jsonData={jsonData}
         user={user}
       /> */}
-      {user.role === "4" ? (
-        jsonData?.status_tte === "1" ? (
+      {user.role == "4" ? (
+        jsonData?.status_tte == "1" ? (
           <button
             type="button"
             className={` disabled:bg-red-100 disabled:text-red-500 bg-blue-600  text-white font-bold py-2 px-5 rounded-md focus:outline-none focus:shadow-outline dark:bg-transparent`}
@@ -43,8 +43,8 @@ const HeaderDokumen = ({ jsonData, user }) => {
         ) : (
           ""
         )
-      ) : user.role === "3" ? (
-        jsonData?.status_tte === "0" ? (
+      ) : user.role == "3" ? (
+        jsonData?.status_tte == "0" ? (
           <button
             type="button"
             className={` disabled:bg-red-100 disabled:text-red-500 bg-blue-600  text-white font-bold py-2 px-5 rounded-md focus:outline-none focus:shadow-outline dark:bg-transparent`}

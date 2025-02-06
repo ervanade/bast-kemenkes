@@ -21,7 +21,7 @@ const TambahPenyedia = () => {
     penyedia: "",
     // alamat: "",
     status: "1",
-    dokumen: null
+    dokumen: null,
   });
 
   const navigate = useNavigate();
@@ -43,7 +43,6 @@ const TambahPenyedia = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
-
 
   const handleChange = (event) => {
     const { id, value, files } = event.target;
@@ -75,14 +74,13 @@ const TambahPenyedia = () => {
     tambahPenyedia();
   };
 
-
   return (
     <div>
       <Breadcrumb pageName="Form Tambah Data Penyedia" />
       <Card>
         <div className="card-header flex justify-between">
           <h1 className="mb-12 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
-            {user.role === "1" ? "Form Tambah Data Penyedia" : ""}
+            {user.role == "1" ? "Form Tambah Data Penyedia" : ""}
           </h1>
           <div>
             <Link

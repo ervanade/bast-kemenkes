@@ -118,7 +118,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
               </li>
 
               {/* <!-- Menu Item Calendar --> */}
-              {user.role === "2" || user.role === "3" ? (
+              {user.role == "2" || user.role == "3" ? (
                 <>
                   <li>
                     <NavLink
@@ -145,7 +145,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                     </NavLink>
                   </li>
                 </>
-              ) : user.role === "1" ? (
+              ) : user.role == "1" ? (
                 <>
                   <li>
                     <NavLink
@@ -172,7 +172,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                     </NavLink>
                   </li>
                 </>
-              ) : user.role === "4" ? (
+              ) : user.role == "4" ? (
                 <>
                   <li>
                     <NavLink
@@ -190,7 +190,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
               ) : (
                 ""
               )}
-              {/* {user.role === "2" || user.role === "1" || user.role === "3" ? (
+              {/* {user.role == "2" || user.role == "1" || user.role == "3" ? (
                 <li>
                   <NavLink
                     to="/dokumen"
@@ -526,7 +526,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
 
           {/* <!-- Others Group --> */}
-          {user.role === "1" ? (
+          {user.role == "1" ? (
             <div>
               <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">
                 ADMIN

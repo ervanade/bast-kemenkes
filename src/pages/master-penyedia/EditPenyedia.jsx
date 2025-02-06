@@ -22,7 +22,7 @@ const EditPenyedia = () => {
     penyedia: "",
     // alamat: "",
     status: "1",
-    dokumen: null
+    dokumen: null,
   });
 
   const navigate = useNavigate();
@@ -67,9 +67,8 @@ const EditPenyedia = () => {
         setFormData({
           penyedia: data.penyedia || "",
           // alamat: "",
-    status: "1",
-    dokumen: null
-
+          status: "1",
+          dokumen: null,
         });
       });
       setGetLoading(false);
@@ -80,8 +79,6 @@ const EditPenyedia = () => {
       console.log(error);
     }
   };
-
-
 
   const handleChange = (event) => {
     const { id, value, files } = event.target;
@@ -116,7 +113,6 @@ const EditPenyedia = () => {
   };
   useEffect(() => {
     fetchPenyediaData();
-
   }, []);
 
   if (getLoading) {
@@ -133,7 +129,7 @@ const EditPenyedia = () => {
       <Card>
         <div className="card-header flex justify-between">
           <h1 className="mb-12 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
-            {user.role === "1" ? "Form Edit Data Penyedia" : ""}
+            {user.role == "1" ? "Form Edit Data Penyedia" : ""}
           </h1>
           <div>
             <Link

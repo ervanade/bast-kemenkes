@@ -43,11 +43,15 @@ const Login = () => {
         localStorage.setItem("user", JSON.stringify(data));
         setLoading(false);
         if (
-          (data.role === "2" || data.role === "3" || data.role === "4") &&
+          (data.role == "2" || data.role == "3" || data.role == "4") &&
           (!data.ttd || !data.name || !data.nip || !data.profile)
         ) {
           setLoading(false);
-          Swal.fire("Warning", "Anda Belum Input Nama / NIP / TTE / Logo", "warning");
+          Swal.fire(
+            "Warning",
+            "Anda Belum Input Nama / NIP / TTE / Logo",
+            "warning"
+          );
           navigate("/profile");
           return;
         } else if (data.role == "1") {

@@ -202,7 +202,7 @@ const Dokumen = () => {
   // Fetch cities based on the selected province
   const fetchKota = useCallback(
     async (idProvinsi) => {
-      if (dataKota.length > 0 && selectedProvinsi?.value === idProvinsi) return;
+      if (dataKota.length > 0 && selectedProvinsi?.value == idProvinsi) return;
 
       try {
         const response = await axios({
@@ -234,7 +234,7 @@ const Dokumen = () => {
   // Fetch subdistricts based on the selected city
   const fetchKecamatan = useCallback(
     async (idKota) => {
-      if (dataKecamatan.length > 0 && selectedKota?.value === idKota) return;
+      if (dataKecamatan.length > 0 && selectedKota?.value == idKota) return;
 
       try {
         const response = await axios({
@@ -370,7 +370,7 @@ const Dokumen = () => {
 
       if (selectedStatus) {
         dataResponse =
-          selectedStatus.value === 0
+          selectedStatus.value == 0
             ? dataResponse.filter((a) => a.status_tte == "0")
             : dataResponse.filter(
                 (a) => a.status_tte == "1" || a.status_tte == "2"
@@ -387,7 +387,7 @@ const Dokumen = () => {
   };
 
   useEffect(() => {
-    if (user.role === "3") {
+    if (user.role == "3") {
       fetchUserData();
     }
   }, [user.role, fetchUserData]);
@@ -409,7 +409,7 @@ const Dokumen = () => {
 
   // Set selected options for provinces and cities based on user's initial data
   useEffect(() => {
-    if (user.role === "3" && user.provinsi && dataProvinsi.length > 0) {
+    if (user.role == "3" && user.provinsi && dataProvinsi.length > 0) {
       const initialOption = dataProvinsi.find(
         (prov) => prov.value == user.provinsi
       );
@@ -420,7 +420,7 @@ const Dokumen = () => {
         });
       }
     }
-    if (user.role === "3" && user.kabupaten && dataKota.length > 0) {
+    if (user.role == "3" && user.kabupaten && dataKota.length > 0) {
       const initialOption = dataKota.find(
         (prov) => prov.value == user.kabupaten
       );
@@ -518,7 +518,7 @@ const Dokumen = () => {
           });
         }
       } else {
-        if (user.role === "3") {
+        if (user.role == "3") {
           if (!user.name || !user.nip) {
             Swal.fire("Error", "Anda Belum Input Nama / NIP", "error");
             navigate("/profile");
@@ -610,8 +610,8 @@ const Dokumen = () => {
       {
         name: <div className="text-wrap">Status TTE</div>,
         cell: (row) =>
-          user.role === "2" || user.role === "4" ? (
-            row.status_tte === "1" ? (
+          user.role == "2" || user.role == "4" ? (
+            row.status_tte == "1" ? (
               <div
                 className="p-2 bg-red-500 rounded-md text-white"
                 onClick={() => {
@@ -624,7 +624,7 @@ const Dokumen = () => {
               >
                 Belum TTE
               </div>
-            ) : row.status_tte === "2" ? (
+            ) : row.status_tte == "2" ? (
               <div
                 className="p-2 bg-green-500 rounded-md text-white"
                 onClick={() => {
@@ -651,8 +651,8 @@ const Dokumen = () => {
                 Daerah Belum TTE
               </div>
             )
-          ) : user.role === "3" ? (
-            row.status_tte === "0" ? (
+          ) : user.role == "3" ? (
+            row.status_tte == "0" ? (
               <div
                 className="p-2 bg-red-500 rounded-md text-white"
                 onClick={() => {
@@ -679,8 +679,8 @@ const Dokumen = () => {
                 Sudah TTE
               </div>
             )
-          ) : user.role === "1" ? (
-            row.status_tte === "2" ? (
+          ) : user.role == "1" ? (
+            row.status_tte == "2" ? (
               <div
                 className="p-2 bg-green-500 rounded-md text-white"
                 onClick={() => {
@@ -693,7 +693,7 @@ const Dokumen = () => {
               >
                 Sudah TTE
               </div>
-            ) : row.status_tte === "1" ? (
+            ) : row.status_tte == "1" ? (
               <div
                 className="p-2 bg-yellow-500 rounded-md text-white"
                 onClick={() => {
@@ -764,7 +764,7 @@ const Dokumen = () => {
             >
               <FaDownload size={20} />
             </button>
-            {/* {user.role === "2" || user.role === "3" || user.role === "4" ? (
+            {/* {user.role == "2" || user.role == "3" || user.role == "4" ? (
               <button
                 title="Upload Dokumen"
                 className="text-white py-2 w-20 bg-teal-500 rounded-md"
@@ -786,8 +786,8 @@ const Dokumen = () => {
         name: "TTE",
         cell: (row) => (
           <div className="flex items-center space-x-2 font-semibold">
-            {user.role === "4" ? (
-              row.status_tte === "1" ? (
+            {user.role == "4" ? (
+              row.status_tte == "1" ? (
                 <button
                   title="TTE"
                   className="text-white py-2 w-22 bg-teal-500 rounded-md"
@@ -802,7 +802,7 @@ const Dokumen = () => {
                 >
                   TTE
                 </button>
-              ) : row.status_tte === "2" ? (
+              ) : row.status_tte == "2" ? (
                 <button
                   title="TTE"
                   className="text-white  py-2 w-22 bg-green-500 rounded-md"
@@ -830,8 +830,8 @@ const Dokumen = () => {
                   Daerah Belum TTE
                 </button>
               )
-            ) : user.role === "3" ? (
-              row.status_tte === "0" ? (
+            ) : user.role == "3" ? (
+              row.status_tte == "0" ? (
                 <button
                   title="TTE"
                   className="text-white py-2 w-22 bg-teal-500 rounded-md"
@@ -884,7 +884,7 @@ const Dokumen = () => {
             ) : (
               ""
             )}
-            {user.role === "1" || user.role === "2" ? (
+            {user.role == "1" || user.role == "2" ? (
               <button
                 title="TTE"
                 className="text-white py-2 w-22 bg-teal-500 rounded-md"
@@ -927,7 +927,7 @@ const Dokumen = () => {
               </Link>
             </button> */}
 
-            {user.role === "1" ? (
+            {user.role == "1" ? (
               <>
                 <button
                   title="Edit"
@@ -1015,7 +1015,7 @@ const Dokumen = () => {
                     primary: "grey",
                   },
                 })}
-                isDisabled={user.role === "3"}
+                isDisabled={user.role == "3"}
               />
             </div>
             <div>
@@ -1038,7 +1038,7 @@ const Dokumen = () => {
                     primary: "grey",
                   },
                 })}
-                isDisabled={user.role === "3" || !selectedProvinsi}
+                isDisabled={user.role == "3" || !selectedProvinsi}
                 placeholder={
                   selectedProvinsi
                     ? "Pilih Kab / Kota"
@@ -1094,7 +1094,7 @@ const Dokumen = () => {
                     primary: "grey",
                   },
                 })}
-                isDisabled={user.role === "3" || !selectedKota}
+                isDisabled={user.role == "3" || !selectedKota}
                 placeholder={
                   selectedKota ? "Pilih Kecamatan" : "Pilih Kab / Kota Dahulu"
                 }
@@ -1177,7 +1177,7 @@ const Dokumen = () => {
               <BiExport />
               <span className="hidden sm:block">Export</span>
             </button>
-            {user.role === "1" ? (
+            {user.role == "1" ? (
               <button
                 title="Tambah Data Dokumen"
                 className="flex font-semibold items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
@@ -1202,7 +1202,7 @@ const Dokumen = () => {
               <CgSpinner className="animate-spin inline-block w-8 h-8 text-teal-400" />
               <span className="ml-2">Loading...</span>
             </div>
-          ) : error || filteredData.length === 0 ? (
+          ) : error || filteredData.length == 0 ? (
             <div className="text-center">Data Tidak Tersedia.</div>
           ) : (
             <DataTable
@@ -1213,19 +1213,19 @@ const Dokumen = () => {
               pagination
               persistTableHead
               highlightOnHover
-              selectableRows={user?.role === "3" || user?.role === "4"} // Tampilkan selectableRows jika role 3 atau 4
+              selectableRows={user?.role == "3" || user?.role == "4"} // Tampilkan selectableRows jika role 3 atau 4
               contextActions={
-                user?.role === "3" || user?.role === "4"
+                user?.role == "3" || user?.role == "4"
                   ? contextActions
                   : undefined
               } // Tambahkan contextActions jika role 3/4
               onSelectedRowsChange={
-                user?.role === "3" || user?.role === "4"
+                user?.role == "3" || user?.role == "4"
                   ? handleRowSelected
                   : undefined
               } // Tambahkan handler jika role 3/4
               clearSelectedRows={
-                user?.role === "3" || user?.role === "4"
+                user?.role == "3" || user?.role == "4"
                   ? toggleCleared
                   : undefined
               } // Clear selection jika role 3/4

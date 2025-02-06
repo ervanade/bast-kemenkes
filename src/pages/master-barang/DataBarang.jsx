@@ -122,7 +122,7 @@ const DataBarang = () => {
       {
         name: <div className="text-wrap">Nama Barang</div>,
         selector: (row) => row.nama_alkes,
-        cell: ( row ) => <div className="text-wrap py-2">{row.nama_alkes}</div>,
+        cell: (row) => <div className="text-wrap py-2">{row.nama_alkes}</div>,
 
         sortable: true,
         width: "200px",
@@ -156,21 +156,21 @@ const DataBarang = () => {
       },
       {
         name: <div className="text-wrap">Harga Satuan</div>,
-        cell: ( row ) => <div className="text-wrap py-2">{row.harga_satuan}</div>,
+        cell: (row) => <div className="text-wrap py-2">{row.harga_satuan}</div>,
         selector: (row) => row.harga_satuan || "",
         sortable: true,
         width: "100px",
       },
       {
         name: <div className="text-wrap">Penyedia Barang</div>,
-        cell: ( row ) => <div className="text-wrap py-2">{row.penyedia}</div>,
+        cell: (row) => <div className="text-wrap py-2">{row.penyedia}</div>,
         selector: (row) => row.penyedia || "",
         sortable: true,
         width: "100px",
       },
       {
         name: <div className="text-wrap">Keterangan</div>,
-        cell: ( row ) => <div className="text-wrap py-2">{row.keterangan}</div>,
+        cell: (row) => <div className="text-wrap py-2">{row.keterangan}</div>,
         selector: (row) => row.keterangan || "",
         sortable: true,
         width: "100px",
@@ -188,7 +188,7 @@ const DataBarang = () => {
                 <FaEdit size={16} />
               </Link>
             </button>
-            {user.role === "1" ? (
+            {user.role == "1" ? (
               <button
                 title="Delete"
                 className="text-red-500 hover:text-red-700"
@@ -256,7 +256,7 @@ const DataBarang = () => {
               <BiExport />
               <span className="hidden sm:block">Export</span>
             </button>
-            {user.role === "1" ? (
+            {user.role == "1" ? (
               <button
                 title="Tambah Data Barang"
                 className="flex items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
@@ -280,7 +280,7 @@ const DataBarang = () => {
               <CgSpinner className="animate-spin inline-block w-8 h-8 text-teal-400" />
               <span className="ml-2">Loading...</span>
             </div>
-          ) : error || filteredData.length === 0 ? (
+          ) : error || filteredData.length == 0 ? (
             <div className="text-center">Data Tidak Tersedia.</div>
           ) : (
             <DataTable
@@ -290,18 +290,17 @@ const DataBarang = () => {
               persistTableHead
               highlightOnHover
               pointerOnHover
-               customStyles={{
+              customStyles={{
                 headCells: {
                   style: {
                     padding: 12,
                     backgroundColor: "#EBFBFA", // Warna header biru
-      color: "#212121", // Teks header putih
+                    color: "#212121", // Teks header putih
                     fontWeight: 700,
                     fontSize: 14,
-
                   },
                 },
-                rows : {
+                rows: {
                   style: {
                     fontSize: 14,
                     paddingTop: 6,

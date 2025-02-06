@@ -131,16 +131,16 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
       const fileFromTtd = new File([blob], "signature.png", {
         type: "image/png",
       });
-      if (user?.role === "3") {
+      if (user?.role == "3") {
         formDataToSend.append("tte_daerah", fileFromTtd);
-      } else if (user?.role === "4") {
+      } else if (user?.role == "4") {
         formDataToSend.append("tte_ppk", fileFromTtd);
       }
     } else if (file) {
       // Jika file diunggah
-      if (user?.role === "3") {
+      if (user?.role == "3") {
         formDataToSend.append("tte_daerah", file);
-      } else if (user?.role === "4") {
+      } else if (user?.role == "4") {
         formDataToSend.append("tte_ppk", file);
       }
     } else if (signatureRef?.current) {
@@ -149,9 +149,9 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
       if (trimmedCanvas) {
         const signatureDataURL = trimmedCanvas.toDataURL("image/png");
         const signatureFile = dataURLtoFile(signatureDataURL, "signature.png"); // Konversi Base64 ke File
-        if (user?.role === "3") {
+        if (user?.role == "3") {
           formDataToSend.append("tte_daerah", signatureFile);
-        } else if (user?.role === "4") {
+        } else if (user?.role == "4") {
           formDataToSend.append("tte_ppk", signatureFile);
         }
       }
@@ -191,7 +191,6 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
   };
 
   const handleTTE = () => {
-
     if (!user.name || !user.nip || !user.profile) {
       Swal.fire("Error", "Anda Belum Input Nama / NIP / Logo", "error");
       navigate("/profile");
@@ -252,7 +251,7 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
                 <div className="tabs mb-4 flex space-x-4">
                   <button
                     className={`px-4 py-2 font-bold border-b-2 ${
-                      activeTab === "tab1"
+                      activeTab == "tab1"
                         ? "border-teal-500"
                         : "border-transparent"
                     }`}
@@ -262,7 +261,7 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
                   </button>
                   <button
                     className={`px-4 py-2 font-bold border-b-2 ${
-                      activeTab === "tab2"
+                      activeTab == "tab2"
                         ? "border-teal-500"
                         : "border-transparent"
                     }`}
@@ -272,7 +271,7 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
                   </button>
                 </div>
                 <div className="tab-content">
-                  {activeTab === "tab1" && (
+                  {activeTab == "tab1" && (
                     <div
                       id="tab1"
                       className="tab-pane h-64 w-full flex flex-col items-center justify-center"
@@ -347,7 +346,7 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
                       )}
                     </div>
                   )}
-                  {activeTab === "tab2" && (
+                  {activeTab == "tab2" && (
                     <div
                       id="tab2"
                       className="tab-pane h-64 w-full flex flex-col items-center justify-center"

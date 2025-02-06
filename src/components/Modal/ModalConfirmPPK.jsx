@@ -46,11 +46,11 @@ const ModalConfirmPPK = ({
   const navigate = useNavigate();
   useEffect(() => {
     setFormData({
-      kecamatan: dataKecamatan.find((a) => a.label === data?.kecamatan),
-      puskesmas: dataPuskesmas.find((a) => a.label === data?.Puskesmas),
+      kecamatan: dataKecamatan.find((a) => a.label == data?.kecamatan),
+      puskesmas: dataPuskesmas.find((a) => a.label == data?.Puskesmas),
       nama_kepala_puskesmas: data?.nama_kapus,
       nip_kepala_puskesmas: "",
-      nama_barang: dataBarang.find((a) => a.label === data?.nama_barang),
+      nama_barang: dataBarang.find((a) => a.label == data?.nama_barang),
       jumlah_barang_dikirim: data?.jumlah_barang_dikirim,
       jumlah_barang_diterima: data?.jumlah_barang_diterima,
       tte: "",
@@ -124,7 +124,7 @@ const ModalConfirmPPK = ({
                 </div>
                 <form className="mt-5" onSubmit={handleSimpan}>
                   <div className=" p-6 flex-auto w-full">
-                    {user.role === "1" ? (
+                    {user.role == "1" ? (
                       <>
                         <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
                           <div className="">
@@ -232,7 +232,7 @@ const ModalConfirmPPK = ({
                           </div>
                         </div>
                       </>
-                    ) : user.role === "2" ? (
+                    ) : user.role == "2" ? (
                       <>
                         <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
                           <div className="">
@@ -479,7 +479,7 @@ const ModalConfirmPPK = ({
                                 }))
                               }
                               defaultValue={
-                                data?.status_tte === "Sudah"
+                                data?.status_tte == "Sudah"
                                   ? konfirmasiOptions[0]
                                   : konfirmasiOptions[1]
                               }
@@ -538,7 +538,7 @@ const ModalConfirmPPK = ({
                                 }))
                               }
                               defaultValue={
-                                data?.status_tte === "Sudah"
+                                data?.status_tte == "Sudah"
                                   ? konfirmasiOptions[0]
                                   : konfirmasiOptions[1]
                               }
@@ -571,7 +571,7 @@ const ModalConfirmPPK = ({
                           </div>
                         </div>
                       </>
-                    ) : user.role === "3" ? (
+                    ) : user.role == "3" ? (
                       <>
                         <div className="mb-8 flex-col  sm:gap-2 w-full flex ">
                           <div className="">
@@ -814,7 +814,7 @@ const ModalConfirmPPK = ({
                                 }))
                               }
                               defaultValue={
-                                data?.status_tte === "Sudah"
+                                data?.status_tte == "Sudah"
                                   ? konfirmasiOptions[0]
                                   : konfirmasiOptions[1]
                               }

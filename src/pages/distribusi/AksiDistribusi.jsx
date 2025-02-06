@@ -475,7 +475,7 @@ const AksiDistribusi = () => {
       return;
     }
     // if (
-    //   user.role === "3" &&
+    //   user.role == "3" &&
     //   !formData.pendukungFile &&
     //   !formData.pendukungFileLink
     // ) {
@@ -485,7 +485,7 @@ const AksiDistribusi = () => {
     // }
 
     // if (
-    //   user.role === "3" &&
+    //   user.role == "3" &&
     //   !formData.ujiFungsiFile &&
     //   !formData.ujiFungsiFileLink
     // ) {
@@ -495,7 +495,7 @@ const AksiDistribusi = () => {
     // }
 
     // if (
-    //   user.role === "3" &&
+    //   user.role == "3" &&
     //   !formData.ujiOpsFile &&
     //   !formData.ujiOpsFileLink
     // ) {
@@ -729,11 +729,11 @@ const AksiDistribusi = () => {
       <Card>
         <div className="card-header flex justify-between">
           <h1 className="mb-12 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
-            {user.role === "1"
+            {user.role == "1"
               ? "Form Konfirmasi Data BAST Admin Dit Tata Kelola Kesmas"
-              : user.role === "2"
+              : user.role == "2"
               ? "Form TTE BAST dan Naskah Hibah Admin PPK"
-              : user.role === "3"
+              : user.role == "3"
               ? "Form Konfirmasi Data BAST Admin Dinas Kesehatan Kab/Kota"
               : "Form Konfirmasi Data BAST Admin Dinas Kesehatan Kab/Kota"}
           </h1>
@@ -885,15 +885,15 @@ const AksiDistribusi = () => {
             <div className="my-12">
               <div className="card-header flex flex-col ">
                 <h1 className="mb-8 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-center text-bodydark1">
-                  {user.role === "1"
+                  {user.role == "1"
                     ? "Form Input Data Barang"
-                    : user.role === "2"
+                    : user.role == "2"
                     ? "Data Barang"
-                    : user.role === "3"
+                    : user.role == "3"
                     ? "Konfirmasi Data Barang"
                     : ""}
                 </h1>
-                {user.role === "1" ? (
+                {user.role == "1" ? (
                   <div className="flex justify-end mb-2">
                     <button
                       title="Tambah Data Distribusi"
@@ -917,7 +917,7 @@ const AksiDistribusi = () => {
               </div>
 
               {/* Display Selected Items Count and Action Buttons */}
-              {selectedItems.length > 0 && user.role === "3" && (
+              {selectedItems.length > 0 && user.role == "3" && (
                 <div className="mb-4 flex items-center gap-4">
                   <span>{selectedItems.length} item selected</span>
                   <button
@@ -943,7 +943,7 @@ const AksiDistribusi = () => {
                   <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-bodydark2 uppercase bg-[#EBFBFA] dark:bg-gray-700 dark:text-gray-400">
                       <tr>
-                        {user.role === "3" && (
+                        {user.role == "3" && (
                           <th scope="col" className="px-4 py-3 text-center">
                             <input
                               type="checkbox"
@@ -954,12 +954,12 @@ const AksiDistribusi = () => {
                           </th>
                         )}
 
-<th
-        scope="col"
-        className="px-4 py-3 text-center min-w-[150px] break-words"
-      >
-        Nama Barang
-      </th>
+                        <th
+                          scope="col"
+                          className="px-4 py-3 text-center min-w-[150px] break-words"
+                        >
+                          Nama Barang
+                        </th>
                         <th scope="col" className="px-4 py-3 text-center">
                           Merk/Tipe
                         </th>
@@ -993,7 +993,7 @@ const AksiDistribusi = () => {
                           key={index}
                           className="bg-white text-[13px] dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                         >
-                          {user.role === "3" && (
+                          {user.role == "3" && (
                             <td className="px-4 py-2 text-center">
                               <input
                                 type="checkbox"
@@ -1003,12 +1003,12 @@ const AksiDistribusi = () => {
                               />
                             </td>
                           )}
-                           <td
-                              scope="row"
-                              className="px-2 py-2 text-center font-medium text-gray-900 dark:text-white min-w-[150px] break-words"
-                            >
-                              {barang.jenis_alkes}
-                            </td>
+                          <td
+                            scope="row"
+                            className="px-2 py-2 text-center font-medium text-gray-900 dark:text-white min-w-[150px] break-words"
+                          >
+                            {barang.jenis_alkes}
+                          </td>
                           <td className="px-2 py-2 text-center">
                             {barang.merk}
                           </td>
@@ -1027,20 +1027,20 @@ const AksiDistribusi = () => {
                           <td className="px-2 py-2 text-center">
                             <button
                               className={`text-white py-2 font-medium text-xs px-2 rounded-md ${
-                                barang.uji_fungsi === "1"
+                                barang.uji_fungsi == "1"
                                   ? "bg-green-500"
                                   : "bg-yellow-500"
                               }`}
                               onClick={(e) => e.preventDefault()}
                             >
-                              {barang.uji_fungsi === "1"
+                              {barang.uji_fungsi == "1"
                                 ? "Sudah Uji Fungsi"
                                 : "Belum Uji Fungsi"}
                             </button>
                           </td>
                           {user.role !== "2" ? (
                             <td className="px-2 py-2 text-center flex items-center gap-2">
-                              {user.role === "1" ? (
+                              {user.role == "1" ? (
                                 <>
                                   <button
                                     title="Edit"
@@ -1059,20 +1059,20 @@ const AksiDistribusi = () => {
                                     <FaTrash size={16} />
                                   </button>
                                 </>
-                              ) : user.role === "2" ? (
+                              ) : user.role == "2" ? (
                                 ""
-                              ) : user.role === "3" ? (
+                              ) : user.role == "3" ? (
                                 <button
                                   title="Konfirmasi"
                                   onClick={(e) => handleEditBarang(e, index)}
                                   className={`text-white py-2 font-semibold w-22 rounded-md ${
-                                    barang.jumlah_dikirim ===
+                                    barang.jumlah_dikirim ==
                                     barang.jumlah_diterima
                                       ? "bg-green-500"
                                       : "bg-yellow-500"
                                   }`}
                                 >
-                                  {barang.jumlah_dikirim ===
+                                  {barang.jumlah_dikirim ==
                                   barang.jumlah_diterima
                                     ? "Sudah Konfirmasi"
                                     : "Konfirmasi"}
@@ -1092,7 +1092,7 @@ const AksiDistribusi = () => {
               </div>
             </div>
 
-            {user.role === "2" || user.role === "3" || user.role === "1" ? (
+            {user.role == "2" || user.role == "3" || user.role == "1" ? (
               <>
                 <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
                   <div className="sm:flex-[2_2_0%]">
@@ -1123,7 +1123,7 @@ const AksiDistribusi = () => {
                   </div>
                 </div>
 
-                {user.role === "3" && (
+                {user.role == "3" && (
                   <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
                     <div className="sm:flex-[2_2_0%]">
                       <label
@@ -1185,7 +1185,7 @@ const AksiDistribusi = () => {
                   </div>
                 )}
 
-{user.role === "3" && (
+                {user.role == "3" && (
                   <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
                     <div className="sm:flex-[2_2_0%]">
                       <label
@@ -1212,8 +1212,7 @@ const AksiDistribusi = () => {
                             Lihat Dokumen
                           </span>
                         </a>
-                      ) : !formData.ujiOpsFileLink &&
-                        !formData.ujiOpsFile? (
+                      ) : !formData.ujiOpsFileLink && !formData.ujiOpsFile ? (
                         <p className="text-red-600 text-xs ml-1 mb-1 font-semibold">
                           Anda Belum Mengupload Dokumen Uji Operasional
                         </p>
@@ -1247,7 +1246,7 @@ const AksiDistribusi = () => {
                   </div>
                 )}
 
-                {user.role === "3" && (
+                {user.role == "3" && (
                   <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
                     <div className="sm:flex-[2_2_0%]">
                       <label
@@ -1354,7 +1353,7 @@ const AksiDistribusi = () => {
                   </div>
                 )}
 
-{user.role !== "3" && (
+                {user.role !== "3" && (
                   <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
                     <div className="sm:flex-[2_2_0%]">
                       <label
@@ -1366,8 +1365,7 @@ const AksiDistribusi = () => {
                     </div>
                     <div className="sm:flex-[5_5_0%] flex flex-col items-start gap-1">
                       <div className="flex items-center">
-                        {formData.ujiOpsFileLink &&
-                        !formData.ujiOpsFile ? (
+                        {formData.ujiOpsFileLink && !formData.ujiOpsFile ? (
                           <a
                             href={formData.ujiOpsFileLink}
                             target="_blank"
@@ -1386,8 +1384,7 @@ const AksiDistribusi = () => {
                               Lihat Dokumen
                             </span>
                           </a>
-                        ) : !formData.ujiOpsFileLink &&
-                          !formData.ujiOpsFile ? (
+                        ) : !formData.ujiOpsFileLink && !formData.ujiOpsFile ? (
                           <p className="text-red-600 text-xs ml-1 font-semibold">
                             Belum Mengupload Dokumen Uji Operasional
                           </p>
@@ -1399,7 +1396,7 @@ const AksiDistribusi = () => {
                   </div>
                 )}
 
-{user.role !== "3" && (
+                {user.role !== "3" && (
                   <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
                     <div className="sm:flex-[2_2_0%]">
                       <label

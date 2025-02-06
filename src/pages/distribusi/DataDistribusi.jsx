@@ -91,11 +91,11 @@ const DataDistribusi = () => {
       Ket_Daerah: item?.keterangan_daerah,
       Ket_Ppk: item?.keterangan_ppk,
       Konfirmasi_Daerah:
-        item?.konfirmasi_daerah === "1"
+        item?.konfirmasi_daerah == "1"
           ? "Sudah Konfirmasi"
           : "Belum Konfirmasi",
       Konfirmasi_Ppk:
-        item?.konfirmasi_ppk === "1" ? "Sudah Konfirmasi" : "Belum Konfirmasi",
+        item?.konfirmasi_ppk == "1" ? "Sudah Konfirmasi" : "Belum Konfirmasi",
     }));
     const wb = XLSX.utils.book_new(),
       ws = XLSX.utils.json_to_sheet(exportData);
@@ -175,7 +175,7 @@ const DataDistribusi = () => {
   // Fetch cities based on the selected province
   const fetchKota = useCallback(
     async (idProvinsi) => {
-      if (dataKota.length > 0 && selectedProvinsi?.value === idProvinsi) return;
+      if (dataKota.length > 0 && selectedProvinsi?.value == idProvinsi) return;
 
       try {
         const response = await axios({
@@ -207,7 +207,7 @@ const DataDistribusi = () => {
   // Fetch subdistricts based on the selected city
   const fetchKecamatan = useCallback(
     async (idKota) => {
-      if (dataKecamatan.length > 0 && selectedKota?.value === idKota) return;
+      if (dataKecamatan.length > 0 && selectedKota?.value == idKota) return;
 
       try {
         const response = await axios({
@@ -382,28 +382,30 @@ const DataDistribusi = () => {
         name: <div className="text-wrap">Provinsi</div>,
         selector: (row) => row.provinsi,
         sortable: true,
-        cell: ( row ) => <div className="text-wrap py-2">{row.provinsi}</div>,
+        cell: (row) => <div className="text-wrap py-2">{row.provinsi}</div>,
         width: "120px",
-        omit: user.role === "3",
+        omit: user.role == "3",
       },
       {
         name: <div className="text-wrap">Kab / Kota</div>,
         selector: (row) => row.kabupaten,
-        cell: ( row ) => <div className="text-wrap py-2">{row.kabupaten}</div>,
+        cell: (row) => <div className="text-wrap py-2">{row.kabupaten}</div>,
         width: "120px",
         sortable: true,
       },
       {
         name: <div className="text-wrap">Kecamatan</div>,
         selector: (row) => row.kecamatan,
-        cell: ( row ) => <div className="text-wrap py-2">{row.kecamatan}</div>,
+        cell: (row) => <div className="text-wrap py-2">{row.kecamatan}</div>,
         width: "120px",
         sortable: true,
       },
       {
         name: <div className="text-wrap">Puskesmas</div>,
         selector: (row) => row.nama_puskesmas,
-        cell: ( row ) => <div className="text-wrap py-2">{row.nama_puskesmas}</div>,
+        cell: (row) => (
+          <div className="text-wrap py-2">{row.nama_puskesmas}</div>
+        ),
         // width: "120px",
         sortable: true,
       },
@@ -417,14 +419,18 @@ const DataDistribusi = () => {
       {
         name: <div className="text-wrap">Jumlah Dikirim</div>,
         selector: (row) => Number(row.jumlah_barang_dikirim) || 0,
-        cell: (row) => <div className="text-wrap py-2">{row.jumlah_barang_dikirim}</div>,
+        cell: (row) => (
+          <div className="text-wrap py-2">{row.jumlah_barang_dikirim}</div>
+        ),
         sortable: true,
         width: "100px",
       },
       {
         name: <div className="text-wrap">Jumlah Diterima</div>,
         selector: (row) => Number(row.jumlah_barang_diterima) || 0,
-        cell: (row) => <div className="text-wrap py-2">{row.jumlah_barang_diterima}</div>,
+        cell: (row) => (
+          <div className="text-wrap py-2">{row.jumlah_barang_diterima}</div>
+        ),
         sortable: true,
         width: "100px",
       },
@@ -433,7 +439,7 @@ const DataDistribusi = () => {
         id: "Aksi",
         cell: (row) => (
           <div className="flex items-center space-x-2">
-            {user.role === "2" || user.role === "1" ? (
+            {user.role == "2" || user.role == "1" ? (
               row.konfirmasi_ppk !== "1" ? (
                 <button
                   title="Konfirmasi"
@@ -462,7 +468,7 @@ const DataDistribusi = () => {
                   </Link>
                 </button>
               )
-            ) : user.role === "3" ? (
+            ) : user.role == "3" ? (
               row.konfirmasi_daerah !== "1" ? (
                 <button
                   title="Konfirmasi"
@@ -495,7 +501,7 @@ const DataDistribusi = () => {
               ""
             )}
 
-            {user.role === "1" ? (
+            {user.role == "1" ? (
               <button
                 title="Delete"
                 className="text-red-500 hover:text-red-700 pr-4"
@@ -513,14 +519,14 @@ const DataDistribusi = () => {
         button: true,
         sortable: true,
         selector: (row) =>
-          user.role === "3" ? row.konfirmasi_daerah : row.konfirmasi_ppk,
+          user.role == "3" ? row.konfirmasi_daerah : row.konfirmasi_ppk,
       },
     ],
     []
   );
 
   useEffect(() => {
-    if (user.role === "3") {
+    if (user.role == "3") {
       fetchUserData();
     }
   }, [user.role, fetchUserData]);
@@ -542,7 +548,7 @@ const DataDistribusi = () => {
 
   // Set selected options for provinces and cities based on user's initial data
   useEffect(() => {
-    if (user.role === "3" && user.provinsi && dataProvinsi.length > 0) {
+    if (user.role == "3" && user.provinsi && dataProvinsi.length > 0) {
       const initialOption = dataProvinsi.find(
         (prov) => prov.value == user.provinsi
       );
@@ -553,7 +559,7 @@ const DataDistribusi = () => {
         });
       }
     }
-    if (user.role === "3" && user.kabupaten && dataKota.length > 0) {
+    if (user.role == "3" && user.kabupaten && dataKota.length > 0) {
       const initialOption = dataKota.find(
         (prov) => prov.value == user.kabupaten
       );
@@ -582,11 +588,11 @@ const DataDistribusi = () => {
         <h1 className="font-normal mb-3 text-xl lg:text-[28px] tracking-tight text-center text-bodydark1">
           DATA DISTRIBUSI
           {/* SELAMAT DATANG{" "}
-          {user.role === "1"
+          {user.role == "1"
             ? "ADMIN PUSAT"
-            : user.role === "2"
+            : user.role == "2"
             ? "ADMIN PPK"
-            : user.role === "3"
+            : user.role == "3"
             ? `ADMIN KAB/KOTA`
             : ""} */}
         </h1>
@@ -614,7 +620,7 @@ const DataDistribusi = () => {
                     primary: "grey",
                   },
                 })}
-                isDisabled={user.role === "3"}
+                isDisabled={user.role == "3"}
               />
             </div>
             <div>
@@ -637,7 +643,7 @@ const DataDistribusi = () => {
                     primary: "grey",
                   },
                 })}
-                isDisabled={user.role === "3" || !selectedProvinsi}
+                isDisabled={user.role == "3" || !selectedProvinsi}
                 placeholder={
                   selectedProvinsi
                     ? "Pilih Kab / Kota"
@@ -730,7 +736,7 @@ const DataDistribusi = () => {
               <BiExport />
               <span className="hidden sm:block">Export</span>
             </button>
-            {user.role === "1" ? (
+            {user.role == "1" ? (
               <button
                 title="Tambah Data Distribusi"
                 className="flex items-center gap-2 cursor-pointer text-base font-semibold text-white  bg-primary rounded-md tracking-tight"
@@ -748,7 +754,7 @@ const DataDistribusi = () => {
             ) : (
               ""
             )}
-            {user.role === "3" && dataDokumen.length > 0 ? (
+            {user.role == "3" && dataDokumen.length > 0 ? (
               <button
                 title="Tandatangani Dokumen BMN"
                 className="flex items-center gap-2 cursor-pointer text-base font-semibold text-white  bg-teal-600 rounded-md tracking-tight"
@@ -774,7 +780,7 @@ const DataDistribusi = () => {
               <CgSpinner className="animate-spin inline-block w-8 h-8 text-teal-400" />
               <span className="ml-2">Loading...</span>
             </div>
-          ) : error || filteredData.length === 0 ? (
+          ) : error || filteredData.length == 0 ? (
             <div className="text-center">Data Tidak Tersedia.</div>
           ) : (
             <DataTable
@@ -792,13 +798,12 @@ const DataDistribusi = () => {
                   style: {
                     padding: 12,
                     backgroundColor: "#EBFBFA", // Warna header biru
-      color: "#212121", // Teks header putih
+                    color: "#212121", // Teks header putih
                     fontWeight: 700,
                     fontSize: 14,
-
                   },
                 },
-                rows : {
+                rows: {
                   style: {
                     fontSize: 14,
                     paddingTop: 6,

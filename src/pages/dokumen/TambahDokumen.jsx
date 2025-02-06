@@ -336,7 +336,7 @@ const TambahDokumen = () => {
       <Card>
         <div className="card-header flex justify-between">
           <h1 className="mb-12 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
-            {user.role === "1" ? "Form Tambah Data Dokumen" : ""}
+            {user.role == "1" ? "Form Tambah Data Dokumen" : ""}
           </h1>
           <div>
             <Link
@@ -468,64 +468,65 @@ const TambahDokumen = () => {
             </div>
 
             <div className="mb-8 flex flex-col sm:flex-row sm:gap-8 sm:items-center">
-  {/* Label */}
-  <div className="sm:flex-[2_2_0%]">
-    <label
-      className="block text-[#728294] text-base font-normal mb-2 sm:mb-0"
-      htmlFor="nomor_bast"
-    >
-      Nomor BAST :
-    </label>
-  </div>
+              {/* Label */}
+              <div className="sm:flex-[2_2_0%]">
+                <label
+                  className="block text-[#728294] text-base font-normal mb-2 sm:mb-0"
+                  htmlFor="nomor_bast"
+                >
+                  Nomor BAST :
+                </label>
+              </div>
 
-  {/* Input + Button */}
-  <div className="sm:flex-[5_5_0%]">
-    <div className="relative flex items-center">
-      <input
-        className={`bg-white appearance-none border ${
-          errors.nomor_bast
-            ? "border-red-500"
-            : valid.nomor_bast
-            ? "border-green-500"
-            : "border-[#cacaca]"
-        } rounded-md w-full py-3 px-3 text-[#728294] leading-tight 
+              {/* Input + Button */}
+              <div className="sm:flex-[5_5_0%]">
+                <div className="relative flex items-center">
+                  <input
+                    className={`bg-white appearance-none border ${
+                      errors.nomor_bast
+                        ? "border-red-500"
+                        : valid.nomor_bast
+                        ? "border-green-500"
+                        : "border-[#cacaca]"
+                    } rounded-md w-full py-3 px-3 text-[#728294] leading-tight 
         focus:outline-none focus:shadow-outline dark:bg-transparent disabled:bg-slate-100`}
-        id="nomor_bast"
-        value={formData.nomor_bast}
-        onChange={handleChange}
-        type="text"
-        required
-        disabled={!isNomorBastEditable}
-        placeholder="Nomor BAST"
-      />
-      
-      {/* Icon Validasi */}
-      {valid.nomor_bast && (
-        <MdCheckCircle
-          size={20}
-          className="absolute right-10 top-1/2 transform -translate-y-1/2 text-green-500"
-        />
-      )}
+                    id="nomor_bast"
+                    value={formData.nomor_bast}
+                    onChange={handleChange}
+                    type="text"
+                    required
+                    disabled={!isNomorBastEditable}
+                    placeholder="Nomor BAST"
+                  />
 
-      {/* Tombol Edit */}
-      <button
-        type="button"
-        onClick={() => setIsNomorBastEditable((prev) => !prev)}
-        className={`ml-2 focus:outline-none ${
-          isNomorBastEditable ? "text-teal-500" : "text-[#728294]"
-        }`}
-      >
-        <FaEdit />
-      </button>
-    </div>
+                  {/* Icon Validasi */}
+                  {valid.nomor_bast && (
+                    <MdCheckCircle
+                      size={20}
+                      className="absolute right-10 top-1/2 transform -translate-y-1/2 text-green-500"
+                    />
+                  )}
 
-    {/* Pesan Error */}
-    {errors.nomor_bast && (
-      <p className="text-red-500 text-sm mt-1">{errors.nomor_bast}</p>
-    )}
-  </div>
-</div>
+                  {/* Tombol Edit */}
+                  <button
+                    type="button"
+                    onClick={() => setIsNomorBastEditable((prev) => !prev)}
+                    className={`ml-2 focus:outline-none ${
+                      isNomorBastEditable ? "text-teal-500" : "text-[#728294]"
+                    }`}
+                  >
+                    <FaEdit />
+                  </button>
+                </div>
 
+                {/* Pesan Error */}
+                {errors.nomor_bast && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.nomor_bast}
+                  </p>
+                )}
+              </div>
+            </div>
 
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">

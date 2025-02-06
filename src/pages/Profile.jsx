@@ -163,7 +163,7 @@ const Profile = () => {
   };
   useEffect(() => {
     fetchUserData();
-    if (user.role === "3") {
+    if (user.role == "3") {
       fetchProvinsiData();
       fetchKota();
       fetchKecamatan();
@@ -322,17 +322,17 @@ const Profile = () => {
                           }}
                         />
                       )}
-                        {!formData.profile && !previewImages.profile && (
-                      <img
-                        src={UserDefault}
-                        className="rounded-full"
-                        alt="Profile Preview"
-                        onError={({ currentTarget }) => {
-                          currentTarget.onerror = null; // prevents looping
-                          currentTarget.src = UserDefault;
-                        }}
-                      />
-                    )}
+                      {!formData.profile && !previewImages.profile && (
+                        <img
+                          src={UserDefault}
+                          className="rounded-full"
+                          alt="Profile Preview"
+                          onError={({ currentTarget }) => {
+                            currentTarget.onerror = null; // prevents looping
+                            currentTarget.src = UserDefault;
+                          }}
+                        />
+                      )}
                     </div>
                     <div>
                       <span className="mb-1.5 text-black dark:text-white">
@@ -368,7 +368,6 @@ const Profile = () => {
                         }}
                       />
                     )}
-                  
                   </div>
                 </div>
 
@@ -523,13 +522,13 @@ const Profile = () => {
                     Role
                   </label>
                   <p>
-                    {formData.role === "1"
+                    {formData.role == "1"
                       ? "Admin"
-                      : formData.role === "2"
+                      : formData.role == "2"
                       ? "PPK"
-                      : formData.role === "3"
+                      : formData.role == "3"
                       ? "User"
-                      : formData.role === "4"
+                      : formData.role == "4"
                       ? "Direktur"
                       : ""}
                   </p>
@@ -549,7 +548,7 @@ const Profile = () => {
                     }
                   /> */}
                 </div>
-                {user.role === "3" ? (
+                {user.role == "3" ? (
                   <>
                     {" "}
                     <div className="mb-5.5">

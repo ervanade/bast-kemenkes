@@ -13,7 +13,7 @@ import Swal from "sweetalert2";
 const DropdownNotification = () => {
   const dispatch = useDispatch();
   const { notifs, error } = useSelector((state) => state.notifications); // Ambil error dari Redux
-  const unreadNotifs = notifs.filter((notif) => notif.is_read === "0");
+  const unreadNotifs = notifs.filter((notif) => notif.is_read == "0");
   const [loading, setLoading] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
@@ -100,11 +100,11 @@ const DropdownNotification = () => {
                     key={notif.id}
                     onClick={() => handleMarkAsRead(notif.id)}
                     className={`flex items-start gap-4 px-4.5 py-3 border-b cursor-pointer transition-all duration-300 hover:bg-gray-100 ${
-                      notif.is_read === "0" ? "bg-yellow-50" : "bg-white"
+                      notif.is_read == "0" ? "bg-yellow-50" : "bg-white"
                     }`}
                   >
                     <div className="flex-shrink-0">
-                      {notif.is_read === "0" ? (
+                      {notif.is_read == "0" ? (
                         <div className="flex items-center justify-center w-8 h-8 bg-yellow-400 text-white rounded-full">
                           <FaInfo />
                         </div>
@@ -129,14 +129,12 @@ const DropdownNotification = () => {
                       </p>
                       <span
                         className={`text-xs font-semibold ${
-                          notif.is_read === "0"
+                          notif.is_read == "0"
                             ? "text-yellow-500"
                             : "text-green-500"
                         }`}
                       >
-                        {notif.is_read === "0"
-                          ? "Belum Dibaca"
-                          : "Sudah Dibaca"}
+                        {notif.is_read == "0" ? "Belum Dibaca" : "Sudah Dibaca"}
                       </span>
                     </div>
                   </li>
@@ -187,7 +185,7 @@ export default DropdownNotification;
 //         >
 //           <span
 //             className={absolute -top-0.5 right-0 z-1 h-2 w-2 rounded-full bg-meta-1 ${
-//               notifying === false ? "hidden" : "inline"
+//               notifying == false ? "hidden" : "inline"
 //             }}
 //           >
 //             <span className="absolute -z-1 inline-flex h-full w-full animate-ping rounded-full bg-meta-1 opacity-75"></span>

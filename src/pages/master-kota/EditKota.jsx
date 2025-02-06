@@ -136,7 +136,7 @@ const EditKota = () => {
       <Card>
         <div className="card-header flex justify-between">
           <h1 className="mb-12 font-medium font-antic text-xl lg:text-[28px] tracking-tight text-left text-bodydark1">
-            {user.role === "1" ? "Form Edit Data Kota" : ""}
+            {user.role == "1" ? "Form Edit Data Kota" : ""}
           </h1>
           <div>
             <Link
