@@ -227,9 +227,9 @@ const EditDokumen = () => {
     if (formData.contractFile) {
       formDataToSend.append("file_kontrak", formData.contractFile);
     }
-    if (!formData.contractFile && formData.contractFileLink) {
-      formDataToSend.append("file_kontrak", formData.contractFileLink);
-    }
+    // if (!formData.contractFile && formData.contractFileLink) {
+    //   formDataToSend.append("file_kontrak", formData.contractFileLink);
+    // }
     await axios({
       method: "post",
       url: `${
