@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import FormInput from "../Form/FormInput";
-import { konfirmasiJumlahOptions, ujiFungsiOptions } from "../../data/data";
+import { konfirmasiJumlahOptions, ujiFungsiOptions, ujiOpsOptions } from "../../data/data";
 
 const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
   const user = useSelector((a) => a.auth.user);
@@ -22,13 +22,22 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
     status_barang: "",
     keterangan: "",
     uji_fungsi: "",
+    uji_ops: "",
   });
   const [selectedProgram, setSelectedProgram] = useState(ujiFungsiOptions[0]);
+  const [selectedOperasional, setSelectedOperasional] = useState(ujiOpsOptions[0]);
   const handleProgramChange = (selectedOption) => {
     setSelectedProgram(selectedOption);
     setBarang((prev) => ({
       ...prev,
       uji_fungsi: selectedOption ? selectedOption.value.toString() : "",
+    }));
+  };
+  const handleOperasionalChange = (selectedOption) => {
+    setSelectedOperasional(selectedOption);
+    setBarang((prev) => ({
+      ...prev,
+      uji_ops: selectedOption ? selectedOption.value.toString() : "",
     }));
   };
 
@@ -80,6 +89,11 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
           ? ujiFungsiOptions[1]
           : ujiFungsiOptions[0]
       );
+      setSelectedOperasional(
+        dataBarang?.uji_ops == "1"
+          ? ujiOpsOptions[1]
+          : ujiOpsOptions[0]
+      );
     } else {
       setBarang({
         id_barang: "",
@@ -92,6 +106,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
         harga_satuan: "",
         keterangan: "",
         uji_fungsi: "",
+        uji_ops: ""
       });
     }
   }, [editIndex, dataBarang]);
@@ -113,9 +128,12 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
       satuan: "",
       harga_satuan: "",
       keterangan: "",
+      uji_fungsi: "",
+      uji_ops: ""
     });
     setSelectedBarang(null);
     setSelectedProgram(ujiFungsiOptions[0]);
+    setSelectedOperasional(ujiOpsOptions[0]);
     setSelectedKonfirmasi(konfirmasiJumlahOptions[0]);
     onClose();
   };
@@ -339,6 +357,27 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                         onChange={handleProgramChange}
                         value={selectedProgram}
                         placeholder="Uji Fungsi"
+                        className="w-full cursor-pointer"
+                        theme={selectThemeColors}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mb-6 flex-col  sm:gap-2 w-full flex ">
+                    <div className="">
+                      <label
+                        className=" block text-[#728294] text-base font-semibold mb-2"
+                        htmlFor="email"
+                      >
+                        Uji Operasional :
+                      </label>
+                    </div>
+                    <div className="">
+                      <Select
+                        options={ujiOpsOptions}
+                        onChange={handleOperasionalChange}
+                        value={selectedOperasional}
+                        placeholder="Uji Operasional"
                         className="w-full cursor-pointer"
                         theme={selectThemeColors}
                       />

@@ -978,6 +978,9 @@ const AksiDistribusi = () => {
                         <th scope="col" className="px-4 py-3 text-center">
                           Uji Fungsi
                         </th>
+                        <th scope="col" className="px-4 py-3 text-center">
+                          Uji Operasional
+                        </th>
                         {user.role !== "2" ? (
                           <th scope="col" className="px-4 py-3 text-center">
                             Aksi
@@ -1036,6 +1039,20 @@ const AksiDistribusi = () => {
                               {barang.uji_fungsi == "1"
                                 ? "Sudah Uji Fungsi"
                                 : "Belum Uji Fungsi"}
+                            </button>
+                          </td>
+                          <td className="px-2 py-2 text-center">
+                            <button
+                              className={`text-white py-1 font-medium text-[10px] leading-3 px-1 rounded-md ${
+                                barang.uji_ops == "1"
+                                  ? "bg-green-500"
+                                  : "bg-yellow-500"
+                              }`}
+                              onClick={(e) => e.preventDefault()}
+                            >
+                              {barang.uji_ops == "1"
+                                ? "Sudah Uji Operasional"
+                                : "Belum Uji Operasional"}
                             </button>
                           </td>
                           {user.role !== "2" ? (

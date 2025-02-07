@@ -258,6 +258,18 @@ export const ujiFungsiOptions = [
 
 ]
 
+export const ujiOpsOptions = [
+    {
+        "label": "Data Belum Uji Operasional",
+        "value": "0"
+    },
+    {
+        "label": "Data Sudah Uji Operasional",
+        "value": "1"
+    }
+
+]
+
 export const konfirmasiJumlahOptions = [
     {
         "label": "Jumlah Belum Sesuai",
