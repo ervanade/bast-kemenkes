@@ -1026,7 +1026,7 @@ const AksiDistribusi = () => {
                           </td>
                           <td className="px-2 py-2 text-center">
                             <button
-                              className={`text-white py-2 font-medium text-xs px-2 rounded-md ${
+                              className={`text-white py-1 font-medium text-[10px] leading-3 px-1 rounded-md ${
                                 barang.uji_fungsi == "1"
                                   ? "bg-green-500"
                                   : "bg-yellow-500"
