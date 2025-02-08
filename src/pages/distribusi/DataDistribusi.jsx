@@ -76,7 +76,6 @@ const DataDistribusi = () => {
   const handleExport = () => {
     // Implementasi untuk mengekspor data (misalnya ke CSV)
     const exportData = filteredData?.map((item) => ({
-      Dokumen: item?.nama_dokumen,
       Provinsi: item?.provinsi,
       Kabupaten_Kota: item?.kabupaten,
       Kecamatan: item?.kecamatan,
