@@ -9,7 +9,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { CgSpinner } from "react-icons/cg";
 import { FaDownload } from "react-icons/fa";
 
-const ModalDownload = ({ show, onClose, onSave, editIndex, jsonData, user }) => {
+const ModalDownload = ({
+  show,
+  onClose,
+  onSave,
+  editIndex,
+  jsonData,
+  user,
+}) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [dokumenData, setDokumenData] = useState(null); // State to store document data
@@ -107,7 +114,11 @@ const ModalDownload = ({ show, onClose, onSave, editIndex, jsonData, user }) => 
     onClose();
   };
   useEffect(() => {
-    setFormData((prev) => ({ ...prev, id_provinsi: jsonData?.id_provinsi, id_kabupaten: jsonData?.id_kabupaten }));
+    setFormData((prev) => ({
+      ...prev,
+      id_provinsi: jsonData?.id_provinsi,
+      id_kabupaten: jsonData?.id_kabupaten,
+    }));
   }, [jsonData]);
 
   if (!show) {
@@ -117,12 +128,10 @@ const ModalDownload = ({ show, onClose, onSave, editIndex, jsonData, user }) => 
   return (
     <div className="flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-999 outline-none focus:outline-none">
       <div className="overlay fixed top-0 left-0 w-screen h-screen -z-99 bg-black/15"></div>
-      <div className="relative my-6 mx-auto w-[85%] max-h-[80%] overflow-auto sm:w-3/4 xl:w-1/2 z-1">
+      <div className="relative my-6 mx-auto w-[85%] max-h-[90%] overflow-auto sm:w-3/4 xl:w-1/2 z-1">
         <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
           <div className="flex items-start justify-between p-5 border-b border-solid border-black/20 rounded-t ">
-            <h3 className="text-xl font-bold text-primary">
-              Download Laporan
-            </h3>
+            <h3 className="text-xl font-bold text-primary">Download Laporan</h3>
             <button
               className="bg-transparent border-0 text-black float-right"
               onClick={onClose}
@@ -136,45 +145,46 @@ const ModalDownload = ({ show, onClose, onSave, editIndex, jsonData, user }) => 
           <div className="modal-content">
             <form className="mt-5" onSubmit={handleSave}></form>
             <div className=" p-6 flex-auto w-full">
-                <ol className="!list-decimal">
+              <ol className="!list-decimal">
+                {dokumenData ? (
+                  dokumenData.map((item, index) => (
+                    <li
+                      className="flex items-center justify-between text-bodydark1"
+                      key={index}
+                    >
+                      <div className="flex items-center gap-4">
+                        <span className="me-1 sm:me-4">{index + 1}.</span>
+                        <img
+                          src="/pdf-icon.png"
+                          alt=""
+                          className="h-5 w-5 sm:h-8 sm:w-8"
+                        />
+                        <p className="text-bodydark1">{item?.nama_dokumen}</p>
+                      </div>
 
-                {
-                    dokumenData ? 
-                    dokumenData.map((item, index) => 
-                    (
-                        <li className="flex items-center justify-between text-bodydark1" key={index}>
-                            <div className="flex items-center gap-4">
-                            <span className="me-1 sm:me-4">{index+1}.</span>
-                            <img src="/pdf-icon.png" alt="" className="h-5 w-5 sm:h-8 sm:w-8"/>
-                            <p className="text-bodydark1">{item?.nama_dokumen}</p>
-                            </div>
-                            
-                            <button
-              title="Download"
-              className="text-green-400 hover:text-green-500"
-            >
-              <Link
-              className="flex items-center p-2 gap-2 bg-white text-teal-500 rounded-md"
-                to={`/dokumen/preview-dokumen/${encodeURIComponent(
-                  encryptId(item?.id)
-                )}`}
-              >
-                <FaDownload size={16} />
-                <span className="hidden sm:block">
-
-                Download
-                </span>
-              </Link>
-            </button>
-                        </li>
-                    )
-                    ) :  <div className="flex justify-center items-center">
+                      <button
+                        title="Download"
+                        className="text-green-400 hover:text-green-500"
+                      >
+                        <Link
+                          className="flex items-center p-2 gap-2 bg-white text-teal-500 rounded-md"
+                          to={`/dokumen/preview-dokumen/${encodeURIComponent(
+                            encryptId(item?.id)
+                          )}`}
+                        >
+                          <FaDownload size={16} />
+                          <span className="hidden sm:block">Download</span>
+                        </Link>
+                      </button>
+                    </li>
+                  ))
+                ) : (
+                  <div className="flex justify-center items-center">
                     <CgSpinner className="animate-spin inline-block w-8 h-8 text-teal-400" />
                     <span className="ml-2">Loading...</span>
                   </div>
-                }
-                </ol>
-
+                )}
+              </ol>
             </div>
             <div className="flex items-center justify-end p-6 border-t gap-2 border-solid border-black/20 rounded-b">
               <button

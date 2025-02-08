@@ -65,7 +65,8 @@ const DataDistribusi = () => {
         (item?.jumlah_barang_diterima &&
           item.jumlah_barang_diterima.toLowerCase().includes(value)) ||
         (item?.jumlah_barang_dikirim &&
-          item.jumlah_barang_dikirim.toLowerCase().includes(value))
+          item.jumlah_barang_dikirim.toLowerCase().includes(value)) ||
+        (item?.nama_dokumen && item.nama_dokumen.toLowerCase().includes(value))
       );
     });
 
@@ -75,6 +76,7 @@ const DataDistribusi = () => {
   const handleExport = () => {
     // Implementasi untuk mengekspor data (misalnya ke CSV)
     const exportData = filteredData?.map((item) => ({
+      Dokumen: item?.nama_dokumen,
       Provinsi: item?.provinsi,
       Kabupaten_Kota: item?.kabupaten,
       Kecamatan: item?.kecamatan,
@@ -378,6 +380,13 @@ const DataDistribusi = () => {
       //   sortable: true,
       //   width: "100px",
       // },
+      {
+        name: <div className="text-wrap">Dokumen</div>,
+        selector: (row) => row.nama_dokumen,
+        sortable: true,
+        cell: (row) => <div className="text-wrap py-2">{row.nama_dokumen}</div>,
+        width: "120px",
+      },
       {
         name: <div className="text-wrap">Provinsi</div>,
         selector: (row) => row.provinsi,

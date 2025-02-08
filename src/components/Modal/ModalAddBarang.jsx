@@ -6,7 +6,11 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import FormInput from "../Form/FormInput";
-import { konfirmasiJumlahOptions, ujiFungsiOptions, ujiOpsOptions } from "../../data/data";
+import {
+  konfirmasiJumlahOptions,
+  ujiFungsiOptions,
+  ujiOpsOptions,
+} from "../../data/data";
 
 const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
   const user = useSelector((a) => a.auth.user);
@@ -25,7 +29,9 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
     uji_ops: "",
   });
   const [selectedProgram, setSelectedProgram] = useState(ujiFungsiOptions[0]);
-  const [selectedOperasional, setSelectedOperasional] = useState(ujiOpsOptions[0]);
+  const [selectedOperasional, setSelectedOperasional] = useState(
+    ujiOpsOptions[0]
+  );
   const handleProgramChange = (selectedOption) => {
     setSelectedProgram(selectedOption);
     setBarang((prev) => ({
@@ -90,9 +96,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
           : ujiFungsiOptions[0]
       );
       setSelectedOperasional(
-        dataBarang?.uji_ops == "1"
-          ? ujiOpsOptions[1]
-          : ujiOpsOptions[0]
+        dataBarang?.uji_ops == "1" ? ujiOpsOptions[1] : ujiOpsOptions[0]
       );
     } else {
       setBarang({
@@ -106,7 +110,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
         harga_satuan: "",
         keterangan: "",
         uji_fungsi: "",
-        uji_ops: ""
+        uji_ops: "",
       });
     }
   }, [editIndex, dataBarang]);
@@ -129,7 +133,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
       harga_satuan: "",
       keterangan: "",
       uji_fungsi: "",
-      uji_ops: ""
+      uji_ops: "",
     });
     setSelectedBarang(null);
     setSelectedProgram(ujiFungsiOptions[0]);
@@ -186,7 +190,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
   return (
     <div className="flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-999 outline-none focus:outline-none">
       <div className="overlay fixed top-0 left-0 w-screen h-screen -z-99 bg-black/15"></div>
-      <div className="relative my-6 mx-auto w-[85%] max-h-[80%] overflow-auto sm:w-3/4 xl:w-1/2 z-1">
+      <div className="relative my-6 mx-auto w-[85%] max-h-[90%] overflow-auto sm:w-3/4 xl:w-1/2 z-1">
         <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
           <div className="flex items-start justify-between p-5 border-b border-solid border-black/20 rounded-t ">
             <h3 className="text-xl font-bold text-primary">

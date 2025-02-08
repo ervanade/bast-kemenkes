@@ -60,7 +60,7 @@ const ModalProfile = ({
         <>
           <div className="flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-999 outline-none focus:outline-none">
             <div className="overlay fixed top-0 left-0 w-screen h-screen -z-99 bg-black/15"></div>
-            <div className="relative my-6 mx-auto w-[85%] max-h-[80%] overflow-auto sm:w-3/4 xl:w-1/2 z-1">
+            <div className="relative my-6 mx-auto w-[85%] max-h-[90%] overflow-auto sm:w-3/4 xl:w-1/2 z-1">
               <div className="bg-white p-4 rounded shadow-md w-full h-full">
                 <div className="flex justify-between items-center border-b border-gray-300 mb-4 pb-2">
                   <h2 className="text-lg font-bold text-teal-500">Input TTE</h2>

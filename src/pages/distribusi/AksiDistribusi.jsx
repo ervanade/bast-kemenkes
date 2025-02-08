@@ -76,6 +76,7 @@ const AksiDistribusi = () => {
   const [getLoading, setGetLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
+  const [setuju, setSetuju] = useState(false);
 
   const [dataKota, setDataKota] = useState([]);
   const [dataDokumen, setDataDokumen] = useState([]);
@@ -504,6 +505,15 @@ const AksiDistribusi = () => {
     //   return;
     // }
     setLoading(true);
+    Swal.fire({
+      title: "Menyimpan dokumen...",
+      text: "Tunggu Sebentar Menyimpan Dokumen...",
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      willOpen: () => {
+        Swal.showLoading();
+      },
+    });
     const formDataToSend = new FormData();
     formDataToSend.append("id_kecamatan", formData.id_kecamatan);
     formDataToSend.append("id_puskesmas", formData.id_puskesmas);
@@ -540,16 +550,23 @@ const AksiDistribusi = () => {
       .then(function (response) {
         Swal.fire("Data Berhasil di Input!", "", "success");
         navigate("/data-distribusi");
-        setLoading(true);
+        setLoading(false);
+        // Swal.close();
       })
       .catch((error) => {
         setLoading(false);
+        // Swal.close();
+        Swal.fire("Error", "Gagal Menyimpan Data", "error");
         console.log(error);
       });
   };
 
   const handleSimpan = async (e) => {
     e.preventDefault();
+    if (user.role == "3" && !setuju) {
+      Swal.fire("Warning", "Anda Belum Menyetujui Form", "warning");
+      return;
+    }
     Swal.fire({
       title: "Perhatian",
       text: "Data yang diisi adalah sebenarnya dan dapat dipertanggungjawabkan?",
@@ -1360,7 +1377,7 @@ const AksiDistribusi = () => {
                         ) : !formData.ujiFungsiFileLink &&
                           !formData.ujiFungsiFile ? (
                           <p className="text-red-600 text-xs ml-1 font-semibold">
-                            Belum Mengupload Dokumen Uji Fungsi
+                            Daerah Belum Mengupload Dokumen Uji Fungsi
                           </p>
                         ) : (
                           ""
@@ -1403,7 +1420,7 @@ const AksiDistribusi = () => {
                           </a>
                         ) : !formData.ujiOpsFileLink && !formData.ujiOpsFile ? (
                           <p className="text-red-600 text-xs ml-1 font-semibold">
-                            Belum Mengupload Dokumen Uji Operasional
+                            Daerah Belum Mengupload Dokumen Uji Operasional
                           </p>
                         ) : (
                           ""
@@ -1448,7 +1465,7 @@ const AksiDistribusi = () => {
                         ) : !formData.pendukungFileLink &&
                           !formData.pendukungFile ? (
                           <p className="text-red-600 text-xs ml-1 font-semibold">
-                            Belum Mengupload Dokumen Pendukung
+                            Daerah Belum Mengupload Dokumen Pendukung
                           </p>
                         ) : (
                           ""
@@ -1513,6 +1530,27 @@ const AksiDistribusi = () => {
                     ></textarea>
                   </div>
                 </div>
+                {user.role == "3" && (
+                  <div className="mb-8 flex flex-col sm:flex-row sm:gap-8 sm:items-center">
+                    <div className="sm:flex-[2_2_0%]"></div>
+                    <div className="sm:flex-[5_5_0%] flex items-center gap-3">
+                      <input
+                        type="checkbox"
+                        id="persetujuan"
+                        checked={setuju}
+                        onChange={() => setSetuju(!setuju)}
+                        className="cursor-pointer w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      />
+                      <label
+                        htmlFor="persetujuan"
+                        className="ms-2 text-sm md:text-lg font-medium text-[#728294] dark:text-gray-300 cursor-pointer"
+                      >
+                        Dengan ini Saya Menyetujui Data yang diisi adalah
+                        sebenarnya dan dapat dipertanggungjawabkan
+                      </label>
+                    </div>
+                  </div>
+                )}
               </>
             ) : (
               ""

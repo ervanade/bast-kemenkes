@@ -235,7 +235,7 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
         <>
           <div className="flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-999 outline-none focus:outline-none">
             <div className="overlay fixed top-0 left-0 w-screen h-screen -z-99 bg-black/15"></div>
-            <div className="relative my-6 mx-auto w-[85%] max-h-[80%] overflow-auto sm:w-3/4 xl:w-1/2 z-1">
+            <div className="relative my-6 mx-auto w-[85%] max-h-[90%] overflow-auto sm:w-3/4 xl:w-1/2 z-1">
               <div className="bg-white p-4 rounded shadow-md w-full h-full">
                 <div className="flex justify-between items-center border-b border-gray-300 mb-4 pb-2">
                   <h2 className="text-lg font-bold text-teal-500">
@@ -278,7 +278,7 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
                     >
                       {previewImages?.ttd ? (
                         <>
-                          <div className="mb-6">
+                          <div className="mb-4">
                             <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 text-center">
                               Preview TTE
                             </label>
@@ -353,7 +353,7 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
                     >
                       {previewImages?.ttd ? (
                         <>
-                          <div className="mb-6">
+                          <div className="mb-4">
                             <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 text-center">
                               Preview TTE
                             </label>
@@ -407,7 +407,7 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
                     </div>
                   )}
                 </div>
-                <div className="mt-6">
+                <div className="mt-3">
                   <div className="my-2 px-4">
                     <p className="mb-1 ">
                       Apakah Anda ingin TTE dokumen berikut?
@@ -423,7 +423,7 @@ const ModalTTENew = ({ isVisible, onClose, setShowPopup, jsonData, user }) => {
                         ))}
                     </ul>
                   </div>{" "}
-                  <div className="w-full flex items-center py-4 mb-5 justify-self-center place-items-center">
+                  <div className="w-full flex items-center py-4 mb-4 justify-self-center place-items-center">
                     <input
                       id="default-checkbox"
                       type="checkbox"
