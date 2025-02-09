@@ -29,7 +29,8 @@ const TambahDokumen = () => {
     tanggal_bast: defaultDate,
     tahun_lokus: "",
     penerima_hibah: "",
-    kepala_unit_pemberi: "Direktur Tata Kelola Kesehatan Masyarakat",
+    kepala_unit_pemberi:
+      "Direktur Fasilitas dan Mutu Pelayanan Kesehatan Primer",
     id_user_pemberi: "",
     id_provinsi: "",
     id_kabupaten: "",

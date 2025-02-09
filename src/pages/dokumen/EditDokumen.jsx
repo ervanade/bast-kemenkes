@@ -31,7 +31,8 @@ const EditDokumen = () => {
     tahun_lokus: "",
     penerima_hibah: "",
     jenis_bmn: "",
-    kepala_unit_pemberi: "Direktur Tata Kelola Kesehatan Masyarakat",
+    kepala_unit_pemberi:
+      "Direktur Fasilitas dan Mutu Pelayanan Kesehatan Primer",
     nama_kontrak_pengadaan: "",
     tanggal_kontrak_pengadaan: "",
     id_user_pemberi: "",
@@ -160,7 +161,7 @@ const EditDokumen = () => {
           jenis_bmn: data.jenis_bmn || "",
           kepala_unit_pemberi:
             data.kepala_unit_pemberi ||
-            "Direktur Tata Kelola Kesehatan Masyarakat",
+            "Direktur Fasilitas dan Mutu Pelayanan Kesehatan Primer",
           nama_kontrak_pengadaan: data.nama_kontrak_pengadaan || "",
           tanggal_kontrak_pengadaan: data.tanggal_kontrak_pengadaan || "",
           id_user_pemberi: data.id_user_pemberi || "",
