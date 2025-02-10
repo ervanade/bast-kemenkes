@@ -190,7 +190,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
   return (
     <div className="flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-999 outline-none focus:outline-none">
       <div className="overlay fixed top-0 left-0 w-screen h-screen -z-99 bg-black/15"></div>
-      <div className="relative my-6 mx-auto w-[85%] max-h-[90%] overflow-auto sm:w-3/4 xl:w-1/2 z-1">
+      <div className="relative my-6 mx-auto w-[85%] max-h-[90%] min-h-[60%] overflow-auto sm:w-3/4 xl:w-1/2 z-1">
         <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
           <div className="flex items-start justify-between p-5 border-b border-solid border-black/20 rounded-t ">
             <h3 className="text-xl font-bold text-primary">
