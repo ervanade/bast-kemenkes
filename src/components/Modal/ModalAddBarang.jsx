@@ -26,7 +26,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
     status_barang: "",
     keterangan: "",
     uji_fungsi: "",
-    uji_ops: "",
+    uji_operasional: "",
   });
   const [selectedProgram, setSelectedProgram] = useState(ujiFungsiOptions[0]);
   const [selectedOperasional, setSelectedOperasional] = useState(
@@ -43,7 +43,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
     setSelectedOperasional(selectedOption);
     setBarang((prev) => ({
       ...prev,
-      uji_ops: selectedOption ? selectedOption.value.toString() : "",
+      uji_operasional: selectedOption ? selectedOption.value.toString() : "",
     }));
   };
 
@@ -96,7 +96,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
           : ujiFungsiOptions[0]
       );
       setSelectedOperasional(
-        dataBarang?.uji_ops == "1" ? ujiOpsOptions[1] : ujiOpsOptions[0]
+        dataBarang?.uji_operasional == "1" ? ujiOpsOptions[1] : ujiOpsOptions[0]
       );
     } else {
       setBarang({
@@ -110,7 +110,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
         harga_satuan: "",
         keterangan: "",
         uji_fungsi: "",
-        uji_ops: "",
+        uji_operasional: "",
       });
     }
   }, [editIndex, dataBarang]);
@@ -133,7 +133,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
       harga_satuan: "",
       keterangan: "",
       uji_fungsi: "",
-      uji_ops: "",
+      uji_operasional: "",
     });
     setSelectedBarang(null);
     setSelectedProgram(ujiFungsiOptions[0]);
@@ -207,12 +207,12 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
             </button>
           </div>
           <div className="modal-content">
-            <form className="mt-2" onSubmit={handleSave}></form>
-            <div className=" p-6 flex-auto w-full">
-              <div className="mb-6 flex-col  sm:gap-2 w-full flex ">
+            <form className="mt-0" onSubmit={handleSave}></form>
+            <div className=" px-6 py-4 flex-auto w-full">
+              <div className="mb-4 flex-col  sm:gap-2 w-full flex ">
                 <div className="">
                   <label
-                    className="block text-[#728294] text-base font-semibold mb-2"
+                    className="block text-[#728294] text-base font-semibold mb-1"
                     htmlFor="email"
                   >
                     Barang :
@@ -231,10 +231,10 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                 </div>
               </div>
 
-              {/* <div className="mb-6 flex-col  sm:gap-2 w-full flex ">
+              {/* <div className="mb-4 flex-col  sm:gap-2 w-full flex ">
                 <div className="">
                   <label
-                    className=" block text-[#728294] text-base font-semibold mb-2"
+                    className=" block text-[#728294] text-base font-semibold mb-1"
                     htmlFor="email"
                   >
                     Merk / Type :
@@ -254,10 +254,10 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                 </div>
               </div> */}
               {user.role == "1" ? (
-                <div className="mb-6 flex-col  sm:gap-2 w-full flex ">
+                <div className="mb-4 flex-col  sm:gap-2 w-full flex ">
                   <div className="">
                     <label
-                      className=" block text-[#728294] text-base font-semibold mb-2"
+                      className=" block text-[#728294] text-base font-semibold mb-1"
                       htmlFor="email"
                     >
                       Jumlah Barang yang dikirim :
@@ -287,10 +287,10 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                   <p className="text-center font-semibold text-primary">
                     Jumlah Barang Dikirim : {barang?.jumlah_dikirim}
                   </p>
-                  <div className="mb-6 flex-col  sm:gap-2 w-full flex ">
+                  <div className="mb-4 flex-col  sm:gap-2 w-full flex ">
                     <div className="">
                       <label
-                        className=" block text-[#728294] text-base font-semibold mb-2"
+                        className=" block text-[#728294] text-base font-semibold mb-1"
                         htmlFor="email"
                       >
                         Jumlah Barang :
@@ -308,10 +308,10 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                     </div>
                   </div>
                   {selectedKonfirmasi.value == "0" ? (
-                    <div className="mb-6 flex-col  sm:gap-2 w-full flex ">
+                    <div className="mb-4 flex-col  sm:gap-2 w-full flex ">
                       <div className="">
                         <label
-                          className=" block text-[#728294] text-base font-semibold mb-2"
+                          className=" block text-[#728294] text-base font-semibold mb-1"
                           htmlFor="email"
                         >
                           Jumlah Barang yang Diterima :
@@ -346,10 +346,10 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                     ""
                   )}
 
-                  <div className="mb-6 flex-col  sm:gap-2 w-full flex ">
+                  <div className="mb-4 flex-col  sm:gap-2 w-full flex ">
                     <div className="">
                       <label
-                        className=" block text-[#728294] text-base font-semibold mb-2"
+                        className=" block text-[#728294] text-base font-semibold mb-1"
                         htmlFor="email"
                       >
                         Uji Fungsi :
@@ -367,10 +367,10 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                     </div>
                   </div>
 
-                  <div className="mb-6 flex-col  sm:gap-2 w-full flex ">
+                  <div className="mb-4 flex-col  sm:gap-2 w-full flex ">
                     <div className="">
                       <label
-                        className=" block text-[#728294] text-base font-semibold mb-2"
+                        className=" block text-[#728294] text-base font-semibold mb-1"
                         htmlFor="email"
                       >
                         Uji Operasional :
@@ -392,7 +392,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                 ""
               )}
             </div>
-            <div className="flex items-center justify-end p-6 border-t gap-2 border-solid border-black/20 rounded-b">
+            <div className="flex items-center justify-end p-4 border-t gap-2 border-solid border-black/20 rounded-b">
               <button
                 className="text-red-500 border-red-500 border background-transparent rounded-md font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1"
                 type="button"

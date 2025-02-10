@@ -405,7 +405,7 @@ const DataDistribusi = () => {
         name: <div className="text-wrap">Kecamatan</div>,
         selector: (row) => row.kecamatan,
         cell: (row) => <div className="text-wrap py-2">{row.kecamatan}</div>,
-        width: "120px",
+        width: "110px",
         sortable: true,
       },
       {
@@ -414,7 +414,7 @@ const DataDistribusi = () => {
         cell: (row) => (
           <div className="text-wrap py-2">{row.nama_puskesmas}</div>
         ),
-        // width: "120px",
+        minWidth: "110px",
         sortable: true,
       },
       {
@@ -422,7 +422,7 @@ const DataDistribusi = () => {
         selector: (row) => row.tahun_lokus,
         cell: (row) => <div className="text-wrap py-2">{row.tahun_lokus}</div>,
         sortable: true,
-        width: "100px",
+        width: "80px",
       },
       {
         name: <div className="text-wrap">Jumlah Dikirim</div>,
@@ -526,6 +526,7 @@ const DataDistribusi = () => {
         allowOverflow: true,
         button: true,
         sortable: true,
+        minWidth: "150px",
         selector: (row) =>
           user.role == "3" ? row.konfirmasi_daerah : row.konfirmasi_ppk,
       },
