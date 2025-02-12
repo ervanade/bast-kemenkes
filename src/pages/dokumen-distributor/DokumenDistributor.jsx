@@ -671,7 +671,7 @@ const DokumenDistributor = () => {
 
       {
         name: "Aksi",
-        omit: user.role !== "1",
+        omit: user.role != "1",
         cell: (row) => (
           <div className="flex items-center space-x-2">
             {/* <button

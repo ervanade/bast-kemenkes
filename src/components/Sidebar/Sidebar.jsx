@@ -318,7 +318,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                 {/* <!-- Menu Item Ui Elements --> */}
               </ul>
 
-              {user?.role !== "3" && (
+              {user?.role != "3" && (
                 <li>
                   <NavLink
                     to="/dokumen-distributor"

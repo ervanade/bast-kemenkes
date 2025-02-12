@@ -563,11 +563,11 @@ const EditDistribusi = () => {
                         className={` disabled:bg-red-100 disabled:text-red-500 bg-blue-600  text-white font-bold py-2 px-5 rounded-md focus:outline-none focus:shadow-outline dark:bg-transparent`}
                         onClick={handleSimpan}
                         disabled={
-                          formData.jumlah_barang_dikirim !==
+                          formData.jumlah_barang_dikirim !=
                           formData.jumlah_barang_diterima
                         }
                       >
-                        {formData.jumlah_barang_dikirim !==
+                        {formData.jumlah_barang_dikirim !=
                         formData.jumlah_barang_diterima
                           ? "Pastikan Jumlah Barang Dikirim / DIterima Sama Sebelum TTD !"
                           : "Tanda Tangani Dokumen"}
@@ -869,11 +869,11 @@ const EditDistribusi = () => {
                         className={` disabled:bg-red-100 disabled:text-red-500 bg-blue-600  text-white font-bold py-2 px-5 rounded-md focus:outline-none focus:shadow-outline dark:bg-transparent`}
                         onClick={handleSimpan}
                         disabled={
-                          formData.jumlah_barang_dikirim !==
+                          formData.jumlah_barang_dikirim !=
                           formData.jumlah_barang_diterima
                         }
                       >
-                        {formData.jumlah_barang_dikirim !==
+                        {formData.jumlah_barang_dikirim !=
                         formData.jumlah_barang_diterima
                           ? "Pastikan Jumlah Barang Dikirim / DIterima Sama Sebelum TTD !"
                           : "Tanda Tangani Dokumen"}

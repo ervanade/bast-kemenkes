@@ -782,7 +782,7 @@ const AksiDistribusi = () => {
                   placeholder="Pilih Dokumen"
                   className="w-full"
                   isDisabled={
-                    user.role !== "1" || selectedDokumen?.status_tte !== "0"
+                    user.role != "1" || selectedDokumen?.status_tte != "0"
                   }
                   theme={selectThemeColors}
                 />
@@ -804,7 +804,7 @@ const AksiDistribusi = () => {
                   onChange={handleKotaChange}
                   placeholder={"Pilih Kab / Kota"}
                   className="w-full"
-                  isDisabled={user.role !== "1"}
+                  isDisabled={user.role != "1"}
                   theme={selectThemeColors}
                 />
               </div>
@@ -828,8 +828,8 @@ const AksiDistribusi = () => {
                   }
                   isDisabled={
                     !selectedKota ||
-                    user.role !== "1" ||
-                    selectedDokumen?.status_tte !== "0"
+                    user.role != "1" ||
+                    selectedDokumen?.status_tte != "0"
                   }
                   className="w-full"
                   theme={selectThemeColors}
@@ -852,8 +852,8 @@ const AksiDistribusi = () => {
                   onChange={handlePuskesmasChange}
                   isDisabled={
                     !selectedKecamatan ||
-                    user.role !== "1" ||
-                    selectedDokumen?.status_tte !== "0"
+                    user.role != "1" ||
+                    selectedDokumen?.status_tte != "0"
                   }
                   placeholder={
                     selectedKota ? "Pilih Puskesmas" : "Pilih Kecamatan Dahulu"
@@ -869,7 +869,7 @@ const AksiDistribusi = () => {
               options={dataPenyedia}
               value={selectedPenyedia}
               onChange={handlePenyediaChange}
-              isDisabled={user.role !== "1"}
+              isDisabled={user.role != "1"}
               placeholder="Pilih Penyedia"
               label="Penyedia Barang :
 "
@@ -894,7 +894,7 @@ const AksiDistribusi = () => {
                   onChange={handleChange}
                   type="date"
                   required
-                  disabled={user.role !== "1"}
+                  disabled={user.role != "1"}
                   placeholder="Tanggal Kirim"
                 />
               </div>
@@ -998,7 +998,7 @@ const AksiDistribusi = () => {
                         <th scope="col" className="px-4 py-3 text-center">
                           Uji Operasional
                         </th>
-                        {user.role !== "2" ? (
+                        {user.role != "2" ? (
                           <th scope="col" className="px-4 py-3 text-center">
                             Aksi
                           </th>
@@ -1072,7 +1072,7 @@ const AksiDistribusi = () => {
                                 : "Belum Uji Operasional"}
                             </button>
                           </td>
-                          {user.role !== "2" ? (
+                          {user.role != "2" ? (
                             <td className="px-2 py-2 text-center flex items-center gap-2">
                               {user.role == "1" ? (
                                 <>
@@ -1142,7 +1142,7 @@ const AksiDistribusi = () => {
                       id="message"
                       rows="4"
                       value={formData.keterangan_daerah}
-                      disabled={user.role !== "3"}
+                      disabled={user.role != "3"}
                       onChange={(e) =>
                         setFormData((prev) => ({
                           ...prev,
@@ -1342,7 +1342,7 @@ const AksiDistribusi = () => {
                   </div>
                 )}
 
-                {user.role !== "3" && (
+                {user.role != "3" && (
                   <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
                     <div className="sm:flex-[2_2_0%]">
                       <label
@@ -1387,7 +1387,7 @@ const AksiDistribusi = () => {
                   </div>
                 )}
 
-                {user.role !== "3" && (
+                {user.role != "3" && (
                   <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
                     <div className="sm:flex-[2_2_0%]">
                       <label
@@ -1430,7 +1430,7 @@ const AksiDistribusi = () => {
                   </div>
                 )}
 
-                {user.role !== "3" && (
+                {user.role != "3" && (
                   <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
                     <div className="sm:flex-[2_2_0%]">
                       <label
@@ -1516,7 +1516,7 @@ const AksiDistribusi = () => {
                       id="message"
                       rows="4"
                       value={formData.keterangan_ppk}
-                      disabled={user.role !== "2"}
+                      disabled={user.role != "2"}
                       onChange={(e) =>
                         setFormData((prev) => ({
                           ...prev,

@@ -448,7 +448,7 @@ const DataDistribusi = () => {
         cell: (row) => (
           <div className="flex items-center space-x-2">
             {user.role == "2" || user.role == "1" ? (
-              row.konfirmasi_ppk !== "1" ? (
+              row.konfirmasi_ppk != "1" ? (
                 <button
                   title="Konfirmasi"
                   className="text-white font-semibold py-2 w-22 bg-red-500 rounded-md"
@@ -477,7 +477,7 @@ const DataDistribusi = () => {
                 </button>
               )
             ) : user.role == "3" ? (
-              row.konfirmasi_daerah !== "1" ? (
+              row.konfirmasi_daerah != "1" ? (
                 <button
                   title="Konfirmasi"
                   className="text-white font-semibold py-2 w-22 bg-red-500 rounded-md"

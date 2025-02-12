@@ -226,7 +226,7 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
                     placeholder="Pilih Barang"
                     className="w-full"
                     theme={selectThemeColors}
-                    isDisabled={user.role !== "1"}
+                    isDisabled={user.role != "1"}
                   />
                 </div>
               </div>

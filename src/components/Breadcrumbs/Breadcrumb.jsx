@@ -49,9 +49,9 @@ const Breadcrumb = ({ pageName, back, tte, jsonData, linkBack, title }) => {
             type="button"
             className={` disabled:bg-red-100 disabled:text-red-500 bg-blue-600  text-white font-bold py-2 px-5 rounded-md focus:outline-none focus:shadow-outline dark:bg-transparent`}
             onClick={handleSimpan}
-            disabled={jsonData?.jumlahDikirim !== jsonData?.jumlahDiterima}
+            disabled={jsonData?.jumlahDikirim != jsonData?.jumlahDiterima}
           >
-            {jsonData?.jumlahDikirim !== jsonData?.jumlahDiterima
+            {jsonData?.jumlahDikirim != jsonData?.jumlahDiterima
               ? "Pastikan Jumlah Barang Dikirim / DIterima Sama Sebelum TTD !"
               : "Tanda Tangani Dokumen"}
           </button>
