@@ -765,7 +765,7 @@ const Dokumen = () => {
             >
               <FaDownload size={20} />
             </button>
-            {/* {user.role == "2" || user.role == "3" || user.role == "4" ? (
+            {user.role == "2" || user.role == "3" || user.role == "4" ? (
               <button
                 title="Upload Dokumen"
                 className="text-white py-2 w-20 bg-teal-500 rounded-md"
@@ -775,13 +775,13 @@ const Dokumen = () => {
               </button>
             ) : (
               ""
-            )} */}
+            )}
           </div>
         ),
         ignoreRowClick: true,
         allowOverflow: true,
         button: true,
-        width: "80px",
+        minWidth: "150px",
       },
       {
         name: "TTE",
@@ -1225,7 +1225,6 @@ const Dokumen = () => {
               <button
                 title="Tambah Data Dokumen"
                 className="flex font-semibold items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
-                onClick={handleExport}
               >
                 <Link
                   to="/dokumen/add"

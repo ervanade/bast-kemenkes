@@ -25,13 +25,14 @@ const TambahDokumen = () => {
   const defaultDate = today.toISOString().substring(0, 10);
   const [formData, setFormData] = useState({
     nama_dokumen: "",
-    nomor_bast: "KN.02.07/B.VI/[BATCH]/[NO]/[TAHUN]",
+    nomor_bast: "KN.01.05/B.VI/[BATCH]/[NO]/[TAHUN]",
     tanggal_bast: defaultDate,
     tahun_lokus: "",
     penerima_hibah: "",
     kepala_unit_pemberi:
       "Direktur Fasilitas dan Mutu Pelayanan Kesehatan Primer",
     id_user_pemberi: "",
+    id_user_penerima: "",
     id_provinsi: "",
     id_kabupaten: "",
     contractFile: null,
@@ -47,7 +48,7 @@ const TambahDokumen = () => {
   const updateNomorBast = (batch = "[BATCH]", tahun = "[TAHUN]") => {
     setFormData((prev) => ({
       ...prev,
-      nomor_bast: `KN.02.07/B.VI/${batch}/[NO]/${tahun}`,
+      nomor_bast: `KN.01.05/B.VI/${batch}/[NO]/${tahun}`,
     }));
   };
 
@@ -57,7 +58,6 @@ const TambahDokumen = () => {
   const [dataProvinsi, setDataProvinsi] = useState([]);
   const [dataKota, setDataKota] = useState([]);
   const [dataKecamatan, setDataKecamatan] = useState([]);
-  const [dataUser, setDataUser] = useState([]);
   const [errors, setErrors] = useState({
     nomor_bast: "",
     nomor_dokumen: "",
@@ -74,41 +74,68 @@ const TambahDokumen = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedProgram, setSelectedProgram] = useState(null);
   const [selectedBatch, setSelectedBatch] = useState(null);
+  const [selectedDirektur, setSelectedDirektur] = useState(null);
 
   const [listKota, setListKota] = useState([]);
   const [listKecamatan, setListKecamatan] = useState([]);
 
+  const [dataUser, setDataUser] = useState([]);
+  const [dataDirektur, setDataDirektur] = useState([]);
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const fetchUserData = async () => {
-    setLoading(true);
-    setError(false);
+  const fetchUserDirektur = async () => {
+    const formDataToSend = new FormData();
+    formDataToSend.append("role", 4);
+    formDataToSend.append("id_kabupaten", "");
     try {
       const response = await axios({
-        method: "get",
+        method: "post",
         url: `${import.meta.env.VITE_APP_API_URL}/api/users`,
         headers: {
-          "Content-Type": "application/json",
+          // "Content-Type": "application/json",
           Authorization: `Bearer ${user?.token}`,
         },
+        data: formDataToSend,
       });
-      setDataUser([
-        ...response.data.data
-          .filter((a) => a.role == "1" || a.role == "2")
-          .map((item) => ({
-            label: item.email,
-            value: item.id,
-          })),
+      setDataDirektur([
+        ...response.data.data.map((item) => ({
+          label: item.name,
+          value: item.id,
+        })),
       ]);
     } catch (error) {
       setError(true);
-      setDataProvinsi([]);
-    } finally {
-      setLoading(false);
+      setDataDirektur([]);
     }
   };
 
+  const fetchUserDaerah = async (idKabupaten) => {
+    const formDataToSend = new FormData();
+    formDataToSend.append("role", 3);
+    formDataToSend.append("id_kabupaten", parseInt(idKabupaten));
+    try {
+      const response = await axios({
+        method: "post",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/users`,
+        headers: {
+          // "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+        data: formDataToSend,
+      });
+      setDataUser([
+        ...response.data.data.map((item) => ({
+          label: item.name,
+          value: item.id,
+        })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setDataUser([]);
+    }
+  };
   const fetchProvinsi = async () => {
     try {
       const response = await axios({
@@ -184,10 +211,10 @@ const TambahDokumen = () => {
       // Validasi untuk Nomor BAST
       if (id === "nomor_bast") {
         const regexBast =
-          /^KN\.02\.07\/([\w.\[\]-]+)\/([\w.\[\]-]+)\/([\w.\[\]-]+)\/([\w.\[\]-]+)$/;
+          /^KN\.01\.05\/([\w.\[\]-]+)\/([\w.\[\]-]+)\/([\w.\[\]-]+)\/([\w.\[\]-]+)$/;
         if (!regexBast.test(value)) {
           errorMessage =
-            "Format nomor BAST salah. Format yang benar adalah: KN.02.07/[KODE_TAKELNAS]/[BATCH]/[NO]/[TAHUN]";
+            "Format nomor BAST salah. Format yang benar adalah: KN.01.05/[KODE_TAKELNAS]/[BATCH]/[NO]/[TAHUN]";
           isValid = false;
         }
       }
@@ -240,6 +267,7 @@ const TambahDokumen = () => {
     formDataToSend.append("tahun_lokus", formData.tahun_lokus);
     formDataToSend.append("kepala_unit_pemberi", formData.kepala_unit_pemberi);
     formDataToSend.append("id_user_pemberi", formData.id_user_pemberi);
+    formDataToSend.append("id_user_penerima", formData.id_user_penerima);
     formDataToSend.append("id_provinsi", formData.id_provinsi);
     formDataToSend.append("id_kabupaten", formData.id_kabupaten);
     formDataToSend.append("program", selectedProgram.value);
@@ -286,7 +314,7 @@ const TambahDokumen = () => {
 
   useEffect(() => {
     fetchProvinsi();
-    fetchUserData();
+    fetchUserDirektur();
   }, []);
 
   const handleProvinsiChange = (selectedOption) => {
@@ -303,6 +331,15 @@ const TambahDokumen = () => {
     }
   };
 
+  const handleDirekturChange = (selectedOption) => {
+    setSelectedDirektur(selectedOption);
+
+    setFormData((prev) => ({
+      ...prev,
+      id_user_pemberi: selectedOption ? parseInt(selectedOption.value) : "",
+    }));
+  };
+
   const handleKotaChange = (selectedOption) => {
     setSelectedKota(selectedOption);
     setSelectedKecamatan(null);
@@ -315,6 +352,7 @@ const TambahDokumen = () => {
         ...prev,
         penerima_hibah: `Kepala Dinas Kesehatan ${selectedOption.label}`,
       }));
+      fetchUserDaerah(selectedOption.value);
     }
   };
 
@@ -322,7 +360,7 @@ const TambahDokumen = () => {
     setSelectedUser(selectedOption);
     setFormData((prev) => ({
       ...prev,
-      id_user_pemberi: selectedOption ? selectedOption.value.toString() : "",
+      id_user_penerima: selectedOption ? parseInt(selectedOption.value) : "",
     }));
   };
 
@@ -478,6 +516,31 @@ const TambahDokumen = () => {
                 />
               </div>
             </div>
+
+            <FormInput
+              select={true}
+              id="user-pemberi"
+              options={dataDirektur}
+              value={selectedDirektur}
+              onChange={handleDirekturChange}
+              placeholder="Pilih User Pemberi"
+              label="User Pemberi :"
+              required
+            />
+
+            <FormInput
+              select={true}
+              id="user-penerima"
+              options={dataUser}
+              value={selectedUser}
+              isDisabled={!selectedKota}
+              onChange={handleUserChange}
+              placeholder={
+                selectedKota ? "Pilih User Penerima" : "Pilih Kab/Kota Dahulu"
+              }
+              label="User Penerima :"
+              required
+            />
 
             <div className="mb-8 flex flex-col sm:flex-row sm:gap-8 sm:items-center">
               {/* Label */}

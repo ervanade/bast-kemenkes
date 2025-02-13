@@ -20,6 +20,8 @@ const ModalUploadDokumen = ({
 }) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [setuju, setSetuju] = useState(false);
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -34,11 +36,12 @@ const ModalUploadDokumen = ({
   const defaultImage =
     "https://media.istockphoto.com/id/1472819341/photo/background-white-light-grey-total-grunge-abstract-concrete-cement-wall-paper-texture-platinum.webp?b=1&s=170667a&w=0&k=20&c=yoY1jUAKlKVdakeUsRRsNEZdCx2RPIEgaIxSwQ0lS1k=";
   const uploadDokumen = async () => {
-    if (!formData.email && !formData.password && !formData.fileDokumen) {
+    if (!formData.fileDokumen) {
       Swal.fire("Error", "Form Belum Lengkap Diisi", "error");
       setLoading(false);
       return;
     }
+
     // if (!user.ttd || !user.name || !user.nip) {
     //   Swal.fire("Error", "Anda Belum Input TTE / Nama / NIP", "error");
     //   navigate("/profile");
@@ -47,8 +50,8 @@ const ModalUploadDokumen = ({
     // }
 
     const formDataToSend = new FormData();
-    formDataToSend.append("email", formData.email);
-    formDataToSend.append("password", formData.password);
+    // formDataToSend.append("email", formData.email);
+    // formDataToSend.append("password", formData.password);
     formDataToSend.append("id_dokumen", formData.id_dokumen);
     if (formData.fileDokumen) {
       formDataToSend.append("file_dokumen", formData.fileDokumen);
@@ -68,6 +71,14 @@ const ModalUploadDokumen = ({
       .catch((error) => {
         Swal.fire("Gagal Upload Dokumen!", "", "error");
         setLoading(false);
+        setSetuju(false);
+        setFormData({
+          email: "",
+          password: "",
+          id_dokumen: jsonData?.id || "",
+          fileDokumen: null,
+          fileDokumenName: "",
+        });
         console.log(error);
       });
   };
@@ -94,6 +105,11 @@ const ModalUploadDokumen = ({
   };
 
   const handleSave = () => {
+    if (!setuju) {
+      Swal.fire("Warning", "Anda Belum Menyetujui Upload", "warning");
+      setLoading(false);
+      return;
+    }
     Swal.fire({
       title: "Perhatian",
       text: "Dokumen sudah sesuai & di Tanda Tangan, Upload Dokumen BAST ini?",
@@ -325,7 +341,7 @@ const ModalUploadDokumen = ({
                   </div>
                 </div>
               </div>
-
+              {/* 
               <div className="mb-4 flex-col  sm:gap-2 w-full flex ">
                 <div className="">
                   <label
@@ -381,6 +397,25 @@ const ModalUploadDokumen = ({
                     }
                     placeholder="*******"
                   />
+                </div>
+              </div> */}
+
+              <div className="mt-8 mb-4 flex flex-col sm:flex-row sm:gap-8 sm:items-center">
+                <div className="sm:flex-[5_5_0%] flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="persetujuan"
+                    checked={setuju}
+                    onChange={() => setSetuju(!setuju)}
+                    className="cursor-pointer w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                  <label
+                    htmlFor="persetujuan"
+                    className="ms-2 text-sm md:text-lg font-medium text-[#728294] dark:text-gray-300 cursor-pointer"
+                  >
+                    Dengan ini Saya Menyetujui Data yang diisi adalah sebenarnya
+                    dan dapat dipertanggungjawabkan
+                  </label>
                 </div>
               </div>
               <p className="text-center text-bodydark2 font-bold">

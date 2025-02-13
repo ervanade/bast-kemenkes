@@ -36,6 +36,7 @@ const EditDokumen = () => {
     nama_kontrak_pengadaan: "",
     tanggal_kontrak_pengadaan: "",
     id_user_pemberi: "",
+    id_user_penerima: "",
     contractFile: null,
     contractFileName: "",
     contractFileLink: "",
@@ -51,39 +52,66 @@ const EditDokumen = () => {
 
   const [dataProvinsi, setDataProvinsi] = useState([]);
   const [dataKota, setDataKota] = useState([]);
-  const [dataUser, setDataUser] = useState([]);
 
   const [selectedProvinsi, setSelectedProvinsi] = useState(null);
   const [selectedKota, setSelectedKota] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedProgram, setSelectedProgram] = useState(ProgramOptions[0]);
   const [selectedBatch, setSelectedBatch] = useState(batchOptions[0]);
+  const [selectedDirektur, setSelectedDirektur] = useState(null);
 
-  const fetchUserData = async () => {
-    setLoading(true);
-    setError(false);
+  const [dataUser, setDataUser] = useState([]);
+  const [dataDirektur, setDataDirektur] = useState([]);
+
+  const fetchUserDirektur = async () => {
+    const formDataToSend = new FormData();
+    formDataToSend.append("role", 4);
+    formDataToSend.append("id_kabupaten", "");
     try {
       const response = await axios({
-        method: "get",
+        method: "post",
         url: `${import.meta.env.VITE_APP_API_URL}/api/users`,
         headers: {
-          "Content-Type": "application/json",
+          // "Content-Type": "application/json",
           Authorization: `Bearer ${user?.token}`,
         },
+        data: formDataToSend,
       });
-      setDataUser([
-        ...response.data.data
-          .filter((a) => a.role == "1" || a.role == "2")
-          .map((item) => ({
-            label: item.email,
-            value: item.id,
-          })),
+      setDataDirektur([
+        ...response.data.data.map((item) => ({
+          label: item.name,
+          value: item.id,
+        })),
       ]);
     } catch (error) {
       setError(true);
-      setDataProvinsi([]);
-    } finally {
-      setLoading(false);
+      setDataDirektur([]);
+    }
+  };
+
+  const fetchUserDaerah = async (idKabupaten) => {
+    const formDataToSend = new FormData();
+    formDataToSend.append("role", 3);
+    formDataToSend.append("id_kabupaten", parseInt(idKabupaten));
+    try {
+      const response = await axios({
+        method: "post",
+        url: `${import.meta.env.VITE_APP_API_URL}/api/users`,
+        headers: {
+          // "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+        data: formDataToSend,
+      });
+      setDataUser([
+        ...response.data.data.map((item) => ({
+          label: item.name,
+          value: item.id,
+        })),
+      ]);
+    } catch (error) {
+      setError(true);
+      setDataUser([]);
     }
   };
 
@@ -165,6 +193,7 @@ const EditDokumen = () => {
           nama_kontrak_pengadaan: data.nama_kontrak_pengadaan || "",
           tanggal_kontrak_pengadaan: data.tanggal_kontrak_pengadaan || "",
           id_user_pemberi: data.id_user_pemberi || "",
+          id_user_penerima: data.id_user_penerima || "",
           contractFile: null,
           contractFileName: data.contractFileName || "",
           contractFileLink: data.file_kontrak || "",
@@ -221,6 +250,7 @@ const EditDokumen = () => {
     formDataToSend.append("tahun_lokus", formData.tahun_lokus);
     formDataToSend.append("kepala_unit_pemberi", formData.kepala_unit_pemberi);
     formDataToSend.append("id_user_pemberi", formData.id_user_pemberi);
+    formDataToSend.append("id_user_penerima", formData.id_user_penerima);
     formDataToSend.append("id_provinsi", formData.id_provinsi);
     formDataToSend.append("id_kabupaten", formData.id_kabupaten);
     formDataToSend.append("program", selectedProgram.value);
@@ -258,7 +288,7 @@ const EditDokumen = () => {
   useEffect(() => {
     fetchDokumenData();
     fetchProvinsi();
-    fetchUserData();
+    fetchUserDirektur();
   }, []);
 
   const handleProvinsiChange = (selectedOption) => {
@@ -278,21 +308,31 @@ const EditDokumen = () => {
     setSelectedKota(selectedOption);
     setFormData((prev) => ({
       ...prev,
-      kabupaten: selectedOption ? selectedOption.value : "",
+      id_kabupaten: selectedOption ? selectedOption.value.toString() : "",
     }));
     if (selectedOption) {
       setFormData((prev) => ({
         ...prev,
         penerima_hibah: `Kepala Dinas Kesehatan ${selectedOption.label}`,
       }));
+      fetchUserDaerah(selectedOption.value);
     }
+  };
+
+  const handleDirekturChange = (selectedOption) => {
+    setSelectedDirektur(selectedOption);
+
+    setFormData((prev) => ({
+      ...prev,
+      id_user_pemberi: selectedOption ? parseInt(selectedOption.value) : "",
+    }));
   };
 
   const handleUserChange = (selectedOption) => {
     setSelectedUser(selectedOption);
     setFormData((prev) => ({
       ...prev,
-      id_user_pemberi: selectedOption ? selectedOption.value.toString() : "",
+      id_user_penerima: selectedOption ? parseInt(selectedOption.value) : "",
     }));
   };
 
@@ -336,13 +376,13 @@ const EditDokumen = () => {
         });
       }
     }
-    if (formData.id_user_pemberi && dataUser.length > 0) {
-      const initialOption = dataUser.find(
+    if (formData.id_user_pemberi && dataDirektur.length > 0) {
+      const initialOption = dataDirektur.find(
         (kec) => kec.value == formData.id_user_pemberi
       );
 
       if (initialOption) {
-        setSelectedUser({
+        setSelectedDirektur({
           label: initialOption.label,
           value: initialOption.value,
         });
@@ -523,6 +563,31 @@ const EditDokumen = () => {
                 />
               </div>
             </div>
+
+            <FormInput
+              select={true}
+              id="user-pemberi"
+              options={dataDirektur}
+              value={selectedDirektur}
+              onChange={handleDirekturChange}
+              placeholder="Pilih User Pemberi"
+              label="User Pemberi :"
+              required
+            />
+
+            <FormInput
+              select={true}
+              id="user-penerima"
+              options={dataUser}
+              value={selectedUser}
+              isDisabled={!selectedKota}
+              onChange={handleUserChange}
+              placeholder={
+                selectedKota ? "Pilih User Penerima" : "Pilih Kab/Kota Dahulu"
+              }
+              label="User Penerima :"
+              required
+            />
 
             <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
               <div className="sm:flex-[2_2_0%]">

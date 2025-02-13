@@ -388,6 +388,7 @@ const GenerateDokumen = async (jsonData, distributor) => {
               >
                 R Vensya Sitohang {"    "}:
               </Text>
+              <Text style={{ ...styles.textBold }}>:</Text>
             </View>
             <View
               style={{
@@ -434,13 +435,17 @@ const GenerateDokumen = async (jsonData, distributor) => {
               }}
             >
               <Text style={{ marginRight: 24 }}>2.</Text>
-              <Text style={{ marginRight: 16, ...styles.textBold }}>
-                (Nama lengkap{"             "}: {"\n"}Kepala Dinas{"\n"}
+              <Text
+                style={{ marginRight: 16, ...styles.textBold, maxWidth: 120 }}
+              >
+                {jsonData?.nama_daerah ||
+                  `(Nama lengkap{"             "}: {"\n"}Kepala Dinas{"\n"}
                 Kesehatan Daerah {"\n"}Provinsi, Kepala Dinas{"\n"}Kesehatan
                 Daerah{"\n"}Kabupaten/Kota,{"\n"}Direktur Rumah Sakit {"\n"}
                 milik pemerintah{"\n"}
-                Daerah/rumah sakit {"\n"}milik swasta tanpa gelar)
+                Daerah/rumah sakit {"\n"}milik swasta tanpa gelar)`}
               </Text>
+              <Text style={{ ...styles.textBold }}>:</Text>
             </View>
             <View
               style={{
@@ -454,7 +459,7 @@ const GenerateDokumen = async (jsonData, distributor) => {
               }}
             >
               <Text>
-                selaku Kepala Dinas Kesehatan Daerah Provinsi/Kepala Dinas
+                : selaku Kepala Dinas Kesehatan Daerah Provinsi/Kepala Dinas
                 Kesehatan Daerah {jsonData?.kabupaten}/Direktur Rumah Sakit
                 penerima hibah barang milik negara{" "}
                 <Text style={{ marginRight: 16, ...styles.helvetica }}>

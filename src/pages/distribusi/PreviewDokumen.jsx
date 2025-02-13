@@ -2065,6 +2065,7 @@ const PreviewDokumen = () => {
             <Viewer
               fileUrl={pdfUrl || "/contoh_laporan.pdf"}
               plugins={[newPlugin]}
+              defaultScale={1.2}
               renderError={renderError}
             >
               {(viewer) => {

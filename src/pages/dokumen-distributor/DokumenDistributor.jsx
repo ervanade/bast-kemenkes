@@ -973,7 +973,6 @@ const DokumenDistributor = () => {
               <button
                 title="Tambah Data Dokumen"
                 className="flex font-semibold items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
-                onClick={handleExport}
               >
                 <Link
                   to="/dokumen/add"
