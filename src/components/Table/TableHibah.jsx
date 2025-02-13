@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     //   alignItems: "flex-start",
-    marginTop: 24,
+    marginTop: 0,
     display: "flex",
     width: "100%",
   },
@@ -117,8 +117,8 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   imageTtd: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 30,
     marginLeft: 90,
   },
   TableHeader: {
@@ -214,6 +214,10 @@ const styles = StyleSheet.create({
 });
 
 const ITEMS_PER_PAGE = 8;
+
+const formatRupiah = (price) => {
+  return `${price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
+};
 
 const getAllDetailDistribusi = (distribusi) => {
   return distribusi.map((d, distribusiIndex) => ({
@@ -318,7 +322,7 @@ export const RenderHibahPages = (jsonData, basto) => {
                   ...styles.titleContainer,
                   width: "100%",
                   marginBottom: 8,
-                  marginTop: 16,
+                  marginTop: 8,
                 }}
               >
                 <Text
@@ -397,12 +401,12 @@ export const RenderHibahPages = (jsonData, basto) => {
                     </View>
                     <View style={styles.tableCol}>
                       <Text style={styles.tableCell}>
-                        {items.hargaSatuan || ""}
+                        Rp. {formatRupiah(items.hargaSatuan) || ""}
                       </Text>
                     </View>
                     <View style={styles.tableCol}>
                       <Text style={styles.tableCell}>
-                        {items.jumlahNilai || ""}
+                        {formatRupiah(items.jumlahNilai) || ""}
                       </Text>
                     </View>
                     <View style={styles.tableCol}>
@@ -423,12 +427,12 @@ export const RenderHibahPages = (jsonData, basto) => {
                     </View>
                     <View style={{ ...styles.tableCol, width: "11.875%" }}>
                       <Text style={styles.tableCell}>
-                        {totalHargaSatuan.toFixed(0)}
+                        Rp. {formatRupiah(totalHargaSatuan.toFixed(0))}
                       </Text>
                     </View>
                     <View style={{ ...styles.tableCol, width: "11.875%" }}>
                       <Text style={styles.tableCell}>
-                        Rp. {totalJumlahNilai.toFixed(0)}
+                        Rp. {formatRupiah(totalJumlahNilai.toFixed(0))}
                       </Text>
                     </View>
                     <View style={{ ...styles.tableCol, width: "11.875%" }}>
@@ -439,7 +443,72 @@ export const RenderHibahPages = (jsonData, basto) => {
               </View>
 
               <View style={{ marginTop: 16 }}>
-                <View style={styles.table}>
+                <View style={styles.ttdContainer}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ ...styles.textBold, textAlign: "center" }}>
+                      PIHAK KESATU
+                    </Text>
+                    <Text style={{ ...styles.text, textAlign: "center" }}>
+                      Kementerian Kesehatan {"\n"}
+                      {jsonData?.kepala_unit_pemberi ||
+                        "Direktur Fasilitas dan Mutu Pelayanan Kesehatan Primer"}
+                    </Text>
+                    <Image
+                      style={{ ...styles.imageTtd, marginVertical: 4 }}
+                      src={`${jsonData?.tte_ppk}?not-from-cache-please`}
+                      onError={(error) => {
+                        error.target.src = defaultImage;
+                      }}
+                    />
+                    <Text
+                      style={{
+                        ...styles.text,
+                        fontFamily: "Arial",
+                        marginTop: 4,
+                        fontSize: 11,
+                        lineHeight: 1.2,
+                        textAlign: "center",
+                        letterSpacing: 0.2,
+                      }}
+                    >
+                      Nama :{" "}
+                      {jsonData?.nama_ppk ||
+                        "drg. R Vensya Sitohang, M.Epid, Ph.D"}{" "}
+                      {"\n"}
+                      NIP : {jsonData?.nip_ppk || "196512131991012001"}
+                    </Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ ...styles.textBold, textAlign: "center" }}>
+                      PIHAK KEDUA
+                    </Text>
+                    <Text style={{ ...styles.text, textAlign: "center" }}>
+                      Kepala Dinas Kesehatan {"\n"} {jsonData?.kabupaten || ""}
+                    </Text>
+                    <Image
+                      style={{ ...styles.imageTtd, marginVertical: 4 }}
+                      src={`${jsonData?.tte_daerah}?not-from-cache-please`}
+                      onError={(error) => {
+                        error.target.src = defaultImage;
+                      }}
+                    />
+                    <Text
+                      style={{
+                        ...styles.text,
+                        fontFamily: "Arial",
+                        marginTop: 4,
+                        fontSize: 11,
+                        lineHeight: 1.2,
+                        textAlign: "center",
+                        letterSpacing: 0.2,
+                      }}
+                    >
+                      Nama : {jsonData?.nama_daerah || ""} {"\n"}
+                      NIP : {jsonData?.nip_daerah || ""}
+                    </Text>
+                  </View>
+                </View>
+                {/* <View style={styles.table}>
                   <View style={styles.tableRow}>
                     <View
                       style={{
@@ -483,7 +552,8 @@ export const RenderHibahPages = (jsonData, basto) => {
                     <View style={{ ...styles.tableCol, width: "70%" }}>
                       <Text style={{ ...styles.tableCell, ...styles.text }}>
                         Kementerian Kesehatan{" "}
-                        {jsonData?.kepala_unit_pemberi || ""}
+                        {jsonData?.kepala_unit_pemberi ||
+                          "Direktur Fasilitas dan Mutu Pelayanan Kesehatan Primer"}
                       </Text>
                     </View>
                     <View style={{ ...styles.tableCol, width: "30%" }}>
@@ -503,7 +573,9 @@ export const RenderHibahPages = (jsonData, basto) => {
                           marginBottom: 0,
                         }}
                       >
-                        Nama {jsonData?.nama_ppk || ""}
+                        Nama{" "}
+                        {jsonData?.nama_ppk ||
+                          "drg. R Vensya Sitohang, M.Epid, Ph.D"}
                       </Text>
                       <Text
                         style={{
@@ -512,7 +584,7 @@ export const RenderHibahPages = (jsonData, basto) => {
                           marginBottom: 0,
                         }}
                       >
-                        NIP {jsonData?.nip_ppk || ""}
+                        NIP {jsonData?.nip_ppk || "196512131991012001"}
                       </Text>
                     </View>
                     <View style={{ ...styles.tableCol, width: "30%" }}>
@@ -536,7 +608,7 @@ export const RenderHibahPages = (jsonData, basto) => {
                       </Text>
                     </View>
                   </View>
-                </View>
+                </View> */}
               </View>
             </View>
           </Page>

@@ -192,6 +192,7 @@ const ModalUploadDokumen = ({
             : data.nip_ppk || "",
         total_barang_dikirim: data.total_barang_dikirim || "",
         total_harga: data.total_harga || "",
+        logo_daerah: data.logo_daerah || "",
         file_dokumen: data.file_dokumen || null,
       };
       if (dataJson?.file_dokumen) {

@@ -65,7 +65,7 @@ const Login = () => {
       })
       .catch((error) => {
         setLoading(false);
-        return setError("Invalid email or password");
+        return setError("Invalid username / email or password");
       });
   };
   const handleShowPassword = (e) => {
@@ -137,7 +137,7 @@ const Login = () => {
                 className="block text-[#728294] text-sm font-normal mb-2"
                 htmlFor="email"
               >
-                Email
+                Username / Email
               </label>
               <input
                 className={`bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
@@ -151,9 +151,9 @@ const Login = () => {
                     email: e.target.value,
                   }))
                 }
-                type="email"
+                type="text"
                 required
-                placeholder="Email Anda"
+                placeholder="Username / Email Anda"
               />
             </div>
             <div className="mb-3">

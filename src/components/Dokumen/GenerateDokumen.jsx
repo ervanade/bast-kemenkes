@@ -379,9 +379,14 @@ const GenerateDokumen = async (jsonData, distributor) => {
               }}
             >
               <Text style={{ marginRight: 24 }}>1.</Text>
-              <Text style={{ marginRight: 16, ...styles.textBold }}>
+              {/* <Text style={{ marginRight: 16, ...styles.textBold }}>
                 (Nama lengkap{"             "}:{"\n"}Kepala Unit Kerja {"\n"}
                 tanpa gelar)
+              </Text> */}
+              <Text
+                style={{ marginRight: 16, maxWidth: 120, ...styles.textBold }}
+              >
+                R Vensya Sitohang {"    "}:
               </Text>
             </View>
             <View
@@ -1546,7 +1551,8 @@ const GenerateDokumen = async (jsonData, distributor) => {
                 </Text>
                 <Text style={{ ...styles.text, textAlign: "center" }}>
                   Kementerian Kesehatan {"\n"}
-                  {jsonData?.kepala_unit_pemberi || ""}
+                  {jsonData?.kepala_unit_pemberi ||
+                    "Direktur Fasilitas dan Mutu Pelayanan Kesehatan Primer"}
                 </Text>
                 <Image
                   style={{ ...styles.imageTtd, marginVertical: 8 }}
@@ -1566,8 +1572,10 @@ const GenerateDokumen = async (jsonData, distributor) => {
                     letterSpacing: 0.2,
                   }}
                 >
-                  Nama : {jsonData?.nama_ppk || ""} {"\n"}
-                  NIP : {jsonData?.nip_ppk || ""}
+                  Nama :{" "}
+                  {jsonData?.nama_ppk || "drg. R Vensya Sitohang, M.Epid, Ph.D"}{" "}
+                  {"\n"}
+                  NIP : {jsonData?.nip_ppk || "196512131991012001"}
                 </Text>
               </View>
               <View style={{ flex: 1 }}>
@@ -1588,7 +1596,7 @@ const GenerateDokumen = async (jsonData, distributor) => {
                   style={{
                     ...styles.text,
                     fontFamily: "Arial",
-                    marginTop: 8,
+                    marginTop: 12,
                     fontSize: 11,
                     lineHeight: 1.2,
                     textAlign: "center",
