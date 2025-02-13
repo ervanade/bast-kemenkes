@@ -29,6 +29,7 @@ import GenerateDokumen from "../../components/Dokumen/GenerateDokumen";
 import ModalUploadDokumen from "../../components/Modal/ModalUploadDokumen";
 import { differenceBy } from "lodash";
 import ModalTTENew from "../../components/Modal/ModalTTENew";
+import * as XLSX from "xlsx";
 
 const DokumenDistributor = () => {
   const user = useSelector((a) => a.auth.user);
@@ -730,6 +731,41 @@ const DokumenDistributor = () => {
 
   const handleExport = () => {
     // Implementasi untuk mengekspor data (misalnya ke CSV)
+    const exportData = filteredData?.map((item) => ({
+      Dokumen: item?.nama_dokumen,
+      Provinsi: item?.provinsi,
+      Kabupaten_Kota: item?.kabupaten,
+      Program: item?.program,
+      Batch: item?.batch,
+      Tahun_Lokus: item?.tahun_lokus,
+      BAST: item?.nomor_bast,
+      Tanggal_BAST: item?.tanggal_bast,
+    }));
+    const wb = XLSX.utils.book_new(),
+      ws = XLSX.utils.json_to_sheet(exportData);
+
+    ws["!cols"] = [
+      { wch: 20 }, // Kolom 1 (Provinsi)
+      { wch: 20 }, // Kolom 2 (Kabupaten_Kota)
+      { wch: 20 }, // Kolom 3 (Kecamatan)
+      { wch: 25 }, // Kolom 4 (Puskesmas)
+      { wch: 20 }, // Kolom 5 (Dokumen)
+      { wch: 15 }, // Kolom 6 (Program)
+      { wch: 10 }, // Kolom 7 (Batch)
+      { wch: 15 }, // Kolom 8 (Tahun_Lokus)
+      { wch: 15 }, // Kolom 9 (BAST)
+      { wch: 15 }, // Kolom 10 (Tanggal_Kirim)
+      { wch: 15 }, // Kolom 11 (Tanggal_Terima)
+      { wch: 10 }, // Kolom 12 (Jumlah_Kirim)
+      { wch: 10 }, // Kolom 13 (Jumlah_Terima)
+      { wch: 20 }, // Kolom 14 (Ket_Daerah)
+      { wch: 20 }, // Kolom 15 (Ket_Ppk)
+      { wch: 20 }, // Kolom 16 (Konfirmasi_Daerah)
+      { wch: 20 }, // Kolom 17 (Konfirmasi_Ppk)
+    ];
+
+    XLSX.utils.book_append_sheet(wb, ws, `Data Dokumen`);
+    XLSX.writeFile(wb, "Data Dokumen.xlsx");
   };
   if (getLoading) {
     return (
