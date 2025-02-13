@@ -28,7 +28,7 @@ const HeaderDokumen = ({ jsonData, user }) => {
         jsonData={jsonData}
         user={user}
       /> */}
-      {user.role == "4" ? (
+      {/* {user.role == "4" ? (
         jsonData?.status_tte == "1" ? (
           <button
             type="button"
@@ -60,7 +60,7 @@ const HeaderDokumen = ({ jsonData, user }) => {
         )
       ) : (
         ""
-      )}
+      )} */}
     </div>
   );
 };

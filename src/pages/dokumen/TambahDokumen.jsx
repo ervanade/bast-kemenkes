@@ -321,6 +321,8 @@ const TambahDokumen = () => {
     setSelectedProvinsi(selectedOption);
     setSelectedKota(null);
     setSelectedKecamatan(null);
+    setSelectedUser(null);
+    setDataUser([]);
     setDataKota([]);
     setFormData((prev) => ({
       ...prev,
@@ -343,6 +345,8 @@ const TambahDokumen = () => {
   const handleKotaChange = (selectedOption) => {
     setSelectedKota(selectedOption);
     setSelectedKecamatan(null);
+    setSelectedUser(null);
+    setDataUser([]);
     setFormData((prev) => ({
       ...prev,
       id_kabupaten: selectedOption ? selectedOption.value.toString() : "",

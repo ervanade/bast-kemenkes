@@ -386,7 +386,7 @@ const GenerateDokumen = async (jsonData, distributor) => {
               <Text
                 style={{ marginRight: 16, maxWidth: 120, ...styles.textBold }}
               >
-                R Vensya Sitohang {"    "}:
+                R Vensya Sitohang
               </Text>
               <Text style={{ ...styles.textBold }}>:</Text>
             </View>
@@ -459,7 +459,7 @@ const GenerateDokumen = async (jsonData, distributor) => {
               }}
             >
               <Text>
-                : selaku Kepala Dinas Kesehatan Daerah Provinsi/Kepala Dinas
+                selaku Kepala Dinas Kesehatan Daerah Provinsi/Kepala Dinas
                 Kesehatan Daerah {jsonData?.kabupaten}/Direktur Rumah Sakit
                 penerima hibah barang milik negara{" "}
                 <Text style={{ marginRight: 16, ...styles.helvetica }}>

@@ -294,6 +294,8 @@ const EditDokumen = () => {
   const handleProvinsiChange = (selectedOption) => {
     setSelectedProvinsi(selectedOption);
     setSelectedKota(null);
+    setSelectedUser(null);
+    setDataUser([]);
     setDataKota([]);
     setFormData((prev) => ({
       ...prev,
@@ -306,6 +308,8 @@ const EditDokumen = () => {
 
   const handleKotaChange = (selectedOption) => {
     setSelectedKota(selectedOption);
+    setSelectedUser(null);
+    setDataUser([]);
     setFormData((prev) => ({
       ...prev,
       id_kabupaten: selectedOption ? selectedOption.value.toString() : "",
@@ -388,6 +392,19 @@ const EditDokumen = () => {
         });
       }
     }
+
+    if (formData.id_user_penerima && dataUser.length > 0) {
+      const initialOption = dataUser.find(
+        (kec) => kec.value == formData.id_user_penerima
+      );
+
+      if (initialOption) {
+        setSelectedUser({
+          label: initialOption.label,
+          value: initialOption.value,
+        });
+      }
+    }
     if (formData.batch) {
       const initialOption = batchOptions.find(
         (kec) => kec.value == formData.batch
@@ -418,6 +435,12 @@ const EditDokumen = () => {
       fetchKota(formData.id_provinsi);
     }
   }, [formData.id_provinsi]);
+
+  useEffect(() => {
+    if (formData.id_kabupaten) {
+      fetchUserDaerah(formData.id_kabupaten);
+    }
+  }, [formData.id_kabupaten]);
   if (getLoading) {
     return (
       <div className="flex justify-center items-center">

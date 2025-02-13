@@ -913,6 +913,7 @@ const Dokumen = () => {
         ignoreRowClick: true,
         allowOverflow: true,
         button: true,
+        omit: true,
       },
       {
         name: "Aksi",
