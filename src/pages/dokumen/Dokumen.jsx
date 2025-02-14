@@ -1257,22 +1257,22 @@ const Dokumen = () => {
               pagination
               persistTableHead
               highlightOnHover
-              selectableRows={user?.role == "3" || user?.role == "4"} // Tampilkan selectableRows jika role 3 atau 4
-              contextActions={
-                user?.role == "3" || user?.role == "4"
-                  ? contextActions
-                  : undefined
-              } // Tambahkan contextActions jika role 3/4
-              onSelectedRowsChange={
-                user?.role == "3" || user?.role == "4"
-                  ? handleRowSelected
-                  : undefined
-              } // Tambahkan handler jika role 3/4
-              clearSelectedRows={
-                user?.role == "3" || user?.role == "4"
-                  ? toggleCleared
-                  : undefined
-              } // Clear selection jika role 3/4
+              // selectableRows={user?.role == "3" || user?.role == "4"} // Tampilkan selectableRows jika role 3 atau 4
+              // contextActions={
+              //   user?.role == "3" || user?.role == "4"
+              //     ? contextActions
+              //     : undefined
+              // } // Tambahkan contextActions jika role 3/4
+              // onSelectedRowsChange={
+              //   user?.role == "3" || user?.role == "4"
+              //     ? handleRowSelected
+              //     : undefined
+              // } // Tambahkan handler jika role 3/4
+              // clearSelectedRows={
+              //   user?.role == "3" || user?.role == "4"
+              //     ? toggleCleared
+              //     : undefined
+              // } // Clear selection jika role 3/4
               pointerOnHover
               customStyles={{
                 headCells: {

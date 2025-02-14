@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import Select from "react-select";
 import DataTable from "react-data-table-component";
-import { encryptId, selectThemeColors } from "../../data/utils";
+import { encryptId, formatRupiah, selectThemeColors } from "../../data/utils";
 import {
   FaDownload,
   FaEdit,
@@ -93,7 +93,7 @@ const Laporan = () => {
           <p>Data Distribusi : {data.data_distribusi}</p>
           <p>Jumlah Dikirim : {data.jumlah_dikirim}</p>
           <p>Jumlah Diterima : {data.jumlah_diterima}</p>
-          <p>Total Harga : {data.total_harga}</p>
+          <p>Total Harga : {formatRupiah(data.total_harga)}</p>
         </div>
       );
     } else {
@@ -218,6 +218,7 @@ const Laporan = () => {
       {
         name: "Total Harga (Rp)",
         selector: (row) => Number(row.total_harga),
+        cell: (row) => formatRupiah(row.total_harga),
         sortable: true,
         width: "200px",
       },
@@ -257,7 +258,7 @@ const Laporan = () => {
         "Data Belum Diproses": dataCard.belum_diproses,
         "Jumlah Barang Dikirim": dataCard.jumlah_dikirim,
         "Jumlah Barang Diterima": dataCard.jumlah_diterima,
-        "Total Harga": dataCard.total_harga,
+        "Total Harga": formatRupiah(dataCard.total_harga),
         "Jumlah Dokumen": dataCard.jumlah_dokumen,
       },
     ];
@@ -266,7 +267,7 @@ const Laporan = () => {
       "Data Distribusi": item?.jumlah_distribusi,
       "Jumlah Barang Dikirim": item?.jumlah_dikirim,
       "Jumlah Barang Diterima": item?.jumlah_diterima,
-      "Total Harga": item?.total_harga,
+      "Total Harga": formatRupiah(item?.total_harga),
     }));
     const wb = XLSX.utils.book_new();
 
@@ -414,7 +415,7 @@ const Laporan = () => {
           />
           <LaporanCard
             title="Total Harga (Rp)"
-            total={dataCard.total_harga || 0}
+            total={formatRupiah(dataCard.total_harga) || 0}
           />
           <LaporanCard
             title="Jumlah Dokumen"

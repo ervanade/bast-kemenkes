@@ -1003,10 +1003,10 @@ const DokumenDistributor = () => {
               pagination
               persistTableHead
               highlightOnHover
-              selectableRows
-              contextActions={contextActions}
-              onSelectedRowsChange={handleRowSelected}
-              clearSelectedRows={toggleCleared}
+              // selectableRows
+              // contextActions={contextActions}
+              // onSelectedRowsChange={handleRowSelected}
+              // clearSelectedRows={toggleCleared}
               pointerOnHover
               customStyles={{
                 headCells: {

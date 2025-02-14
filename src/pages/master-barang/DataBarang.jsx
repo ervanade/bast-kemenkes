@@ -8,7 +8,7 @@ import {
   dataKota,
   dataProvinsi,
 } from "../../data/data";
-import { encryptId, selectThemeColors } from "../../data/utils";
+import { encryptId, formatRupiah, selectThemeColors } from "../../data/utils";
 import { FaEdit, FaPlus, FaSpinner, FaTrash } from "react-icons/fa";
 import { BiExport, BiSolidFileExport } from "react-icons/bi";
 import { Link } from "react-router-dom";
@@ -156,10 +156,12 @@ const DataBarang = () => {
       },
       {
         name: <div className="text-wrap">Harga Satuan</div>,
-        cell: (row) => <div className="text-wrap py-2">{row.harga_satuan}</div>,
+        cell: (row) => (
+          <div className="text-wrap py-2">{formatRupiah(row.harga_satuan)}</div>
+        ),
         selector: (row) => row.harga_satuan || "",
         sortable: true,
-        width: "100px",
+        width: "150px",
       },
       {
         name: <div className="text-wrap">Penyedia Barang</div>,

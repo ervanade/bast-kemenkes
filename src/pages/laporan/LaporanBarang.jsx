@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import Select from "react-select";
 import DataTable from "react-data-table-component";
-import { encryptId, selectThemeColors } from "../../data/utils";
+import { encryptId, formatRupiah, selectThemeColors } from "../../data/utils";
 import {
   FaDownload,
   FaEdit,
@@ -300,7 +300,7 @@ const LaporanBarang = () => {
       {
         name: <div className="text-wrap">Nama Barang</div>,
         selector: (row) => row.nama_alkes,
-        cell: ( row ) => <div className="text-wrap py-2">{row.nama_alkes}</div>,
+        cell: (row) => <div className="text-wrap py-2">{row.nama_alkes}</div>,
 
         sortable: true,
         width: "200px",
@@ -320,6 +320,8 @@ const LaporanBarang = () => {
       {
         name: "Total Harga (Rp)",
         selector: (row) => Number(row.jumlah_total),
+        cell: (row) => formatRupiah(row.jumlah_total),
+
         sortable: true,
         width: "200px",
       },
@@ -356,7 +358,7 @@ const LaporanBarang = () => {
       "Nama Barang": item?.nama_alkes,
       "Jumlah Barang Dikirim": item?.jumlah_dikirim,
       "Jumlah Barang Diterima": item?.jumlah_diterima,
-      "Total Harga": item?.jumlah_total,
+      "Total Harga": formatRupiah(item?.jumlah_total),
     }));
     const wb = XLSX.utils.book_new();
 
@@ -544,18 +546,17 @@ const LaporanBarang = () => {
               persistTableHead
               highlightOnHover
               pointerOnHover
-               customStyles={{
+              customStyles={{
                 headCells: {
                   style: {
                     padding: 12,
                     backgroundColor: "#EBFBFA", // Warna header biru
-      color: "#212121", // Teks header putih
+                    color: "#212121", // Teks header putih
                     fontWeight: 700,
                     fontSize: 14,
-
                   },
                 },
-                rows : {
+                rows: {
                   style: {
                     fontSize: 14,
                     paddingTop: 6,

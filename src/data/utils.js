@@ -42,3 +42,7 @@ export const decryptId = (encryptedId) => {
     const decryptedId = CryptoJS.AES.decrypt(encryptedId, encryptionKey).toString(CryptoJS.enc.Utf8);
     return decryptedId;
 };
+
+export const formatRupiah = (price) => {
+    return `${price?.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
+};

@@ -8,7 +8,7 @@ import {
   dataPuskesmas,
   konfirmasiOptions,
 } from "../../data/data";
-import { selectThemeColors } from "../../data/utils";
+import { formatRupiah, selectThemeColors } from "../../data/utils";
 import Select from "react-select";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
@@ -1042,7 +1042,7 @@ const AksiDistribusi = () => {
                             {barang.jumlah_diterima}
                           </td>
                           <td className="px-2 py-2 text-center">
-                            {barang.harga_satuan}
+                            Rp.{formatRupiah(barang.harga_satuan)}
                           </td>
                           <td className="px-2 py-2 text-center">
                             <button

@@ -10,7 +10,12 @@ import {
 } from "../../data/data";
 import * as XLSX from "xlsx";
 import moment from "moment/moment";
-import { decryptId, encryptId, selectThemeColors } from "../../data/utils";
+import {
+  decryptId,
+  encryptId,
+  formatRupiah,
+  selectThemeColors,
+} from "../../data/utils";
 import { FaDownload, FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa";
 import { BiExport, BiSolidFileExport } from "react-icons/bi";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -59,7 +64,7 @@ const DetailLaporanProvinsi = () => {
         "Data Belum Diproses": dataCard.belum_diproses,
         "Jumlah Barang Dikirim": dataCard.jumlah_dikirim,
         "Jumlah Barang Diterima": dataCard.jumlah_diterima,
-        "Total Harga": dataCard.total_harga,
+        "Total Harga": formatRupiah(dataCard.total_harga),
         "Jumlah Dokumen": dataCard.jumlah_dokumen,
       },
     ];
@@ -68,7 +73,7 @@ const DetailLaporanProvinsi = () => {
       "Data Distribusi": item?.jumlah_distribusi,
       "Jumlah Barang Dikirim": item?.jumlah_dikirim,
       "Jumlah Barang Diterima": item?.jumlah_diterima,
-      "Total Harga": item?.total_harga,
+      "Total Harga": formatRupiah(item?.total_harga),
     }));
     const wb = XLSX.utils.book_new();
 
@@ -231,6 +236,7 @@ const DetailLaporanProvinsi = () => {
       {
         name: "Total Harga (Rp)",
         selector: (row) => Number(row.total_harga),
+        cell: (row) => formatRupiah(row.total_harga),
         sortable: true,
         width: "200px",
       },
@@ -336,7 +342,7 @@ const DetailLaporanProvinsi = () => {
           />
           <LaporanCard
             title="Total Harga (Rp)"
-            total={dataCard.total_harga || 0}
+            total={formatRupiah(dataCard.total_harga) || 0}
           />
           <LaporanCard
             title="Jumlah Dokumen"
@@ -429,18 +435,17 @@ const DetailLaporanProvinsi = () => {
               persistTableHead
               highlightOnHover
               pointerOnHover
-               customStyles={{
+              customStyles={{
                 headCells: {
                   style: {
                     padding: 12,
                     backgroundColor: "#EBFBFA", // Warna header biru
-      color: "#212121", // Teks header putih
+                    color: "#212121", // Teks header putih
                     fontWeight: 700,
                     fontSize: 14,
-
                   },
                 },
-                rows : {
+                rows: {
                   style: {
                     fontSize: 14,
                     paddingTop: 6,

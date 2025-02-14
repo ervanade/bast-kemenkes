@@ -10,7 +10,12 @@ import {
 } from "../../data/data";
 import * as XLSX from "xlsx";
 import moment from "moment/moment";
-import { decryptId, encryptId, selectThemeColors } from "../../data/utils";
+import {
+  decryptId,
+  encryptId,
+  formatRupiah,
+  selectThemeColors,
+} from "../../data/utils";
 import { FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa";
 import { BiExport, BiSolidFileExport } from "react-icons/bi";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -57,7 +62,7 @@ const DetailLaporanKabupaten = () => {
         "Data Belum Diproses": dataCard.belum_diproses,
         "Jumlah Barang Dikirim": dataCard.jumlah_dikirim,
         "Jumlah Barang Diterima": dataCard.jumlah_diterima,
-        "Total Harga": dataCard.total_harga,
+        "Total Harga": formatRupiah(dataCard.total_harga),
         "Jumlah Dokumen": dataCard.jumlah_dokumen,
       },
     ];
@@ -66,7 +71,7 @@ const DetailLaporanKabupaten = () => {
       "Data Distribusi": item?.jumlah_distribusi,
       "Jumlah Barang Dikirim": item?.jumlah_dikirim,
       "Jumlah Barang Diterima": item?.jumlah_diterima,
-      "Total Harga": item?.total_harga,
+      "Total Harga": formatRupiah(item?.total_harga),
     }));
     const wb = XLSX.utils.book_new();
 
@@ -229,6 +234,7 @@ const DetailLaporanKabupaten = () => {
         name: "Total Harga (Rp)",
         selector: (row) => Number(row.total_harga),
         sortable: true,
+        cell: (row) => formatRupiah(row.total_harga),
         width: "200px",
       },
       {
@@ -312,7 +318,7 @@ const DetailLaporanKabupaten = () => {
           />
           <LaporanCard
             title="Total Harga (Rp)"
-            total={dataCard.total_harga || 0}
+            total={formatRupiah(dataCard.total_harga) || 0}
           />
           <LaporanCard
             title="Jumlah Dokumen"

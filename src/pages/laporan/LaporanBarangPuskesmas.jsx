@@ -2,7 +2,12 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import Select from "react-select";
 import DataTable from "react-data-table-component";
-import { decryptId, encryptId, selectThemeColors } from "../../data/utils";
+import {
+  decryptId,
+  encryptId,
+  formatRupiah,
+  selectThemeColors,
+} from "../../data/utils";
 import {
   FaDownload,
   FaEdit,
@@ -350,6 +355,8 @@ const LaporanBarangPuskesmas = () => {
       {
         name: "Total Harga (Rp)",
         selector: (row) => Number(row.jumlah_total),
+        cell: (row) => formatRupiah(row.jumlah_total),
+
         sortable: true,
         width: "200px",
       },
@@ -366,7 +373,7 @@ const LaporanBarangPuskesmas = () => {
       "Nama Barang": item?.nama_alkes,
       "Jumlah Barang Dikirim": item?.jumlah_dikirim,
       "Jumlah Barang Diterima": item?.jumlah_diterima,
-      "Total Harga": item?.jumlah_total,
+      "Total Harga": formatRupiah(item?.jumlah_total),
     }));
     const wb = XLSX.utils.book_new();
 
