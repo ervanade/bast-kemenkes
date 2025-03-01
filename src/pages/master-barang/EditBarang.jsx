@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { CgSpinner } from "react-icons/cg";
 import FormInput from "../../components/Form/FormInput";
+import { validateFileFormat, validateForm } from "../../data/validationUtils";
 
 const EditBarang = () => {
   const [formData, setFormData] = useState({
@@ -124,6 +125,7 @@ const EditBarang = () => {
     const { id, value, files } = event.target;
     if (files) {
       const file = files[0];
+      if (!file) return;
       if (file.type !== "application/pdf") {
         Swal.fire("Error", "File type harus PDF", "error");
         return;
@@ -132,11 +134,29 @@ const EditBarang = () => {
         Swal.fire("Error", "File size harus dibawah 100 MB", "error");
         return;
       }
-      setFormData((prev) => ({
-        ...prev,
-        [id]: file,
-        contractFileName: file.name,
-      }));
+
+      // **3. Validasi isi file (Magic Number untuk PDF: 0x25 50 44 46)**
+      const fileReader = new FileReader();
+      fileReader.onload = (e) => {
+        const uint = new Uint8Array(e.target.result).subarray(0, 4);
+        const header = uint.reduce((acc, byte) => acc + byte.toString(16), "");
+
+        if (header !== "25504446") {
+          Swal.fire(
+            "Warning",
+            "Format PDF tidak sesuai atau mengandung karakter berbahaya!",
+            "warning"
+          );
+          event.target.value = ""; // Reset input file
+          return;
+        }
+        setFormData((prev) => ({
+          ...prev,
+          [id]: file,
+          contractFileName: file.name,
+        }));
+      };
+      fileReader.readAsArrayBuffer(file); // Membaca header file
     } else {
       if (id === "harga_satuan") {
         const unformattedValue = value.replace(/\./g, ""); // Hapus semua titik
@@ -153,7 +173,7 @@ const EditBarang = () => {
   };
 
   const updateBarang = async () => {
-    if (!formData.contractFile) {
+    if (!formData.contractFile && !formData.contractFileLink) {
       Swal.fire("Error", "File Kontrak Masih Kosong", "error");
       setLoading(false);
       return;
@@ -193,6 +213,27 @@ const EditBarang = () => {
   };
   const handleSimpan = async (e) => {
     e.preventDefault();
+    if (
+      !validateForm(formData, [
+        "nama_alkes",
+        "merk",
+        "satuan",
+        "harga_satuan",
+        "keterangan",
+        "penyedia",
+      ])
+    )
+      return;
+    if (
+      !validateFileFormat(
+        formData.contractFile,
+        ["pdf"],
+        100,
+        "File Kontrak",
+        false
+      )
+    )
+      return;
     setLoading(true);
     updateBarang();
   };

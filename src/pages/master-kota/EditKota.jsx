@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { CgSpinner } from "react-icons/cg";
+import { validateForm } from "../../data/validationUtils";
 
 const EditKota = () => {
   const [formData, setFormData] = useState({
@@ -90,6 +91,8 @@ const EditKota = () => {
 
   const handleSimpan = async (e) => {
     e.preventDefault();
+    if (!validateForm(formData, ["name", "id_provinsi"])) return;
+
     setLoading(true);
     updateKota();
   };

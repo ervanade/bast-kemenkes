@@ -16,6 +16,7 @@ import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import FormInput from "../../components/Form/FormInput";
+import { validateForm } from "../../data/validationUtils";
 
 const TambahPuskesmas = () => {
   const [formData, setFormData] = useState({
@@ -145,6 +146,21 @@ const TambahPuskesmas = () => {
   };
   const handleSimpan = async (e) => {
     e.preventDefault();
+    if (
+      !validateForm(formData, [
+        "nama_puskesmas",
+        "id_provinsi",
+        "id_kabupaten",
+        "id_kecamatan",
+        "alamat",
+        "kode_pusdatin_baru",
+        "wilayah_kerja",
+        "pelayanan",
+        "status_puskesmas",
+        "keterangan",
+      ])
+    )
+      return;
     setLoading(true);
     tambahPuskesmas();
   };

@@ -11,6 +11,7 @@ import {
   ujiFungsiOptions,
   ujiOpsOptions,
 } from "../../data/data";
+import { validateForm } from "../../data/validationUtils";
 
 const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
   const user = useSelector((a) => a.auth.user);
@@ -117,6 +118,23 @@ const ModalAddBarang = ({ show, onClose, onSave, editIndex, dataBarang }) => {
 
   const handleSave = (e) => {
     e.preventDefault();
+    if (!validateForm(barang, ["id_barang", "jumlah_dikirim"])) return;
+    if (isNaN(barang.jumlah_dikirim)) {
+      Swal.fire(
+        "Warning",
+        `Format jumlah_dikirim harus berupa angka!`,
+        "warning"
+      );
+      return;
+    }
+    if (editIndex && barang.jumlah_diterima && isNaN(barang.jumlah_diterima)) {
+      Swal.fire(
+        "Warning",
+        `Format jumlah_diterima harus berupa angka!`,
+        "warning"
+      );
+      return;
+    }
     if (!barang.id_barang || !barang.jumlah_dikirim) {
       Swal.fire("Error", "Ada Form yang belum di lengkapi", "error");
       return;

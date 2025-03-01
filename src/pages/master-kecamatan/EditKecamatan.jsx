@@ -7,6 +7,7 @@ import Select from "react-select";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { validateForm } from "../../data/validationUtils";
 
 const EditKecamatan = () => {
   const [formData, setFormData] = useState({
@@ -86,6 +87,7 @@ const EditKecamatan = () => {
 
   const handleSimpan = async (e) => {
     e.preventDefault();
+    if (!validateForm(formData, ["name", "id_kabupaten"])) return;
     setLoading(true);
     updateKota();
   };

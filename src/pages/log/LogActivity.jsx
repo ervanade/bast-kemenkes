@@ -185,25 +185,25 @@ const LogActivity = () => {
         sortable: true,
         // width: "100px",
       },
-      {
-        name: "Aksi",
-        cell: (row) => (
-          <div className="flex items-center space-x-2">
-            <button title="Edit" className="text-[#16B3AC] hover:text-cyan-500">
-              <Link
-                to={`/logactivity/detail/${encodeURIComponent(
-                  encryptId(row.id)
-                )}`}
-              >
-                <FaEye size={16} />
-              </Link>
-            </button>
-          </div>
-        ),
-        ignoreRowClick: true,
-        allowOverflow: true,
-        button: true,
-      },
+      // {
+      //   name: "Aksi",
+      //   cell: (row) => (
+      //     <div className="flex items-center space-x-2">
+      //       <button title="Edit" className="text-[#16B3AC] hover:text-cyan-500">
+      //         <Link
+      //           to={`/logactivity/detail/${encodeURIComponent(
+      //             encryptId(row.id)
+      //           )}`}
+      //         >
+      //           <FaEye size={16} />
+      //         </Link>
+      //       </button>
+      //     </div>
+      //   ),
+      //   ignoreRowClick: true,
+      //   allowOverflow: true,
+      //   button: true,
+      // },
     ],
     [handleConfirmDeleteProvinsi, user.role]
   );
@@ -273,18 +273,17 @@ const LogActivity = () => {
               persistTableHead
               highlightOnHover
               pointerOnHover
-               customStyles={{
+              customStyles={{
                 headCells: {
                   style: {
                     padding: 12,
                     backgroundColor: "#EBFBFA", // Warna header biru
-      color: "#212121", // Teks header putih
+                    color: "#212121", // Teks header putih
                     fontWeight: 700,
                     fontSize: 14,
-
                   },
                 },
-                rows : {
+                rows: {
                   style: {
                     fontSize: 14,
                     paddingTop: 6,

@@ -7,6 +7,7 @@ import Select from "react-select";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { validateForm } from "../../data/validationUtils";
 
 const TambahKota = () => {
   const [formData, setFormData] = useState({
@@ -62,6 +63,7 @@ const TambahKota = () => {
 
   const handleSimpan = async (e) => {
     e.preventDefault();
+    if (!validateForm(formData, ["name", "id_provinsi"])) return;
     setLoading(true);
     tambahKota();
   };

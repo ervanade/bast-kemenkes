@@ -669,62 +669,6 @@ const DokumenDistributor = () => {
         button: true,
         width: "80px",
       },
-
-      {
-        name: "Aksi",
-        omit: user.role != "1",
-        cell: (row) => (
-          <div className="flex items-center space-x-2">
-            {/* <button
-              title="Input"
-              className="text-green-500 hover:text-green-700"
-            >
-              <Link to="/data-verifikasi/form-distribusi">
-                <FaPlus />
-              </Link>
-            </button> */}
-
-            {user.role == "1" ? (
-              <>
-                <button
-                  title="Edit"
-                  className="text-[#16B3AC] hover:text-cyan-500"
-                >
-                  <Link
-                    to={`/dokumen/edit/${encodeURIComponent(
-                      encryptId(row.id)
-                    )}`}
-                  >
-                    <FaEdit size={16} />
-                  </Link>
-                </button>
-                <button
-                  title="Delete"
-                  className="text-red-500 hover:text-red-700"
-                  onClick={() => handleConfirmDeleteDokumen(row.id)}
-                >
-                  <FaTrash size={16} />
-                </button>
-              </>
-            ) : (
-              ""
-            )}
-            {/* <button
-              title="Edit"
-              className="text-white p-2 bg-blue-600 rounded-md"
-            >
-              <Link to={`/dokumen/preview-dokumen/${encodeURIComponent(
-                  encryptId(row.id)
-                )}`}>
-                TTE
-              </Link>
-            </button> */}
-          </div>
-        ),
-        ignoreRowClick: true,
-        allowOverflow: true,
-        button: true,
-      },
     ],
     []
   );
@@ -969,22 +913,6 @@ const DokumenDistributor = () => {
               <BiExport />
               <span className="hidden sm:block">Export</span>
             </button>
-            {user.role == "1" ? (
-              <button
-                title="Tambah Data Dokumen"
-                className="flex font-semibold items-center gap-2 cursor-pointer text-base text-white  bg-primary rounded-md tracking-tight"
-              >
-                <Link
-                  to="/dokumen/add"
-                  className="flex items-center gap-2 px-4 py-2"
-                >
-                  <FaPlus size={16} />
-                  <span className="hidden sm:block">Tambah Data Dokumen</span>
-                </Link>
-              </button>
-            ) : (
-              ""
-            )}
           </div>
         </div>
         <div className="overflow-x-auto">

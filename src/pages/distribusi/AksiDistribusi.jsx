@@ -17,6 +17,7 @@ import ModalAddBarang from "../../components/Modal/ModalAddBarang";
 import axios from "axios";
 import { CgSpinner } from "react-icons/cg";
 import FormInput from "../../components/Form/FormInput";
+import { validateFileFormat, validateForm } from "../../data/validationUtils";
 
 const AksiDistribusi = () => {
   var today = new Date();
@@ -563,6 +564,32 @@ const AksiDistribusi = () => {
 
   const handleSimpan = async (e) => {
     e.preventDefault();
+    if (!validateForm(formData, ["keterangan_daerah", "keterangan_ppk"]))
+      return;
+    if (
+      !validateFileFormat(
+        formData.pendukungFile,
+        ["pdf"],
+        100,
+        "Dokumen Pendukung",
+        false
+      ) ||
+      !validateFileFormat(
+        formData.ujiFungsiFile,
+        ["pdf"],
+        100,
+        "Dokumen Pendukung",
+        false
+      ) ||
+      !validateFileFormat(
+        formData.ujiOpsFile,
+        ["pdf"],
+        100,
+        "Dokumen Pendukung",
+        false
+      )
+    )
+      return;
     if (user.role == "3" && !setuju) {
       Swal.fire("Warning", "Anda Belum Menyetujui Form", "warning");
       return;

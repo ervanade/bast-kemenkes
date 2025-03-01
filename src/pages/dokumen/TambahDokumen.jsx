@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import FormInput from "../../components/Form/FormInput";
 import { MdCheckCircle } from "react-icons/md";
+import { validateFileFormat, validateForm } from "../../data/validationUtils";
 
 const TambahDokumen = () => {
   var today = new Date();
@@ -188,8 +189,8 @@ const TambahDokumen = () => {
     let isValid = true;
 
     if (files) {
-      // Validasi file PDF
       const file = files[0];
+      if (!file) return;
       if (file.type !== "application/pdf") {
         Swal.fire("Error", "File type harus PDF", "error");
         return;
@@ -198,11 +199,29 @@ const TambahDokumen = () => {
         Swal.fire("Error", "File size harus dibawah 100 MB", "error");
         return;
       }
-      setFormData((prev) => ({
-        ...prev,
-        [id]: file,
-        contractFileName: file.name,
-      }));
+
+      // **3. Validasi isi file (Magic Number untuk PDF: 0x25 50 44 46)**
+      const fileReader = new FileReader();
+      fileReader.onload = (e) => {
+        const uint = new Uint8Array(e.target.result).subarray(0, 4);
+        const header = uint.reduce((acc, byte) => acc + byte.toString(16), "");
+
+        if (header !== "25504446") {
+          Swal.fire(
+            "Warning",
+            "Format PDF tidak sesuai atau mengandung karakter berbahaya!",
+            "warning"
+          );
+          event.target.value = ""; // Reset input file
+          return;
+        }
+        setFormData((prev) => ({
+          ...prev,
+          [id]: file,
+          contractFileName: file.name,
+        }));
+      };
+      fileReader.readAsArrayBuffer(file); // Membaca header file
     } else if (id === "tahun_lokus") {
       const tahun = value.trim() || "[TAHUN]";
       setFormData((prev) => ({ ...prev, tahun_lokus: value }));
@@ -247,7 +266,9 @@ const TambahDokumen = () => {
       !formData.id_provinsi ||
       !formData.id_kabupaten ||
       !selectedBatch ||
-      !selectedProgram
+      !selectedProgram ||
+      !selectedUser ||
+      !selectedDirektur
     ) {
       Swal.fire("Error", "Ada Form yang belum di lengkapi", "error");
       setLoading(false);
@@ -297,6 +318,39 @@ const TambahDokumen = () => {
   };
   const handleSimpan = async (e) => {
     e.preventDefault();
+    if (
+      !validateForm(formData, [
+        "nama_dokumen",
+        "nomor_bast",
+        "tanggal_bast",
+        "tahun_lokus",
+        "penerima_hibah",
+        "kepala_unit_pemberi",
+        "id_user_pemberi",
+        "id_user_penerima",
+        "id_provinsi",
+        "id_kabupaten",
+        "program",
+        "batch",
+      ])
+    )
+      return;
+    if (
+      !validateFileFormat(formData.contractFile, ["pdf"], 100, "File Kontrak")
+    )
+      return;
+    if (
+      !formData.id_provinsi ||
+      !formData.id_kabupaten ||
+      !selectedBatch ||
+      !selectedProgram ||
+      !selectedUser ||
+      !selectedDirektur
+    ) {
+      Swal.fire("Error", "Ada Form yang belum di lengkapi", "error");
+      setLoading(false);
+      return;
+    }
     Swal.fire({
       title: "Perhatian",
       text: "Data yang diisi adalah sebenarnya dan dapat dipertanggungjawabkan?",
@@ -514,6 +568,7 @@ const TambahDokumen = () => {
                   id="tahun_lokus"
                   value={formData.tahun_lokus}
                   onChange={handleChange}
+                  maxLength={4}
                   type="text"
                   required
                   placeholder="Tahun Lokus"

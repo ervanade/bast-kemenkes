@@ -7,11 +7,12 @@ import Select from "react-select";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { validateForm } from "../../data/validationUtils";
 
 const TambahKecamatan = () => {
   const [formData, setFormData] = useState({
     name: "",
-    id_provinsi: "",
+    id_kabupaten: "",
   });
   const [selectedProvinsi, setSelectedProvinsi] = useState(null);
 
@@ -26,7 +27,7 @@ const TambahKecamatan = () => {
     try {
       const response = await axios({
         method: "get",
-        url: `${import.meta.env.VITE_APP_API_URL}/api/provinsi`,
+        url: `${import.meta.env.VITE_APP_API_URL}/api/kabupaten`,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user?.token}`,
@@ -49,7 +50,7 @@ const TambahKecamatan = () => {
         },
         data: JSON.stringify({
           name: formData.name,
-          id_provinsi: formData.id_provinsi.toString(),
+          id_kabupaten: formData.id_kabupaten.toString(),
         }),
       });
       Swal.fire("Data Berhasil di Update!", "", "success");
@@ -62,6 +63,8 @@ const TambahKecamatan = () => {
 
   const handleSimpan = async (e) => {
     e.preventDefault();
+    if (!validateForm(formData, ["name", "id_kabupaten"])) return;
+
     setLoading(true);
     tambahKota();
   };
@@ -70,7 +73,7 @@ const TambahKecamatan = () => {
     setSelectedProvinsi(selectedOption);
     setFormData((prev) => ({
       ...prev,
-      id_provinsi: selectedOption ? selectedOption.value : "",
+      id_kabupaten: selectedOption ? selectedOption.value : "",
     }));
   };
 

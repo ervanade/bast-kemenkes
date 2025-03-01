@@ -20,6 +20,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { CgSpinner } from "react-icons/cg";
 import FormInput from "../../components/Form/FormInput";
+import { validateFileFormat, validateForm } from "../../data/validationUtils";
 
 const EditDokumen = () => {
   var today = new Date();
@@ -282,6 +283,45 @@ const EditDokumen = () => {
   };
   const handleSimpan = async (e) => {
     e.preventDefault();
+    if (
+      !validateForm(formData, [
+        "nama_dokumen",
+        "nomor_bast",
+        "tanggal_bast",
+        "tahun_lokus",
+        "penerima_hibah",
+        "kepala_unit_pemberi",
+        "id_user_pemberi",
+        "id_user_penerima",
+        "id_provinsi",
+        "id_kabupaten",
+        "program",
+        "batch",
+      ])
+    )
+      return;
+    if (
+      !validateFileFormat(
+        formData.contractFile,
+        ["pdf"],
+        100,
+        "File Kontrak",
+        false
+      )
+    )
+      return;
+    if (
+      !formData.id_provinsi ||
+      !formData.id_kabupaten ||
+      !selectedBatch ||
+      !selectedProgram ||
+      !selectedUser ||
+      !selectedDirektur
+    ) {
+      Swal.fire("Error", "Ada Form yang belum di lengkapi", "error");
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     updateDokumen();
   };
@@ -580,6 +620,7 @@ const EditDokumen = () => {
                   id="tahun_lokus"
                   value={formData.tahun_lokus}
                   onChange={handleChange}
+                  maxLength={4}
                   type="text"
                   required
                   placeholder="Tahun Lokus"

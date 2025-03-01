@@ -12,6 +12,7 @@ import ModalAddBarang from "../../components/Modal/ModalAddBarang";
 import axios from "axios";
 import FormInput from "../../components/Form/FormInput";
 import DataTable from "react-data-table-component";
+import { validateForm } from "../../data/validationUtils";
 
 const TambahDistribusi = () => {
   var today = new Date();
@@ -305,6 +306,16 @@ const TambahDistribusi = () => {
 
   const handleSimpan = async (e) => {
     e.preventDefault();
+    if (
+      !validateForm(formData, [
+        "id_dokumen",
+        "id_penyedia",
+        "id_kecamatan",
+        "id_kabupaten",
+        "id_puskesmas",
+      ])
+    )
+      return;
     Swal.fire({
       title: "Perhatian",
       text: "Data sudah sesuai, Simpan Data ini?",

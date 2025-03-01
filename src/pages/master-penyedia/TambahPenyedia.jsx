@@ -15,6 +15,7 @@ import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import FormInput from "../../components/Form/FormInput";
+import { validateForm } from "../../data/validationUtils";
 
 const TambahPenyedia = () => {
   const [formData, setFormData] = useState({
@@ -70,6 +71,7 @@ const TambahPenyedia = () => {
   };
   const handleSimpan = async (e) => {
     e.preventDefault();
+    if (!validateForm(formData, ["penyedia"])) return;
     setLoading(true);
     tambahPenyedia();
   };

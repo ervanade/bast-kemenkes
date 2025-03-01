@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { CgSpinner } from "react-icons/cg";
 import FormInput from "../../components/Form/FormInput";
+import { validateForm } from "../../data/validationUtils";
 
 const EditPenyedia = () => {
   const [formData, setFormData] = useState({
@@ -108,6 +109,8 @@ const EditPenyedia = () => {
   };
   const handleSimpan = async (e) => {
     e.preventDefault();
+    if (!validateForm(formData, ["penyedia"])) return;
+
     setLoading(true);
     updatePenyedia();
   };

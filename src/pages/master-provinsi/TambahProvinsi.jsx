@@ -13,10 +13,11 @@ import Select from "react-select";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { validateForm } from "../../data/validationUtils";
 
 const TambahProvinsi = () => {
   const [formData, setFormData] = useState({
-    name_alkes: "",
+    name: "",
   });
 
   const navigate = useNavigate();
@@ -55,6 +56,7 @@ const TambahProvinsi = () => {
   };
   const handleSimpan = async (e) => {
     e.preventDefault();
+    if (!validateForm(formData, ["name"])) return;
     setLoading(true);
     tambahProvinsi();
   };

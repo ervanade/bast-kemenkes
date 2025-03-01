@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { FaDownload } from "react-icons/fa";
 import { saveAs } from "file-saver"; // Pastikan Anda menginstal file-saver
 import GenerateDokumen from "../Dokumen/GenerateDokumen";
+import { validateFileFormat } from "../../data/validationUtils";
 
 const ModalUploadDokumen = ({
   show,
@@ -105,11 +106,14 @@ const ModalUploadDokumen = ({
   };
 
   const handleSave = () => {
+    if (!validateFileFormat(formData.fileDokumen, ["pdf"], 100, "File Dokumen"))
+      return;
     if (!setuju) {
       Swal.fire("Warning", "Anda Belum Menyetujui Upload", "warning");
       setLoading(false);
       return;
     }
+
     Swal.fire({
       title: "Perhatian",
       text: "Dokumen sudah sesuai & di Tanda Tangan, Upload Dokumen BAST ini?",

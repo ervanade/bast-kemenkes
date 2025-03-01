@@ -14,6 +14,7 @@ import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { CgSpinner } from "react-icons/cg";
+import { validateForm } from "../../data/validationUtils";
 
 const EditUser = () => {
   const [formData, setFormData] = useState({
@@ -29,6 +30,37 @@ const EditUser = () => {
     nip: "",
     no_tlp: "",
   });
+
+  const [passwordError, setPasswordError] = useState("");
+  const [validations, setValidations] = useState({
+    length: false,
+    uppercase: false,
+    lowercase: false,
+    number: false,
+    symbol: false,
+  });
+
+  const validatePassword = (password) => {
+    const length = password.length >= 8;
+    const uppercase = /[A-Z]/.test(password);
+    const lowercase = /[a-z]/.test(password);
+    const number = /\d/.test(password);
+    const symbol = /[\W_]/.test(password); // Simbol apa pun
+
+    setValidations({ length, uppercase, lowercase, number, symbol });
+
+    if (!length || !uppercase || !lowercase || !number || !symbol) {
+      setPasswordError("Password harus memenuhi semua persyaratan format!");
+    } else {
+      setPasswordError("");
+    }
+  };
+
+  const handlePasswordChange = (e) => {
+    const password = e.target.value;
+    setFormData((prev) => ({ ...prev, password }));
+    validatePassword(password);
+  };
 
   const navigate = useNavigate();
   const user = useSelector((a) => a.auth.user);
@@ -222,6 +254,34 @@ const EditUser = () => {
   };
   const handleSimpan = async (e) => {
     e.preventDefault();
+    const isPasswordValid = Object.values({
+      length: formData.password.length >= 8,
+      uppercase: /[A-Z]/.test(formData.password),
+      lowercase: /[a-z]/.test(formData.password),
+      number: /\d/.test(formData.password),
+      symbol: /[\W_]/.test(formData.password),
+    }).every(Boolean);
+    if (formData.password && !isPasswordValid) {
+      Swal.fire("Error", "Format password tidak sesuai!", "error");
+      return;
+    }
+
+    if (
+      !validateForm(formData, [
+        "name",
+        "username",
+        "email",
+        "password",
+        "c_password",
+        "role",
+        "nip",
+        "kabupaten",
+        "kecamatan",
+        "nip",
+        "no_tlp",
+      ])
+    )
+      return;
     setLoading(true);
     updateUser();
   };
@@ -376,7 +436,8 @@ const EditUser = () => {
               </div>
             </div>
 
-            <div className="mb-8 flex-col sm:flex-row sm:gap-8 flex sm:items-center">
+            <div className="mb-8 flex flex-col sm:flex-row sm:gap-8">
+              {/* Label */}
               <div className="sm:flex-[2_2_0%]">
                 <label
                   className="block text-[#728294] text-base font-normal mb-2"
@@ -385,22 +446,69 @@ const EditUser = () => {
                   Password :
                 </label>
               </div>
+
+              {/* Input & Error Message */}
               <div className="sm:flex-[5_5_0%]">
                 <input
-                  className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
-                  "border-red-500" 
-               rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
+                  className={`w-full bg-white appearance-none border rounded-md py-3 px-3 text-[#728294] leading-tight 
+                        focus:outline-none focus:shadow-outline dark:bg-transparent
+                        ${
+                          passwordError
+                            ? "border-red-500"
+                            : formData.password
+                            ? "border-green-500"
+                            : "border-[#cacaca]"
+                        }`}
                   id="password"
                   type="password"
                   value={formData.password}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      password: e.target.value,
-                    }))
-                  }
+                  onChange={handlePasswordChange}
                   placeholder="*******"
                 />
+                {passwordError && formData.password && (
+                  <p className="text-red-500 text-sm mt-1">{passwordError}</p>
+                )}
+                {/* ✅ Persyaratan Password (Responsive) */}
+                <div className="mt-4 sm:w-[40%] rounded-md bg-gray-50 text-sm text-gray-600">
+                  <p className="font-semibold text-gray-800 mb-2">
+                    Syarat Password:
+                  </p>
+                  <p
+                    className={
+                      validations.length ? "text-green-600" : "text-red-500"
+                    }
+                  >
+                    ✓ Minimal 8 karakter
+                  </p>
+                  <p
+                    className={
+                      validations.uppercase ? "text-green-600" : "text-red-500"
+                    }
+                  >
+                    ✓ Mengandung huruf besar
+                  </p>
+                  <p
+                    className={
+                      validations.lowercase ? "text-green-600" : "text-red-500"
+                    }
+                  >
+                    ✓ Mengandung huruf kecil
+                  </p>
+                  <p
+                    className={
+                      validations.number ? "text-green-600" : "text-red-500"
+                    }
+                  >
+                    ✓ Mengandung angka
+                  </p>
+                  <p
+                    className={
+                      validations.symbol ? "text-green-600" : "text-red-500"
+                    }
+                  >
+                    ✓ Mengandung simbol (@, #, !, dll.)
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -418,7 +526,7 @@ const EditUser = () => {
                   className={`sm:flex-[5_5_0%] bg-white appearance-none border border-[#cacaca] focus:border-[#0ACBC2]
                   "border-red-500" 
                rounded-md w-full py-3 px-3 text-[#728294] leading-tight focus:outline-none focus:shadow-outline dark:bg-transparent`}
-                  id="password"
+                  id="c_password"
                   type="password"
                   value={formData.c_password}
                   onChange={(e) =>

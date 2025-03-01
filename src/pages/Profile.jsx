@@ -4,7 +4,7 @@ import NoImage from "../assets/no-image.png";
 import Breadcrumb from "../components/Breadcrumbs/Breadcrumb";
 import SignatureCanvas from "react-signature-canvas";
 import Select from "react-select";
-
+import DOMPurify from "dompurify";
 import { useDispatch, useSelector } from "react-redux";
 import { roleOptions } from "../data/data";
 import axios from "axios";
@@ -14,6 +14,7 @@ import { CgSpinner } from "react-icons/cg";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../store/authSlice";
+import { validateFileFormat, validateForm } from "../data/validationUtils";
 
 const Profile = () => {
   const [signature, setSignature] = useState(null);
@@ -226,6 +227,17 @@ const Profile = () => {
 
   const handleSimpan = async (e) => {
     e.preventDefault();
+    if (!validateForm(formData, ["name", "username", "nip", "no_tlp"])) return;
+    if (
+      !validateFileFormat(
+        formData.profile,
+        ["png", "jpg", "jpeg"],
+        2,
+        "Profile"
+      )
+    )
+      return;
+
     Swal.fire({
       title: "Perhatian",
       text: "Data sudah sesuai, Simpan Data ini?",
@@ -267,22 +279,72 @@ const Profile = () => {
 
   const handleChangeProfile = (event) => {
     const { id, value, files } = event.target;
-    const file = files[0];
-    if (file?.size > 2 * 1024 * 1024) {
-      Swal.fire("Error", "File size should not exceed 2 MB", "error");
+    let file = files?.[0];
+
+    if (!file) return;
+
+    // **1. Cek ukuran file (Maks 2MB)**
+    if (file.size > 2 * 1024 * 1024) {
+      Swal.fire("Error", "Ukuran gambar harus di bawah 2 MB!", "error");
+      event.target.value = ""; // Reset input file
       return;
     }
+
+    // **2. Validasi ekstensi file (PNG, JPG, JPEG)**
     const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
-    if (!allowedTypes.includes(file?.type)) {
-      Swal.fire("Error", "Only PNG, JPG, and JPEG files are allowed", "error");
+    if (!allowedTypes.includes(file.type)) {
+      Swal.fire(
+        "Error",
+        "Hanya format PNG, JPG, dan JPEG yang diperbolehkan!",
+        "error"
+      );
+      event.target.value = ""; // Reset input file
       return;
     }
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setPreviewImages((prev) => ({ ...prev, profile: reader.result }));
+
+    // **3. Validasi isi file (Magic Number)**
+    const fileReader = new FileReader();
+    fileReader.onload = (e) => {
+      const uint = new Uint8Array(e.target.result).subarray(0, 4);
+      const header = uint.reduce((acc, byte) => acc + byte.toString(16), "");
+
+      const validMagicNumbers = [
+        "89504e47",
+        "ffd8ffe0",
+        "ffd8ffe1",
+        "ffd8ffe2",
+      ];
+      if (!validMagicNumbers.includes(header)) {
+        Swal.fire(
+          "Warning",
+          "Format gambar tidak sesuai atau mengandung karakter berbahaya!",
+          "warning"
+        );
+        event.target.value = ""; // Reset input file
+        return;
+      }
+
+      // **4. Sanitasi Nama File (Mencegah XSS)**
+      file = new File(
+        [file],
+        DOMPurify.sanitize(file.name.replace(/[^a-zA-Z0-9_.-]/g, "")),
+        { type: file.type }
+      );
+
+      // **5. Buat preview aman**
+      const imgReader = new FileReader();
+      imgReader.onloadend = () => {
+        setPreviewImages((prev) => ({ ...prev, profile: imgReader.result }));
+      };
+      imgReader.readAsDataURL(file);
+
+      // **6. Simpan file setelah validasi**
+      setFormData((prev) => ({ ...prev, profile: file }));
     };
-    reader.readAsDataURL(file);
-    setFormData((prev) => ({ ...prev, profile: file }));
+
+    // **Abort FileReader Sebelum Membaca Ulang**
+    fileReader.abort();
+    fileReader.readAsArrayBuffer(file); // Membaca header file untuk validasi Magic Number
   };
 
   if (getLoading) {
@@ -346,7 +408,7 @@ const Profile = () => {
                   >
                     <input
                       type="file"
-                      accept="image/*"
+                      accept="image/png, image/jpeg"
                       onChange={handleChangeProfile}
                       className="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
                     />
@@ -354,8 +416,8 @@ const Profile = () => {
                       <p>
                         <span className="text-primary">Upload Logo Anda</span>
                       </p>
-                      <p className="mt-1.5">SVG, PNG, JPG</p>
-                      <p>(max: 1MB size:800 X 800px)</p>
+                      <p className="mt-1.5">PNG, JPG</p>
+                      <p>(max: 2MB size:800 X 800px)</p>
                     </div>
                     {formData.profile && previewImages.profile && (
                       <img
