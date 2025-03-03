@@ -301,6 +301,7 @@ const Dokumen = () => {
     })
       .then(() => {
         fetchDokumenData();
+        setSearch("");
       })
       .catch((error) => {
         console.log(error);

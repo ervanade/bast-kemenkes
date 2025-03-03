@@ -90,6 +90,8 @@ const DataBarang = () => {
     })
       .then(() => {
         fetchBarangData();
+        setSearch("");
+
       })
       .catch((error) => {
         console.log(error);

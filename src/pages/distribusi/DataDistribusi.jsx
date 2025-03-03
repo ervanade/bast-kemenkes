@@ -344,6 +344,8 @@ const DataDistribusi = () => {
     })
       .then(() => {
         fetchDistribusiData();
+        setSearch("");
+
       })
       .catch((error) => {
         console.log(error);

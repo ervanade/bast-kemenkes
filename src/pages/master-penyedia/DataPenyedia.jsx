@@ -83,6 +83,7 @@ const DataPenyedia = () => {
     })
       .then(() => {
         fetchPenyediaData();
+        setSearch("");
       })
       .catch((error) => {
         console.log(error);

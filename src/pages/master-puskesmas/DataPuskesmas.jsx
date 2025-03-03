@@ -84,6 +84,8 @@ const DataPuskesmas = () => {
     })
       .then(() => {
         fetchPuskesmasData();
+        setSearch("");
+
       })
       .catch((error) => {
         console.log(error);
