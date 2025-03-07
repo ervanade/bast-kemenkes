@@ -55,7 +55,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
       document.querySelector("body")?.classList.remove("sidebar-expanded");
     }
   }, [sidebarExpanded]);
-
+  const isActive = (pathnames) => {
+    return pathnames.some((pathname) => location.pathname === pathname);
+  };
   return (
     <aside
       ref={sidebar}
@@ -136,8 +138,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                     <NavLink
                       to="/dokumen"
                       className={`group relative flex items-center gap-2.5 rounded-md py-3 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                        pathname === "/dokumen" &&
-                        "bg-graydark dark:bg-meta-4 text-primary"
+                        isActive([
+                          "/dokumen",
+                          "/dokumen/add",
+                          "/dokumen/edit",
+                        ]) && "bg-graydark dark:bg-meta-4 text-primary"
                       }`}
                     >
                       <MdOutlineDomainVerification size={22} />
@@ -151,8 +156,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                     <NavLink
                       to="/dokumen"
                       className={`group relative flex items-center gap-2.5 rounded-md py-3 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                        pathname === "/dokumen" &&
-                        "bg-graydark dark:bg-meta-4 text-primary"
+                        isActive([
+                          "/dokumen",
+                          "/dokumen/add",
+                          "/dokumen/edit",
+                        ]) && "bg-graydark dark:bg-meta-4 text-primary"
                       }`}
                     >
                       <MdOutlineDomainVerification size={22} />
@@ -178,8 +186,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                     <NavLink
                       to="/dokumen"
                       className={`group relative flex items-center gap-2.5 rounded-md py-3 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                        pathname === "/dokumen" &&
-                        "bg-graydark dark:bg-meta-4 text-primary"
+                        isActive([
+                          "/dokumen",
+                          "/dokumen/add",
+                          "/dokumen/edit",
+                        ]) && "bg-graydark dark:bg-meta-4 text-primary"
                       }`}
                     >
                       <MdOutlineDomainVerification size={22} />
