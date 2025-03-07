@@ -81,6 +81,8 @@ const DetailProvinsiKota = () => {
     })
       .then(() => {
         fetchProvinsiData();
+        setSearch("");
+
       })
       .catch((error) => {
         console.log(error);

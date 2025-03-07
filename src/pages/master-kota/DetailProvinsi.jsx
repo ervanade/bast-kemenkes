@@ -81,6 +81,8 @@ const DetailProvinsi = () => {
     })
       .then(() => {
         fetchProvinsiData();
+        setSearch("");
+
       })
       .catch((error) => {
         console.log(error);

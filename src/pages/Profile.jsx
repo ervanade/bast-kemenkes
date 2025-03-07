@@ -227,7 +227,7 @@ const Profile = () => {
 
   const handleSimpan = async (e) => {
     e.preventDefault();
-    if (!validateForm(formData, ["name", "username", "nip", "no_tlp"])) return;
+    if (!validateForm(formData, ["email", "name", "username", "nip", "no_tlp"])) return;
     if (
       !validateFileFormat(
         formData.profile,
@@ -474,12 +474,12 @@ const Profile = () => {
                       placeholder="Email"
                       disabled
                       value={formData.email}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          email: e.target.value,
-                        }))
-                      }
+                      // onChange={(e) =>
+                      //   setFormData((prev) => ({
+                      //     ...prev,
+                      //     email: e.target.value,
+                      //   }))
+                      // }
                     />
                   </div>
                 </div>
@@ -499,12 +499,12 @@ const Profile = () => {
                     disabled
                     placeholder="Username"
                     value={formData.username}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        username: e.target.value,
-                      }))
-                    }
+                    // onChange={(e) =>
+                    //   setFormData((prev) => ({
+                    //     ...prev,
+                    //     username: e.target.value,
+                    //   }))
+                    // }
                   />
                 </div>
 

@@ -307,6 +307,8 @@ const DokumenDistributor = () => {
     })
       .then(() => {
         fetchDokumenData();
+        setSearch("");
+
       })
       .catch((error) => {
         console.log(error);

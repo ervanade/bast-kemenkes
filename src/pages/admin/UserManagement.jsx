@@ -88,6 +88,8 @@ const UserManagement = () => {
     })
       .then(() => {
         fetchUserData();
+        setSearch("");
+
       })
       .catch((error) => {
         fetchUserData();

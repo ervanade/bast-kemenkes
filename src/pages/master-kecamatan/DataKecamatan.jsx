@@ -78,6 +78,8 @@ const DataKecamatan = () => {
     })
       .then(() => {
         fetchProvinsiData();
+        setSearch("");
+
       })
       .catch((error) => {
         console.log(error);
