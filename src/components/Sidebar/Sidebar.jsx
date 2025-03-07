@@ -56,7 +56,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     }
   }, [sidebarExpanded]);
   const isActive = (pathnames) => {
-    return pathnames.some((pathname) => location.pathname === pathname);
+    return pathnames.some((pathname) => location.pathname.startsWith(pathname));
   };
   return (
     <aside
