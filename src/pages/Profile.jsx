@@ -181,7 +181,9 @@ const Profile = () => {
     formDataToSend.append("username", formData.username);
     formDataToSend.append("nip", formData.nip);
     formDataToSend.append("no_tlp", formData.no_tlp);
-    formDataToSend.append("profile", formData.profile);
+    if (formData.profile instanceof File) {
+      formDataToSend.append("profile", formData.profile);
+    }
     if (file) {
       formDataToSend.append("ttd", file || formData.ttd);
     } else if (signature) {
@@ -227,7 +229,8 @@ const Profile = () => {
 
   const handleSimpan = async (e) => {
     e.preventDefault();
-    if (!validateForm(formData, ["email", "name", "username", "nip", "no_tlp"])) return;
+    if (!validateForm(formData, ["email", "name", "username", "nip", "no_tlp"]))
+      return;
     if (
       !validateFileFormat(
         formData.profile,
