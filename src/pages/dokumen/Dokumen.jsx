@@ -490,6 +490,7 @@ const Dokumen = () => {
         ket_daerah: "",
         ket_ppk: data.keterangan_ppk,
         tte_daerah: data.tte_daerah || defaultImage,
+        logo_daerah: data.logo_daerah || "",
         nama_daerah: data.nama_daerah || "",
         nip_daerah: data.nip_daerah || "",
         tte_ppk: data.tte_ppk || defaultImage,
