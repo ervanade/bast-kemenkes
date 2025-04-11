@@ -181,7 +181,7 @@ const TambahUser = () => {
     } catch (error) {
       setLoading(false);
       console.log(error);
-      if (error.response.status == 500) {
+      if (error?.response?.status == 500) {
         Swal.fire("Error", "Email Telah Digunakan", "error");
         setLoading(false);
         return;

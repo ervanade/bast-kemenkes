@@ -57,7 +57,7 @@ const EditProvinsi = () => {
       });
       setGetLoading(false);
     } catch (error) {
-      if (error.response.status == 404) {
+      if (error?.response?.status == 404) {
         navigate("/not-found");
       }
       console.log(error);

@@ -115,7 +115,7 @@ const EditUser = () => {
         setGetLoading(false);
       });
     } catch (error) {
-      if (error.response.status == 404) {
+      if (error?.response?.status == 404) {
         navigate("/not-found");
       }
       console.log(error);
@@ -245,7 +245,7 @@ const EditUser = () => {
     } catch (error) {
       setLoading(false);
       console.log(error);
-      if (error.response.status == 500) {
+      if (error?.response?.status == 500) {
         Swal.fire("Error", "Email Telah Digunakan", "error");
         setLoading(false);
         return;

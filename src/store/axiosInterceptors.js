@@ -12,7 +12,7 @@ axios.interceptors.response.use(
     (error) => {
         if (
             error.response &&
-            error.response.status === 401
+            error?.response?.status === 401
         ) {
             // Logout user
             store.dispatch(logoutUser());
