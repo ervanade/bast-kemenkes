@@ -337,23 +337,15 @@ const GenerateDokumen = async (jsonData, distributor) => {
           </Text>
           <Text style={styles.text}>
             Pada hari ini{" "}
-            {moment(jsonData?.tanggal_tte_ppk || defaultDate)
+            {moment(jsonData?.tanggal || defaultDate)
               .locale("id")
               .format("dddd")}
             , tanggal{" "}
-            {moment(jsonData?.tanggal_tte_ppk || defaultDate).format("D", "id")}{" "}
-            bulan{" "}
-            {moment(jsonData?.tanggal_tte_ppk || defaultDate).format("M", "id")}{" "}
-            tahun{" "}
-            {moment(jsonData?.tanggal_tte_ppk || defaultDate).format(
-              "yyyy",
-              "id"
-            )}
+            {moment(jsonData?.tanggal || defaultDate).format("D", "id")} bulan{" "}
+            {moment(jsonData?.tanggal || defaultDate).format("M", "id")} tahun{" "}
+            {moment(jsonData?.tanggal || defaultDate).format("yyyy", "id")}
             {" ("}
-            {moment(jsonData?.tanggal_tte_ppk || defaultDate).format(
-              "D-MM-YYYY",
-              "id"
-            )}
+            {moment(jsonData?.tanggal || defaultDate).format("D-MM-YYYY", "id")}
             {") "} bertempat di Jakarta, yang bertanda tangan di bawah ini:
           </Text>
 
