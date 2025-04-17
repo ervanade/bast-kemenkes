@@ -331,8 +331,9 @@ const GenerateDokumen = async (jsonData, distributor) => {
             TENTANG {"\n"} HIBAH BARANG MILIK NEGARA YANG DARI SEJAK AWAL
             DISERAHKAN KEPADA {"\n"}
             MASYARAKAT/PEMERINTAH {"\n"} DAERAH DINAS KESEHATAN DAERAH{" "}
-            {jsonData?.kabupaten} PADA {"\n"}{" "}
-            {formatTanggal(jsonData?.tanggal) || ""}
+            {jsonData?.kabupaten}
+            {/* PADA {"\n"}{" "}
+            {formatTanggal(jsonData?.tanggal) || ""} */}
           </Text>
           <Text style={styles.text}>
             Pada hari ini{" "}
