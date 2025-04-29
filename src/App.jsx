@@ -51,7 +51,7 @@ import DetailLaporanKabupaten from "./pages/laporan/DetailLaporanKabupaten";
 import DetailLaporanPuskesmas from "./pages/laporan/DetailLaporanPuskesmas";
 import LaporanBarang from "./pages/laporan/LaporanBarang";
 import LaporanDetailBarang from "./pages/laporan/LaporanDetailBarang";
-import TesUpload from "./pages/tes-upload/TesUpload";
+// import TesUpload from "./pages/tes-upload/TesUpload";
 import LogActivity from "./pages/log/LogActivity";
 import DetailLogActivity from "./pages/log/DetailLogActivity";
 import LaporanBarangProvinsi from "./pages/laporan/LaporanBarangProvinsi";
@@ -98,7 +98,7 @@ function App() {
               />
 
               <Route path="dokumen" element={<Dokumen />} />
-              <Route path="tes-upload" element={<TesUpload />} />
+              {/* <Route path="tes-upload" element={<TesUpload />} /> */}
               <Route path="dokumen/add" element={<TambahDokumen />} />
               <Route path="dokumen/edit/:id" element={<EditDokumen />} />
 
