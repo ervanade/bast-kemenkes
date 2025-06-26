@@ -328,6 +328,7 @@ const GenerateDokumen = async (jsonData, distributor) => {
             {"\n"} ANTARA {"\n"}
             KEMENTERIAN KESEHATAN {"\n"} DENGAN {"\n"} DINAS KESEHATAN DAERAH{" "}
             {jsonData?.kabupaten} {"\n"} NOMOR {jsonData?.nomorSurat} {"\n"}
+            NOMOR 400.7/1.063/2025 {"\n"}
             TENTANG {"\n"} HIBAH BARANG MILIK NEGARA YANG DARI SEJAK AWAL
             DISERAHKAN KEPADA {"\n"}
             MASYARAKAT/PEMERINTAH {"\n"} DAERAH DINAS KESEHATAN DAERAH{" "}
